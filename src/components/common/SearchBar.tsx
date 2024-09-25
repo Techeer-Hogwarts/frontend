@@ -12,7 +12,7 @@ export default function SearchBar({ placeholder }: SearchBarProps) {
         className="w-[392px] h-9 border border-gray outline-none rounded-2xl pl-4 pr-8"
       />
       <Image
-        src="/SearchIMG.png"
+        src="/search.png"
         width={16}
         height={16}
         alt="SearchIMG"
