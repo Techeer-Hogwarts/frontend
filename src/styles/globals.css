@@ -9,6 +9,15 @@
   font-weight: 400;
   font-style: normal;
 }
-* {
-  font-family: 'Pretendard';
+@font-face {
+  font-family: 'KartriderExtraBold';
+  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2312-1@1.1/KartriderExtraBold.woff2')
+    format('woff2');
+  font-weight: 800;
+  font-style: normal;
+}
+
+body {
+  width: 1200px;
+  margin: 0 auto;
 }
