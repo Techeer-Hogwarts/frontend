@@ -1,5 +1,5 @@
+import BlogPost from '@/components/blog/BlogPost'
 import TapBar from '@/components/common/TapBar'
-import BlogPost from './_components/BlogPost'
 
 export default function page() {
   return (
