@@ -10,14 +10,15 @@ export default function TapBar({ options, placeholder }: TapBarProps) {
   return (
     <div>
       <div className="flex items-center">
-        {options.map((option, index) => (
-          <div key={options.length} className="flex items-center">
+        {options.map((option) => (
+          <div key={option} className="flex items-center">
             <TapBtn>{option}</TapBtn>
-            {index !== options.length - 1 && (
+            {option !== options[options.length - 1] && (
               <div className="h-4 w-[1px] bg-gray" />
             )}
           </div>
         ))}
+
         <div className="ml-auto">
           <SearchBar placeholder={placeholder} />
         </div>
