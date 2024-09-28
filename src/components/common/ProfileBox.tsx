@@ -1,10 +1,15 @@
 import FolderSVG from '../assets/image/folder.svg'
 import GitSVG from '../assets/image/git.svg'
 import BlogSVG from '../assets/image/blog.svg'
-import PositionTag from '@/components/common/PostionTag'
+import PositionTag from '@/components/common/PositionTag'
 import CareerTag from '@/components/common/CareerTag'
 
-export default function ProfileBox() {
+interface Profile {
+  position: string
+  career: string
+}
+
+export default function ProfileBox({ position, career }: Profile) {
   return (
     <div className="realtive flex w-[19rem] h-[23rem]">
       {/* Folder 이미지 */}
@@ -36,8 +41,8 @@ export default function ProfileBox() {
         </div>
         {/** 포지션/경력 */}
         <div className="flex flex-row gap-2 mt-1">
-          <PositionTag />
-          <CareerTag />
+          <PositionTag position={position} />
+          <CareerTag career={career} />
         </div>
       </div>
     </div>

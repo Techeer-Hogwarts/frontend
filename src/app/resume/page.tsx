@@ -1,9 +1,108 @@
+'use client'
+
 import ResumeFolder from '@/components/common/ResumeFolder'
 import Star from '../../assets/image/star.svg'
+import Dropdown from '@/components/common/Dropdown'
+import { useState } from 'react'
 
 export default function resume() {
+  // 드롭다운 선택된 옵션 상태 관리
+  const [selectedOptions, setSelectedOptions] = useState<string[]>([])
+
+  // 드롭다운 항목 리스트
+  const dropdownOptions = ['Frontend', 'Backend', 'DataEngineer']
+
+  // 이력서 리스트
+  const resumes = [
+    {
+      name: '박명수',
+      period: '8기',
+      position: 'Frontend',
+      career: '3년',
+      date: '2024.09.21',
+    },
+    {
+      name: '유재석',
+      period: '7기',
+      position: 'Backend',
+      career: '5년',
+      date: '2024.09.19',
+    },
+    {
+      name: '정준하',
+      period: '6기',
+      position: 'DataEngineer',
+      career: '2년',
+      date: '2024.09.18',
+    },
+    {
+      name: '박명수',
+      period: '8기',
+      position: 'Frontend',
+      career: '3년',
+      date: '2024.09.21',
+    },
+    {
+      name: '유재석',
+      period: '7기',
+      position: 'Backend',
+      career: '5년',
+      date: '2024.09.19',
+    },
+    {
+      name: '정준하',
+      period: '6기',
+      position: 'DataEngineer',
+      career: '2년',
+      date: '2024.09.18',
+    },
+    {
+      name: '박명수',
+      period: '8기',
+      position: 'Frontend',
+      career: '3년',
+      date: '2024.09.21',
+    },
+    {
+      name: '유재석',
+      period: '7기',
+      position: 'Backend',
+      career: '5년',
+      date: '2024.09.19',
+    },
+    {
+      name: '정준하',
+      period: '6기',
+      position: 'DataEngineer',
+      career: '2년',
+      date: '2024.09.18',
+    },
+    {
+      name: '박명수',
+      period: '8기',
+      position: 'Frontend',
+      career: '3년',
+      date: '2024.09.21',
+    },
+    {
+      name: '유재석',
+      period: '7기',
+      position: 'Backend',
+      career: '5년',
+      date: '2024.09.19',
+    },
+    {
+      name: '정준하',
+      period: '6기',
+      position: 'DataEngineer',
+      career: '2년',
+      date: '2024.09.18',
+    },
+  ]
+
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col w-[100vw] h-[100vh] px-[10rem] gap-6">
+      <div className="flex w-full h-[4rem] bg-gray-300 "></div>
       {/** 배너 */}
       <div className="flex justify-between gap-10">
         <div className="flex flex-col">
@@ -19,7 +118,29 @@ export default function resume() {
           <Star />
         </div>
       </div>
-      <ResumeFolder />
+      {/** 기수 탭 */}
+      {/** 드롭다운 */}
+      <div className="">
+        <Dropdown
+          title="포지션"
+          options={dropdownOptions}
+          selectedOptions={selectedOptions}
+          setSelectedOptions={setSelectedOptions}
+        />
+      </div>
+      {/** 이력서 폴더 */}
+      <div className="flex flex-wrap gap-12">
+        {resumes.map((resume, index) => (
+          <ResumeFolder
+            key={index}
+            name={resume.name}
+            period={resume.period}
+            position={resume.position}
+            career={resume.career}
+            date={resume.date}
+          />
+        ))}
+      </div>
     </div>
   )
 }
