@@ -1,5 +1,5 @@
-import CareerTag from './CareerTag'
-import PositionTag from './PositionTag'
+import CareerTag from '../common/CareerTag'
+import PositionTag from '../common/PositionTag'
 
 interface Resume {
   name: string
@@ -15,7 +15,7 @@ const ResumeFolder = ({ name, period, position, career, date }: Resume) => {
       {/** 이름/기수 */}
       <div className="flex flex-row justify-between mt-3 mx-1 gap-[8rem]">
         <span className="font-bold text-[1.25rem]">{name}</span>
-        <span className="font-bold text-[#FF7816]">{period}</span>
+        <span className="font-bold text-primary">{period}</span>
       </div>
       <span className="flex w-[14rem] border-t border-black"></span>
       {/** 포지션/경력 */}

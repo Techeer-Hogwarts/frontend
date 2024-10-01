@@ -1,6 +1,6 @@
-import FolderSVG from '../assets/image/folder.svg'
-import GitSVG from '../assets/image/git.svg'
-import BlogSVG from '../assets/image/blog.svg'
+import FolderSVG from '../../../public/folder.svg'
+import GitSVG from '../../../public/git.svg'
+import BlogSVG from '../../../public/blog.svg'
 import PositionTag from '@/components/common/PositionTag'
 import CareerTag from '@/components/common/CareerTag'
 

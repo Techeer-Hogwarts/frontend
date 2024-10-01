@@ -1,4 +1,6 @@
 import '../styles/globals.css'
+import NevBar from '@/components/common/NevBar'
+import Footer from '@/components/common/Footer'
 
 export default function RootLayout({
   children,
@@ -7,7 +9,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <NevBar />
+        {children}
+        <Footer/>
+      </body>
     </html>
   )
 }

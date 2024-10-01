@@ -1,7 +1,7 @@
 'use client'
 
-import ResumeFolder from '@/components/common/ResumeFolder'
-import Star from '../../assets/image/star.svg'
+import ResumeFolder from '@/components/resume/ResumeFolder'
+import Star from '../../../public/star.svg'
 import Dropdown from '@/components/common/Dropdown'
 import { useState } from 'react'
 

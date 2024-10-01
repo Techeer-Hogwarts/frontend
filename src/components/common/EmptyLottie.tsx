@@ -1,5 +1,5 @@
 import Lottie from 'react-lottie-player'
-import lottie from '../../assets/image/lottie.json'
+import lottie from '../../../public/lottie.json'
 
 const EmptyLottie = () => {
   return (
