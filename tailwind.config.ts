@@ -12,7 +12,6 @@ const config: Config = {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic':
           'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
-        project: 'url(../../src/assets/images/project.png)',
       },
       colors: {
         primary: '#FE9142',
@@ -30,6 +29,14 @@ const config: Config = {
         purple: '#723EB3',
         lightyellow: '#FFF2AB',
         yellow: '#9F7D07',
+        darkPrimary: '#DD7E3A',
+      },
+      fontFamily: {
+        logo: ['KartriderExtraBold'],
+      },
+      boxShadow: {
+        custom: '1px 2px 4px 0px rgba(128, 128, 128, 0.73)',
+        bgshadow: '0px 0px 8.2px 0px rgba(0, 0, 0, 0.14)',
       },
     },
   },

@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { useState } from 'react'
 import {
   IoSearchOutline,
@@ -18,16 +19,24 @@ export default function NevBar() {
     <div className="flex items-center w-[1200px] max-w-[1200px] h-[3.8125rem] justify-between border-b border-[#D7D7D7]">
       <div className="flex">
         {/* 로고 */}
-        <p className="font-logo text-primary text-[2rem] font-extrabold mr-[2.12rem]">
+        <Link href="/" className="font-logo text-primary text-[2rem] font-extrabold mr-[2.12rem]">
           TECHEER.ZIP
-        </p>
+        </Link>
 
         {/* 메뉴 */}
         <div className="flex items-center gap-[1.62rem]">
-          <p className="hover:text-gray-700 cursor-pointer">프로젝트</p>
-          <p className="hover:text-gray-700 cursor-pointer">블로그</p>
-          <p className="hover:text-gray-700 cursor-pointer">이력서</p>
-          <p className="hover:text-gray-700 cursor-pointer">세션</p>
+          <Link href="/project" className="hover:text-gray-700 cursor-pointer">
+            프로젝트
+          </Link>
+          <Link href="/" className="hover:text-gray-700 cursor-pointer">
+            블로그
+          </Link>
+          <Link href="/" className="hover:text-gray-700 cursor-pointer">
+            이력서
+          </Link>
+          <Link href="/" className="hover:text-gray-700 cursor-pointer">
+            세션
+          </Link>
         </div>
       </div>
       <div className="flex">
@@ -51,13 +60,15 @@ export default function NevBar() {
             </button>
           </div>
         </div>
-        {/* 기타 아이콘 */}
-        <button type="button" className="p-2">
+        {/* 캘린더 아이콘 */}
+        <Link href="/" className="p-2">
           <IoCalendarOutline size={24} />
-        </button>
-        <button type="button" className="p-2">
+        </Link>
+        {/* 마이페이지 아이콘 */}
+
+        <Link href="/" className="p-2">
           <IoPersonCircle size={24} />
-        </button>
+        </Link>
         <button type="button" className="hover:text-gray-800">
           로그아웃
         </button>
