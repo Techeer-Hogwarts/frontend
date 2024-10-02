@@ -3,7 +3,7 @@ import TapBar from '@/components/common/TapBar'
 
 export default function page() {
   return (
-    <div className="flex justify-center w-screen h-screen">
+    <div className="flex justify-center">
       <div className="flex flex-col">
         <div className="w-[1200px] text-left mt-14 mb-7">
           <p className="text-4xl mb-5 font-bold">블로그</p>
