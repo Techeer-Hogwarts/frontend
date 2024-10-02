@@ -2,14 +2,14 @@
 
 import { useState } from 'react'
 import TapBar from '@/components/common/TapBar'
-import BlogPost from '@/components/blog/BlogPost'
+import SessionPost from '@/components/session/SessionPost'
 import Dropdown from '@/components/common/Dropdown'
 import FilterBtn from '@/components/session/FilterBtn'
 
 export default function Page() {
   const [selectedPeriods, setSelectedPeriods] = useState<string[]>([])
   return (
-    <div className="flex justify-center w-screen h-screen">
+    <div className="flex justify-center">
       <div className="flex flex-col">
         <div className="w-[1200px] text-left mt-14 mb-7">
           <p className="text-4xl mb-5 font-bold">세션영상</p>
@@ -39,9 +39,9 @@ export default function Page() {
           <FilterBtn title="1기" />
         </div>
         <div className="grid grid-cols-3 gap-8">
-          <BlogPost />
-          <BlogPost />
-          <BlogPost />
+          <SessionPost />
+          <SessionPost />
+          <SessionPost />
         </div>
       </div>
     </div>
