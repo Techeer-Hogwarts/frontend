@@ -1,6 +1,6 @@
 import Image from 'next/image'
 
-export default function PostModal() {
+export default function SessionMenu() {
   return (
     <div className="absolute right-1 top-6 flex flex-col item-center justify-center w-14 text-sm h-16 border bg-white border-lightgray rounded-md">
       <button type="button" className="flex items-center justify-center gap-1">

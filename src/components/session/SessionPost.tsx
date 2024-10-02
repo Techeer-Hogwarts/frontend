@@ -3,10 +3,15 @@
 import Image from 'next/image'
 import win from '@/../../public/win.png'
 import { useState } from 'react'
+import SessionMenu from './SessionMenu'
 
-export default function BlogPost() {
+export default function SessionPost() {
+  const [showModal, setShowModal] = useState(false)
   const [isBookmark, setIsBookmark] = useState(false)
   const [isLike, setIsLike] = useState(false)
+  const clickModal = () => {
+    setShowModal(!showModal)
+  }
   const handleBookmarkClick = () => {
     setIsBookmark(!isBookmark)
   }
@@ -26,6 +31,14 @@ export default function BlogPost() {
       <div className="rounded-b-lg w-[379px] h-[100px] pt-2 bg-white shadow-[0px_5px_8px_#bfbfbf]">
         <div className="flex justify-between relative">
           <p className="text-base ml-5 mb-1">왜 웹소켓을 쓰는가</p>
+          <Image
+            src="/session/session-menu.svg"
+            alt="seesionmenu"
+            width={24}
+            height={24}
+            onClick={clickModal}
+          />
+          {showModal && <SessionMenu />}
         </div>
         <p className="text-sm text-black/30 ml-5">2024년 7월</p>
         <div className="flex ml-5 mt-3  justify-between">
