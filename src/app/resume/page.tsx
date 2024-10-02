@@ -4,6 +4,7 @@ import ResumeFolder from '@/components/resume/ResumeFolder'
 import Star from '../../../public/star.svg'
 import Dropdown from '@/components/common/Dropdown'
 import { useState } from 'react'
+import TapBar from '@/components/common/TapBar'
 
 export default function resume() {
   // 드롭다운 선택된 옵션 상태 관리
@@ -11,6 +12,9 @@ export default function resume() {
 
   // 드롭다운 항목 리스트
   const dropdownOptions = ['Frontend', 'Backend', 'DataEngineer']
+
+  //기수 탭
+  const options = ['전체', '4기~', '5기', '6기', '7기', '8기', '소마/ICT']
 
   // 이력서 리스트
   const resumes = [
@@ -31,7 +35,7 @@ export default function resume() {
     {
       name: '정준하',
       period: '6기',
-      position: 'DataEngineer',
+      position: 'Backend',
       career: '2년',
       date: '2024.09.18',
     },
@@ -52,7 +56,7 @@ export default function resume() {
     {
       name: '정준하',
       period: '6기',
-      position: 'DataEngineer',
+      position: 'Backend',
       career: '2년',
       date: '2024.09.18',
     },
@@ -73,7 +77,7 @@ export default function resume() {
     {
       name: '정준하',
       period: '6기',
-      position: 'DataEngineer',
+      position: 'Backend',
       career: '2년',
       date: '2024.09.18',
     },
@@ -94,17 +98,100 @@ export default function resume() {
     {
       name: '정준하',
       period: '6기',
-      position: 'DataEngineer',
+      position: 'Backend',
+      career: '2년',
+      date: '2024.09.18',
+    },
+    {
+      name: '박명수',
+      period: '8기',
+      position: 'Frontend',
+      career: '3년',
+      date: '2024.09.21',
+    },
+    {
+      name: '유재석',
+      period: '7기',
+      position: 'Backend',
+      career: '5년',
+      date: '2024.09.19',
+    },
+    {
+      name: '정준하',
+      period: '6기',
+      position: 'Backend',
+      career: '2년',
+      date: '2024.09.18',
+    },
+    {
+      name: '박명수',
+      period: '8기',
+      position: 'Frontend',
+      career: '3년',
+      date: '2024.09.21',
+    },
+    {
+      name: '유재석',
+      period: '7기',
+      position: 'Backend',
+      career: '5년',
+      date: '2024.09.19',
+    },
+    {
+      name: '정준하',
+      period: '6기',
+      position: 'Backend',
+      career: '2년',
+      date: '2024.09.18',
+    },
+    {
+      name: '박명수',
+      period: '8기',
+      position: 'Frontend',
+      career: '3년',
+      date: '2024.09.21',
+    },
+    {
+      name: '유재석',
+      period: '7기',
+      position: 'Backend',
+      career: '5년',
+      date: '2024.09.19',
+    },
+    {
+      name: '정준하',
+      period: '6기',
+      position: 'Backend',
+      career: '2년',
+      date: '2024.09.18',
+    },
+    {
+      name: '박명수',
+      period: '8기',
+      position: 'Frontend',
+      career: '3년',
+      date: '2024.09.21',
+    },
+    {
+      name: '유재석',
+      period: '7기',
+      position: 'Backend',
+      career: '5년',
+      date: '2024.09.19',
+    },
+    {
+      name: '정준하',
+      period: '6기',
+      position: 'Backend',
       career: '2년',
       date: '2024.09.18',
     },
   ]
 
   return (
-    <div className="flex flex-col w-[100vw] h-[100vh] px-[10rem] gap-6">
-      <div className="flex w-full h-[4rem] bg-gray-300 "></div>
+    <div className="flex flex-col w-[75rem] gap-6">
       {/** 배너 */}
-      <div className="flex justify-between gap-10">
+      <div className="flex justify-between gap-10 mt-[4rem]">
         <div className="flex flex-col">
           <span className="text-[2.5rem] font-bold">이력서</span>
           <span className="text-[1.25rem] font-medium">
@@ -119,15 +206,17 @@ export default function resume() {
         </div>
       </div>
       {/** 기수 탭 */}
+      <TapBar
+        options={options}
+        placeholder="프로젝트 명 혹은 이름으로 검색해보세요"
+      />
       {/** 드롭다운 */}
-      <div className="">
-        <Dropdown
-          title="포지션"
-          options={dropdownOptions}
-          selectedOptions={selectedOptions}
-          setSelectedOptions={setSelectedOptions}
-        />
-      </div>
+      <Dropdown
+        title="포지션"
+        options={dropdownOptions}
+        selectedOptions={selectedOptions}
+        setSelectedOptions={setSelectedOptions}
+      />
       {/** 이력서 폴더 */}
       <div className="flex flex-wrap gap-12">
         {resumes.map((resume, index) => (
