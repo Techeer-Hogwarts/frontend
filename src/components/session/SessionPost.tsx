@@ -32,7 +32,7 @@ export default function SessionPost() {
         <div className="flex justify-between relative">
           <p className="text-base ml-5 mb-1">왜 웹소켓을 쓰는가</p>
           <Image
-            src="/session/session-menu.svg"
+            src="/images/session/session-menu.svg"
             alt="seesionmenu"
             width={24}
             height={24}
