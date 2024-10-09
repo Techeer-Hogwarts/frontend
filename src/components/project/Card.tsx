@@ -9,7 +9,7 @@ export default function Card() {
       <div className="flex items-center pt-[1rem] px-[0.75rem] gap-1 justify-center">
         {/* 이미지 */}
         <div className="">
-          <img
+          <Image
             src="/src/assets/images/example.png"
             alt="프로젝트 이미지"
             width={125}
@@ -22,11 +22,12 @@ export default function Card() {
             토크타카
           </h2>
           <p className="text-[0.75rem] mb-[2.44rem]">
-            아이들의 "오늘 하루 있었던 일"을 주제로 캐릭터와...
+            아이들의 &quot;오늘 하루 있었던 일&quot;을 주제로 캐릭터와...
           </p>
           <div className="mt-4 flex  justify-end gap-2">
-            {['Next.js', 'Spring'].map((el) => (
+            {['Next.js', 'Spring'].map((el, index) => (
               <button
+                key={el}
                 type="button"
                 className="bg-lightprimary text-pink py-[0.19rem] px-[0.5rem] rounded-lg text-sm"
               >
