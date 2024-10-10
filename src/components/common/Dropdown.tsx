@@ -31,7 +31,7 @@ const Dropdown: React.FC<DropdownProps> = ({
     <div className="relative w-[10.5rem]">
       <button
         onClick={toggleDropdown}
-        className="flex w-full px-4 py-2 text-left bg-white border border-black rounded-full justify-between"
+        className="flex w-full px-4 py-2 text-left bg-white border border-black rounded-full justify-between items-center"
       >
         <span className="text-[1.125rem]">{title}</span>
         <span className="text-xs">▼</span>
@@ -53,7 +53,7 @@ const Dropdown: React.FC<DropdownProps> = ({
                   type="checkbox"
                   checked={selectedOptions.includes(option)}
                   onChange={() => handleSelect(option)}
-                  className="w-4 h-4 mr-3 border border-[#B2B2B2] appearance-none rounded checked:bg-[#FF7816] checked:border-[#FF7816] cursor-pointer checked:before:content-['✓'] checked:before:text-white"
+                  className="w-4 h-4 mr-2 border border-gray appearance-none rounded flex items-center justify-center checked:bg-[#FF7816] checked:border-[#FF7816] cursor-pointer checked:before:content-['✓'] checked:before:text-white checked:before:text-xs checked:before:flex checked:before:items-center checked:before:justify-center"
                 />
                 {option}
               </div>
@@ -61,7 +61,7 @@ const Dropdown: React.FC<DropdownProps> = ({
                 <span className="font-medium text-[#FF7816]">✓</span>
               )}
               {index !== options.length - 1 && (
-                <span className="absolute bottom-0 left-0 w-full h-[1px] bg-[#B2B2B2]"></span>
+                <span className="absolute bottom-0 left-0 w-full h-[1px] bg-gray"></span>
               )}
             </li>
           ))}
