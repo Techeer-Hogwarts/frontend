@@ -59,7 +59,7 @@ export default function login() {
               />
               아이디 저장
             </div>
-            <Link href="/findpassword" className="text-[#666666]">
+            <Link href="/changepassword" className="text-[#666666]">
               비밀번호 찾기
             </Link>
           </div>
