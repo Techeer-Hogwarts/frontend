@@ -12,6 +12,7 @@ import Link from 'next/link'
 const Signup = () => {
   const [step, setStep] = useState(1)
 
+  const [isVerified, setIsVerified] = useState(false) // 이메일 인증 여부
   const [selectedPositions, setSelectedPositions] = useState<string[]>([]) // 포지션 선택
   const [recommendation, setRecommendation] = useState<string | null>(null) // 추천 여부
   const [employmentStatus, setEmploymentStatus] = useState<string | null>(null) // 인턴, 취업 경험 yes or no
@@ -103,7 +104,7 @@ const Signup = () => {
               required={true}
             />
 
-            <EmailVerification />
+            <EmailVerification setIsVerified={setIsVerified} />
 
             <InputField
               label="비밀번호"

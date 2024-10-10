@@ -9,10 +9,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
+      <body className="flex flex-col min-h-screen">
         <NevBar />
-        {children}
-        <Footer/>
+        <main className="flex-grow flex flex-col items-center justify-center">
+          {children}
+        </main>
+        <Footer />
       </body>
     </html>
   )
