@@ -1,18 +1,42 @@
 interface Position {
-  position: string
+  position: 'Frontend' | 'Backend' | 'DataEngineer' | string
 }
 
 const PositionTag = ({ position }: Position) => {
+  // 포지션에 따른 색상 매핑
+  const positionStyles: Record<
+    'Frontend' | 'Backend' | 'DataEngineer',
+    { bg: string; text: string }
+  > = {
+    Frontend: {
+      bg: 'bg-lightblue',
+      text: 'text-blue',
+    },
+    Backend: {
+      bg: 'bg-lightgreen',
+      text: 'text-green',
+    },
+    DataEngineer: {
+      bg: 'bg-lightpurple',
+      text: 'text-purple',
+    },
+  }
+
+  // 해당 포지션이 없으면 기본값 사용
+  const styles = positionStyles[
+    position as 'Frontend' | 'Backend' | 'DataEngineer'
+  ] || {
+    bg: 'bg-lightgray',
+    text: 'text-black',
+  }
+
   return (
-    <div className="flex justify-center w-[5.5rem] h-[1.4rem] bg-lightblue text-blue rounded-md">
-      <span className="text-blue-900">{position}</span>
+    <div
+      className={`flex justify-center w-[6.5rem] h-[1.4rem] ${styles.bg} rounded-md`}
+    >
+      <span className={styles.text}>{position}</span>
     </div>
-    // <div className="flex justify-center w-[5rem] h-[1.4rem] bg-lightgreen text-green rounded-md">
-    //   <span className="text-green-900">Backend</span>
-    // </div>
-    // <div className="flex justify-center w-[6.8rem] h-[1.4rem] bg-lightpurple text-purple rounded-md">
-    //   <span className="text-purple-900">DataEngineer</span>
-    // </div>
   )
 }
+
 export default PositionTag

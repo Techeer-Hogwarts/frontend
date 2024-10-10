@@ -1,12 +1,22 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
 import ResumeFolder from '@/components/resume/ResumeFolder'
 import Star from '../../../public/star.svg'
 import Dropdown from '@/components/common/Dropdown'
 import { useState } from 'react'
 import TapBar from '@/components/common/TapBar'
 
-export default function resume() {
+export default function Resume() {
+  const router = useRouter() // Resume 페이지에서 useRouter 사용
+
+  const handleFolderClick = () => {
+    router.push('/detail') // Resume 페이지에서 라우팅 처리
+  }
+
+  const openModal = () => {
+    router.push('/resume?modal=true') // 모달 경로로 라우팅
+  }
   // 드롭다운 선택된 옵션 상태 관리
   const [selectedOptions, setSelectedOptions] = useState<string[]>([])
 
@@ -14,179 +24,7 @@ export default function resume() {
   const dropdownOptions = ['Frontend', 'Backend', 'DataEngineer']
 
   //기수 탭
-  const options = ['전체', '4기~', '5기', '6기', '7기', '8기', '소마/ICT']
-
-  // 이력서 리스트
-  const resumes = [
-    {
-      name: '박명수',
-      period: '8기',
-      position: 'Frontend',
-      career: '3년',
-      date: '2024.09.21',
-    },
-    {
-      name: '유재석',
-      period: '7기',
-      position: 'Backend',
-      career: '5년',
-      date: '2024.09.19',
-    },
-    {
-      name: '정준하',
-      period: '6기',
-      position: 'Backend',
-      career: '2년',
-      date: '2024.09.18',
-    },
-    {
-      name: '박명수',
-      period: '8기',
-      position: 'Frontend',
-      career: '3년',
-      date: '2024.09.21',
-    },
-    {
-      name: '유재석',
-      period: '7기',
-      position: 'Backend',
-      career: '5년',
-      date: '2024.09.19',
-    },
-    {
-      name: '정준하',
-      period: '6기',
-      position: 'Backend',
-      career: '2년',
-      date: '2024.09.18',
-    },
-    {
-      name: '박명수',
-      period: '8기',
-      position: 'Frontend',
-      career: '3년',
-      date: '2024.09.21',
-    },
-    {
-      name: '유재석',
-      period: '7기',
-      position: 'Backend',
-      career: '5년',
-      date: '2024.09.19',
-    },
-    {
-      name: '정준하',
-      period: '6기',
-      position: 'Backend',
-      career: '2년',
-      date: '2024.09.18',
-    },
-    {
-      name: '박명수',
-      period: '8기',
-      position: 'Frontend',
-      career: '3년',
-      date: '2024.09.21',
-    },
-    {
-      name: '유재석',
-      period: '7기',
-      position: 'Backend',
-      career: '5년',
-      date: '2024.09.19',
-    },
-    {
-      name: '정준하',
-      period: '6기',
-      position: 'Backend',
-      career: '2년',
-      date: '2024.09.18',
-    },
-    {
-      name: '박명수',
-      period: '8기',
-      position: 'Frontend',
-      career: '3년',
-      date: '2024.09.21',
-    },
-    {
-      name: '유재석',
-      period: '7기',
-      position: 'Backend',
-      career: '5년',
-      date: '2024.09.19',
-    },
-    {
-      name: '정준하',
-      period: '6기',
-      position: 'Backend',
-      career: '2년',
-      date: '2024.09.18',
-    },
-    {
-      name: '박명수',
-      period: '8기',
-      position: 'Frontend',
-      career: '3년',
-      date: '2024.09.21',
-    },
-    {
-      name: '유재석',
-      period: '7기',
-      position: 'Backend',
-      career: '5년',
-      date: '2024.09.19',
-    },
-    {
-      name: '정준하',
-      period: '6기',
-      position: 'Backend',
-      career: '2년',
-      date: '2024.09.18',
-    },
-    {
-      name: '박명수',
-      period: '8기',
-      position: 'Frontend',
-      career: '3년',
-      date: '2024.09.21',
-    },
-    {
-      name: '유재석',
-      period: '7기',
-      position: 'Backend',
-      career: '5년',
-      date: '2024.09.19',
-    },
-    {
-      name: '정준하',
-      period: '6기',
-      position: 'Backend',
-      career: '2년',
-      date: '2024.09.18',
-    },
-    {
-      name: '박명수',
-      period: '8기',
-      position: 'Frontend',
-      career: '3년',
-      date: '2024.09.21',
-    },
-    {
-      name: '유재석',
-      period: '7기',
-      position: 'Backend',
-      career: '5년',
-      date: '2024.09.19',
-    },
-    {
-      name: '정준하',
-      period: '6기',
-      position: 'Backend',
-      career: '2년',
-      date: '2024.09.18',
-    },
-  ]
+  const options = ['전체', '~4기', '5기', '6기', '7기', '8기', '소마/ICT']
 
   return (
     <div className="flex flex-col w-[75rem] gap-6">
@@ -198,7 +36,10 @@ export default function resume() {
             모든 테커인들의 이력서를 확인해보세요.
           </span>
         </div>
-        <div className="flex justify-center items-center w-[13rem] h-[3rem] border-2 border-transparent shadow-md rounded-xl">
+        <div
+          className="flex justify-center items-center w-[13rem] h-[3rem] border-2 border-transparent shadow-md rounded-xl"
+          onClick={openModal}
+        >
           <span className="text-[1.1rem] font-medium">
             나의 이력서 수정하기
           </span>
@@ -218,17 +59,8 @@ export default function resume() {
         setSelectedOptions={setSelectedOptions}
       />
       {/** 이력서 폴더 */}
-      <div className="flex flex-wrap gap-12">
-        {resumes.map((resume, index) => (
-          <ResumeFolder
-            key={index}
-            name={resume.name}
-            period={resume.period}
-            position={resume.position}
-            career={resume.career}
-            date={resume.date}
-          />
-        ))}
+      <div onClick={handleFolderClick}>
+        <ResumeFolder />
       </div>
     </div>
   )

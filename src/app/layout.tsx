@@ -12,7 +12,7 @@ export default function RootLayout({
       <body>
         <NevBar />
         {children}
-        <Footer/>
+        <Footer />
       </body>
     </html>
   )
