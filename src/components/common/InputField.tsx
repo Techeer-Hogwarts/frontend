@@ -27,7 +27,7 @@ const InputField: React.FC<InputFieldProps> = ({
         </label>
         {showIcon && (
           <Image
-            src="/images/checkcircle.svg"
+            src="/images/check-off.svg"
             alt="check"
             width={20}
             height={20}
