@@ -32,13 +32,14 @@ export default function Card() {
 
           {/* 프로젝트 설명 */}
           <p className="text-[0.75rem] mb-[2.44rem]">
-            아이들의 "오늘 하루 있었던 일"을 주제로 캐릭터와...
+            아이들의 &quot;오늘 하루 있었던 일&quot;을 주제로 캐릭터와...
           </p>
 
           {/* 스택 카드 */}
           <div className="mt-4 flex  justify-end gap-2">
             {['Next.js', 'Spring'].map((stack) => (
               <button
+                key={el}
                 type="button"
                 className="bg-lightprimary text-pink py-[0.19rem] px-[0.5rem] rounded-lg text-sm"
               >
