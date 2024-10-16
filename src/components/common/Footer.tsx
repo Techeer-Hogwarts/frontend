@@ -1,5 +1,7 @@
 'use client'
 
+import Link from 'next/link'
+
 export default function Footer() {
   return (
     <div className="bg-black text-white w-[1200px] h-[10.4375rem] mt-[6.62rem] p-2">
@@ -9,15 +11,30 @@ export default function Footer() {
           TECHEER.ZIP
         </div>
 
-        {/* 소셜 링크 영역 */}
+        {/* 링크 영역 */}
         <div className="flex space-x-8 text-[1.25rem] ">
-          <a href="#" className="hover:text-gray-400 text-[1.15rem] font-logo">
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://www.instagram.com/techeer_in_sv/?igsh=NG03bjZ6ODdvN3Fi"
+            className="hover:text-gray-400 text-[1.15rem] font-logo"
+          >
             INSTAGRAM
           </a>
-          <a href="#" className="hover:text-gray-400 text-[1.15rem] font-logo">
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://blog.techeer.net/"
+            className="hover:text-gray-400 text-[1.15rem] font-logo"
+          >
             MEDIUM
           </a>
-          <a href="#" className="hover:text-gray-400 text-[1.15rem] font-logo">
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://github.com/techeer-sv"
+            className="hover:text-gray-400 text-[1.15rem] font-logo"
+          >
             GITHUB
           </a>
         </div>
