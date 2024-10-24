@@ -6,6 +6,36 @@ import FindMember from '@/components/project/detail/FindMember'
 import Results from '@/components/project/detail/Results'
 import { BiSolidPencil } from 'react-icons/bi'
 
+let members = [
+  { name: '홍길동', role: 'Backend' },
+  { name: '김영희', role: 'Frontend' },
+  { name: '이철수', role: 'Frontend' },
+  { name: '박지훈', role: 'Backend' },
+  { name: '최민수', role: 'Backend' },
+  { name: '최민수', role: 'Backend' },
+  { name: '최민수', role: 'Backend' },
+  { name: '최민수', role: 'Backend' },
+  { name: '최민수', role: 'Backend' },
+]
+
+let stacks = {
+  backendStack: [
+    'Go Lang',
+    'PostgreSQL',
+    'Nest.JS',
+    'Python',
+    'Python',
+    'Python',
+    ,
+    'Python',
+    'Python',
+    'Python',
+    'Python',
+  ],
+  frontendStack: ['Zustand', 'Next.js', 'TS'],
+  devopsStack: ['Jenkins CI', 'GCP', 'Terraform', 'Github Actions'],
+}
+
 export default function ProjectDetailpage() {
   return (
     <div className="relative flex justify-between mt-[2.75rem]">
@@ -24,8 +54,8 @@ export default function ProjectDetailpage() {
         <RecommendedMember />
       </div>
       <div className="flex flex-col gap-7">
-        <Member />
-        <Stack />
+        <Member members={members} />
+        <Stack stacks={stacks} />
         <FindMember />
         <Results />
       </div>

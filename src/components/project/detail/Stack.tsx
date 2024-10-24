@@ -1,16 +1,22 @@
-import React from 'react'
+interface StacksProps {
+  stacks: {
+    backendStack: string[]
+    frontendStack: string[]
+    devopsStack: string[]
+  }
+}
 
-export default function Stack() {
-  //더미값
-  const backendStack = ['Go Lang', 'PostgreSQL', 'Nest.JS', 'Python']
-  const frontendStack = ['Zustand', 'Next.js', 'TS']
-  const devopsStack = ['Jenkins CI', 'GCP', 'Terraform', 'Github Actions']
+export default function Stack({ stacks }: StacksProps) {
+  const { backendStack, frontendStack, devopsStack } = stacks
+
   return (
     <div>
       <div className="text-[1.125rem] font-[600] mb-3">기술 스택</div>
-      <div className="flex flex-col w-[52.5rem] p-4 rounded-2xl bg-filterbg gap-4 ">
+      <div className="flex flex-col w-[52.5rem] p-4 rounded-2xl bg-filterbg gap-4">
         <StackCategory title="Backend" stack={backendStack} />
+        <div className="w-full border-b border-lightgray my-2" />
         <StackCategory title="Frontend" stack={frontendStack} />
+        <div className="w-full border-b border-lightgray my-2" />
         <StackCategory title="DevOps" stack={devopsStack} />
       </div>
     </div>
@@ -36,7 +42,7 @@ interface StackCategoryProps {
 
 const StackCategory = ({ title, stack }: StackCategoryProps) => {
   return (
-    <div className="flex gap-[1rem]">
+    <div className="flex gap-[1rem] items-center">
       <div className="text-darkPrimary w-[4.76319rem] text-lg font-semibold">
         {title}
       </div>
