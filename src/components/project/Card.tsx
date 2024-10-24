@@ -39,7 +39,7 @@ export default function Card() {
           <div className="mt-4 flex  justify-end gap-2">
             {['Next.js', 'Spring'].map((stack) => (
               <button
-                key={el}
+                key={stack}
                 type="button"
                 className="bg-lightprimary text-pink py-[0.19rem] px-[0.5rem] rounded-lg text-sm"
               >
