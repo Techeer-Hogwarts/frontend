@@ -2,12 +2,12 @@ import Image from 'next/image'
 import CareerTag from '../common/CareerTag'
 import PositionTag from '../common/PositionTag'
 
-interface Other {
+interface OtherResume {
   position: string
   career: string
 }
 
-export default function Other({ position, career }: Other) {
+export default function OtherResume({ position, career }: OtherResume) {
   // Ather 데이터 배열
   const otherData = [
     { name: '김미영', period: '8기', position: 'Frontend', career: '신입' },
