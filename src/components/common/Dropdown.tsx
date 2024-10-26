@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 
-interface DropdownProps {
+export interface DropdownProps {
   title: string // 드롭다운 버튼의 제목
   options: string[] // 드롭다운 항목 리스트
   selectedOptions: string[] // 현재 선택된 항목 배열
