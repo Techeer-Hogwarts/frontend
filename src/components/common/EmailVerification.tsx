@@ -1,19 +1,23 @@
 import React from 'react'
 import Image from 'next/image'
 
-export default function EmailVerification() {
+interface EmailVerificationProps {
+  setIsVerified: (verified: boolean) => void
+}
+
+export default function EmailVerification({
+  setIsVerified,
+}: EmailVerificationProps) {
+  const handleVerify = () => {
+    setIsVerified(true) // 인증 후 비밀번호 변경 화면으로 전환
+  }
   return (
     <div>
       <div className="flex justify-between mb-2.5">
         <label className="block text-lg">
           이메일 <span className="text-primary">*</span>
         </label>
-        <Image
-          src="/images/checkcircle.svg"
-          alt="check"
-          width={20}
-          height={20}
-        />
+        <Image src="/images/check-off.svg" alt="check" width={20} height={20} />
       </div>
       <div className="flex justify-between mb-4">
         <input
@@ -38,6 +42,7 @@ export default function EmailVerification() {
         />
         <button
           type="button"
+          onClick={handleVerify}
           className="w-[7.75rem] h-10 bg-primary text-white rounded-[0.25rem]"
         >
           인증하기
