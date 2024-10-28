@@ -19,7 +19,7 @@ export default function page() {
         <SearchBar placeholder="일정을 검색해보세요." />
       </div>
       <Calendar />
-      <AddCalenderModal />
+      {/* <AddCalenderModal /> */}
     </div>
   )
 }
