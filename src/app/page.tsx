@@ -1,4 +1,3 @@
-
-export default function Main() {
-  return <div>main page 온보딩</div>;
+export default function ProfileBox() {
+  return <div className="realtive flex w-[19rem] h-[23rem]"></div>
 }
