@@ -1,3 +1,4 @@
+import AddCalenderModal from '@/components/calender/AddCalenderModal'
 import Calendar from '@/components/calender/Calendar'
 import FilterBtn from '@/components/calender/FilterBtn'
 import SearchBar from '@/components/common/SearchBar'
@@ -18,6 +19,7 @@ export default function page() {
         <SearchBar placeholder="일정을 검색해보세요." />
       </div>
       <Calendar />
+      <AddCalenderModal />
     </div>
   )
 }
