@@ -26,6 +26,30 @@ export default function Resume() {
   //기수 탭
   const options = ['전체', '~4기', '5기', '6기', '7기', '8기', '소마/ICT']
 
+  let resumes = [
+    {
+      name: '박명수',
+      period: '8기',
+      position: 'Frontend',
+      career: '신입',
+      date: '2024.09.21',
+    },
+    {
+      name: '유재석',
+      period: '7기',
+      position: 'Backend',
+      career: '경력',
+      date: '2024.09.19',
+    },
+    {
+      name: '정준하',
+      period: '6기',
+      position: 'DataEngineer',
+      career: '신입',
+      date: '2024.09.18',
+    },
+  ]
+
   return (
     <div className="flex flex-col w-[75rem] gap-6">
       {/** 배너 */}
@@ -60,7 +84,7 @@ export default function Resume() {
       />
       {/** 이력서 폴더 */}
       <div onClick={handleFolderClick}>
-        <ResumeFolder />
+        <ResumeFolder resumes={resumes} />
       </div>
     </div>
   )
