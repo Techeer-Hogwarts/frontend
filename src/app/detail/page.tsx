@@ -30,6 +30,34 @@ export default function Detail() {
     setShowOther((prev) => !prev) // 상태를 토글하여 보이기/숨기기 처리
   }
 
+  let otherData = [
+    { name: '김미영', period: '8기', position: 'Frontend', career: '신입' },
+    { name: '주영준', period: '6기', position: 'Backend', career: '경력' },
+    {
+      name: '이지은',
+      period: '7기',
+      position: 'DataEngineer',
+      career: '경력',
+    },
+  ]
+
+  let comments = [
+    {
+      id: 1,
+      name: '박철수',
+      date: '2024.10.03',
+      comment:
+        '이 프로젝트는 협업과 커뮤니케이션에서 강점이 있었던 것 같습니다. 하지만 기술적으로 좀 더 개선할 부분이 있습니다.',
+    },
+    {
+      id: 2,
+      name: '김미영',
+      date: '2024.10.02',
+      comment:
+        '해당 사례에서는 PM 직무에서 발휘할 만한 역량이 보이지가 않습니다. PM 중요 직무 역량 중 질문에 쓰일만한 사례를 추리고 그 역량을 분명히 드러내야 합니다. 해당 사례에서는 PM 직무에서 발휘할 만한 역량이 보이지가 않습니다. PM 중요 직무 역량 중 질문에 쓰일만한 사례를 추리고 그 역량을 분명히 드러내야 합니다.',
+    },
+  ]
+
   return (
     <div className="flex justify-between mt-10">
       {/** 좌측 영역 */}
@@ -45,7 +73,7 @@ export default function Detail() {
             <Image src="/arrow.png" width={15} height={10} alt="arrow" />
           </div>
           {showOther && (
-            <Other position={position} career={career} />
+            <Other otherData={otherData} />
             // </div>
           )}
         </div>
@@ -101,7 +129,7 @@ export default function Detail() {
         </div>
         {/** 댓글 */}
         <div className="flex flex-col gap-10">
-          <Comments />
+          <Comments comments={comments} />
           <span className="flex items-center w-[47rem] border-[0.03rem] border-gray"></span>
           <Create />
         </div>

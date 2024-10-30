@@ -2,20 +2,16 @@ import Image from 'next/image'
 import CareerTag from '../common/CareerTag'
 import PositionTag from '../common/PositionTag'
 
-interface Other {
-  position: string
-  career: string
+interface OtherResume {
+  otherData: Array<{
+    name: string
+    period: string
+    position: string
+    career: string
+  }>
 }
 
-export default function Other({ position, career }: Other) {
-  // Ather 데이터 배열
-  const otherData = [
-    { name: '김미영', period: '8기', position: 'Frontend', career: '신입' },
-    { name: '주영준', period: '6기', position: 'Backend', career: '경력' },
-    { name: '이지은', period: '7기', position: 'DataEngineer', career: '경력' },
-    // 필요한 만큼 데이터를 추가할 수 있습니다.
-  ]
-
+export default function OtherResume({ otherData }: OtherResume) {
   return (
     <div className="flex flex-col w-[14.5rem] h-auto rounded-xl shadow-md">
       {otherData.map((user, index) => (
