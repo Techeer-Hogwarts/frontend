@@ -1,7 +1,7 @@
 import React from 'react'
 import Image from 'next/image'
 
-interface InputFieldProps {
+export interface InputFieldProps {
   label: string
   name: string
   placeholder: string

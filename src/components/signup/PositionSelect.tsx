@@ -1,7 +1,7 @@
 import React from 'react'
 import Image from 'next/image'
 
-interface PositionSelectProps {
+export interface PositionSelectProps {
   selectedPositions: string[]
   handlePositionSelect: (position: string) => void
 }
