@@ -5,6 +5,7 @@ import TapBar from '@/components/common/TapBar'
 import SessionPost from '@/components/session/SessionPost'
 import Dropdown from '@/components/common/Dropdown'
 import FilterBtn from '@/components/session/FilterBtn'
+import AddBtn from '@/components/common/AddBtn'
 
 export default function Page() {
   const [selectedPeriods, setSelectedPeriods] = useState<string[]>([])
@@ -43,6 +44,7 @@ export default function Page() {
           <SessionPost />
           <SessionPost />
         </div>
+        <AddBtn />
       </div>
     </div>
   )
