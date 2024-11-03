@@ -12,11 +12,11 @@ const CategoryTab: React.FC<CategoryTabProps> = ({ onScrollToSection }) => {
 
   return (
     <div className="flex items-center border-4 border-lightgray h-16 py-4">
-      {categories.map((category, index) => (
+      {categories.map((category) => (
         <a
-          key={index}
+          key={category.id}
           href={`#${category.id}`}
-          className={`flex items-center justify-between w-[18.75rem] text-xl text-left px-12 ${index < categories.length - 1 ? 'border-r-2 border-lightgray' : ''}`}
+          className={`flex items-center justify-between w-[18.75rem] text-xl text-left px-12 ${category.id !== 'session' ? 'border-r-2 border-lightgray' : ''}`}
         >
           {category.label}
           <img src="/images/arrow-outline.svg" alt="arrow" className="w-6" />
