@@ -1,15 +1,17 @@
 import React, { useState } from 'react'
-import { Meta, StoryFn } from '@storybook/react'
-import PositionSelect, {
-  PositionSelectProps,
-} from '@/components/signup/PositionSelect'
+import { Meta, StoryObj } from '@storybook/react'
+import PositionSelect from '@/components/signup/PositionSelect'
 
-export default {
+const meta: Meta<typeof PositionSelect> = {
   title: 'Signup/PositionSelect',
   component: PositionSelect,
-} as Meta
+  tags: ['autodocs'],
+}
 
-const Template: StoryFn<PositionSelectProps> = (args) => {
+export default meta
+type Story = StoryObj<typeof meta>
+
+const PositionSelectStory = (args: any) => {
   const [selectedPositions, setSelectedPositions] = useState<string[]>([])
 
   const handlePositionSelect = (position: string) => {
@@ -31,5 +33,7 @@ const Template: StoryFn<PositionSelectProps> = (args) => {
   )
 }
 
-export const Default = Template.bind({})
-Default.args = {}
+export const Default: Story = {
+  render: PositionSelectStory,
+  args: {},
+}

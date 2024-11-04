@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 
 export interface DropdownProps {
   title: string // 드롭다운 버튼의 제목
@@ -16,6 +16,7 @@ const Dropdown: React.FC<DropdownProps> = ({
   setSelectedOptions,
 }) => {
   const [isOpen, setIsOpen] = useState(false)
+  const dropdownRef = useRef<HTMLDivElement>(null)
 
   const toggleDropdown = () => setIsOpen(!isOpen)
 
@@ -27,8 +28,25 @@ const Dropdown: React.FC<DropdownProps> = ({
     }
   }
 
+  // 드롭다운 외부 클릭 감지 및 닫기 기능
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [])
+
   return (
-    <div className="relative w-[10.5rem]">
+    <div ref={dropdownRef} className="relative w-[10.5rem]">
       <button
         onClick={toggleDropdown}
         className="flex w-full px-4 py-2 text-left bg-white border border-black rounded-full justify-between items-center"
