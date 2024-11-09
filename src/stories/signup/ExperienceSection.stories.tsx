@@ -1,15 +1,17 @@
 import React, { useState } from 'react'
-import { Meta, StoryFn } from '@storybook/react'
-import ExperienceSection, {
-  ExperienceSectionProps,
-} from '@/components/signup/ExperienceSection'
+import { Meta, StoryObj } from '@storybook/react'
+import ExperienceSection from '@/components/signup/ExperienceSection'
 
-export default {
+const meta: Meta<typeof ExperienceSection> = {
   title: 'Signup/ExperienceSection',
   component: ExperienceSection,
-} as Meta
+  tags: ['autodocs'],
+}
 
-const Template: StoryFn<ExperienceSectionProps> = (args) => {
+export default meta
+type Story = StoryObj<typeof meta>
+
+const ExperienceSectionStory = (args: any) => {
   const [experienceStatus, setExperienceStatus] = useState<string | null>(null)
   const [items, setItems] = useState<number[]>([])
 
@@ -29,7 +31,9 @@ const Template: StoryFn<ExperienceSectionProps> = (args) => {
   )
 }
 
-export const Default = Template.bind({})
-Default.args = {
-  title: '인턴 경험',
+export const Default: Story = {
+  render: ExperienceSectionStory,
+  args: {
+    title: '인턴 경험',
+  },
 }

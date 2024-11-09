@@ -100,7 +100,7 @@ export default function Detail() {
               type="button"
             >
               <Image
-                src="/plus.png"
+                src="/grayplus.png"
                 width={20}
                 height={20}
                 alt="PlusIMG"

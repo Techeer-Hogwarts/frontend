@@ -1,6 +1,3 @@
-import FolderSVG from '../../../public/folder.svg'
-import GitSVG from '../../../public/git.svg'
-import BlogSVG from '../../../public/blog.svg'
 import PositionTag from '@/components/common/PositionTag'
 import CareerTag from '@/components/common/CareerTag'
 import Image from 'next/image'
@@ -15,7 +12,7 @@ export default function ProfileBox({ position, career }: Profile) {
     <div className="flex w-[19rem] h-[23rem]">
       {/* Folder 이미지 */}
       <div className="relative z-0">
-        <FolderSVG />
+        <Image src="/folder.svg" alt="Folder" width={242} height={374} />
         <div className=" absolute z-10 flex flex-col top-[13%] left-[13%] w-[11rem] gap-1">
           {/** 프로필 사진 */}
           <div className="flex w-[11rem] h-[11rem] bg-gray-200 rounded-xl">
@@ -30,9 +27,9 @@ export default function ProfileBox({ position, career }: Profile) {
           {/** 이름/아이콘*/}
           <div className="flex flex-row justify-between mt-1">
             <div className="text-[1.25rem] font-medium">박명수</div>
-            <div className="flex flex-row">
-              <GitSVG alt="git" width={30} height={30} />
-              <BlogSVG alt="blog" width={30} height={30} />
+            <div className="flex flex-row gap-2 ">
+              <Image src="/git.svg" alt="GitHub" width={18} height={18} />
+              <Image src="/blog.svg" alt="Blog" width={18} height={18} />
             </div>
           </div>
           {/** 이메일 */}
