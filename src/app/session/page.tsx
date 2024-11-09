@@ -19,6 +19,7 @@ export default function Page() {
         <TapBar
           options={['전체보기', '부트캠프', '파트너스']}
           placeholder="세션 제목 혹은 이름을 검색해보세요"
+          width="w-[1200px]"
         />
         <div className="flex justify-start mt-5 gap-3">
           <Dropdown
