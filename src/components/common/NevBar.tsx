@@ -19,7 +19,10 @@ export default function NevBar() {
     <div className="flex items-center w-[1200px] max-w-[1200px] h-[3.8125rem] justify-between border-b border-[#D7D7D7]">
       <div className="flex">
         {/* 로고 */}
-        <Link href="/" className="font-logo text-primary text-[2rem] font-extrabold mr-[2.12rem]">
+        <Link
+          href="/"
+          className="font-logo text-primary text-[2rem] font-extrabold mr-[2.12rem]"
+        >
           TECHEER.ZIP
         </Link>
 
@@ -61,12 +64,12 @@ export default function NevBar() {
           </div>
         </div>
         {/* 캘린더 아이콘 */}
-        <Link href="/" className="p-2">
+        <Link href="/calendar" className="p-2">
           <IoCalendarOutline size={24} />
         </Link>
         {/* 마이페이지 아이콘 */}
 
-        <Link href="/" className="p-2">
+        <Link href="/mypage" className="p-2">
           <IoPersonCircle size={24} />
         </Link>
         <button type="button" className="hover:text-gray-800">

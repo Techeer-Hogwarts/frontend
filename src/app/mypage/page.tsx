@@ -1,14 +1,14 @@
 'use client'
 
 import { useState } from 'react'
-import ProfileBox from '@/components/profile/ProfileBox'
-import MypageTap from '@/components/mypage/MypageTap'
 import Home from '@/components/mypage/Home'
-import Profile from '@/components/mypage/Profile'
-import Resume from '@/components/mypage/Resume'
-import Bookmark from '@/components/mypage/Bookmark'
 import Likes from '@/components/mypage/Likes'
+import Resume from '@/components/mypage/Resume'
+import Profile from '@/components/mypage/Profile'
 import Settings from '@/components/mypage/Settings'
+import Bookmark from '@/components/mypage/Bookmark'
+import MypageTap from '@/components/mypage/MypageTap'
+import ProfileBox from '@/components/profile/ProfileBox'
 
 export default function Mypage() {
   const [activeTab, setActiveTab] = useState<
