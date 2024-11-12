@@ -17,7 +17,7 @@ export default function Card() {
         {/* 이미지 */}
         <div className="min-w-[7.8125rem]">
           <Image
-            src="/images/example.png"
+            src="/images/project/example.png"
             alt="프로젝트 이미지"
             width={125}
             height={125}
@@ -39,7 +39,7 @@ export default function Card() {
           <div className="mt-4 flex  justify-end gap-2">
             {['Next.js', 'Spring'].map((stack) => (
               <button
-                key={el}
+                key={stack}
                 type="button"
                 className="bg-lightprimary text-pink py-[0.19rem] px-[0.5rem] rounded-lg text-sm"
               >

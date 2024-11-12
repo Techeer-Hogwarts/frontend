@@ -2,7 +2,7 @@ import React from 'react'
 import ExperienceItem from '@/components/signup/ExperienceItem'
 import CareerToggle from './CareerToggle'
 
-interface ExperienceSectionProps {
+export interface ExperienceSectionProps {
   title: string
   experienceStatus: string | null
   setExperienceStatus: (value: string) => void
@@ -20,7 +20,7 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({
   removeExperience,
 }) => {
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col w-[30.25rem]">
       <CareerToggle
         title={title}
         value={experienceStatus}
