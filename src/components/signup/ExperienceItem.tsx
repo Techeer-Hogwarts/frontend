@@ -1,12 +1,17 @@
 'use client'
 
 import React, { useState } from 'react'
+import ExperienceBtn from '../common/ExperienceBtn'
 
 interface ExperienceItemProps {
   onDelete?: () => void
+  btnPadding: string
 }
 
-const ExperienceItem: React.FC<ExperienceItemProps> = ({ onDelete }) => {
+const ExperienceItem: React.FC<ExperienceItemProps> = ({
+  btnPadding,
+  onDelete,
+}) => {
   const [companyName, setCompanyName] = useState('')
   const [duration, setDuration] = useState('')
   const [selectedPosition, setSelectedPosition] = useState<string[]>([])
@@ -75,18 +80,13 @@ const ExperienceItem: React.FC<ExperienceItemProps> = ({ onDelete }) => {
 
       <div className="flex justify-between text-pink text-xs">
         {positions.map((position, index) => (
-          <button
+          <ExperienceBtn
             key={index}
-            type="button"
-            onClick={() => handlePositionClick(position)}
-            className={`px-3.5 py-2 rounded-md border border-lightprimary  ${
-              selectedPosition.includes(position)
-                ? 'bg-lightprimary'
-                : 'bg-white'
-            }`}
-          >
-            {position}
-          </button>
+            position={position}
+            handlePositionClick={handlePositionClick}
+            btnPadding={btnPadding}
+            selectedPosition={selectedPosition}
+          />
         ))}
       </div>
     </div>

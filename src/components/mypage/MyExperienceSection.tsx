@@ -1,6 +1,6 @@
 import React from 'react'
-import MyExperienceItem from './MyExperienceItem'
 import MyCareerToggle from './MyCareerToggle'
+import ExperienceItem from '../signup/ExperienceItem'
 
 export interface MyExperienceSectionProps {
   title: string
@@ -37,8 +37,9 @@ export default function MyExperienceSection({
             <span>경력 추가</span>
           </button>
           {items.map((_, index) => (
-            <MyExperienceItem
+            <ExperienceItem
               key={index}
+              btnPadding="px-6 py-2"
               onDelete={() => removeExperience(index)}
             />
           ))}
