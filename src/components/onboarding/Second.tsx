@@ -3,8 +3,16 @@ import { useEffect, useState } from 'react'
 
 export default function Second() {
   // 이미지 슬라이드
-  const images = ['/sample1.png', '/sample2.png', '/sample3.png']
-  const images2 = ['/sample4.png', '/sample5.png', '/sample6.png']
+  const images = [
+    { id: 'img1', src: '/sample1.png' },
+    { id: 'img2', src: '/sample2.png' },
+    { id: 'img3', src: '/sample3.png' },
+  ]
+  const images2 = [
+    { id: 'img4', src: '/sample4.png' },
+    { id: 'img5', src: '/sample5.png' },
+    { id: 'img6', src: '/sample6.png' },
+  ]
   const [currentIndex, setCurrentIndex] = useState(0)
 
   const nextSlide = () => {
@@ -24,18 +32,23 @@ export default function Second() {
             className="flex flex-col transition-transform duration-500"
             style={{ transform: `translateY(-${currentIndex * 140}px)` }}
           >
-            {images.map((src, index) => (
-              <span key={index} className="flex-shrink-0">
+            {images.map((image) => (
+              <span key={image.id} className="flex-shrink-0">
                 <Image
                   width={200}
                   height={140}
-                  src={src}
-                  alt={`sample ${index + 1}`}
+                  src={image.src}
+                  alt={`sample ${image.id}`}
                 />
               </span>
             ))}
             <span className="flex-shrink-0">
-              <Image width={200} height={140} src={images[0]} alt="sample 1" />
+              <Image
+                width={200}
+                height={140}
+                src={images[0].src}
+                alt="sample 1"
+              />
               {/* 첫 번째 이미지를 마지막에 추가 */}
             </span>
           </div>
@@ -46,19 +59,23 @@ export default function Second() {
             className="flex flex-col transition-transform duration-500"
             style={{ transform: `translateY(${currentIndex * 140}px)` }}
           >
-            {images2.map((src, index) => (
-              <span key={index} className="flex-shrink-0">
+            {images2.map((image) => (
+              <span key={image.id} className="flex-shrink-0">
                 <Image
                   width={200}
                   height={140}
-                  src={src}
-                  alt={`sample ${index + 1}`}
+                  src={image.src}
+                  alt={`sample ${image.id}`}
                 />
               </span>
             ))}
             <span className="flex-shrink-0">
-              <Image width={200} height={140} src={images2[0]} alt="sample 4" />
-              {/* 첫 번째 이미지를 마지막에 추가 */}
+              <Image
+                width={200}
+                height={140}
+                src={images2[0].src}
+                alt="sample 4"
+              />
             </span>
           </div>
         </div>

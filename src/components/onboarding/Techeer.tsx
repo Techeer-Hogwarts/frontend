@@ -2,32 +2,38 @@ import Image from 'next/image'
 export default function Techeer() {
   const steps = [
     {
+      id: 1,
       title: 'Discovery',
       subtitle: '대학별 SW 동아리',
       description: '기초 코딩 교육 목표',
     },
     {
+      id: 2,
       title: 'Intensive',
       subtitle: '6주간 집중 부트캠프',
       description: 'End-To-End\n실무형 프로젝트',
     },
     {
+      id: 3,
       title: 'Discipline',
       subtitle: 'Techeer 선발 가입',
       description:
         '이력서 및 취업 준비\n팀 프로젝트 운영\n실무중심 기술 운영 세션',
     },
     {
+      id: 4,
       title: 'Experience',
       subtitle: '인턴쉽 경험',
       description: '실리콘밸리 글로벌\n프리-인턴쉽 경험\n소프트웨어 마에스트로',
     },
     {
+      id: 5,
       title: 'Career',
       subtitle: '개발자 취업',
       description: '지속적 자기개발',
     },
   ]
+
   return (
     <>
       <Image width={300} height={300} src="/bookmark.png" alt="bookmark" />
@@ -39,6 +45,7 @@ export default function Techeer() {
           <span className="text-white">으로 운영되는 코딩스쿨</span>
         </span>
       </div>
+
       <div className="flex flex-col justify-center items-center w-[1200px] h-[40rem] bg-black relative">
         {/* 반원 이미지 배경 */}
         <Image
@@ -62,14 +69,12 @@ export default function Techeer() {
         <div className="flex items-center justify-center mt-[16rem] w-full">
           <div className="flex flex-col items-center space-y-6">
             <div className="flex space-x-12 relative">
-              {steps.map((step, index) => (
-                <div key={index} className="text-center">
+              {steps.map((step) => (
+                <div key={step.id} className="text-center">
                   <div className="flex justify-center relative mb-4">
-                    {index < steps.length && (
-                      <div className="absolute inset-x-0 top-2 border-t-2 border-dotted border-white w-full"></div>
-                    )}
+                    <div className="absolute inset-x-0 top-2 border-t-2 border-dotted border-white w-full"></div>
                     <div className="flex items-center justify-center w-4 h-4 bg-darkPrimary rounded-full text-white font-bold">
-                      {`step${index + 1}`}
+                      {`step${step.id}`}
                     </div>
                   </div>
                   <div className="flex justify-center items-center w-[160px] h-[30px] bg-primary text-white py-2 px-4 rounded-lg">

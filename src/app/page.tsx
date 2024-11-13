@@ -2,7 +2,7 @@
 import Banner from '@/components/onboarding/Banner'
 import First from '@/components/onboarding/Firtst'
 import Fourth from '@/components/onboarding/Fourth'
-import Last from '@/components/onboarding/Last'
+// import Last from '@/components/onboarding/Last'
 import Second from '@/components/onboarding/Second'
 import Techeer from '@/components/onboarding/Techeer'
 import Third from '@/components/onboarding/Third'
