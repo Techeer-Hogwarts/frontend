@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 
 interface MyExperienceItemProps {
-  onDelete?: () => void
+  onDelete: () => void
 }
 
 export default function MyExperienceItem({ onDelete }: MyExperienceItemProps) {
@@ -11,8 +11,6 @@ export default function MyExperienceItem({ onDelete }: MyExperienceItemProps) {
   const [duration, setDuration] = useState('')
   const [selectedPosition, setSelectedPosition] = useState<string[]>([])
   const [isCurrentJob, setIsCurrentJob] = useState(false)
-
-  // 고정된 포지션 리스트
   const positions = [
     'Frontend',
     'Backend',
@@ -26,7 +24,6 @@ export default function MyExperienceItem({ onDelete }: MyExperienceItemProps) {
       if (prevSelected.includes(position)) {
         return prevSelected.filter((item) => item !== position)
       } else {
-        // 포지션 최대 2개까지 선택 가능
         if (prevSelected.length < 2) {
           return [...prevSelected, position]
         } else {
@@ -38,7 +35,6 @@ export default function MyExperienceItem({ onDelete }: MyExperienceItemProps) {
 
   return (
     <div className="relative p-4 bg-[#F8F8F8] rounded-md mt-4">
-      {/* X 버튼 */}
       <button
         onClick={onDelete}
         className="absolute top-0 right-2 text-gray hover:text-primary focus:outline-none text-lg"
@@ -70,13 +66,13 @@ export default function MyExperienceItem({ onDelete }: MyExperienceItemProps) {
           onChange={() => setIsCurrentJob(!isCurrentJob)}
           className="w-4 h-4 mr-2 border border-gray appearance-none rounded flex items-center justify-center checked:bg-[#FF7816] checked:border-[#FF7816] cursor-pointer checked:before:content-['✓'] checked:before:text-white checked:before:text-xs checked:before:flex checked:before:items-center checked:before:justify-center"
         />
-        <label className="text-xs text-gray my-2">재직중</label>
+        <span className="text-xs text-gray my-2">재직중</span>
       </div>
 
       <div className="flex justify-start gap-5 text-pink text-xs">
-        {positions.map((position, index) => (
+        {positions.map((position, i) => (
           <button
-            key={index}
+            key={i}
             type="button"
             onClick={() => handlePositionClick(position)}
             className={`px-6 py-3 rounded-md border border-lightprimary  ${
