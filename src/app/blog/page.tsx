@@ -43,6 +43,7 @@ export default function page() {
             'Others',
           ]}
           placeholder="블로그 제목 혹은 이름을 검색해보세요"
+          width="w-[1200px]"
         />
         <div className="grid grid-cols-3 gap-8 mt-8">
           {blog.map((blog, index) => (

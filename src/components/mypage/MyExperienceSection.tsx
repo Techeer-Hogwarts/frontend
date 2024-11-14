@@ -1,8 +1,8 @@
 import React from 'react'
-import ExperienceItem from '@/components/signup/ExperienceItem'
-import CareerToggle from './CareerToggle'
+import MyCareerToggle from './MyCareerToggle'
+import ExperienceItem from '../signup/ExperienceItem'
 
-export interface ExperienceSectionProps {
+export interface MyExperienceSectionProps {
   title: string
   experienceStatus: string | null
   setExperienceStatus: (value: string) => void
@@ -11,22 +11,21 @@ export interface ExperienceSectionProps {
   removeExperience: (index: number) => void
 }
 
-const ExperienceSection: React.FC<ExperienceSectionProps> = ({
+export default function MyExperienceSection({
   title,
   experienceStatus,
   setExperienceStatus,
   items,
   addExperience,
   removeExperience,
-}) => {
+}: MyExperienceSectionProps) {
   return (
-    <div className="flex flex-col w-[30.25rem]">
-      <CareerToggle
+    <div className="flex flex-col w-full">
+      <MyCareerToggle
         title={title}
         value={experienceStatus}
         setValue={setExperienceStatus}
       />
-
       {experienceStatus === 'yes' && (
         <>
           <button
@@ -40,7 +39,7 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({
           {items.map((_, index) => (
             <ExperienceItem
               key={index}
-              btnPadding="px-3.5 py-2"
+              btnPadding="px-6 py-2"
               onDelete={() => removeExperience(index)}
             />
           ))}
@@ -49,5 +48,3 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({
     </div>
   )
 }
-
-export default ExperienceSection
