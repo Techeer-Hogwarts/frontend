@@ -2,6 +2,7 @@
 
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
+import ModalInputField from '../common/ModalInputField'
 
 export default function AddPostModal() {
   const router = useRouter()
@@ -18,12 +19,9 @@ export default function AddPostModal() {
           <Image src="/folder.png" alt="folder" width={100} height={100} />
         </div>
         <div className="relative mx-9 mt-4">
-          <p>블로그 링크를 입력해주세요</p>
-          <div className="rounded-full w-1 h-1 absolute top-0 left-44 bg-primary" />
-          <input
-            type="text"
+          <ModalInputField
+            title="블로그 링크를 입력해주세요"
             placeholder="www.TecheerBlog.com"
-            className="w-[416px] pl-2 text-sm mt-1 mb-6 outline-none h-[34px] border border-lightgray"
           />
         </div>
         <div className="flex gap-4">

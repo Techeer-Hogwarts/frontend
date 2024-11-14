@@ -3,7 +3,13 @@
 import Image from 'next/image'
 import { useState } from 'react'
 
-export default function BlogPost() {
+export interface BlogPostProps {
+  title: string
+  date: string
+  name: string
+}
+
+export default function BlogPost({ title, date, name }: BlogPostProps) {
   const [isBookmark, setIsBookmark] = useState(false)
   const [isLike, setIsLike] = useState(false)
   const handleBookmarkClick = () => {
@@ -22,15 +28,15 @@ export default function BlogPost() {
         height={199}
         className="w-[379px] h-[199px]"
       />
-      <div className="rounded-b-lg w-[379px] h-[100px] pt-2 bg-white shadow-[0px_5px_8px_#bfbfbf]">
+      <div className="rounded-b-lg w-[379px] min-h-[100px] py-2 bg-white shadow-[0px_5px_8px_#bfbfbf]">
         <div className="flex justify-between relative">
-          <p className="text-base ml-5 mb-1">왜 웹소켓을 쓰는가</p>
+          <p className="text-base mx-5 mb-1 truncate">{title}</p>
         </div>
-        <p className="text-sm text-black/30 ml-5">2024년 7월</p>
+        <p className="text-sm text-black/30 ml-5">{date}</p>
         <div className="flex ml-5 mt-3  justify-between">
           <div className="flex items-center">
             <div className="rounded-full w-4 h-4 bg-zinc-400 mr-1" />
-            <span className="text-black font-semibold text-md">주영준</span>
+            <span className="text-black font-semibold text-md">{name}</span>
           </div>
           <div className="flex mr-2">
             <button type="button" onClick={handleBookmarkClick}>
