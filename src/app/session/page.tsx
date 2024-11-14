@@ -2,10 +2,11 @@
 
 import { useState } from 'react'
 import TapBar from '@/components/common/TapBar'
-import SessionPost from '@/components/session/SessionPost'
+import AddBtn from '@/components/common/AddBtn'
 import Dropdown from '@/components/common/Dropdown'
 import FilterBtn from '@/components/session/FilterBtn'
-import AddBtn from '@/components/common/AddBtn'
+import SessionPost from '@/components/session/SessionPost'
+
 let session = [
   {
     title: '왜 웹소켓을 사용하는가',
@@ -28,10 +29,11 @@ let session = [
     date: '2019년 11월',
   },
 ]
+
 export default function Page() {
   const [selectedPeriods, setSelectedPeriods] = useState<string[]>([])
   return (
-    <div className="flex justify-center">
+    <div className="flex justify-center h-auto min-h-screen">
       <div className="flex flex-col">
         <div className="w-[1200px] text-left mt-14 mb-7">
           <p className="text-4xl mb-5 font-bold">세션영상</p>
