@@ -7,7 +7,8 @@ const projectId = 23
 export default function Card() {
   return (
     <Link
-      href={`/project/${projectId}`}
+      href={`/project/detail/study/${projectId}`}
+      // href={`/project/detail/project/${projectId}`}
       className="relative group bg-[url('/images/project/project.png')]  bg-cover w-[18rem] h-[11.375rem]"
     >
       <div className="text-pink w-[4.375rem] pt-2 text-[0.71181rem] text-center">
