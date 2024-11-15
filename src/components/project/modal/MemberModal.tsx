@@ -20,7 +20,7 @@ const MemberModal = ({ initialMembers, closeModal }: MemberModalProps) => {
   const dropDownRef = useRef<HTMLInputElement>(null)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const [name, setName] = useState('')
-  const [isProject, setIsProject] = useState(false) // 프로젝트 여부 상태 추가
+  const [isProject, setIsProject] = useState(false)
   const [members, setMembers] = useState<Member[]>([])
   const [dropdownOptions, setDropdownOptions] = useState<Member[]>([
     { name: '홍길동', generation: '8기', imageSrc: '/profile1.png' },
@@ -41,7 +41,7 @@ const MemberModal = ({ initialMembers, closeModal }: MemberModalProps) => {
     setName(e.target.value)
   }
 
-  // 바깥 클릭시 드롭다운 접기
+  // 바깥 클릭 시 드롭다운 접기
   useEffect(() => {
     const outSideClick = (e: MouseEvent) => {
       if (!dropDownRef.current?.contains(e.target as Node))
@@ -75,9 +75,10 @@ const MemberModal = ({ initialMembers, closeModal }: MemberModalProps) => {
         <p className="w-full text-[1.375rem] text-center mb-4">
           프로젝트 팀원 추가
         </p>
-        <div className="mb-6">
-          <p className="text-left mb-3">이름을 입력해주세요</p>
 
+        {/* 이름 입력 필드 (고정) */}
+        <div className="mb-4">
+          <p className="text-left mb-2">이름을 입력해주세요</p>
           <input
             type="text"
             className="w-full h-[2rem] border border-gray rounded-sm"
@@ -112,34 +113,39 @@ const MemberModal = ({ initialMembers, closeModal }: MemberModalProps) => {
             </div>
           )}
         </div>
-        <div className="flex flex-wrap w-full h-[25.06rem] overflow-y-auto gap-2">
-          {members.length > 0 ? (
-            members?.map((member, index) =>
-              isProject ? (
-                <MemberBox
-                  key={index}
-                  name={member.name}
-                  generation={member.generation}
-                  imageSrc={member.imageSrc || '/default-profile.png'}
-                  onClose={() => handleRemoveMember(member.name)}
-                />
-              ) : (
-                <SmallMemberBox
-                  key={index}
-                  name={member.name}
-                  generation={member.generation}
-                  imageSrc={member.imageSrc || '/default-profile.png'}
-                  onClose={() => handleRemoveMember(member.name)}
-                />
-              ),
-            )
-          ) : (
-              <p className="text-center text-gray-500  w-full">
+
+        {/* 멤버 리스트 영역 (스크롤 가능) */}
+        <div className="flex-1 overflow-y-auto mb-6">
+          <div className="flex flex-wrap overflow-x-hidden gap-2">
+            {members.length > 0 ? (
+              members.map((member, index) =>
+                isProject ? (
+                  <MemberBox
+                    key={index}
+                    name={member.name}
+                    generation={member.generation}
+                    imageSrc={member.imageSrc || '/default-profile.png'}
+                    onClose={() => handleRemoveMember(member.name)}
+                  />
+                ) : (
+                  <SmallMemberBox
+                    key={index}
+                    name={member.name}
+                    generation={member.generation}
+                    imageSrc={member.imageSrc || '/default-profile.png'}
+                    onClose={() => handleRemoveMember(member.name)}
+                  />
+                ),
+              )
+            ) : (
+              <p className="text-center text-gray-500 w-full">
                 아직 추가된 멤버가 없습니다.
               </p>
-          )}
+            )}
+          </div>
         </div>
 
+        {/* 하단 고정 버튼 영역 */}
         <div className="flex gap-4">
           <button
             type="button"
