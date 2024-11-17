@@ -7,7 +7,7 @@ import Dropdown from '@/components/common/Dropdown'
 import FilterBtn from '@/components/session/FilterBtn'
 import SessionPost from '@/components/session/SessionPost'
 
-let session = [
+export let Session = [
   {
     title: '왜 웹소켓을 사용하는가',
     name: '주영준',
@@ -64,7 +64,7 @@ export default function Page() {
           <FilterBtn title="1기" />
         </div>
         <div className="grid grid-cols-3 gap-8">
-          {session.map((session, index) => (
+          {Session.map((session, index) => (
             <SessionPost
               key={index}
               title={session.title}
