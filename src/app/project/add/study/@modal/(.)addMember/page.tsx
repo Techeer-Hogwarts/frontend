@@ -1,5 +1,5 @@
-import MemberModal from "@/components/project/modal/StudyModal"
+import MemberModal from '@/components/project/modal/StudyModal'
 
 export default function page() {
-  return <MemberModal />
+  return <div />
 }

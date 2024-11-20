@@ -110,14 +110,16 @@ const MemberModal = ({ initialMembers }: MemberModalProps) => {
         <div className="flex flex-col w-full h-[25.06rem] overflow-y-auto gap-2">
           {members.length > 0 ? (
             members.map((member, index) => (
-              <MemberBox
-                key={index}
-                name={member.name}
-                generation={member.generation}
-                imageSrc={member.imageSrc || '/default-profile.png'}
-                onClose={() => handleRemoveMember(member.name)}
-                isLeader={member.name === '홍길동'} // 조건에 따라 Leader 표시
-              />
+              <></>
+              // <MemberBox
+              //   key={index}
+              //   name={member.name}
+              //   generation={member.generation}
+              //   imageSrc={member.imageSrc || '/default-profile.png'}
+              //   onClose={() => handleRemoveMember(member.name)}
+              //   isLeader={member.name === '홍길동'} // 조건에 따라 Leader 표시
+              // />
+              // 수정 바람
             ))
           ) : (
             <p className="text-center text-gray-500">

@@ -17,7 +17,7 @@ export default function AddBtn() {
 
   // 선택한 옵션을 로컬 스토리지에 저장하는 함수
   const handleOptionClick = (type: string) => {
-    localStorage.setItem('projectType', type) // 'projectType'이라는 키로 저장
+    // localStorage.setItem('projectType', type) // 'projectType'이라는 키로 저장
     setIsOpen(false) // 모달을 닫기 위해 상태 변경
   }
 
