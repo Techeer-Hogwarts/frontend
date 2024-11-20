@@ -2,22 +2,12 @@
 
 import { useEffect, useState } from 'react'
 
-import RecruitInput from "../RecruitInput"
+import RecruitInput from '../RecruitInput'
 
 export default function AddRecruit() {
   const [recruitStatus, setRecruitStatus] = useState('모집하지 않음')
   const [description, setDescription] = useState('')
-  const [isSingleRole, setIsSingleRole] = useState(false)
-
-  useEffect(() => {
-    // 로컬 스토리지에서 프로젝트 타입을 확인하여 isSingleRole 상태 결정
-    const projectType = localStorage.getItem('projectType')
-    if (projectType === 'study') {
-      setIsSingleRole(true) // 스터디일 경우 단일 역할만 표시
-    } else {
-      setIsSingleRole(false) // 프로젝트일 경우 모든 역할 표시
-    }
-  }, [])
+  const projectType = localStorage.getItem('projectType')
 
   return (
     <div>
@@ -57,7 +47,7 @@ export default function AddRecruit() {
             모집정보를 입력해주세요<span className="text-primary">*</span>
           </p>
           <div className="flex gap-[0.84rem]">
-            {isSingleRole ? (
+            {projectType === 'study' ? (
               // 단일 역할 입력만 표시
               <RecruitInput role="인원 입력" placeholder="1명" />
             ) : (

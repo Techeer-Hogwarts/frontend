@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
-import { IoClose } from 'react-icons/io5'
 import MemberBox from './BigMemberBox'
 import { useRouter } from 'next/navigation'
 
@@ -14,20 +13,16 @@ interface Member {
 
 interface MemberModalProps {
   initialMembers: Member[]
-  closeModal: () => void
 }
 
-const MemberModal = ({ initialMembers, closeModal }: MemberModalProps) => {
+const MemberModal = ({ initialMembers }: MemberModalProps) => {
   const dropDownRef = useRef<HTMLInputElement>(null)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const [name, setName] = useState('')
   const [filteredOptions, setFilteredOptions] =
     useState<Member[]>(initialMembers)
 
-  const router = useRouter
-  const handleBack = () => {
-    // router.back()
-  }
+  const router = useRouter()
 
   // 이름 검색 필터링
   const handleName = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -84,12 +79,13 @@ const MemberModal = ({ initialMembers, closeModal }: MemberModalProps) => {
             className="w-full h-[2rem] border border-gray rounded-sm"
             value={name}
             onChange={handleName}
-            onFocus={() => setIsDropdownOpen(true)}
+            onClick={() => setIsDropdownOpen((prev) => !prev)}
             ref={dropDownRef}
           />
+
           {isDropdownOpen && (
-            <div className="absolute top-full left-0 w-full bg-white border border-gray mt-1 max-h-48 overflow-y-auto z-10">
-              {filteredOptions.map((member, index) => (
+            <div className="absolute w-[26.25rem] bg-white border border-gray mt-1 max-h-48 overflow-y-auto z-10">
+              {filteredOptions?.map((member, index) => (
                 <div
                   key={index}
                   className="flex items-center gap-2 p-2 cursor-pointer hover:bg-lightprimary"
@@ -132,9 +128,9 @@ const MemberModal = ({ initialMembers, closeModal }: MemberModalProps) => {
 
         <div className="flex gap-4">
           <button
-            type="submit"
-            onClick={closeModal}
-            className="w-[200px] rounded-md text-sm h-[34px] bg-white text-gray border border-lightgray "
+            type="button"
+            onClick={() => router.back()}
+            className="w-[200px] rounded-md text-sm h-[34px] bg-white text-gray border border-lightgray"
           >
             취소
           </button>

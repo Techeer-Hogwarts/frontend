@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import MemberBox from './BigMemberBox'
 import SmallMemberBox from './SmallMemberBox'
+import { useRouter } from 'next/navigation'
 
 interface Member {
   name: string
@@ -13,14 +14,13 @@ interface Member {
 
 interface MemberModalProps {
   initialMembers: Member[]
-  closeModal: () => void
 }
 
-const MemberModal = ({ initialMembers, closeModal }: MemberModalProps) => {
+const MemberModal = ({ initialMembers }: MemberModalProps) => {
   const dropDownRef = useRef<HTMLInputElement>(null)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const [name, setName] = useState('')
-  const [isProject, setIsProject] = useState(false)
+  const router = useRouter()
   const [members, setMembers] = useState<Member[]>([])
   const [dropdownOptions, setDropdownOptions] = useState<Member[]>([
     { name: '홍길동', generation: '8기', imageSrc: '/profile1.png' },
@@ -30,11 +30,7 @@ const MemberModal = ({ initialMembers, closeModal }: MemberModalProps) => {
     { name: '최수지', generation: '8기', imageSrc: '/profile5.png' },
   ])
 
-  // 로컬 스토리지에서 projectType 확인
-  useEffect(() => {
-    const projectType = localStorage.getItem('projectType')
-    setIsProject(projectType === 'project')
-  }, [])
+  const projectType = localStorage.getItem('projectType')
 
   // 이름 검색
   const handleName = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -119,7 +115,7 @@ const MemberModal = ({ initialMembers, closeModal }: MemberModalProps) => {
           <div className="flex flex-wrap overflow-x-hidden gap-2">
             {members.length > 0 ? (
               members.map((member, index) =>
-                isProject ? (
+                projectType === 'project' ? (
                   <MemberBox
                     key={index}
                     name={member.name}
@@ -149,7 +145,7 @@ const MemberModal = ({ initialMembers, closeModal }: MemberModalProps) => {
         <div className="flex gap-4">
           <button
             type="button"
-            onClick={closeModal}
+            onClick={() => router.back()}
             className="w-[200px] rounded-md text-sm h-[34px] bg-white text-gray border border-lightgray"
           >
             취소

@@ -1,7 +1,5 @@
 'use client'
 
-import MemberModal from '../modal/MemberModal'
-
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { IoClose } from 'react-icons/io5'
@@ -28,33 +26,25 @@ export default function AddMember() {
     { id: 5, name: '홍길동', role: ['Frontend'], leader: 'no' },
   ])
 
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [isProject, setIsProject] = useState(true)
-
-  useEffect(() => {
-    const projectType = localStorage.getItem('projectType')
-    setIsProject(projectType === 'project')
-  }, [])
+  const projectType = localStorage.getItem('projectType')
 
   // 멤버 삭제 함수
   const handleDelete = (id: number) => {
     setMembers(members.filter((member) => member.id !== id))
   }
   const router = useRouter()
+
   // 모달 창 열기
   const handleAddMember = () => {
-    // router.push('/project/add?modal=add')
-    setIsModalOpen(true)
-  }
-
-  // 모달 닫기 함수
-  const closeModal = () => {
-    setIsModalOpen(false)
+    if (projectType === 'project') {
+      router.push('/project/add/project/addMember')
+    } else {
+      router.push('/project/add/study/addMember')
+    }
   }
 
   return (
     <div>
-      {isModalOpen && <MemberModal closeModal={closeModal} />}
       <div className="flex items-center">
         <div className="font-medium text-gray mb-3">
           팀원을 입력해주세요<span className="text-primary">*</span>
@@ -90,7 +80,7 @@ export default function AddMember() {
             )}
 
             <div>{member.name}</div>
-            {isProject && (
+            {projectType === 'project' && (
               <div className="flex flex-col gap-1">
                 {member.role.map((position) => (
                   <Tag key={position} position={position} />

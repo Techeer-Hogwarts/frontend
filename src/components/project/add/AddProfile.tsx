@@ -13,6 +13,8 @@ export default function AddProfile() {
   const [imgSrc, setImgSrc] = useState<string | null>('') // 기본 이미지 설정
   const fileInput = useRef<HTMLInputElement>(null)
 
+
+
   const handleImageChange = async (e: any) => {
     const file = e.target.files[0]
     if (!file) return
