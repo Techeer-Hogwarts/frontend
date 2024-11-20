@@ -30,7 +30,7 @@ const MemberModal = ({ initialMembers }: MemberModalProps) => {
     { name: '최수지', generation: '8기', imageSrc: '/profile5.png' },
   ])
 
-  const projectType = localStorage.getItem('projectType')
+  // const projectType = localStorage.getItem('projectType')
 
   // 이름 검색
   const handleName = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -113,7 +113,7 @@ const MemberModal = ({ initialMembers }: MemberModalProps) => {
         {/* 멤버 리스트 영역 (스크롤 가능) */}
         <div className="flex-1 overflow-y-auto mb-6">
           <div className="flex flex-wrap overflow-x-hidden gap-2">
-            {members.length > 0 ? (
+            {/* {members.length > 0 ? (
               members.map((member, index) =>
                 projectType === 'project' ? (
                   <MemberBox
@@ -137,7 +137,7 @@ const MemberModal = ({ initialMembers }: MemberModalProps) => {
               <p className="text-center text-gray-500 w-full">
                 아직 추가된 멤버가 없습니다.
               </p>
-            )}
+            )} */}
           </div>
         </div>
 

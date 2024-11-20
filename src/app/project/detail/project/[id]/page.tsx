@@ -56,7 +56,7 @@ export default function ProjectDetailpage() {
       </div>
       <div className="flex flex-col gap-7">
         <Member members={members} />
-        <Stack stacks={stacks} />
+        {/* <Stack stacks={stacks} /> */}
         <FindMember />
         <Results />
       </div>

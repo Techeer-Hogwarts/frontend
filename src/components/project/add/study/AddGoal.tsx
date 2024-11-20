@@ -6,7 +6,7 @@ export default function AddGoal() {
   const [goal, setGoal] = useState('')
   const [description, setDescription] = useState('')
 
-  const handleInputChange = (event) => {
+  const handleInputChange = (event: any) => {
     setGoal(event.target.value)
   }
 

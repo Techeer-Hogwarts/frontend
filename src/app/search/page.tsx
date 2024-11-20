@@ -10,8 +10,9 @@ const Search = () => {
       {/* 검색 결과 헤더 */}
       <div className="mb-6">
         <h2 className="text-2xl font-semibold">
-          검색어 <span className="text-primary">'토크타카'</span>에 대한 전체{' '}
-          <span className="text-amber-400">'10'</span>개의 결과를 찾았습니다.
+          검색어 <span className="text-primary">&apos;토크타카&apos;</span>에
+          대한 전체 <span className="text-amber-400">&apos;10&apos;</span>개의
+          결과를 찾았습니다.
         </h2>
       </div>
 

@@ -26,7 +26,7 @@ export default function AddMember() {
     { id: 5, name: '홍길동', role: ['Frontend'], leader: 'no' },
   ])
 
-  const projectType = localStorage.getItem('projectType')
+  // const projectType = localStorage.getItem('projectType')
 
   // 멤버 삭제 함수
   const handleDelete = (id: number) => {
@@ -35,13 +35,13 @@ export default function AddMember() {
   const router = useRouter()
 
   // 모달 창 열기
-  const handleAddMember = () => {
-    if (projectType === 'project') {
-      router.push('/project/add/project/addMember')
-    } else {
-      router.push('/project/add/study/addMember')
-    }
-  }
+  // const handleAddMember = () => {
+  //   if (projectType === 'project') {
+  //     router.push('/project/add/project/addMember')
+  //   } else {
+  //     router.push('/project/add/study/addMember')
+  //   }
+  // }
 
   return (
     <div>
@@ -80,19 +80,19 @@ export default function AddMember() {
             )}
 
             <div>{member.name}</div>
-            {projectType === 'project' && (
+            {/* {projectType === 'project' && (
               <div className="flex flex-col gap-1">
                 {member.role.map((position) => (
                   <Tag key={position} position={position} />
                 ))}
               </div>
-            )}
+            )} */}
           </div>
         ))}
 
         {/* + 버튼 */}
         <button
-          onClick={handleAddMember}
+          // onClick={handleAddMember}
           className="w-[4.75rem] h-[4.75rem] flex flex-col items-center justify-center border border-gray rounded-md text-2xl shadow-sm hover:shadow-[0px_0px_4px_1px_rgba(138,138,138,0.73)]"
         >
           +
