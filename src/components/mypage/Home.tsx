@@ -20,15 +20,18 @@ export default function Home() {
         </div>
         <div className="flex relative h-[140px] px-8 w-[890px] gap-3 overflow-x-auto items-center justify-start border border-lightgray rounded-lg">
           <HiMiniChevronLeft className="w-10 h-8 absolute left-0 top-[52px] text-black/20" />
-          {Array.from({ length: 5 }).map((_, index) => (
-            <Image
-              key={index}
-              src="/images/project/example.png"
-              alt="thumbnail"
-              width={64}
-              height={64}
-            />
-          ))}
+          <Image
+            src="/images/project/example.png"
+            alt="thumbnail"
+            width={64}
+            height={64}
+          />
+          <Image
+            src="/images/project/example.png"
+            alt="thumbnail"
+            width={64}
+            height={64}
+          />
           <HiMiniChevronRight className="w-10 h-8 absolute right-0 top-[52px] text-black/20" />
         </div>
       </div>
@@ -43,15 +46,18 @@ export default function Home() {
         </div>
         <div className="flex relative h-[140px] px-8 w-[890px] gap-3 overflow-x-auto items-center justify-start border border-lightgray rounded-lg">
           <HiMiniChevronLeft className="w-10 h-8 absolute left-0 top-[52px] text-black/20" />
-          {Array.from({ length: 5 }).map((_, index) => (
-            <Image
-              key={index}
-              src="/images/project/example.png"
-              alt="thumbnail"
-              width={64}
-              height={64}
-            />
-          ))}
+          <Image
+            src="/images/project/example.png"
+            alt="thumbnail"
+            width={64}
+            height={64}
+          />
+          <Image
+            src="/images/project/example.png"
+            alt="thumbnail"
+            width={64}
+            height={64}
+          />
           <HiMiniChevronRight className="w-10 h-8 absolute right-0 top-[52px] text-black/20" />
         </div>
       </div>

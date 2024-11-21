@@ -3,12 +3,12 @@ import MyCareerToggle from './MyCareerToggle'
 import ExperienceItem from '../signup/ExperienceItem'
 
 export interface MyExperienceSectionProps {
-  title: string
-  experienceStatus: string | null
-  setExperienceStatus: (value: string) => void
-  items: number[]
-  addExperience: () => void
-  removeExperience: (index: number) => void
+  readonly title: string
+  readonly experienceStatus: string | null
+  readonly setExperienceStatus: (value: string) => void
+  readonly items: number[]
+  readonly addExperience: () => void
+  readonly removeExperience: (index: number) => void
 }
 
 export default function MyExperienceSection({
@@ -36,11 +36,11 @@ export default function MyExperienceSection({
             <span>+</span>
             <span>경력 추가</span>
           </button>
-          {items.map((_, index) => (
+          {items.map((_, item) => (
             <ExperienceItem
-              key={index}
+              key={item}
               btnPadding="px-6 py-2"
-              onDelete={() => removeExperience(index)}
+              onDelete={() => removeExperience(item)}
             />
           ))}
         </>
