@@ -4,10 +4,9 @@ import SearchBar from './SearchBar'
 interface TapBarProps {
   readonly options: string[]
   readonly placeholder: string
-  readonly width: string
 }
 
-export default function TapBar({ options, placeholder, width }: TapBarProps) {
+export default function TapBar({ options, placeholder }: TapBarProps) {
   return (
     <div>
       <div className="flex items-center">
@@ -25,7 +24,7 @@ export default function TapBar({ options, placeholder, width }: TapBarProps) {
         </div>
       </div>
 
-      <div className={`${width} h-[1px] mt-5 bg-gray`} />
+      <div className="w-auto h-[1px] mt-5 bg-gray" />
     </div>
   )
 }

@@ -5,7 +5,7 @@ import Link from 'next/link'
 import Card from '@/components/project/Card'
 import TapBar from '@/components/common/TapBar'
 import Dropdown from '@/components/common/Dropdown'
-import AddBtn from '../../components/project/add/AddBtn';
+import AddBtn from '../../components/project/add/AddBtn'
 
 export default function Project() {
   const [selectedPeriods, setSelectedPeriods] = useState<string[]>(['0'])
@@ -63,7 +63,7 @@ export default function Project() {
           <Card key={el} />
         ))}
       </div>
-      <AddBtn/>
+      <AddBtn />
     </div>
   )
 }
