@@ -19,7 +19,7 @@ export default function NecessaryQuestions() {
             className={`w-[10.875rem] h-[2.125rem] border ${
               projectStatus === '진행중'
                 ? 'border-primary  text-primary'
-                : 'border-gray'
+                : 'border-gray text-gray'
             } rounded-[0.1875rem]`}
           >
             진행중
@@ -29,15 +29,13 @@ export default function NecessaryQuestions() {
             className={`w-[10.875rem] h-[2.125rem] border ${
               projectStatus === '완료'
                 ? 'border-primary  text-primary'
-                : 'border-gray'
+                : 'border-gray text-gray'
             } rounded-[0.1875rem]`}
           >
             완료
           </button>
         </div>
       </div>
-
-      
     </div>
   )
 }

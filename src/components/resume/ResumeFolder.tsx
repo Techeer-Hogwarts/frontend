@@ -14,7 +14,10 @@ export default function ResumeFolder({ resumes }: Resume) {
   return (
     <div className="flex flex-wrap gap-12">
       {resumes.map((resume, index) => (
-        <div className="flex flex-col w-[16.5rem] h-[10.25rem] gap-2 px-5 border-t-[0.4rem] border-black shadow-lg">
+        <div
+          key={index}
+          className="flex flex-col w-[16.5rem] h-[10.25rem] gap-2 px-5 border-t-[0.4rem] border-black shadow-lg"
+        >
           {/** 이름/기수 */}
           <div className="flex flex-row justify-between mt-3 mx-1 gap-[8rem]">
             <span className="font-bold text-[1.25rem]">{resume.name}</span>

@@ -41,8 +41,8 @@ export default function Calendar() {
         >
           {i}
           <div className="text-xs font-medium mt-2">
-            {events.map((event) => (
-              <span className="flex justify-start ">
+            {events.map((event, index) => (
+              <span key={index} className="flex justify-start ">
                 <div className="w-2 h-2 mt-1 mx-1 bg-[#0992FA] rounded-full" />
                 <div className="flex flex-col">
                   <p className="text-[12px]">{event.name}</p>
