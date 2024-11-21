@@ -40,6 +40,7 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({
           {items.map((_, index) => (
             <ExperienceItem
               key={index}
+              btnPadding="px-3.5 py-2"
               onDelete={() => removeExperience(index)}
             />
           ))}
