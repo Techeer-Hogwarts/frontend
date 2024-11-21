@@ -4,7 +4,7 @@ import React from 'react'
 import Image from 'next/image'
 
 interface AddResumeProps {
-  setModal: (value: boolean) => void
+  readonly setModal: (value: boolean) => void
 }
 
 export default function AddResume({ setModal }: AddResumeProps) {

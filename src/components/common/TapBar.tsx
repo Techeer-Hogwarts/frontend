@@ -2,9 +2,9 @@ import TapBtn from './TapBtn'
 import SearchBar from './SearchBar'
 
 interface TapBarProps {
-  options: string[]
-  placeholder: string
-  width: string
+  readonly options: string[]
+  readonly placeholder: string
+  readonly width: string
 }
 
 export default function TapBar({ options, placeholder, width }: TapBarProps) {

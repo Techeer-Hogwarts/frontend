@@ -1,11 +1,11 @@
 import React from 'react'
 
 interface ExperienceBtnProps {
-  key: number
-  handlePositionClick: (position: string) => void
-  selectedPosition: string[]
-  position: string
-  btnPadding: string
+  readonly key: number
+  readonly handlePositionClick: (position: string) => void
+  readonly selectedPosition: string[]
+  readonly position: string
+  readonly btnPadding: string
 }
 
 export default function ExperienceBtn({
