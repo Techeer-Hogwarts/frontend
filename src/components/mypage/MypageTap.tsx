@@ -1,38 +1,30 @@
 import { Dispatch, SetStateAction } from 'react'
 
+type TabType = 'home' | 'profile' | 'resume' | 'bookmark' | 'likes' | 'settings'
+
 interface MypageTapProps {
-  readonly activeTab:
-    | 'home'
-    | 'profile'
-    | 'resume'
-    | 'bookmark'
-    | 'likes'
-    | 'settings'
-  readonly setActiveTab: Dispatch<
-    SetStateAction<
-      'home' | 'profile' | 'resume' | 'bookmark' | 'likes' | 'settings'
-    >
-  >
+  readonly activeTab: TabType
+  readonly setActiveTab: Dispatch<SetStateAction<TabType>>
 }
 
 export default function MypageTap({ activeTab, setActiveTab }: MypageTapProps) {
   const handleKeyDown = (
     event: React.KeyboardEvent<HTMLDivElement | HTMLButtonElement>,
-    tab: 'home' | 'profile' | 'resume' | 'bookmark' | 'likes' | 'settings',
+    tab: TabType,
   ) => {
     if (event.key === 'Enter' || event.key === ' ') {
       setActiveTab(tab)
     }
   }
 
-  const tabs: (
-    | 'home'
-    | 'profile'
-    | 'resume'
-    | 'bookmark'
-    | 'likes'
-    | 'settings'
-  )[] = ['home', 'profile', 'resume', 'bookmark', 'likes', 'settings']
+  const tabs: TabType[] = [
+    'home',
+    'profile',
+    'resume',
+    'bookmark',
+    'likes',
+    'settings',
+  ]
 
   return (
     <div className="flex flex-col w-[14.5rem] h-72 text-[1.1rem] gap-2">
