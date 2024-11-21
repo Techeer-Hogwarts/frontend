@@ -4,8 +4,9 @@ import Image from 'next/image'
 import Select from '../signup/Select'
 import { useRef, useState } from 'react'
 import { AiOutlineSync } from 'react-icons/ai'
-import { RxQuestionMarkCircled } from 'react-icons/rx'
+import ProfileInputField from './ProfileInputField'
 import PositionSelect from '../signup/PositionSelect'
+import { RxQuestionMarkCircled } from 'react-icons/rx'
 import MyExperienceSection from './MyExperienceSection'
 
 export default function Profile() {
@@ -67,14 +68,11 @@ export default function Profile() {
           </button>
         </div>
       </div>
-      <div className="flex items-center">
-        <h3 className="text-lg w-[130px]">이름</h3>
-        <input
-          type="text"
-          placeholder="이름을 입력해주세요(시니어멘토는 영어 이름 입력 가능)"
-          className="w-[620px] h-10 px-4 border border-gray rounded-[0.25rem] focus:outline-none focus:border-primary"
-        />
-      </div>
+      <ProfileInputField
+        title="이름"
+        placeholder="이름을 입력해주세요(시니어멘토는 영어 이름 입력 가능)"
+      />
+
       <div className="flex justify-between items-center">
         <h3 className="text-lg w-[130px]">이메일</h3>
         <div className="flex">
@@ -147,23 +145,8 @@ export default function Profile() {
           />
         </div>
       </div>
-
-      <div className="flex items-center">
-        <h3 className="w-32 text-lg mt-[6px]">깃허브</h3>
-        <input
-          type="text"
-          placeholder="깃허브 주소"
-          className="w-[670px] h-10 px-4 border border-gray rounded-[0.25rem] focus:outline-none focus:border-primary"
-        />
-      </div>
-      <div className="flex items-center">
-        <h3 className="w-32 text-lg mt-[6px]">블로그</h3>
-        <input
-          type="text"
-          placeholder="블로그 주소"
-          className="w-[670px] h-10 px-4 border border-gray rounded-[0.25rem] focus:outline-none focus:border-primary"
-        />
-      </div>
+      <ProfileInputField title="깃허브" placeholder="깃허브 주소" />
+      <ProfileInputField title="블로그" placeholder="블로그 주소" />
       <div className="flex justify-between">
         <h3 className="text-lg mt-[6px]">
           프로필을 다른 사람들에게 추천하여 프로젝트에 참여할 기회를 늘릴까요?
@@ -203,7 +186,7 @@ export default function Profile() {
       <div className="flex justify-end">
         <button
           type="button"
-          className="w-[90px] h-10 border rounded-md bg-primary text-white border-primary"
+          className="w-[90px] h-10 border rounded-md text-sm bg-primary text-white border-primary"
         >
           저장
         </button>

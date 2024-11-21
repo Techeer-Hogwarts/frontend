@@ -21,7 +21,7 @@ export default function SessionDropdown({ options }: SessionDropdownProps) {
   }
 
   return (
-    <div>
+    <div className="relative">
       <button
         type="button"
         onClick={handleClick}
