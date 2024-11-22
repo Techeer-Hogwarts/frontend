@@ -4,24 +4,22 @@ import SessionPost from '../session/SessionPost'
 export default function Likes() {
   const Session = [
     {
-      title: '왜 웹소켓을 사용하는가',
-      name: '주영준',
-      date: '2024년 9월',
+      id: 1,
+      title: '가나다라마바사',
+      name: '김박사',
+      date: '2022년 2월',
     },
     {
-      title: '왜 웹소켓을 사용하는가',
-      name: '우아한',
-      date: '2019년 11월',
+      id: 2,
+      title: '네이버 개발자가 될 사람',
+      name: '카카오맨',
+      date: '2020년 1월',
     },
     {
-      title: '흑백요리사 심사위원으로 출현한 소감, 흑백요리사 시즌2에 대하여',
-      name: '백종원',
-      date: '2032년 1월',
-    },
-    {
-      title: '왜 웹소켓을 사용하는가',
-      name: '우아한',
-      date: '2019년 11월',
+      id: 3,
+      title: 'git발git발',
+      name: '김사무라이',
+      date: '2012년 1월',
     },
   ]
   return (
@@ -31,9 +29,9 @@ export default function Likes() {
         placeholder="세션 제목 혹은 이름을 검색해보세요"
       />
       <div className="mt-5 grid grid-cols-2 gap-8">
-        {Session.map((session, index) => (
+        {Session.map((session) => (
           <SessionPost
-            key={index}
+            key={session.id}
             title={session.title}
             date={session.date}
             name={session.name}
