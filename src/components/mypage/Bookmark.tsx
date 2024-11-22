@@ -1,30 +1,30 @@
 import TapBar from '../common/TapBar'
-import SessionPost from '../session/SessionPost'
+import BlogPost from '../blog/BlogPost'
 
 export default function Bookmark() {
-  const Session = [
+  const BookmarkProps = [
     {
       id: 1,
-      title: '왜 웹소켓을 사용하는가',
-      name: '주영준',
+      title: '다람쥐가 도토리를 좋아하는 이유',
+      name: '다람쥐',
       date: '2024년 9월',
     },
     {
       id: 2,
-      title: '왜 웹소켓을 사용하는가',
-      name: '우아한',
+      title: '도토리가 다람쥐의 패이브릿 음식인 이우',
+      name: '도토리',
       date: '2019년 11월',
     },
     {
       id: 3,
-      title: '흑백요리사 심사위원으로 출현한 소감, 흑백요리사 시즌2에 대하여',
-      name: '백종원',
+      title: '연어는 영어로 무엇인가 사르모느',
+      name: '연어',
       date: '2032년 1월',
     },
     {
       id: 4,
-      title: '왜 웹소켓을 사용하는가',
-      name: '우아한',
+      title: '김밥천국 vs 김밥천사',
+      name: '김밥천국',
       date: '2019년 11월',
     },
   ]
@@ -35,12 +35,12 @@ export default function Bookmark() {
         placeholder="세션 제목 혹은 이름을 검색해보세요"
       />
       <div className="mt-5 grid grid-cols-2 gap-8">
-        {Session.map((session) => (
-          <SessionPost
-            key={session.id}
-            title={session.title}
-            date={session.date}
-            name={session.name}
+        {BookmarkProps.map((Bookmark) => (
+          <BlogPost
+            key={Bookmark.id}
+            title={Bookmark.title}
+            date={Bookmark.date}
+            name={Bookmark.name}
           />
         ))}
       </div>

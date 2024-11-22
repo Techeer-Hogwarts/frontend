@@ -5,8 +5,8 @@ import { useState } from 'react'
 
 export interface BlogPostProps {
   readonly title: string
-  readonly date: string
   readonly name: string
+  readonly date: string
 }
 
 export default function BlogPost({ title, date, name }: BlogPostProps) {
