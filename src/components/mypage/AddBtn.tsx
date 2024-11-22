@@ -1,5 +1,5 @@
 interface AddBtnProps {
-  title: string
+  readonly title: string
 }
 
 export default function AddBtn({ title }: AddBtnProps) {

@@ -1,13 +1,13 @@
 import { ChangeEvent } from 'react'
 
 interface SessionFileUploadProps {
-  fileKey: string
-  selectedFile: string | null
-  handleFileChange: (
+  readonly fileKey: string
+  readonly selectedFile: string | null
+  readonly handleFileChange: (
     event: ChangeEvent<HTMLInputElement>,
     fileKey: string,
   ) => void
-  label: string
+  readonly label: string
 }
 
 export default function SessionFileUpload({
@@ -24,7 +24,7 @@ export default function SessionFileUpload({
       <div className="flex gap-2 mt-1 mb-3">
         <input
           type="text"
-          placeholder={selectedFile || `+ ${label}`}
+          placeholder={selectedFile ?? `+ ${label}`}
           className="w-[330px] pl-2 text-sm outline-none h-[34px] border border-lightgray"
           readOnly
         />

@@ -1,6 +1,6 @@
 interface ProfileInputFieldProps {
-  title: string
-  placeholder: string
+  readonly title: string
+  readonly placeholder: string
 }
 
 export default function ProfileInputField({

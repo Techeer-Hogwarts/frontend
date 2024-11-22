@@ -1,6 +1,6 @@
 interface ModalInputFieldProps {
-  title: string
-  placeholder: string
+  readonly title: string
+  readonly placeholder: string
 }
 
 export default function ModalInputField({

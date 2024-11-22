@@ -4,9 +4,9 @@ import Image from 'next/image'
 import { useState } from 'react'
 
 export interface BlogPostProps {
-  title: string
-  date: string
-  name: string
+  readonly title: string
+  readonly date: string
+  readonly name: string
 }
 
 export default function BlogPost({ title, date, name }: BlogPostProps) {

@@ -5,9 +5,9 @@ import { useState } from 'react'
 import SessionMenu from './SessionMenu'
 
 export interface SessionPostProps {
-  title: string
-  date: string
-  name: string
+  readonly title: string
+  readonly date: string
+  readonly name: string
 }
 
 export default function SessionPost({ title, date, name }: SessionPostProps) {
