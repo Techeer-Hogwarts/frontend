@@ -1,3 +1,5 @@
+import Image from 'next/image'
+
 interface CategoryTabProps {
   onScrollToSection: (sectionId: string) => void
 }
@@ -19,7 +21,14 @@ const CategoryTab: React.FC<CategoryTabProps> = ({ onScrollToSection }) => {
           className={`flex items-center justify-between w-[18.75rem] text-xl text-left px-12 ${category.id !== 'session' ? 'border-r-2 border-lightgray' : ''}`}
         >
           {category.label}
-          <img src="/images/arrow-outline.svg" alt="arrow" className="w-6" />
+          <Image
+            src="/images/arrow-outline.svg"
+            alt="arrow"
+            className="w-6"
+            width={20}
+            height={20}
+          />
+          {/* 가로 세로 수정바람 */}
         </a>
       ))}
     </div>

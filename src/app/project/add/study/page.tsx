@@ -1,9 +1,11 @@
 import AddMember from '@/components/project/add/AddMember'
 import AddProfile from '@/components/project/add/AddProfile'
-import AddRecruitInfo from '@/components/project/add/AddRecruitInfo'
-import AddResults from '@/components/project/add/AddResults'
-import AddStack from '@/components/project/add/AddStack'
+import AddResults from '@/components/project/add/project/AddResults'
+import AddStack from '@/components/project/add/project/AddStack'
 import NecessaryQuestions from '@/components/project/add/NecessaryQuestions'
+import AddGoal from '@/components/project/add/study/AddGoal'
+import AddPlan from '@/components/project/add/study/AddPlan'
+import AddRecruit from "@/components/project/add/AddRecruit"
 
 export default function page() {
   return (
@@ -13,9 +15,10 @@ export default function page() {
       </div>
       <div className="flex flex-col gap-7">
         <AddMember />
+        <AddGoal />
+        <AddPlan />
         <NecessaryQuestions />
-        <AddRecruitInfo />
-        <AddStack />
+        <AddRecruit/>
         <AddResults />
         <button
           type="button"

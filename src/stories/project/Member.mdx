@@ -1,0 +1,66 @@
+import { Meta, Story, Canvas } from '@storybook/addon-docs';
+import { Stack } from '@/components/project/detail/Stack';
+
+<Meta title="Components/Stack" component={Stack} />
+
+# Stack 컴포넌트
+
+Stack 컴포넌트는 Backend, Frontend, DevOps 관련 기술 스택을 보여주는 컴포넌트입니다. 기술 스택이 많아질 경우 자동으로 두 줄 이상으로 나뉘어 표시됩니다.
+
+## 기본 스토리
+
+<Canvas>
+  <Story
+    name="Default"
+    args={{
+      stacks: {
+        backendStack: ['Go Lang', 'PostgreSQL', 'Nest.JS', 'Python'],
+        frontendStack: ['Zustand', 'Next.js', 'TS'],
+        devopsStack: ['Jenkins CI', 'GCP', 'Terraform', 'Github Actions'],
+      },
+    }}
+  />
+</Canvas>
+
+## 스택이 많을 때
+
+<Canvas>
+  <Story
+    name="ManyStacks"
+    args={{
+      stacks: {
+        backendStack: [
+          'Go Lang',
+          'PostgreSQL',
+          'Nest.JS',
+          'Python',
+          'Node.js',
+          'Ruby',
+          'Java',
+          'Spring Boot',
+        ],
+        frontendStack: [
+          'Zustand',
+          'Next.js',
+          'TS',
+          'React',
+          'Redux',
+          'Vue.js',
+          'JavaScript',
+          'TypeScript',
+          'TypeScript',
+        ],
+        devopsStack: [
+          'Jenkins CI',
+          'GCP',
+          'Terraform',
+          'Github Actions',
+          'AWS',
+          'Kubernetes',
+          'Docker',
+          'Azure',
+        ],
+      },
+    }}
+  />
+</Canvas>

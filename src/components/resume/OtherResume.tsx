@@ -15,7 +15,7 @@ export default function OtherResume({ otherData }: OtherResume) {
   return (
     <div className="flex flex-col w-[14.5rem] h-auto rounded-xl shadow-md">
       {otherData.map((user, index) => (
-        <div className="flex justify-center my-3 gap-2">
+        <div key={index} className="flex justify-center my-3 gap-2">
           <Image
             src="/file.png"
             width={30}

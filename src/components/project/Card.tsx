@@ -7,7 +7,8 @@ const projectId = 23
 export default function Card() {
   return (
     <Link
-      href={`/project/${projectId}`}
+      href={`/project/detail/study/${projectId}`}
+      // href={`/project/detail/project/${projectId}`}
       className="relative group bg-[url('/images/project/project.png')]  bg-cover w-[18rem] h-[11.375rem]"
     >
       <div className="text-pink w-[4.375rem] pt-2 text-[0.71181rem] text-center">
@@ -38,13 +39,12 @@ export default function Card() {
           {/* 스택 카드 */}
           <div className="mt-4 flex  justify-end gap-2">
             {['Next.js', 'Spring'].map((stack) => (
-              <button
+              <div
                 key={stack}
-                type="button"
                 className="bg-lightprimary text-pink py-[0.19rem] px-[0.5rem] rounded-lg text-sm"
               >
                 {stack}
-              </button>
+              </div>
             ))}
           </div>
         </div>

@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { useState } from 'react'
 import Image from 'next/image'
 
-export default function login() {
+export default function Login() {
   const [isChecked, setIsChecked] = useState(false)
 
   const handleCheckboxClick = () => {

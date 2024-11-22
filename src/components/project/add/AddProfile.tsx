@@ -13,6 +13,8 @@ export default function AddProfile() {
   const [imgSrc, setImgSrc] = useState<string | null>('') // 기본 이미지 설정
   const fileInput = useRef<HTMLInputElement>(null)
 
+
+
   const handleImageChange = async (e: any) => {
     const file = e.target.files[0]
     if (!file) return
@@ -29,12 +31,7 @@ export default function AddProfile() {
     const formData = new FormData()
     formData.append('image', file)
     try {
-      // 서버에 이미지 업로드 요청
-      // const imageRes = await api.post('/image', formData, {
-      //   headers: { 'Content-Type': 'multipart/form-data' },
-      // })
-      // const image_URL = imageRes.data.imageURL
-      // setImgSrc(image_URL) // 서버에서 반환된 URL을 상태에 저장
+
     } catch (e) {
       console.error('이미지 업로드 오류:', e)
     }
@@ -51,7 +48,7 @@ export default function AddProfile() {
             alt="Uploaded Preview"
             width={254}
             height={254}
-            className="rounded-2xl bg-contain   min-w-[254px] min-h-[254px]"
+            className="rounded-2xl bg-contain min-w-[254px] min-h-[254px]"
           />
         ) : (
           <div className="w-[254px] h-[254px] bg-gray rounded-2xl flex items-center justify-center">

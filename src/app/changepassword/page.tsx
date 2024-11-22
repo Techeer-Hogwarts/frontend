@@ -4,7 +4,7 @@ import EmailVerification from '@/components/common/EmailVerification'
 import InputField from '@/components/common/InputField'
 import React, { useState } from 'react'
 
-const changepassword = () => {
+const Changepassword = () => {
   const [isVerified, setIsVerified] = useState(false)
 
   return (
@@ -45,4 +45,4 @@ const changepassword = () => {
   )
 }
 
-export default changepassword
+export default Changepassword
