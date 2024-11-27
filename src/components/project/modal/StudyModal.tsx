@@ -125,7 +125,7 @@ const MemberModal = ({ initialMembers }: MemberModalProps) => {
           {members.length > 0 ? (
             members.map((member, index) => (
               <SmallMemberBox
-                key={index + member.name} //추후 member.id로 교체 예정
+                key={member.name} //추후 member.id로 교체 예정
                 name={member.name}
                 generation={member.generation}
                 imageSrc={member.imageSrc || '/default-profile.png'}
