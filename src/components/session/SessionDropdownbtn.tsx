@@ -1,4 +1,4 @@
-interface SessionDropdownbtnProps {
+export interface SessionDropdownbtnProps {
   title: string
 }
 

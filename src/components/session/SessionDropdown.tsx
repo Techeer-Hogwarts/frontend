@@ -28,7 +28,7 @@ export default function SessionDropdown({
   }
 
   return (
-    <div>
+    <div className="relative">
       <button
         type="button"
         onClick={handleClick}
