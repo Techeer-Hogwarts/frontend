@@ -1,14 +1,20 @@
+'use client'
+
 import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
+import axios from 'axios'
 
 interface EmailVerificationProps {
+  email: string
+  setEmail: (email: string) => void
   setIsVerified: (verified: boolean) => void
 }
 
 export default function EmailVerification({
+  email,
+  setEmail,
   setIsVerified,
 }: EmailVerificationProps) {
-  const [email, setEmail] = useState('')
   const [code, setCode] = useState('')
   const [isRequesting, setIsRequesting] = useState(false)
   const [isVerifying, setIsVerifying] = useState(false)
@@ -30,18 +36,17 @@ export default function EmailVerification({
     setTimeExpired(false) // 타이머 만료 상태 초기화
 
     try {
-      const response = await fetch(
+      const response = await axios.post(
         'https://api.techeerzip.cloud/api/v1/auth/email',
+        { email },
         {
-          method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ email }),
         },
       )
 
-      if (response.ok) {
+      if (response.status === 201) {
         alert('인증 코드가 이메일로 전송되었습니다.')
       } else {
         alert('인증 코드 전송에 실패했습니다.')
@@ -68,18 +73,17 @@ export default function EmailVerification({
 
     setIsVerifying(true)
     try {
-      const response = await fetch(
+      const response = await axios.post(
         'https://api.techeerzip.cloud/api/v1/auth/code',
+        { email, code },
         {
-          method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ email, code }),
         },
       )
 
-      if (response.ok) {
+      if (response.status === 201) {
         setIsVerified(true)
         setIsVerifiedState(true) // 인증 상태를 true로 설정
         setTimerActive(false) // 타이머 비활성화
@@ -88,7 +92,7 @@ export default function EmailVerification({
         alert('인증 코드가 올바르지 않습니다.')
       }
     } catch (error) {
-      alert('네트워크 오류가 발생했습니다.')
+      alert('인증 코드가 올바르지 않습니다.')
     } finally {
       setIsVerifying(false)
     }
@@ -169,7 +173,7 @@ export default function EmailVerification({
         <button
           className="text-primary underline underline-offset-2"
           onClick={handleRequestVerification}
-          disabled={timerActive || isVerified} // 타이머가 활성화되거나 인증 완료 후 비활성화
+          disabled={isVerified} // 타이머가 활성화되거나 인증 완료 후 비활성화
         >
           이메일 재전송
         </button>
