@@ -31,13 +31,13 @@ export default function NevBar() {
           <Link href="/project" className="hover:text-gray-700 cursor-pointer">
             프로젝트
           </Link>
-          <Link href="/" className="hover:text-gray-700 cursor-pointer">
+          <Link href="/blog" className="hover:text-gray-700 cursor-pointer">
             블로그
           </Link>
-          <Link href="/" className="hover:text-gray-700 cursor-pointer">
+          <Link href="/resume" className="hover:text-gray-700 cursor-pointer">
             이력서
           </Link>
-          <Link href="/" className="hover:text-gray-700 cursor-pointer">
+          <Link href="/session" className="hover:text-gray-700 cursor-pointer">
             세션
           </Link>
         </div>
