@@ -72,10 +72,10 @@ export default function Techeer() {
               {steps.map((step) => (
                 <div key={step.id} className="text-center">
                   <div className="flex justify-center relative mb-4">
-                    <div className="absolute inset-x-0 top-2 border-t-2 border-dotted border-white w-full"></div>
-                    <div className="flex items-center justify-center w-4 h-4 bg-darkPrimary rounded-full text-white font-bold">
+                    <div className="absolute inset-x-0 bottom-5 text-white">
                       {`step${step.id}`}
                     </div>
+                    <div className="flex items-center justify-center w-4 h-4 bg-darkPrimary rounded-full text-white font-bold"></div>
                   </div>
                   <div className="flex justify-center items-center w-[160px] h-[30px] bg-primary text-white py-2 px-4 rounded-lg">
                     {step.title}

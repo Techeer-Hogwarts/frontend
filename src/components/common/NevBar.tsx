@@ -19,7 +19,10 @@ export default function NevBar() {
     <div className="flex items-center w-[1200px] max-w-[1200px] h-[3.8125rem] justify-between border-b border-[#D7D7D7]">
       <div className="flex">
         {/* 로고 */}
-        <Link href="/" className="font-logo text-primary text-[2rem] font-extrabold mr-[2.12rem]">
+        <Link
+          href="/"
+          className="font-logo text-primary text-[2rem] font-extrabold mr-[2.12rem]"
+        >
           TECHEER.ZIP
         </Link>
 
@@ -28,13 +31,13 @@ export default function NevBar() {
           <Link href="/project" className="hover:text-gray-700 cursor-pointer">
             프로젝트
           </Link>
-          <Link href="/" className="hover:text-gray-700 cursor-pointer">
+          <Link href="/blog" className="hover:text-gray-700 cursor-pointer">
             블로그
           </Link>
-          <Link href="/" className="hover:text-gray-700 cursor-pointer">
+          <Link href="/resume" className="hover:text-gray-700 cursor-pointer">
             이력서
           </Link>
-          <Link href="/" className="hover:text-gray-700 cursor-pointer">
+          <Link href="/session" className="hover:text-gray-700 cursor-pointer">
             세션
           </Link>
         </div>
@@ -61,7 +64,7 @@ export default function NevBar() {
           </div>
         </div>
         {/* 캘린더 아이콘 */}
-        <Link href="/" className="p-2">
+        <Link href="/calendar" className="p-2">
           <IoCalendarOutline size={24} />
         </Link>
         {/* 마이페이지 아이콘 */}

@@ -30,7 +30,7 @@ export default function Second() {
         <div className="relative w-52 h-45 overflow-hidden">
           <div
             className="flex flex-col transition-transform duration-500"
-            style={{ transform: `translateY(-${currentIndex * 140}px)` }}
+            // style={{ transform: `translateY(-${currentIndex * 140}px)` }}
           >
             {images.map((image) => (
               <span key={image.id} className="flex-shrink-0">
@@ -57,7 +57,7 @@ export default function Second() {
         <div className="relative w-52 h-45 overflow-hidden">
           <div
             className="flex flex-col transition-transform duration-500"
-            style={{ transform: `translateY(${currentIndex * 140}px)` }}
+            // style={{ transform: `translateY(${currentIndex * 140}px)` }}
           >
             {images2.map((image) => (
               <span key={image.id} className="flex-shrink-0">

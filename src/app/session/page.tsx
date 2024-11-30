@@ -12,9 +12,9 @@ export default function Page() {
   return (
     <div className="flex justify-center">
       <div className="flex flex-col">
-        <div className="w-[1200px] text-left mt-14 mb-7">
-          <p className="text-4xl mb-5 font-bold">세션영상</p>
-          <p className="text-xl">테커인들의 세션영상을 확인해보세요.</p>
+        <div className="w-[1200px] text-left mt-14 mb-[2.84rem]">
+          <p className="text-[2.5rem] font-bold">세션영상</p>
+          <p className="text-[1.25rem]">테커인들의 세션영상을 확인해보세요.</p>
         </div>
         <TapBar
           options={['전체보기', '부트캠프', '파트너스']}
