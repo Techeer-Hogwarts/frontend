@@ -1,6 +1,6 @@
 import Image from 'next/image'
 
-interface FilterBtnProps {
+export interface FilterBtnProps {
   title: string
 }
 
@@ -9,7 +9,7 @@ export default function FilterBtn({ title }: FilterBtnProps) {
     <div className="relative w-[167px] flex items-center justify-center rounded-2xl text-lg h-9 border bg-[#FFF6F0] text-[#DD7E3A] border-primary">
       {title}
       <Image
-        src="/delete.png"
+        src="/images/session/delete.png"
         alt="deletebtn"
         width={9}
         height={9}
