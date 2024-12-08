@@ -116,7 +116,7 @@ const MemberModal = ({ initialMembers }: MemberModalProps) => {
         <div className="flex-1 overflow-y-auto mb-6">
           <div className="flex flex-wrap overflow-x-hidden gap-2">
             {members.length > 0 ? (
-              members.map((member, index) =>
+              members.map((member) =>
                 projectType === 'project' ? (
                   <MemberBox
                     key={member.name} //추후 member.id로 교체 예정

@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation'
 interface Member {
   name: string
   generation: string
-  imageSrc?: string
+  imageSrc?: string | null
 }
 
 interface MemberModalProps {
