@@ -30,7 +30,7 @@ const SmallMemberBox = ({ name, generation, imageSrc, onClose }: BoxProps) => {
   }
 
   return (
-    <div className="relative flex border border-gray h-[3.75rem] w-[12.625rem] rounded-md p-1 gap-2">
+    <div className="relative flex border border-gray max-h-[3.75rem] w-[12.625rem] rounded-md p-1 gap-2">
       {/* 닫기 버튼 */}
       <button
         onClick={onClose}

@@ -8,7 +8,14 @@ interface MemberProps {
 }
 
 export default function Member({ members }: MemberProps) {
-  // const projectType = localStorage.getItem('projectType')
+  const [projectType, setProjectType] = useState<null | string>(null)
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const storedProjectType = localStorage.getItem('projectType')
+      setProjectType(storedProjectType)
+    }
+  }, [])
 
   return (
     <div>
@@ -26,7 +33,7 @@ export default function Member({ members }: MemberProps) {
                 className="border mb-2 rounded-md bg-lightpink"
               />
               <div>{member.name}</div>
-              {/* {projectType === 'project' && <div>{member.role}</div>} */}
+              {projectType === 'project' && <div>{member.role}</div>}
             </div>
             {/* 줄바꿈 시 구분선 추가 */}
             {(index + 1) % 9 === 0 && index + 1 !== members.length && (

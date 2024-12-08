@@ -8,8 +8,15 @@ export default function AddResults() {
   const [boxes, setBoxes] = useState<number[]>([0, 1]) // 박스 개수 관리
   const [title, setTitle] = useState<string>('') // 상단 설명 문구 상태
 
-  // const projectType = localStorage.getItem('projectType')
+  const [projectType, setProjectType] = useState<null | string>(null)
 
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const storedProjectType = localStorage.getItem('projectType')
+      setProjectType(storedProjectType)
+    }
+  }, [])
+  
   // 박스 추가 함수
   const handleAddBox = () => {
     setBoxes([...boxes, boxes.length]) // 박스 개수를 증가시킴
@@ -26,9 +33,9 @@ export default function AddResults() {
     <div>
       <div className="flex justify-between items-center mb-3 mt-[3.19rem]">
         <div className="flex items-center justify-center text-center font-medium text-gray">
-          {/* {projectType === 'project'
+          {projectType === 'project'
             ? '결과물(혹은 피그마 디자인)을 올려주세요'
-            : '활동 사진을 올려주세요(줌 화면, 책 사진, 인강 사진 등 스터디에 대한 증거 사진)'} */}
+            : '활동 사진을 올려주세요(줌 화면, 책 사진, 인강 사진 등 스터디에 대한 증거 사진)'}
         </div>
         <button
           onClick={handleAddBox}

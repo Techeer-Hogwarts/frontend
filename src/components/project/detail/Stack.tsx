@@ -1,8 +1,8 @@
 interface StacksProps {
   stacks: {
-    backendStack: string[]
-    frontendStack: string[]
-    devopsStack: string[]
+    backendStack: (string | undefined)[] | null
+    frontendStack: (string | undefined)[] | null
+    devopsStack: (string | undefined)[] | null
   }
 }
 
@@ -24,7 +24,7 @@ export default function Stack({ stacks }: StacksProps) {
 }
 
 interface BoxProps {
-  text: string
+  text: string|undefined
 }
 
 const Box = ({ text }: BoxProps) => {
@@ -37,7 +37,7 @@ const Box = ({ text }: BoxProps) => {
 
 interface StackCategoryProps {
   title: string
-  stack: string[]
+  stack: (string | undefined)[] | null
 }
 
 const StackCategory = ({ title, stack }: StackCategoryProps) => {
@@ -47,7 +47,7 @@ const StackCategory = ({ title, stack }: StackCategoryProps) => {
         {title}
       </div>
       <div className="flex flex-wrap gap-2">
-        {stack.map((tech, idx) => (
+        {stack?.map((tech, idx) => (
           <Box key={idx} text={tech} />
         ))}
       </div>

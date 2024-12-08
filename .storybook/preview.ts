@@ -1,5 +1,6 @@
 import type { Preview } from '@storybook/react'
 import '../src/styles/globals.css'
+import withAppRouterContext from './withAppRouterContext'
 
 const preview: Preview = {
   parameters: {
@@ -9,6 +10,7 @@ const preview: Preview = {
         date: /Date$/i,
       },
     },
+    decorators: [withAppRouterContext],
   },
 }
 

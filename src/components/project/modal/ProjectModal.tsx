@@ -9,7 +9,7 @@ import { useRouter } from 'next/navigation'
 interface Member {
   name: string
   generation: string
-  imageSrc?: string
+  imageSrc: string | null
 }
 
 interface MemberModalProps {
@@ -22,15 +22,17 @@ const MemberModal = ({ initialMembers }: MemberModalProps) => {
   const [name, setName] = useState('')
   const router = useRouter()
   const [members, setMembers] = useState<Member[]>([])
-  const [dropdownOptions, setDropdownOptions] = useState<Member[]>([
-    { name: '홍길동', generation: '8기', imageSrc: '/profile1.png' },
-    { name: '김철수', generation: '8기', imageSrc: '/profile2.png' },
-    { name: '이영희', generation: '8기', imageSrc: '/profile3.png' },
-    { name: '박민수', generation: '8기', imageSrc: '/profile4.png' },
-    { name: '최수지', generation: '8기', imageSrc: '/profile5.png' },
-  ])
+  const [dropdownOptions, setDropdownOptions] =
+    useState<Member[]>(initialMembers)
 
-  // const projectType = localStorage.getItem('projectType')
+  const [projectType, setProjectType] = useState<null | string>(null)
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const storedProjectType = localStorage.getItem('projectType')
+      setProjectType(storedProjectType)
+    }
+  }, [])
 
   // 이름 검색
   const handleName = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -113,11 +115,11 @@ const MemberModal = ({ initialMembers }: MemberModalProps) => {
         {/* 멤버 리스트 영역 (스크롤 가능) */}
         <div className="flex-1 overflow-y-auto mb-6">
           <div className="flex flex-wrap overflow-x-hidden gap-2">
-            {/* {members.length > 0 ? (
-              members.map((member, index) =>
+            {members.length > 0 ? (
+              members.map((member) =>
                 projectType === 'project' ? (
                   <MemberBox
-                    key={index}
+                    key={member.name} //추후 member.id로 교체 예정
                     name={member.name}
                     generation={member.generation}
                     imageSrc={member.imageSrc || '/default-profile.png'}
@@ -125,7 +127,7 @@ const MemberModal = ({ initialMembers }: MemberModalProps) => {
                   />
                 ) : (
                   <SmallMemberBox
-                    key={index}
+                    key={member.name} //추후 member.id로 교체 예정
                     name={member.name}
                     generation={member.generation}
                     imageSrc={member.imageSrc || '/default-profile.png'}
@@ -137,7 +139,7 @@ const MemberModal = ({ initialMembers }: MemberModalProps) => {
               <p className="text-center text-gray-500 w-full">
                 아직 추가된 멤버가 없습니다.
               </p>
-            )} */}
+            )}
           </div>
         </div>
 

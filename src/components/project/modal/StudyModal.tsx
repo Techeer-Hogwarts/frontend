@@ -2,13 +2,13 @@
 
 import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
-import MemberBox from './BigMemberBox'
+import SmallMemberBox from './SmallMemberBox'
 import { useRouter } from 'next/navigation'
 
 interface Member {
   name: string
   generation: string
-  imageSrc?: string
+  imageSrc?: string | null
 }
 
 interface MemberModalProps {
@@ -48,7 +48,19 @@ const MemberModal = ({ initialMembers }: MemberModalProps) => {
     }
   }, [isDropdownOpen])
 
-  const [members, setMembers] = useState<Member[]>([])
+  const [members, setMembers] = useState<Member[]>([
+    { name: '홍길동', generation: '8기' },
+    { name: '김철수', generation: '8기' },
+    { name: '김철수', generation: '8기' },
+    { name: '김철수', generation: '8기' },
+    { name: '김철수', generation: '8기' },
+    { name: '김철수', generation: '8기' },
+    { name: '김철수', generation: '8기' },
+    { name: '김철수', generation: '8기' },
+    { name: '김철수', generation: '8기' },
+    { name: '김철수', generation: '8기' },
+    { name: '김철수', generation: '8기' },
+  ])
 
   // 멤버 추가
   const handleAddMember = (member: Member) => {
@@ -67,7 +79,7 @@ const MemberModal = ({ initialMembers }: MemberModalProps) => {
 
   return (
     <div className="z-50 fixed inset-0 flex justify-center items-center bg-black bg-opacity-70 text-center">
-      <div className="flex flex-col p-8 w-[30.375rem] h-[39.375rem] bg-white border rounded-xl">
+      <div className="flex flex-col p-7 w-[30.375rem] h-[39.375rem] bg-white border rounded-xl">
         <p className="w-full text-[1.375rem] text-center mb-4">
           스터디 팀원 추가
         </p>
@@ -107,19 +119,18 @@ const MemberModal = ({ initialMembers }: MemberModalProps) => {
             </div>
           )}
         </div>
-        <div className="flex flex-col w-full h-[25.06rem] overflow-y-auto gap-2">
+        <div
+          className={`flex flex-wrap justify-between w-full h-[25m] overflow-y-auto gap-2 ${members.length > 10 ? '' : 'px-1'}`}
+        >
           {members.length > 0 ? (
             members.map((member, index) => (
-              <></>
-              // <MemberBox
-              //   key={index}
-              //   name={member.name}
-              //   generation={member.generation}
-              //   imageSrc={member.imageSrc || '/default-profile.png'}
-              //   onClose={() => handleRemoveMember(member.name)}
-              //   isLeader={member.name === '홍길동'} // 조건에 따라 Leader 표시
-              // />
-              // 수정 바람
+              <SmallMemberBox
+                key={member.name} //추후 member.id로 교체 예정
+                name={member.name}
+                generation={member.generation}
+                imageSrc={member.imageSrc || '/default-profile.png'}
+                onClose={() => handleRemoveMember(member.name)}
+              />
             ))
           ) : (
             <p className="text-center text-gray-500">
@@ -128,7 +139,7 @@ const MemberModal = ({ initialMembers }: MemberModalProps) => {
           )}
         </div>
 
-        <div className="flex gap-4">
+        <div className="flex gap-4 mt-auto pt-4">
           <button
             type="button"
             onClick={() => router.back()}

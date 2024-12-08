@@ -1,9 +1,10 @@
 import { Meta, StoryObj } from '@storybook/react'
-import Stack from "@/components/project/detail/Stack"
+import Stack from '@/components/project/detail/Stack'
 
 const meta: Meta<typeof Stack> = {
   component: Stack,
   title: 'Components/Stack',
+  tags: ['autodocs'],
 }
 
 export default meta
