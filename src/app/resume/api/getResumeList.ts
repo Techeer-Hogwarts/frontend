@@ -4,19 +4,15 @@ export async function fetchResumes(
   offset: number,
   limit: number,
 ) {
-  const url = new URL('/api/v1/resumes')
+  const baseURL =
+    process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.techeerzip.cloud'
+  const url = new URL('/api/v1/resumes', baseURL)
   const params = {
     position,
-    year: (year ?? 5).toString(), // year가 undefined이면 기본값 5
-    offset: (offset ?? 0).toString(), // offset이 undefined이면 기본값 0
-    limit: (limit ?? 10).toString(), // limit이 undefined이면 기본값 10
+    year,
+    offset,
+    limit,
   }
-
-  // params의 각 키와 값을 URLSearchParams에 추가
-  Object.keys(params).forEach((key) => {
-    const paramKey = key as keyof typeof params
-    url.searchParams.append(paramKey, params[paramKey])
-  })
 
   const response = await fetch(url.toString())
   const data = await response.json()

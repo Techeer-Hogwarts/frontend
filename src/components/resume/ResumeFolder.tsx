@@ -33,33 +33,28 @@ export default function ResumeFolder({
   limit,
 }: ResumeFolderProps) {
   const [resumes, setResumes] = useState<ResumeData[]>([]) // 빈 배열로 초기화
-  const [error, setError] = useState<string | null>(null)
-  const [isLoading, setIsLoading] = useState<boolean>(true)
+  const [isLoading, setIsLoading] = useState(true) // 로딩 상태 추가
   const router = useRouter() // useRouter 훅 추가
 
   useEffect(() => {
     async function getResumeList() {
       try {
+        setIsLoading(true)
         const data = await fetchResumes(position, year, offset, limit)
         setResumes(data)
         console.log('이력서 목록 조회 성공')
       } catch (err: any) {
-        setError(err.message)
+        console.log('이력서 목록 조회 Error: ', err.message)
       } finally {
-        setIsLoading(false)
+        setIsLoading(false) // 로딩 완료
       }
     }
 
     getResumeList()
   }, [position, year, offset, limit])
 
-  // 로딩 중 또는 오류 발생 시 처리
   if (isLoading) {
-    return <div>Loading...</div>
-  }
-
-  if (error) {
-    return <div>Error: {error}</div>
+    return <div>Loading resumes...</div> // 로딩 상태 표시
   }
 
   // 이력서 목록이 없는 경우

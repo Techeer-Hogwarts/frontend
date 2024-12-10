@@ -10,6 +10,16 @@ const pretendard = localFont({
   variable: '--font-pretendard',
 })
 
+export const metadata = {
+  title: {
+    default: 'Techeerzip',
+    template: 'Techeerzip',
+  },
+  icons: {
+    icon: '/favicon.png',
+  },
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{
