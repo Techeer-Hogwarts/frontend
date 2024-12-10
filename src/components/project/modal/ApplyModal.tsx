@@ -10,7 +10,7 @@ const ApplyModal = () => {
   const router = useRouter()
 
   // 지원동기
-  const handleApply = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleApply = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setApply(e.target.value)
   }
 
@@ -49,7 +49,6 @@ const ApplyModal = () => {
         <div className="mb-4">
           <p className="text-left mb-2">지원동기를 입력해주세요</p>
           <textarea
-            type="text"
             className="w-full h-[9.3125rem] border border-gray rounded-sm"
             value={apply}
             onChange={handleApply}
