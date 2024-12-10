@@ -1,3 +1,4 @@
+'use client'
 import { useEffect, useState } from 'react'
 import CareerTag from '../common/CareerTag'
 import PositionTag from '../common/PositionTag'
@@ -21,8 +22,8 @@ interface ResumeData {
 }
 
 interface ResumeFolderProps {
-  position: string
-  year: number
+  position?: string
+  year?: number
   offset: number
   limit: number
 }
@@ -40,9 +41,14 @@ export default function ResumeFolder({
     async function getResumeList() {
       try {
         setIsLoading(true)
-        const data = await fetchResumes(position, year, offset, limit)
+        const data = await fetchResumes(
+          position, // 선택적
+          year, // 선택적
+          offset ?? 0,
+          limit ?? 10,
+        )
         setResumes(data)
-        console.log('이력서 목록 조회 성공')
+        console.log('이력서 목록 조회 성공:', data)
       } catch (err: any) {
         console.log('이력서 목록 조회 Error: ', err.message)
       } finally {

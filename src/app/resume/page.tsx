@@ -15,24 +15,20 @@ export default function Resume() {
     router.push('/resume?modal=true') // 모달 경로로 라우팅
   }
   // 드롭다운 선택된 옵션 상태 관리
-  const [selectedOptions, setSelectedOptions] = useState<string[]>([])
+
+  const [selectedPosition, setSelectedPosition] = useState<string | undefined>(
+    undefined,
+  )
+  const [selectedYear, setSelectedYear] = useState<number | undefined>(
+    undefined,
+  )
 
   // 드롭다운 항목 리스트
-  const dropdownOptions = ['Frontend', 'Backend', 'DataEngineer', 'FullStatck']
-
-  const dropdownOptions2 = [
-    '8기',
-    '7기',
-    '6기',
-    '5기',
-    '4기',
-    '3기',
-    '2기',
-    '1기',
-  ]
+  const positionOptions = ['Frontend', 'Backend', 'DataEngineer', 'FullStack']
+  const yearOptions = ['8기', '7기', '6기', '5기', '4기', '3기', '2기', '1기']
 
   //기수 탭
-  const options = ['전체', '이력서', '포트폴리오', '소마', 'ICT']
+  const options = ['전체', '이력서', '포트폴리오', 'OTHER']
 
   return (
     <div className="flex flex-col max-w-[1200px] w-[1200px] mt-[3.56rem] gap-6">
@@ -64,15 +60,21 @@ export default function Resume() {
           {/** 드롭다운 */}
           <Dropdown
             title="포지션"
-            options={dropdownOptions}
-            selectedOptions={selectedOptions}
-            setSelectedOptions={setSelectedOptions}
+            options={positionOptions}
+            selectedOptions={selectedPosition ? [selectedPosition] : []}
+            setSelectedOptions={(selected) =>
+              setSelectedPosition(selected[0] || undefined)
+            }
           />
           <Dropdown
             title="기수"
-            options={dropdownOptions2}
-            selectedOptions={selectedOptions}
-            setSelectedOptions={setSelectedOptions}
+            options={yearOptions.map(String)}
+            selectedOptions={selectedYear ? [String(selectedYear)] : []}
+            setSelectedOptions={(selected) =>
+              setSelectedYear(
+                selected.length > 0 ? parseInt(selected[0]) : undefined,
+              )
+            }
           />
         </div>
         {/** 인기 이력서 조회 */}
@@ -80,7 +82,12 @@ export default function Resume() {
       </div>
       {/** 이력서 폴더 */}
       <div>
-        <ResumeFolder position="Backend" year={6} offset={0} limit={10} />
+        <ResumeFolder
+          position={selectedPosition}
+          year={selectedYear}
+          offset={0}
+          limit={10}
+        />
       </div>
     </div>
   )

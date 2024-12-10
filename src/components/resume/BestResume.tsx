@@ -34,7 +34,7 @@ export default function BestResume({ offset, limit }: ResumeFolderProps) {
     async function loadBestResumes() {
       try {
         const bestResumes = await fetchBestResumes(0, 10) // 예시로 0번째부터 10개 가져오기
-        console.log('Best resumes:', bestResumes)
+        // console.log('Best resumes:', bestResumes)
         setResumes(bestResumes) // 가져온 데이터를 상태에 저장
       } catch (error) {
         console.error('Error loading best resumes:', error)
