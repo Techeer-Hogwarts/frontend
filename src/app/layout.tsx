@@ -2,6 +2,7 @@ import '../styles/globals.css'
 import localFont from 'next/font/local'
 import NevBar from '@/components/common/NevBar'
 import Footer from '@/components/common/Footer'
+import Providers from '@/utils/provider'
 
 const pretendard = localFont({
   src: '../../public/fonts/PretendardVariable.ttf',
@@ -29,7 +30,7 @@ export default function RootLayout({
     <html lang="en" className={`${pretendard.variable}`}>
       <body className={pretendard.className}>
         <NevBar />
-        {children}
+        <Providers>{children}</Providers>
         <Footer />
       </body>
     </html>
