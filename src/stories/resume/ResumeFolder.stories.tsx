@@ -81,3 +81,28 @@
 //     ],
 //   },
 // }
+
+// ResumeFolder.stories.tsx
+// import { Meta, StoryFn } from '@storybook/react'
+// import ResumeFolder from '../../components/resume/ResumeFolder'
+// import ResumeFolderProps from '../../components/resume/ResumeFolder'
+// import { frontendResumes, backendResumes } from './mockResumes'
+
+// export default {
+//   title: 'Resume/ResumeFolder',
+//   component: ResumeFolder,
+// } as Meta
+
+// const Template: StoryFn<typeof ResumeFolderProps> = (args) => (
+//   <ResumeFolder {...args} />
+// )
+
+// export const FrontendResumes = Template.bind({})
+// FrontendResumes.args = {
+//   resumes: frontendResumes, // 프론트엔드 Mock 데이터
+// }
+
+// export const BackendResumes = Template.bind({})
+// BackendResumes.args = {
+//   resumes: backendResumes, // 백엔드 Mock 데이터
+// }

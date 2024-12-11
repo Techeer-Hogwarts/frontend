@@ -26,6 +26,7 @@ interface ResumeFolderProps {
   year?: number
   offset: number
   limit: number
+  resumes: ResumeData[]
 }
 export default function ResumeFolder({
   position,
