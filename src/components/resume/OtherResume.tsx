@@ -5,6 +5,14 @@ import { useEffect, useState } from 'react'
 import { fetchUserResumes } from '@/app/resume/api/getUserResume'
 import { useRouter } from 'next/navigation'
 
+interface Resume {
+  id: number // 고유 식별자 추가
+  name: string
+  position: string
+  career: string
+  category: string
+}
+
 interface OtherResumeProps {
   id: number
   offset: number
@@ -12,15 +20,7 @@ interface OtherResumeProps {
 }
 
 export default function OtherResume({ id, offset, limit }: OtherResumeProps) {
-  const [otherData, setOtherData] = useState<
-    Array<{
-      name: string
-      position: string
-      career: string
-      category: string
-    }>
-  >([])
-
+  const [otherData, setOtherData] = useState<Resume[]>([])
   const router = useRouter() // useRouter 훅 추가
 
   useEffect(() => {
@@ -29,7 +29,8 @@ export default function OtherResume({ id, offset, limit }: OtherResumeProps) {
         const userResumes = await fetchUserResumes(id, offset, limit)
 
         // 필요한 데이터 구조로 변환
-        const formattedData = userResumes.map((resume: any) => ({
+        const formattedData: Resume[] = userResumes.map((resume: any) => ({
+          id: resume.id,
           name: resume.user.name,
           position: resume.user.mainPosition,
           career: resume.user.isIntern ? '경력' : '신입',
@@ -37,7 +38,9 @@ export default function OtherResume({ id, offset, limit }: OtherResumeProps) {
         }))
 
         setOtherData(formattedData)
-      } catch (err: any) {}
+      } catch (err: any) {
+        console.error('Error fetching resumes:', err)
+      }
     }
 
     loadUserResumes()
@@ -48,11 +51,13 @@ export default function OtherResume({ id, offset, limit }: OtherResumeProps) {
   }
   return (
     <div className="flex flex-col w-[14.5rem] h-auto rounded-xl shadow-md">
-      {otherData.map((user, index) => (
+      {otherData.map((user) => (
         <div
-          key={index}
-          onClick={() => handleResumeClick}
+          key={user.id}
+          onClick={() => handleResumeClick(user.id)}
           className="flex justify-center my-3 gap-2"
+          role="button"
+          tabIndex={0}
         >
           <Image
             src="/file.png"

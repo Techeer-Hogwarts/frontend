@@ -15,13 +15,9 @@ export default function PdfViewer({ url }: PdfViewerProps) {
   const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
     setNumPages(numPages)
   }
-
   return (
     <div className="flex flex-col w-full h-auto items-center relative">
-      <Document
-        file={url} // PDF 파일 경로 (public 폴더 내)
-        onLoadSuccess={onDocumentLoadSuccess}
-      >
+      <Document file={url} onLoadSuccess={onDocumentLoadSuccess}>
         <Page
           width={800}
           pageNumber={pageNumber}

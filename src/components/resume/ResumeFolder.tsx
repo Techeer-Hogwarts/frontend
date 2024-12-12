@@ -2,8 +2,8 @@
 import { useEffect, useState } from 'react'
 import CareerTag from '../common/CareerTag'
 import PositionTag from '../common/PositionTag'
-import { useRouter } from 'next/navigation'
 import { fetchResumes } from '@/app/resume/api/getResumeList'
+import Link from 'next/link'
 
 interface ResumeData {
   id: number
@@ -35,7 +35,6 @@ export default function ResumeFolder({
 }: ResumeFolderProps) {
   const [resumes, setResumes] = useState<ResumeData[]>([]) // 빈 배열로 초기화
   const [isLoading, setIsLoading] = useState(true) // 로딩 상태 추가
-  const router = useRouter() // useRouter 훅 추가
 
   useEffect(() => {
     async function getResumeList() {
@@ -68,9 +67,6 @@ export default function ResumeFolder({
     return <div>No resumes available</div>
   }
 
-  const handleResumeClick = (id: number) => {
-    router.push(`/detail/${id}`)
-  }
   return (
     <div className="flex flex-wrap gap-12">
       {resumes.map((resume) => {
@@ -88,9 +84,9 @@ export default function ResumeFolder({
           .replace(/\. /g, '.') // `.` 뒤에 공백 제거
 
         return (
-          <div
+          <Link
             key={resume.id}
-            onClick={() => handleResumeClick(resume.id)}
+            href={`/detail/${resume.id}`}
             className="flex flex-col w-[16.5rem] h-[10.25rem] gap-2 px-5 border-t-[0.4rem] border-black shadow-lg"
           >
             {/** 이름/기수 */}
@@ -110,7 +106,7 @@ export default function ResumeFolder({
             </div>
             {/** 날짜 */}
             <span className="ml-2 font-light text-[1rem]">{formattedDate}</span>
-          </div>
+          </Link>
         )
       })}
     </div>

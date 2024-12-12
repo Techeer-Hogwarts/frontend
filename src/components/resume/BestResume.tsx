@@ -59,13 +59,13 @@ export default function BestResume({ offset, limit }: ResumeFolderProps) {
         <Image src="/arrow.png" width={15} height={10} alt="arrow" />
       </button>
       {isOpen && (
-        <ul className="absolute left-0 right-0 z-10 bg-white rounded-lg shadow-lg mt-1.5">
+        <div className="flex flex-col absolute left-0 right-0 z-10 bg-white rounded-lg shadow-lg mt-1.5">
           {resumes.map((resume) => {
             return (
-              <li
+              <button
                 key={resume.id}
                 onClick={() => handleResumeClick(resume.id)}
-                className="flex justify-center my-3 gap-2"
+                className="flex justify-center my-2 gap-2"
               >
                 <Image
                   src="/file.png"
@@ -81,10 +81,10 @@ export default function BestResume({ offset, limit }: ResumeFolderProps) {
                 <div className="flex flex-col gap-1">
                   <span className="text-[1rem]">{resume.title}</span>
                 </div>
-              </li>
+              </button>
             )
           })}
-        </ul>
+        </div>
       )}
     </div>
   )
