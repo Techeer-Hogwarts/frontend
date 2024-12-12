@@ -4,20 +4,20 @@ import { useState } from 'react'
 import { Document, Page } from 'react-pdf'
 import 'react-pdf/dist/Page/TextLayer.css'
 
-export default function PdfViewer() {
+interface PdfViewerProps {
+  url: string
+}
+
+export default function PdfViewer({ url }: PdfViewerProps) {
   const [numPages, setNumPages] = useState<number | null>(null)
   const [pageNumber, setPageNumber] = useState<number>(1)
 
   const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
     setNumPages(numPages)
   }
-
   return (
     <div className="flex flex-col w-full h-auto items-center relative">
-      <Document
-        file="/fe.pdf" // PDF 파일 경로 (public 폴더 내)
-        onLoadSuccess={onDocumentLoadSuccess}
-      >
+      <Document file={url} onLoadSuccess={onDocumentLoadSuccess}>
         <Page
           width={800}
           pageNumber={pageNumber}

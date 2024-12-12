@@ -38,7 +38,7 @@ export default function Techeer() {
     <>
       <Image width={300} height={300} src="/bookmark.png" alt="bookmark" />
       <div className="flex flex-col justify-center items-center w-[1200px] h-[40rem] bg-black">
-        <span className="font-logo text-[130px] text-white">THECEER</span>
+        <span className="font-logo text-[130px] text-white">TECHEER</span>
         <span className="text-white">실리콘밸리에서 직접 운영하는</span>
         <span className="text-primary">
           {'{'}실리콘밸리식 프로젝트와 멘토 시스템{'}'}

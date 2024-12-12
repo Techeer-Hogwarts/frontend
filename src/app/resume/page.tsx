@@ -6,58 +6,38 @@ import Star from '../../../public/star.svg'
 import Dropdown from '@/components/common/Dropdown'
 import { useState } from 'react'
 import TapBar from '@/components/common/TapBar'
+import BestResume from '@/components/resume/BestResume'
 
 export default function Resume() {
   const router = useRouter() // Resume 페이지에서 useRouter 사용
-
-  const handleFolderClick = () => {
-    router.push('/detail') // Resume 페이지에서 라우팅 처리
-  }
 
   const openModal = () => {
     router.push('/resume?modal=true') // 모달 경로로 라우팅
   }
   // 드롭다운 선택된 옵션 상태 관리
-  const [selectedOptions, setSelectedOptions] = useState<string[]>([])
+
+  const [selectedPosition, setSelectedPosition] = useState<string | undefined>(
+    undefined,
+  )
+  const [selectedYear, setSelectedYear] = useState<number | undefined>(
+    undefined,
+  )
 
   // 드롭다운 항목 리스트
-  const dropdownOptions = ['Frontend', 'Backend', 'DataEngineer']
+  const positionOptions = ['Frontend', 'Backend', 'DataEngineer', 'FullStack']
+  const yearOptions = ['8기', '7기', '6기', '5기', '4기', '3기', '2기', '1기']
 
   //기수 탭
-  const options = ['전체', '~4기', '5기', '6기', '7기', '8기', '소마/ICT']
-
-  let resumes = [
-    {
-      name: '박명수',
-      period: '8기',
-      position: 'Frontend',
-      career: '신입',
-      date: '2024.09.21',
-    },
-    {
-      name: '유재석',
-      period: '7기',
-      position: 'Backend',
-      career: '경력',
-      date: '2024.09.19',
-    },
-    {
-      name: '정준하',
-      period: '6기',
-      position: 'DataEngineer',
-      career: '신입',
-      date: '2024.09.18',
-    },
-  ]
+  const options = ['전체', '이력서', '포트폴리오', 'OTHER']
 
   return (
     <div className="flex flex-col max-w-[1200px] w-[1200px] mt-[3.56rem] gap-6">
       {/** 배너 */}
       <div className="flex justify-between gap-10 mb-[2.84rem]">
         <div className="flex flex-col">
-          <span className="text-[2.5rem] font-bold">이력서</span>
+          <span className="text-[2.5rem] font-bold">이력서 & 포트폴리오</span>
           <span className="text-[1.25rem]">
-            모든 테커인들의 이력서를 확인해보세요.
+            모든 테커인들의 이력서와 포트폴리오를 확인해보세요.
           </span>
         </div>
         <div
@@ -75,16 +55,39 @@ export default function Resume() {
         options={options}
         placeholder="프로젝트 명 혹은 이름으로 검색해보세요"
       />
-      {/** 드롭다운 */}
-      <Dropdown
-        title="포지션"
-        options={dropdownOptions}
-        selectedOptions={selectedOptions}
-        setSelectedOptions={setSelectedOptions}
-      />
+      <div className="flex justify-between">
+        <div className="flex gap-3">
+          {/** 드롭다운 */}
+          <Dropdown
+            title="포지션"
+            options={positionOptions}
+            selectedOptions={selectedPosition ? [selectedPosition] : []}
+            setSelectedOptions={(selected) =>
+              setSelectedPosition(selected[0] || undefined)
+            }
+          />
+          <Dropdown
+            title="기수"
+            options={yearOptions.map(String)}
+            selectedOptions={selectedYear ? [String(selectedYear)] : []}
+            setSelectedOptions={(selected) =>
+              setSelectedYear(
+                selected.length > 0 ? parseInt(selected[0]) : undefined,
+              )
+            }
+          />
+        </div>
+        {/** 인기 이력서 조회 */}
+        <BestResume offset={0} limit={10} />
+      </div>
       {/** 이력서 폴더 */}
-      <div onClick={handleFolderClick}>
-        <ResumeFolder resumes={resumes} />
+      <div>
+        <ResumeFolder
+          position={selectedPosition}
+          year={selectedYear}
+          offset={0}
+          limit={10}
+        />
       </div>
     </div>
   )
