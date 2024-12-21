@@ -39,6 +39,13 @@ export default function MyExperienceSection({
           {items.map((_, item) => (
             <ExperienceItem
               key={item}
+              index={item} // 필수 (number)
+              data={{}} // 예시: 아무 데이터나 object로
+              onChange={(updated) => {
+                // 필수 (함수)
+                console.log('Updated data:', updated)
+              }}
+              experienceType="intern" // 필수 ('intern' | 'fullTime')
               btnPadding="px-6 py-2"
               onDelete={() => removeExperience(item)}
             />
