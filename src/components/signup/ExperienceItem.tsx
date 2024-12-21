@@ -1,6 +1,8 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
+import ExperienceBtn from '../common/ExperienceBtn'
+
 
 interface ExperienceItemProps {
   index: number
@@ -135,18 +137,13 @@ const ExperienceItem: React.FC<ExperienceItemProps> = ({
       {/* 포지션 선택 */}
       <div className="flex justify-between text-pink text-xs mt-2">
         {positions.map((position, index) => (
-          <button
+          <ExperienceBtn
             key={index}
-            type="button"
-            onClick={() => handlePositionClick(position)}
-            className={`px-3.5 py-2 rounded-md border border-lightprimary  ${
-              selectedPosition.includes(position)
-                ? 'bg-lightprimary'
-                : 'bg-white'
-            }`}
-          >
-            {position}
-          </button>
+            position={position}
+            handlePositionClick={handlePositionClick}
+            btnPadding={btnPadding}
+            selectedPosition={selectedPosition}
+          />
         ))}
       </div>
     </div>

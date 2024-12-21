@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { pdfjs } from 'react-pdf'
+// import { pdfjs } from 'react-pdf'
 import Dropdown from '@/components/common/Dropdown'
 import ProfileBox from '@/components/profile/ProfileBox'
 import Image from 'next/image'
@@ -12,7 +12,7 @@ import Create from '@/components/resume/CreateComment'
 import Tap from '@/components/resume/Tap'
 
 // workerSrc 정의 하지 않으면 pdf 보여지지 않습니다.
-pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.mjs`
+// pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.mjs`
 
 export default function Detail() {
   // 드롭다운 선택된 옵션 상태 관리
@@ -90,9 +90,7 @@ export default function Detail() {
         <div className="flex w-[55rem] h-[50rem] gap-5">
           {/** pdf 이력서 */}
 
-          <div className="flex w-[50rem] h-[60rem]">
-            <PdfViewer />
-          </div>
+          <div className="flex w-[50rem] h-[60rem]">{/* <PdfViewer /> */}</div>
           {/** 버튼 */}
           <div className="flex flex-col gap-5">
             <button
@@ -111,7 +109,7 @@ export default function Detail() {
               className="flex justify-center items-center w-[2.5rem] h-[2.5rem] shadow-md border border-gray outline-none rounded-full"
               type="button"
             >
-              <a
+              {/* <a
                 href="/f.pdf" // 다운로드할 PDF 파일 경로
                 download="f.pdf" // 다운로드될 파일 이름 지정
                 className="flex justify-center items-center w-[2rem] h-[2rem] outline-none"
@@ -123,7 +121,7 @@ export default function Detail() {
                   alt="PlusIMG"
                   // className="right-2 top-1/2 transform -translate-y-1/2"
                 />
-              </a>
+              </a> */}
             </button>
           </div>
         </div>
