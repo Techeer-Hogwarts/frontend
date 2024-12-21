@@ -18,7 +18,6 @@ const ExperienceItem: React.FC<ExperienceItemProps> = ({
   experienceType,
 }) => {
   const [companyName, setCompanyName] = useState(data.companyName || '')
-  const [duration, setDuration] = useState(data.duration || '')
   const [startDate, setStartDate] = useState(data.startDate || '')
   const [endDate, setEndDate] = useState(data.endDate || '')
   const [isCurrentJob, setIsCurrentJob] = useState(data.isCurrentJob || false)

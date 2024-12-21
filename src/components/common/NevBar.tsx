@@ -8,7 +8,6 @@ import {
   IoPersonCircle,
 } from 'react-icons/io5'
 import Cookies from 'js-cookie'
-import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import { useAuthStore } from '@/store/authStore'
 

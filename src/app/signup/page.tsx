@@ -9,7 +9,6 @@ import InputField from '@/components/common/InputField'
 import EmailVerification from '@/components/common/EmailVerification'
 import Link from 'next/link'
 import axios from 'axios'
-import Image from 'next/image'
 
 const Signup = () => {
   const [step, setStep] = useState(1)
@@ -286,10 +285,10 @@ const Signup = () => {
           >
             {/* 대학 및 학년 선택 */}
             <div>
-              <label className="block text-lg mb-2.5">
+              <p className="block text-lg mb-2.5">
                 대학교 및 학년을 선택해주세요{' '}
                 <span className="text-primary">*</span>
-              </label>
+              </p>
 
               <div className="flex justify-between space-x-5">
                 <Select
@@ -341,9 +340,9 @@ const Signup = () => {
 
             {/* 기수 선택 */}
             <div className="flex justify-between items-center">
-              <label className="text-lg ">
+              <p className="text-lg ">
                 기수를 선택해주세요 <span className="text-primary">*</span>
-              </label>
+              </p>
               <div className="w-[9.5rem]">
                 <Select
                   title="기수"
@@ -392,9 +391,9 @@ const Signup = () => {
 
             {/* 포지션 선택 */}
             <div>
-              <label className="block text-lg mb-2.5 ">
+              <p className="block text-lg mb-2.5 ">
                 포지션을 선택해주세요 <span className="text-primary">*</span>
-              </label>
+              </p>
               <PositionSelect
                 selectedPositions={formData.selectedPositions}
                 handlePositionSelect={handlePositionSelect}
@@ -403,10 +402,10 @@ const Signup = () => {
 
             {/* 추천 여부 */}
             <div>
-              <label className="block text-lg mb-2.5 ">
+              <p className="block text-lg mb-2.5 ">
                 본인의 프로필을 다른 사람들에게 추천하여 프로젝트에 참여할
                 기회를 늘릴까요? <span className="text-primary">*</span>
-              </label>
+              </p>
               <div className="flex justify-between space-x-5">
                 <button
                   type="button"
@@ -439,9 +438,9 @@ const Signup = () => {
 
             {/* 링크 입력 */}
             <div>
-              <label className="block text-lg mb-2.5 ">
+              <p className="block text-lg mb-2.5 ">
                 링크를 입력해주세요 <span className="text-primary">*</span>
-              </label>
+              </p>
               <div className="flex flex-col space-y-2">
                 <div className="flex justify-between space-x-5">
                   <div className="flex items-center justify-center w-[10rem] h-10 rounded-[0.25rem] text-primary border border-primary">

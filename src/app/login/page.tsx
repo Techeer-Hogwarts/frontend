@@ -3,7 +3,6 @@
 import InputField from '@/components/common/InputField'
 import Link from 'next/link'
 import { useState } from 'react'
-import Image from 'next/image'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import { useAuthStore } from '@/store/authStore'
@@ -20,10 +19,6 @@ export default function Login() {
 
   const { setIsLoggedIn } = useAuthStore()
   const router = useRouter()
-
-  const handleCheckboxClick = () => {
-    setIsChecked(!isChecked)
-  }
 
   const handleLogin = async () => {
     if (!email || !password) {

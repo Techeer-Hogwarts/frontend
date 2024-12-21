@@ -153,9 +153,9 @@ const ChangePassword = () => {
         {/* 이메일 입력 및 인증 코드 요청 */}
         <div>
           <div className="flex justify-between mb-2.5">
-            <label className="block text-lg">
+            <p className="block text-lg">
               이메일 <span className="text-primary">*</span>
-            </label>
+            </p>
           </div>
 
           <div className="flex justify-between mb-2">
