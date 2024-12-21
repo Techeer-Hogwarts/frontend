@@ -64,6 +64,7 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({
               onDelete={() => removeExperience(index)}
               onChange={(updatedItem) => updateExperience(index, updatedItem)}
               experienceType={experienceType}
+              btnPadding={''}
             />
           ))}
         </>

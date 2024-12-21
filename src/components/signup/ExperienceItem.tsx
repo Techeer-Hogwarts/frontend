@@ -3,16 +3,17 @@
 import React, { useState, useEffect } from 'react'
 import ExperienceBtn from '../common/ExperienceBtn'
 
-
 interface ExperienceItemProps {
   index: number
   data: any
   onDelete?: () => void
   onChange: (data: any) => void
   experienceType: 'intern' | 'fullTime'
+  btnPadding: string
 }
 
 const ExperienceItem: React.FC<ExperienceItemProps> = ({
+  btnPadding,
   index,
   data,
   onDelete,
