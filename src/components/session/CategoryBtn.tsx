@@ -1,34 +1,18 @@
-// 'use client'
-
-// import { useState } from 'react'
-
-// interface CategoryBtnProps {
-//   title: string
-// }
-
-// export default function CategoryBtn({ title }: CategoryBtnProps) {
-//   const [isClicked, setIsClicked] = useState(false)
-//   return (
-//     <button
-//       type="button"
-//       onClick={() => setIsClicked(!isClicked)}
-//       className={`w-24 h-[34px] rounded-sm border text-sm ${isClicked ? 'text-primary border-primary ' : ' border-lightgray text-gray'}`}
-//     >
-//       {title}
-//     </button>
-//   )
-// }
-
 'use client'
 
 import { useState } from 'react'
 
 interface CategoryBtnProps {
   title: string
+  isSelected: boolean
   onSelect: (category: string) => void // 부모에게 선택된 카테고리를 전달하는 콜백 함수
 }
 
-export default function CategoryBtn({ title, onSelect }: CategoryBtnProps) {
+export default function CategoryBtn({
+  title,
+  onSelect,
+  isSelected,
+}: CategoryBtnProps) {
   const [isClicked, setIsClicked] = useState(false)
 
   const handleClick = () => {
@@ -40,7 +24,11 @@ export default function CategoryBtn({ title, onSelect }: CategoryBtnProps) {
     <button
       type="button"
       onClick={handleClick}
-      className={`w-24 h-[34px] rounded-sm border text-sm ${isClicked ? 'text-primary border-primary' : 'border-lightgray text-gray'}`}
+      className={`w-24 h-[34px] rounded-sm border text-sm ${
+        isSelected
+          ? 'text-primary border-primary'
+          : 'border-lightgray text-gray'
+      }`}
     >
       {title}
     </button>

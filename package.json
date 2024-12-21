@@ -17,7 +17,7 @@
     "dayjs": "^1.11.13",
     "eslint-config-airbnb": "^19.0.4",
     "next": "14.2.5",
-    "pdfjs-dist": "^4.7.76",
+    "pdfjs-dist": "^4.8.69",
     "prettier": "^3.3.3",
     "react": "^18",
     "react-dom": "^18",
