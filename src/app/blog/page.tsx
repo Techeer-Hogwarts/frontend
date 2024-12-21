@@ -29,9 +29,9 @@ export default function page() {
   return (
     <div className="flex justify-center h-auto min-h-screen">
       <div className="flex flex-col">
-        <div className="w-[1200px] text-left mt-14 mb-7">
-          <p className="text-4xl mb-5 font-bold">블로그</p>
-          <p className="text-xl">테커인들의 블로그를 확인해보세요.</p>
+        <div className="w-[1200px] text-left mt-14 mb-[2.84rem]">
+          <p className="text-[2.5rem] font-bold">블로그</p>
+          <p className="text-[1.25rem]">테커인들의 블로그를 확인해보세요.</p>
         </div>
         <TapBar
           options={[

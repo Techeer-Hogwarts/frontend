@@ -1,3 +1,5 @@
+'use client'
+
 import Profile from '@/components/project/detail/Profile'
 import RecommendedMember from '@/components/project/detail/RecommendedMember'
 import Member from '@/components/project/detail/Member'
@@ -6,6 +8,9 @@ import FindMember from '@/components/project/detail/FindMember'
 import Results from '@/components/project/detail/Results'
 import { BiSolidPencil } from 'react-icons/bi'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+
+import ApplyModal from '@/components/project/modal/ApplyModal'
 
 let members = [
   { name: '홍길동', role: 'Backend' },
@@ -38,6 +43,11 @@ let stacks = {
 }
 
 export default function ProjectDetailpage() {
+  const router = useRouter()
+
+  const handleModal = () => {
+    router.push('/project/detail/project/23/applyModal')
+  }
   return (
     <div className="relative flex justify-between mt-[2.75rem]">
       <div className="flex rounded-xl items-center justify-center border border-primary absolute top-[-1rem] right-0 w-[8.375rem] h-[2.125rem]">
@@ -56,9 +66,15 @@ export default function ProjectDetailpage() {
       </div>
       <div className="flex flex-col gap-7">
         <Member members={members} />
-        {/* <Stack stacks={stacks} /> */}
+        <Stack stacks={stacks} />
         <FindMember />
         <Results />
+        <button
+          onClick={handleModal}
+          className="w-full h-[2.16044rem] border border-primary text-primary rounded-md hover:shadow-md"
+        >
+          지원하기
+        </button>
       </div>
     </div>
   )
