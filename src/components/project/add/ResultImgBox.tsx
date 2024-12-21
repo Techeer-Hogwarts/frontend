@@ -1,8 +1,8 @@
 'use client'
 
-import React, { useState } from 'react'
+import { useState } from 'react'
 import Image from 'next/image'
-import { IoAddCircleOutline, IoClose } from 'react-icons/io5'
+import { IoClose } from 'react-icons/io5'
 import { FaRegImage } from 'react-icons/fa6'
 
 interface BoxProps {
@@ -10,7 +10,7 @@ interface BoxProps {
   onDelete: () => void
 }
 
-const Box = ({ id, onDelete }: BoxProps) => {
+const ResultImgBox = ({ id, onDelete }: BoxProps) => {
   const [image, setImage] = useState<string | null>(null)
   const [text, setText] = useState('')
 
@@ -31,7 +31,7 @@ const Box = ({ id, onDelete }: BoxProps) => {
       {/* 삭제 버튼 */}
       <button
         onClick={onDelete}
-        className="absolute top-2 right-2 bg-primary text-white p-1 rounded-full z-10"
+        className="absolute top-2 right-2 bg-gray text-white p-1 rounded-full z-10"
       >
         <IoClose size={16} />
       </button>
@@ -74,42 +74,4 @@ const Box = ({ id, onDelete }: BoxProps) => {
   )
 }
 
-export default function AddResults() {
-  const [boxes, setBoxes] = useState<number[]>([0, 1]) // 박스 개수 관리
-
-  // 박스 추가 함수
-  const handleAddBox = () => {
-    setBoxes([...boxes, boxes.length]) // 박스 개수를 증가시킴
-  }
-
-  // 박스 삭제 함수 (1개 이하로는 삭제 불가)
-  const handleDeleteBox = (index: number) => {
-    if (boxes.length > 1) {
-      setBoxes(boxes.filter((_, i) => i !== index)) // 해당 박스 삭제
-    }
-  }
-
-  return (
-    <div>
-      <div className="flex justify-between items-center mb-3 mt-[3.19rem]">
-        <div className="flex items-center justify-center text-center font-medium text-gray">
-          결과물(혹은 피그마 디자인)을 올려주세요
-        </div>
-        <button
-          onClick={handleAddBox}
-          className="flex items-center gap-2 text-primary font-medium"
-        >
-          <IoAddCircleOutline size={24} />
-          이미지 추가
-        </button>
-      </div>
-
-      {/* 박스 부분 */}
-      <div className="grid grid-cols-2 gap-6">
-        {boxes.map((boxId, index) => (
-          <Box key={index} id={boxId} onDelete={() => handleDeleteBox(index)} />
-        ))}
-      </div>
-    </div>
-  )
-}
+export default ResultImgBox

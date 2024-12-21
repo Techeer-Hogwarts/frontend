@@ -51,12 +51,12 @@ export default function Resume() {
   ]
 
   return (
-    <div className="flex flex-col w-[75rem] gap-6">
+    <div className="flex flex-col max-w-[1200px] w-[1200px] mt-[3.56rem] gap-6">
       {/** 배너 */}
-      <div className="flex justify-between gap-10 mt-[4rem]">
+      <div className="flex justify-between gap-10 mb-[2.84rem]">
         <div className="flex flex-col">
           <span className="text-[2.5rem] font-bold">이력서</span>
-          <span className="text-[1.25rem] font-medium">
+          <span className="text-[1.25rem]">
             모든 테커인들의 이력서를 확인해보세요.
           </span>
         </div>

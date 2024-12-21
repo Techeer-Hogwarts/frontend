@@ -2,19 +2,45 @@
 
 import { useState } from 'react'
 import TapBar from '@/components/common/TapBar'
-import SessionPost from '@/components/session/SessionPost'
+import AddBtn from '@/components/common/AddBtn'
 import Dropdown from '@/components/common/Dropdown'
 import FilterBtn from '@/components/session/FilterBtn'
-import AddBtn from '@/components/common/AddBtn'
+import SessionPost from '@/components/session/SessionPost'
 
 export default function Page() {
   const [selectedPeriods, setSelectedPeriods] = useState<string[]>([])
+  const Session = [
+    {
+      id: 1,
+      title: '왜 웹소켓을 사용하는가',
+      name: '주영준',
+      date: '2024년 9월',
+    },
+    {
+      id: 2,
+      title: '왜 웹소켓을 사용하는가',
+      name: '우아한',
+      date: '2019년 11월',
+    },
+    {
+      id: 3,
+      title: '흑백요리사 심사위원으로 출현한 소감, 흑백요리사 시즌2에 대하여',
+      name: '백종원',
+      date: '2032년 1월',
+    },
+    {
+      id: 4,
+      title: '왜 웹소켓을 사용하는가',
+      name: '우아한',
+      date: '2019년 11월',
+    },
+  ]
   return (
-    <div className="flex justify-center">
+    <div className="flex justify-center h-auto min-h-screen">
       <div className="flex flex-col">
-        <div className="w-[1200px] text-left mt-14 mb-7">
-          <p className="text-4xl mb-5 font-bold">세션영상</p>
-          <p className="text-xl">테커인들의 세션영상을 확인해보세요.</p>
+        <div className="w-[1200px] text-left mt-14 mb-[2.84rem]">
+          <p className="text-[2.5rem] font-bold">세션영상</p>
+          <p className="text-[1.25rem]">테커인들의 세션영상을 확인해보세요.</p>
         </div>
         <TapBar
           options={['전체보기', '부트캠프', '파트너스']}
@@ -40,9 +66,14 @@ export default function Page() {
           <FilterBtn title="1기" />
         </div>
         <div className="grid grid-cols-3 gap-8">
-          <SessionPost />
-          <SessionPost />
-          <SessionPost />
+          {Session.map((session) => (
+            <SessionPost
+              key={session.id}
+              title={session.title}
+              date={session.date}
+              name={session.name}
+            />
+          ))}
         </div>
         <AddBtn />
       </div>
