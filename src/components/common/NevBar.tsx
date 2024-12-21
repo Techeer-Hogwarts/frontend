@@ -1,18 +1,38 @@
 'use client'
 
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
   IoSearchOutline,
   IoCalendarOutline,
   IoPersonCircle,
 } from 'react-icons/io5'
+import Cookies from 'js-cookie'
+import { useRouter } from 'next/navigation'
+import { useAuthStore } from '@/store/authStore'
 
 export default function NevBar() {
   const [isSearchOpen, setIsSearchOpen] = useState(false)
+  const { isLoggedIn, setIsLoggedIn, logout } = useAuthStore()
+  const router = useRouter()
+
+  useEffect(() => {
+    const accessToken = Cookies.get('accessToken')
+    setIsLoggedIn(!!accessToken)
+  }, [setIsLoggedIn])
 
   const toggleSearch = () => {
-    setIsSearchOpen(!isSearchOpen)
+    setIsSearchOpen((prev) => !prev)
+  }
+
+  const handleLogout = async () => {
+    try {
+      await logout()
+      router.push('/login')
+    } catch (error) {
+      console.error('Logout error:', error)
+      alert('로그아웃에 실패하였습니다.')
+    }
   }
 
   return (
@@ -42,7 +62,7 @@ export default function NevBar() {
           </Link>
         </div>
       </div>
-      <div className="flex">
+      <div className="flex items-center">
         {/* 돋보기 및 기타 아이콘 */}
         <div className="flex items-center ">
           {/* 검색 영역 */}
@@ -68,13 +88,26 @@ export default function NevBar() {
           <IoCalendarOutline size={24} />
         </Link>
         {/* 마이페이지 아이콘 */}
-
-        <Link href="/mypage" className="p-2">
+        <Link href="/detail" className="p-2">
           <IoPersonCircle size={24} />
         </Link>
-        <button type="button" className="hover:text-gray-800">
-          로그아웃
-        </button>
+
+        {isLoggedIn ? (
+          <button
+            type="button"
+            className="ml-4 text-gray-600 hover:text-gray-800 h"
+            onClick={handleLogout}
+          >
+            로그아웃
+          </button>
+        ) : (
+          <Link
+            href="/login"
+            className="ml-4 text-gray-600 hover:text-gray-800"
+          >
+            로그인
+          </Link>
+        )}
       </div>
     </div>
   )
