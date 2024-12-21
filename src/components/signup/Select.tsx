@@ -1,13 +1,19 @@
+'use client'
+
 import { useState, useRef, useEffect } from 'react'
 
 interface SelectProps {
   title: string // 드롭다운 버튼의 제목
   options: string[] // 드롭다운 항목 리스트
+  value?: string // 현재 선택된 값
+  onChange?: (option: string) => void
 }
 
-const Select: React.FC<SelectProps> = ({ title, options }) => {
+const Select: React.FC<SelectProps> = ({ title, options, value, onChange }) => {
   const [isOpen, setIsOpen] = useState(false)
-  const [selectedOption, setSelectedOption] = useState<string | null>(null) // 선택된 항목 하나만 저장
+  const [selectedOption, setSelectedOption] = useState<string | null>(
+    value || null,
+  )
   const selectRef = useRef<HTMLDivElement>(null)
 
   // 드롭다운을 열거나 닫는 함수
@@ -16,6 +22,7 @@ const Select: React.FC<SelectProps> = ({ title, options }) => {
   // 옵션을 선택하는 함수
   const handleSelect = (option: string) => {
     setSelectedOption(option) // 하나의 옵션만 선택 가능하도록
+    if (onChange) onChange(option)
     setIsOpen(false) // 선택 후 드롭다운을 닫음
   }
 
@@ -35,6 +42,11 @@ const Select: React.FC<SelectProps> = ({ title, options }) => {
       document.removeEventListener('mousedown', handleClickOutside)
     }
   }, [])
+
+  // value prop이 변경되면 selectedOption을 업데이트
+  useEffect(() => {
+    setSelectedOption(value || null)
+  }, [value])
 
   return (
     <div className="relative w-full" ref={selectRef}>

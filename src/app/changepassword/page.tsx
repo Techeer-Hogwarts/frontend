@@ -11,43 +11,56 @@ const ChangePassword = () => {
   const [newPassword, setNewPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
 
+  // 인증 요청 상태
   const [isRequesting, setIsRequesting] = useState(false)
+
+  // 타이머 관련 상태
   const [timer, setTimer] = useState(300) // 5분 타이머
   const [timerActive, setTimerActive] = useState(false)
   const [timeExpired, setTimeExpired] = useState(false)
+
+  // 메시지 상태 (인증요청 / 비밀번호 재설정)
+  const [requestMessage, setRequestMessage] = useState('')
+  const [requestIsError, setRequestIsError] = useState(false)
+  const [resetMessage, setResetMessage] = useState('')
+  const [resetIsError, setResetIsError] = useState(false)
 
   const router = useRouter()
 
   // 이메일 인증 코드 요청 함수
   const handleRequestVerification = async () => {
+    // 기존 메시지 초기화
+    setRequestMessage('')
+    setRequestIsError(false)
+
     if (!email) {
-      alert('이메일을 입력해주세요.')
+      setRequestIsError(true)
+      setRequestMessage('이메일을 입력해주세요.')
       return
     }
 
     setIsRequesting(true)
-    setTimerActive(true) // 타이머 시작
-    setTimer(300) // 타이머를 5분으로 초기화
-    setTimeExpired(false) // 타이머 만료 상태 초기화
+    setTimerActive(true)
+    setTimer(300)
+    setTimeExpired(false)
 
     try {
       const response = await axios.post(
         'https://api.techeerzip.cloud/api/v1/auth/email',
         { email },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        },
+        { headers: { 'Content-Type': 'application/json' } },
       )
 
       if (response.status === 201) {
-        alert('인증 코드가 이메일로 전송되었습니다.')
+        setRequestIsError(false)
+        setRequestMessage('인증 코드가 이메일로 전송되었습니다.')
       } else {
-        alert('인증 코드 전송에 실패했습니다.')
+        setRequestIsError(true)
+        setRequestMessage('인증 코드 전송에 실패했습니다.')
       }
     } catch (error) {
-      alert('네트워크 오류가 발생했습니다.')
+      setRequestIsError(true)
+      setRequestMessage('네트워크 오류가 발생했습니다.')
     } finally {
       setIsRequesting(false)
     }
@@ -55,18 +68,25 @@ const ChangePassword = () => {
 
   // 비밀번호 재설정 함수
   const handleResetPassword = async () => {
+    // 기존 메시지 초기화
+    setResetMessage('')
+    setResetIsError(false)
+
     if (!email || !code || !newPassword || !confirmPassword) {
-      alert('모든 필드를 입력해주세요.')
+      setResetIsError(true)
+      setResetMessage('모든 필드를 입력해주세요.')
       return
     }
 
     if (newPassword !== confirmPassword) {
-      alert('비밀번호가 일치하지 않습니다.')
+      setResetIsError(true)
+      setResetMessage('비밀번호가 일치하지 않습니다.')
       return
     }
 
     if (timeExpired) {
-      alert('인증 코드가 만료되었습니다. 다시 요청해주세요.')
+      setResetIsError(true)
+      setResetMessage('인증 코드가 만료되었습니다. 다시 요청해주세요.')
       return
     }
 
@@ -86,20 +106,20 @@ const ChangePassword = () => {
       )
 
       if (response.status === 200) {
-        alert('비밀번호가 성공적으로 변경되었습니다.')
-        router.push('/login') // 비밀번호 변경 후 로그인 페이지로 이동
+        setResetIsError(false)
+        setResetMessage('비밀번호가 성공적으로 변경되었습니다.')
+        router.push('/login')
       } else {
-        alert('비밀번호 변경에 실패하였습니다.')
+        setResetIsError(true)
+        setResetMessage('비밀번호 변경에 실패하였습니다.')
       }
     } catch (error: any) {
-      if (
-        error.response &&
-        error.response.data &&
-        error.response.data.message
-      ) {
-        alert(`오류: ${error.response.data.message}`)
+      setResetIsError(true)
+
+      if (error.response?.data?.message) {
+        setResetMessage(`오류: ${error.response.data.message}`)
       } else {
-        alert('비밀번호 변경에 실패하였습니다.')
+        setResetMessage('비밀번호 변경에 실패하였습니다.')
       }
       console.error('Password reset error:', error)
     }
@@ -113,8 +133,8 @@ const ChangePassword = () => {
       }, 1000)
       return () => clearInterval(interval)
     } else if (timer === 0) {
-      setTimerActive(false) // 타이머 종료 후 비활성화
-      setTimeExpired(true) // 타이머 만료 설정
+      setTimerActive(false)
+      setTimeExpired(true)
     }
   }, [timerActive, timer])
 
@@ -127,7 +147,7 @@ const ChangePassword = () => {
 
   return (
     <div className="flex-grow flex items-center justify-center mt-[6.62rem]">
-      <div className="w-[30rem]  space-y-7">
+      <div className="w-[30rem] space-y-7">
         <h2 className="text-2xl font-semibold">비밀번호 변경</h2>
 
         {/* 이메일 입력 및 인증 코드 요청 */}
@@ -137,6 +157,7 @@ const ChangePassword = () => {
               이메일 <span className="text-primary">*</span>
             </label>
           </div>
+
           <div className="flex justify-between mb-2">
             <input
               type="text"
@@ -150,18 +171,30 @@ const ChangePassword = () => {
               type="button"
               onClick={handleRequestVerification}
               className="w-[7.75rem] h-10 bg-primary text-white rounded-[0.25rem]"
-              disabled={isRequesting || timerActive} // 요청 중이거나 타이머 작동 중이면 비활성화
+              disabled={isRequesting || timerActive}
             >
               {isRequesting ? '요청 중...' : '인증요청'}
             </button>
           </div>
+
+          {/* 인증요청 결과 메시지 */}
+          {requestMessage && (
+            <p
+              className={`mb-2 text-sm ${
+                requestIsError ? 'text-red-500' : 'text-green-500'
+              }`}
+            >
+              {requestMessage}
+            </p>
+          )}
+
           {/* 이메일 재전송 및 타이머 */}
           {timerActive && (
             <div className="flex justify-between text-sm mb-4">
               <button
                 className="text-primary underline underline-offset-2"
                 onClick={handleRequestVerification}
-                disabled={isRequesting} // 요청 중이면 비활성화
+                disabled={isRequesting}
               >
                 이메일 재전송
               </button>
@@ -199,6 +232,17 @@ const ChangePassword = () => {
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
         />
+
+        {/* 비밀번호 재설정 결과 메시지 */}
+        {resetMessage && (
+          <p
+            className={`mb-2 text-sm ${
+              resetIsError ? 'text-red-500' : 'text-green'
+            }`}
+          >
+            {resetMessage}
+          </p>
+        )}
 
         {/* 확인 버튼 */}
         <button

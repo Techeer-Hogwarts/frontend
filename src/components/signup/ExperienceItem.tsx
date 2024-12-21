@@ -1,18 +1,32 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 interface ExperienceItemProps {
+  index: number
+  data: any
   onDelete?: () => void
+  onChange: (data: any) => void
+  experienceType: 'intern' | 'fullTime'
 }
 
-const ExperienceItem: React.FC<ExperienceItemProps> = ({ onDelete }) => {
-  const [companyName, setCompanyName] = useState('')
-  const [duration, setDuration] = useState('')
-  const [selectedPosition, setSelectedPosition] = useState<string[]>([])
-  const [isCurrentJob, setIsCurrentJob] = useState(false)
+const ExperienceItem: React.FC<ExperienceItemProps> = ({
+  index,
+  data,
+  onDelete,
+  onChange,
+  experienceType,
+}) => {
+  const [companyName, setCompanyName] = useState(data.companyName || '')
+  const [duration, setDuration] = useState(data.duration || '')
+  const [startDate, setStartDate] = useState(data.startDate || '')
+  const [endDate, setEndDate] = useState(data.endDate || '')
+  const [isCurrentJob, setIsCurrentJob] = useState(data.isCurrentJob || false)
+  const [selectedPosition, setSelectedPosition] = useState<string[]>(
+    data.selectedPosition || [],
+  )
 
-  // 고정된 포지션 리스트
+  // 포지션 리스트
   const positions = [
     'Frontend',
     'Backend',
@@ -36,8 +50,37 @@ const ExperienceItem: React.FC<ExperienceItemProps> = ({ onDelete }) => {
     })
   }
 
+  // 데이터 변경 시 상위 컴포넌트로 전달
+  useEffect(() => {
+    if (experienceType === 'intern') {
+      onChange({
+        internCompanyName: companyName,
+        internPositions: selectedPosition, // 수정된 부분: 포지션 배열로 전달
+        internStartDate: startDate,
+        internEndDate: isCurrentJob ? '' : endDate,
+        isCurrentJob,
+      })
+    } else {
+      onChange({
+        fullTimeCompanyName: companyName,
+        fullTimePositions: selectedPosition, // 수정된 부분: 포지션 배열로 전달
+        fullTimeStartDate: startDate,
+        fullTimeEndDate: isCurrentJob ? '' : endDate,
+        isCurrentJob,
+      })
+    }
+  }, [
+    companyName,
+    selectedPosition,
+    startDate,
+    endDate,
+    isCurrentJob,
+    onChange,
+    experienceType,
+  ])
+
   return (
-    <div className="relative p-4 bg-[#F8F8F8] rounded-md mt-4">
+    <div className="relative p-4 bg-filterbg rounded-md mt-4">
       {/* X 버튼 */}
       <button
         onClick={onDelete}
@@ -54,16 +97,33 @@ const ExperienceItem: React.FC<ExperienceItemProps> = ({ onDelete }) => {
           placeholder="회사명을 입력해주세요"
           className="w-3/5 h-9 px-4 py-2 border border-gray rounded-md focus:outline-none focus:border-primary"
         />
-        <input
-          type="text"
-          value={duration}
-          onChange={(e) => setDuration(e.target.value)}
-          placeholder="YYYY.MM - YYYY.MM"
-          className="h-9 py-2 text-right bg-[#F8F8F8] focus:outline-none"
-        />
       </div>
 
-      <div className="flex items-center justify-end">
+      {/* 기간 선택 */}
+      <div className="flex justify-between items-center text-sm mt-2">
+        <input
+          type="date"
+          value={startDate}
+          onChange={(e) => setStartDate(e.target.value)}
+          className="w-[48%] h-9 px-4 py-2 border border-gray rounded-md focus:outline-none focus:border-primary"
+        />
+
+        {isCurrentJob ? (
+          <div className="w-[48%] h-9 px-4 border border-gray rounded-md bg-gray-100 flex items-center justify-center text-gray-400 select-none">
+            현재 재직중
+          </div>
+        ) : (
+          <input
+            type="date"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+            className="w-[48%] h-9 px-4 py-2 border border-gray rounded-md focus:outline-none focus:border-primary"
+            disabled={isCurrentJob}
+          />
+        )}
+      </div>
+
+      <div className="flex items-center mt-2">
         <input
           type="checkbox"
           checked={isCurrentJob}
@@ -73,7 +133,8 @@ const ExperienceItem: React.FC<ExperienceItemProps> = ({ onDelete }) => {
         <label className="text-xs text-gray my-2">재직중</label>
       </div>
 
-      <div className="flex justify-between text-pink text-xs">
+      {/* 포지션 선택 */}
+      <div className="flex justify-between text-pink text-xs mt-2">
         {positions.map((position, index) => (
           <button
             key={index}

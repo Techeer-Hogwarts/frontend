@@ -6,7 +6,7 @@ import { useState } from 'react'
 import Image from 'next/image'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
-import Cookies from 'js-cookie'
+import { useAuthStore } from '@/store/authStore'
 
 export default function Login() {
   const [isChecked, setIsChecked] = useState(false)
@@ -14,15 +14,21 @@ export default function Login() {
   const [password, setPassword] = useState('')
   const [isLoggingIn, setIsLoggingIn] = useState(false)
 
-  const router = useRouter() // 페이지 이동을 위한 라우터 훅
+  // 메시지 상태
+  const [message, setMessage] = useState('')
+  const [isError, setIsError] = useState(false)
+
+  const { setIsLoggedIn } = useAuthStore()
+  const router = useRouter()
 
   const handleCheckboxClick = () => {
-    setIsChecked(!isChecked) // 체크 상태를 반전
+    setIsChecked(!isChecked)
   }
 
   const handleLogin = async () => {
     if (!email || !password) {
-      alert('이메일과 비밀번호를 모두 입력해주세요.')
+      setIsError(true)
+      setMessage('이메일과 비밀번호를 모두 입력해주세요.')
       return
     }
 
@@ -39,27 +45,26 @@ export default function Login() {
           headers: {
             'Content-Type': 'application/json',
           },
-          withCredentials: true, // 쿠키 전송을 위해 추가
+          withCredentials: true,
         },
       )
 
       if (response.status === 201) {
-        const { accessToken, refreshToken } = response.data.data
-
-        // 토큰을 쿠키에 저장
-        Cookies.set('accessToken', accessToken, { expires: 1 })
-        Cookies.set('refreshToken', refreshToken, { expires: 7 })
-
-        alert('로그인에 성공하였습니다.')
+        // 로그인 성공 처리
+        setIsLoggedIn(true)
+        setIsError(false)
+        setMessage('로그인에 성공하였습니다.')
         router.push('/project')
       } else {
-        alert('로그인에 실패하였습니다.')
+        setIsError(true)
+        setMessage('로그인에 실패하였습니다.')
       }
     } catch (error: any) {
+      setIsError(true)
       if (error.response && error.response.status === 401) {
-        alert('이메일 또는 비밀번호가 올바르지 않습니다.')
+        setMessage('이메일 또는 비밀번호가 올바르지 않습니다.')
       } else {
-        alert('네트워크 오류가 발생했습니다.')
+        setMessage('네트워크 오류가 발생했습니다.')
       }
     } finally {
       setIsLoggingIn(false)
@@ -108,32 +113,30 @@ export default function Login() {
             />
           </div>
           <div className="flex items-center justify-end mt-12 mb-3">
-            {/* <div
-              onClick={handleCheckboxClick}
-              className="flex items-center cursor-pointer text-[#666666]"
-            >
-              <Image
-                src={
-                  isChecked ? '/images/check-on.svg' : '/images/check-off.svg'
-                }
-                alt="checkbox"
-                width={24}
-                height={24}
-              />
-              <span className="ml-2">아이디 저장</span>
-            </div> */}
             <Link href="/changepassword" className="text-[#666666]">
               비밀번호 찾기
             </Link>
           </div>
+
           <button
             type="button"
             className="w-full h-10 text-xl border border-gray text-gray rounded-full focus:border-primary focus:text-primary"
             onClick={handleLogin}
             disabled={isLoggingIn}
           >
-            {isLoggingIn ? '로그인 중...' : '로그인'}
+            로그인
           </button>
+
+          {/* 에러/성공 메시지 표시 영역 */}
+          {message && (
+            <p
+              className={`mt-3 text-sm ${
+                isError ? 'text-red-500' : 'text-green'
+              }`}
+            >
+              {message}
+            </p>
+          )}
         </div>
       </div>
     </div>

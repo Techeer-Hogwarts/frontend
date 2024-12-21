@@ -6,19 +6,38 @@ export interface ExperienceSectionProps {
   title: string
   experienceStatus: string | null
   setExperienceStatus: (value: string) => void
-  items: number[]
-  addExperience: () => void
-  removeExperience: (index: number) => void
+  experienceData: any[]
+  setExperienceData: (data: any[]) => void
+  experienceType: 'intern' | 'fullTime'
 }
 
 const ExperienceSection: React.FC<ExperienceSectionProps> = ({
   title,
   experienceStatus,
   setExperienceStatus,
-  items,
-  addExperience,
-  removeExperience,
+  experienceData,
+  setExperienceData,
+  experienceType,
 }) => {
+  // 경력 추가 함수
+  const addExperience = () => {
+    setExperienceData([...experienceData, {}]) // 빈 객체 추가
+  }
+
+  // 경력 삭제 함수
+  const removeExperience = (index: number) => {
+    const newData = experienceData.filter((_, i) => i !== index)
+    setExperienceData(newData)
+  }
+
+  // 경력 업데이트 함수
+  const updateExperience = (index: number, updatedItem: any) => {
+    const newData = experienceData.map((item, i) =>
+      i === index ? updatedItem : item,
+    )
+    setExperienceData(newData)
+  }
+
   return (
     <div className="flex flex-col w-[30.25rem]">
       <CareerToggle
@@ -37,10 +56,14 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({
             <span>+</span>
             <span>경력 추가</span>
           </button>
-          {items.map((_, index) => (
+          {experienceData.map((_, index) => (
             <ExperienceItem
               key={index}
+              index={index}
+              data={experienceData[index]}
               onDelete={() => removeExperience(index)}
+              onChange={(updatedItem) => updateExperience(index, updatedItem)}
+              experienceType={experienceType}
             />
           ))}
         </>

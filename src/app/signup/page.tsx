@@ -8,20 +8,59 @@ import CareerToggle from '@/components/signup/CareerToggle'
 import InputField from '@/components/common/InputField'
 import EmailVerification from '@/components/common/EmailVerification'
 import Link from 'next/link'
+import axios from 'axios'
+import Image from 'next/image'
 
 const Signup = () => {
   const [step, setStep] = useState(1)
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+    isVerified: false,
 
-  const [isVerified, setIsVerified] = useState(false) // 이메일 인증 여부
-  const [selectedPositions, setSelectedPositions] = useState<string[]>([]) // 포지션 선택
-  const [recommendation, setRecommendation] = useState<string | null>(null) // 추천 여부
-  const [employmentStatus, setEmploymentStatus] = useState<string | null>(null) // 인턴, 취업 경험 yes or no
-  const [internshipExperience, setInternshipExperience] = useState<
-    string | null
-  >(null) // 인턴 경험 yes or no
-  const [jobExperience, setJobExperience] = useState<string | null>(null) // 취업 경험 yes or no
-  const [internshipItems, setInternshipItems] = useState<number[]>([]) // 인턴 경력 아이템 배열
-  const [jobItems, setJobItems] = useState<number[]>([]) // 정규직 경력 아이템 배열
+    school: '',
+    classYear: '',
+    selectedBatch: '',
+    resumeTitle: '',
+    resumeUrl: '',
+    githubUrl: '',
+    blogUrl: '',
+    selectedPositions: [] as string[],
+    recommendation: null as string | null,
+    employmentStatus: null as string | null,
+    internshipExperience: null as string | null,
+    jobExperience: null as string | null,
+
+    // 경력 정보
+    internships: [] as {
+      internCompanyName: string
+      internPositions: string[]
+      internStartDate: string
+      internEndDate: string
+      isCurrentJob: boolean
+    }[],
+    fullTimes: [] as {
+      fullTimeCompanyName: string
+      fullTimePositions: string[]
+      fullTimeStartDate: string
+      fullTimeEndDate: string
+      isCurrentJob: boolean
+    }[],
+  })
+
+  const handleChange = (
+    e:
+      | React.ChangeEvent<HTMLInputElement>
+      | React.ChangeEvent<HTMLSelectElement>,
+  ) => {
+    const { name, value } = e.target
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }))
+  }
 
   const handleNext = () => {
     if (step < 2) {
@@ -29,36 +68,125 @@ const Signup = () => {
     }
   }
 
-  const handlePositionSelect = (position: string) => {
-    if (selectedPositions.includes(position)) {
-      // 이미 선택된 포지션이면 해제
-      setSelectedPositions(
-        selectedPositions.filter((item) => item !== position),
-      )
-    } else if (selectedPositions.length < 2) {
-      // 2개 미만 선택된 경우 추가
-      setSelectedPositions([...selectedPositions, position])
+  const handleBack = () => {
+    if (step > 1) {
+      setStep(step - 1)
     }
   }
 
-  // 인턴 경력 추가
-  const addInternshipExperience = () => {
-    setInternshipItems([...internshipItems, internshipItems.length + 1])
+  // 비밀번호/비밀번호 확인 일치 여부
+  const passwordsMatch =
+    formData.password === formData.confirmPassword &&
+    formData.password.length > 0
+
+  // 회원가입 API
+  const handleSignup = async () => {
+    if (!formData.isVerified) {
+      alert('이메일 인증을 완료해주세요.')
+      return
+    }
+
+    if (!passwordsMatch) {
+      alert('비밀번호가 일치하지 않습니다.')
+      return
+    }
+
+    // internships와 fullTimes에서 첫 번째 항목만 예시로
+    const internExperience = formData.internships[0] || {}
+    const fullTimeExperience = formData.fullTimes[0] || {}
+
+    const requestBody = {
+      createUserRequest: {
+        name: formData.name,
+        email: formData.email,
+        year: parseInt(formData.selectedBatch),
+        password: formData.password,
+        isLft: formData.recommendation === 'yes',
+        githubUrl: formData.githubUrl,
+        blogUrl: formData.blogUrl,
+        mainPosition: formData.selectedPositions[0] || '',
+        subPosition: formData.selectedPositions[1] || '',
+        school: formData.school,
+        class: formData.classYear,
+        isIntern: formData.internshipExperience === 'yes',
+        internCompanyName: internExperience.internCompanyName || '',
+        internPosition: internExperience.internPositions
+          ? internExperience.internPositions.join(', ')
+          : '',
+        internStartDate: internExperience.internStartDate || '',
+        internEndDate: internExperience.internEndDate || '',
+        isFullTime: formData.jobExperience === 'yes',
+        fullTimeCompanyName: fullTimeExperience.fullTimeCompanyName || '',
+        fullTimePosition: fullTimeExperience.fullTimePositions
+          ? fullTimeExperience.fullTimePositions.join(', ')
+          : '',
+        fullTimeStartDate: fullTimeExperience.fullTimeStartDate || '',
+        fullTimeEndDate: fullTimeExperience.fullTimeEndDate || '',
+      },
+      createResumeRequest: {
+        url: formData.resumeUrl,
+        title: formData.resumeTitle,
+        category: 'PORTFOLIO',
+      },
+    }
+
+    try {
+      const response = await axios.post(
+        'https://api.techeerzip.cloud/api/v1/users/signup',
+        requestBody,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        },
+      )
+
+      if (response.status === 200) {
+        alert('회원가입이 완료되었습니다.')
+      } else {
+        const error = response.data
+        alert(`회원가입 실패: ${error.message}`)
+      }
+    } catch (err: any) {
+      if (err.response) {
+        const error = err.response.data
+        alert(`회원가입 실패: ${error.message}`)
+      } else {
+        alert('네트워크 오류가 발생했습니다.')
+      }
+    }
   }
 
-  // 정규직 경력 추가
-  const addJobExperience = () => {
-    setJobItems([...jobItems, jobItems.length + 1])
+  const handlePositionSelect = (position: string) => {
+    if (formData.selectedPositions.includes(position)) {
+      setFormData((prev) => ({
+        ...prev,
+        selectedPositions: prev.selectedPositions.filter(
+          (item) => item !== position,
+        ),
+      }))
+    } else if (formData.selectedPositions.length < 2) {
+      setFormData((prev) => ({
+        ...prev,
+        selectedPositions: [...prev.selectedPositions, position],
+      }))
+    }
   }
 
-  // 인턴 경력 삭제
-  const removeInternshipExperience = (index: number) => {
-    setInternshipItems(internshipItems.filter((_, i) => i !== index))
+  // 인턴 경험 데이터 업데이트 함수
+  const setInternships = (internships: any[]) => {
+    setFormData((prev) => ({
+      ...prev,
+      internships,
+    }))
   }
 
-  // 정규직 경력 삭제
-  const removeJobExperience = (index: number) => {
-    setJobItems(jobItems.filter((_, i) => i !== index))
+  // 정규직 경험 데이터 업데이트 함수
+  const setFullTimes = (fullTimes: any[]) => {
+    setFormData((prev) => ({
+      ...prev,
+      fullTimes,
+    }))
   }
 
   const formRef = useRef<HTMLDivElement>(null)
@@ -68,13 +196,12 @@ const Signup = () => {
     const formElement = formRef.current
     if (formElement && bottomRef.current) {
       if (
-        employmentStatus === 'yes' ||
-        internshipExperience === 'yes' ||
-        jobExperience === 'yes' ||
-        internshipItems.length > 0 ||
-        jobItems.length > 0
+        formData.employmentStatus === 'yes' ||
+        formData.internshipExperience === 'yes' ||
+        formData.jobExperience === 'yes' ||
+        formData.internships.length > 0 ||
+        formData.fullTimes.length > 0
       ) {
-        // 내부 스크롤을 적용할 때, 스크롤 컨테이너의 scrollTop을 조정
         formElement.scrollTo({
           top: bottomRef.current.offsetTop,
           behavior: 'smooth',
@@ -82,11 +209,11 @@ const Signup = () => {
       }
     }
   }, [
-    employmentStatus,
-    internshipExperience,
-    jobExperience,
-    internshipItems.length,
-    jobItems.length,
+    formData.employmentStatus,
+    formData.internshipExperience,
+    formData.jobExperience,
+    formData.internships.length,
+    formData.fullTimes.length,
   ])
 
   return (
@@ -95,6 +222,7 @@ const Signup = () => {
         <h2 className="text-4xl font-extrabold text-center my-8 text-primary">
           Sign up
         </h2>
+
         {step === 1 ? (
           <div className="flex flex-col w-[30.25rem] space-y-9 justify-center my-auto">
             <InputField
@@ -102,27 +230,50 @@ const Signup = () => {
               name="name"
               placeholder="이름을 입력해주세요(시니어멘토는 영어 이름 입력 가능)"
               required={true}
+              value={formData.name}
+              onChange={handleChange}
             />
 
-            <EmailVerification setIsVerified={setIsVerified} />
+            <EmailVerification
+              email={formData.email}
+              setEmail={(email) => setFormData((prev) => ({ ...prev, email }))}
+              setIsVerified={(isVerified) =>
+                setFormData((prev) => ({ ...prev, isVerified }))
+              }
+            />
 
             <InputField
               label="비밀번호"
               name="password"
               placeholder="영어, 숫자, 특수문자를 포함한 8자 이상으로 입력해주세요"
               type="password"
-              showIcon={true}
               required={true}
+              value={formData.password}
+              onChange={handleChange}
             />
 
-            <InputField
-              label="비밀번호 확인"
-              name="confirmPassword"
-              placeholder="비밀번호를 한 번 더 입력해주세요"
-              type="password"
-              showIcon={true}
-              required={true}
-            />
+            {/* 비밀번호 확인 영역 */}
+            <div className="relative">
+              <InputField
+                label="비밀번호 확인"
+                name="confirmPassword"
+                placeholder="비밀번호를 한 번 더 입력해주세요"
+                type="password"
+                showIcon={true}
+                required={true}
+                isChecked={
+                  passwordsMatch && formData.confirmPassword.length > 0
+                }
+                value={formData.confirmPassword}
+                onChange={handleChange}
+              />
+              {/* 불일치 시 경고 메시지 */}
+              {!passwordsMatch && formData.confirmPassword.length > 0 && (
+                <p className="text-red-500 text-sm mt-1">
+                  비밀번호가 일치하지 않습니다.
+                </p>
+              )}
+            </div>
           </div>
         ) : (
           <div
@@ -135,7 +286,7 @@ const Signup = () => {
           >
             {/* 대학 및 학년 선택 */}
             <div>
-              <label className="block text-lg mb-2.5 text-gray">
+              <label className="block text-lg mb-2.5">
                 대학교 및 학년을 선택해주세요{' '}
                 <span className="text-primary">*</span>
               </label>
@@ -172,17 +323,25 @@ const Signup = () => {
                     '호서대학교',
                     '해당 없음',
                   ]}
+                  value={formData.school}
+                  onChange={(value) =>
+                    setFormData((prev) => ({ ...prev, school: value }))
+                  }
                 />
                 <Select
                   title="학년"
                   options={['1학년', '2학년', '3학년', '4학년', '해당 없음']}
+                  value={formData.classYear}
+                  onChange={(value) =>
+                    setFormData((prev) => ({ ...prev, classYear: value }))
+                  }
                 />
               </div>
             </div>
 
             {/* 기수 선택 */}
             <div className="flex justify-between items-center">
-              <label className="text-lg text-gray">
+              <label className="text-lg ">
                 기수를 선택해주세요 <span className="text-primary">*</span>
               </label>
               <div className="w-[9.5rem]">
@@ -198,46 +357,64 @@ const Signup = () => {
                     '7기',
                     '8기',
                   ]}
+                  value={formData.selectedBatch}
+                  onChange={(value) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      selectedBatch: value.replace('기', ''),
+                    }))
+                  }
                 />
               </div>
             </div>
 
-            {/* 이력서 업로드 */}
-            <div className="flex justify-between items-center">
-              <label className="text-lg mb-2.5 text-gray">
-                이력서를 업로드해주세요 <span className="text-primary">*</span>
-              </label>
-              <button
-                type="button"
-                className="w-[9.5rem] h-10 border border-gray rounded-[0.25rem] text-gray"
-              >
-                파일 등록
-              </button>
+            {/* 이력서 (제목 + 구글링크) */}
+            <div>
+              <div className="space-y-3">
+                <InputField
+                  label="이력서 제목"
+                  name="resumeTitle"
+                  placeholder="ex) 홍길동_20241225"
+                  required={true}
+                  value={formData.resumeTitle}
+                  onChange={handleChange}
+                />
+                <InputField
+                  label="이력서 링크"
+                  name="resumeUrl"
+                  placeholder="구글 드라이브 등 공유 링크"
+                  required={true}
+                  value={formData.resumeUrl}
+                  onChange={handleChange}
+                />
+              </div>
             </div>
 
             {/* 포지션 선택 */}
             <div>
-              <label className="block text-lg mb-2.5 text-gray">
+              <label className="block text-lg mb-2.5 ">
                 포지션을 선택해주세요 <span className="text-primary">*</span>
               </label>
               <PositionSelect
-                selectedPositions={selectedPositions}
+                selectedPositions={formData.selectedPositions}
                 handlePositionSelect={handlePositionSelect}
               />
             </div>
 
             {/* 추천 여부 */}
             <div>
-              <label className="block text-lg mb-2.5 text-gray">
+              <label className="block text-lg mb-2.5 ">
                 본인의 프로필을 다른 사람들에게 추천하여 프로젝트에 참여할
                 기회를 늘릴까요? <span className="text-primary">*</span>
               </label>
               <div className="flex justify-between space-x-5">
                 <button
                   type="button"
-                  onClick={() => setRecommendation('yes')}
+                  onClick={() =>
+                    setFormData((prev) => ({ ...prev, recommendation: 'yes' }))
+                  }
                   className={`w-full h-10 border rounded-[0.25rem] ${
-                    recommendation === 'yes'
+                    formData.recommendation === 'yes'
                       ? 'bg-primary text-white border-primary'
                       : 'text-gray border-gray'
                   }`}
@@ -246,9 +423,11 @@ const Signup = () => {
                 </button>
                 <button
                   type="button"
-                  onClick={() => setRecommendation('no')}
+                  onClick={() =>
+                    setFormData((prev) => ({ ...prev, recommendation: 'no' }))
+                  }
                   className={`w-full h-10 border rounded-[0.25rem] ${
-                    recommendation === 'no'
+                    formData.recommendation === 'no'
                       ? 'bg-primary text-white border-primary'
                       : 'text-gray border-gray'
                   }`}
@@ -260,7 +439,7 @@ const Signup = () => {
 
             {/* 링크 입력 */}
             <div>
-              <label className="block text-lg mb-2.5 text-gray">
+              <label className="block text-lg mb-2.5 ">
                 링크를 입력해주세요 <span className="text-primary">*</span>
               </label>
               <div className="flex flex-col space-y-2">
@@ -270,8 +449,10 @@ const Signup = () => {
                   </div>
                   <input
                     type="text"
-                    name="github"
+                    name="githubUrl"
                     className="w-full h-10 px-4 border border-gray rounded-[0.25rem] focus:outline-none focus:border-primary"
+                    value={formData.githubUrl}
+                    onChange={handleChange}
                   />
                 </div>
                 <div className="flex justify-between space-x-5">
@@ -280,8 +461,10 @@ const Signup = () => {
                   </div>
                   <input
                     type="text"
-                    name="blog"
+                    name="blogUrl"
                     className="w-full h-10 px-4 border border-gray rounded-[0.25rem] focus:outline-none focus:border-primary"
+                    value={formData.blogUrl}
+                    onChange={handleChange}
                   />
                 </div>
               </div>
@@ -290,33 +473,47 @@ const Signup = () => {
             {/* 취업 여부 */}
             <CareerToggle
               title="인턴, 취업 등 일 경험이 있나요?"
-              value={employmentStatus}
-              setValue={setEmploymentStatus}
+              value={formData.employmentStatus}
+              setValue={(value) =>
+                setFormData((prev) => ({ ...prev, employmentStatus: value }))
+              }
             />
 
-            {employmentStatus === 'yes' && (
+            {formData.employmentStatus === 'yes' && (
               <>
                 <ExperienceSection
                   title="인턴 경험이 있나요?"
-                  experienceStatus={internshipExperience}
-                  setExperienceStatus={setInternshipExperience}
-                  items={internshipItems}
-                  addExperience={addInternshipExperience}
-                  removeExperience={removeInternshipExperience}
+                  experienceStatus={formData.internshipExperience}
+                  setExperienceStatus={(value) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      internshipExperience: value,
+                    }))
+                  }
+                  experienceData={formData.internships}
+                  setExperienceData={setInternships}
+                  experienceType="intern"
                 />
                 <ExperienceSection
                   title="정규직 경험이 있나요?"
-                  experienceStatus={jobExperience}
-                  setExperienceStatus={setJobExperience}
-                  items={jobItems}
-                  addExperience={addJobExperience}
-                  removeExperience={removeJobExperience}
+                  experienceStatus={formData.jobExperience}
+                  setExperienceStatus={(value) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      jobExperience: value,
+                    }))
+                  }
+                  experienceData={formData.fullTimes}
+                  setExperienceData={setFullTimes}
+                  experienceType="fullTime"
                 />
               </>
             )}
+
             <div ref={bottomRef}></div>
           </div>
         )}
+
         {/* 다음 버튼 및 회원가입 버튼 */}
         <div className="flex my-10">
           {step === 1 ? (
@@ -328,12 +525,22 @@ const Signup = () => {
               다음
             </button>
           ) : (
-            <button
-              type="button"
-              className="w-[30.25rem] h-10 text-xl border border-gray text-gray rounded-full focus:border-primary focus:text-primary"
-            >
-              회원가입
-            </button>
+            <div className="flex flex-col space-y-2">
+              <button
+                type="button"
+                onClick={handleBack}
+                className="w-[30.25rem] h-10 text-xl border border-gray text-gray rounded-full focus:border-primary focus:text-primary"
+              >
+                이전
+              </button>
+              <button
+                type="button"
+                className="w-[30.25rem] h-10 text-xl border border-primary text-primary rounded-full hover:bg-primary hover:text-white"
+                onClick={handleSignup}
+              >
+                회원가입
+              </button>
+            </div>
           )}
         </div>
       </div>

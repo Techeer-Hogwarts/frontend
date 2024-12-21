@@ -1,25 +1,49 @@
 'use client'
 
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
   IoSearchOutline,
   IoCalendarOutline,
   IoPersonCircle,
 } from 'react-icons/io5'
+import Cookies from 'js-cookie'
+import axios from 'axios'
+import { useRouter } from 'next/navigation'
+import { useAuthStore } from '@/store/authStore'
 
 export default function NevBar() {
   const [isSearchOpen, setIsSearchOpen] = useState(false)
+  const { isLoggedIn, setIsLoggedIn, logout } = useAuthStore()
+  const router = useRouter()
+
+  useEffect(() => {
+    const accessToken = Cookies.get('accessToken')
+    setIsLoggedIn(!!accessToken)
+  }, [setIsLoggedIn])
 
   const toggleSearch = () => {
-    setIsSearchOpen(!isSearchOpen)
+    setIsSearchOpen((prev) => !prev)
+  }
+
+  const handleLogout = async () => {
+    try {
+      await logout()
+      router.push('/login')
+    } catch (error) {
+      console.error('Logout error:', error)
+      alert('로그아웃에 실패하였습니다.')
+    }
   }
 
   return (
     <div className="flex items-center w-[1200px] max-w-[1200px] h-[3.8125rem] justify-between border-b border-[#D7D7D7]">
       <div className="flex">
         {/* 로고 */}
-        <Link href="/" className="font-logo text-primary text-[2rem] font-extrabold mr-[2.12rem]">
+        <Link
+          href="/"
+          className="font-logo text-primary text-[2rem] font-extrabold mr-[2.12rem]"
+        >
           TECHEER.ZIP
         </Link>
 
@@ -39,7 +63,7 @@ export default function NevBar() {
           </Link>
         </div>
       </div>
-      <div className="flex">
+      <div className="flex items-center">
         {/* 돋보기 및 기타 아이콘 */}
         <div className="flex items-center ">
           {/* 검색 영역 */}
@@ -61,17 +85,30 @@ export default function NevBar() {
           </div>
         </div>
         {/* 캘린더 아이콘 */}
-        <Link href="/" className="p-2">
+        <Link href="/calendar" className="p-2">
           <IoCalendarOutline size={24} />
         </Link>
         {/* 마이페이지 아이콘 */}
-
-        <Link href="/" className="p-2">
+        <Link href="/detail" className="p-2">
           <IoPersonCircle size={24} />
         </Link>
-        <button type="button" className="hover:text-gray-800">
-          로그아웃
-        </button>
+
+        {isLoggedIn ? (
+          <button
+            type="button"
+            className="ml-4 text-gray-600 hover:text-gray-800 h"
+            onClick={handleLogout}
+          >
+            로그아웃
+          </button>
+        ) : (
+          <Link
+            href="/login"
+            className="ml-4 text-gray-600 hover:text-gray-800"
+          >
+            로그인
+          </Link>
+        )}
       </div>
     </div>
   )

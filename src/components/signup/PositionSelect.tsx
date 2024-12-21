@@ -20,7 +20,7 @@ const PositionSelect: React.FC<PositionSelectProps> = ({
 
   return (
     <div>
-      <div className="flex items-center bg-[#F8F8F8] rounded-md text-xs text-pink justify-between px-4 py-4">
+      <div className="flex items-center bg-filterbg rounded-md text-xs text-pink justify-between px-4 py-4">
         {positions.map((position) => (
           <button
             key={position}
