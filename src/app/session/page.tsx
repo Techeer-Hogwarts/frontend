@@ -20,15 +20,15 @@ interface Session {
 export default function Page() {
   const [selectedPeriods, setSelectedPeriods] = useState<string[]>([])
   const [bestSessions, setBestSessions] = useState<Session[]>([])
-  const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const [message, setMessage] = useState<string | null>(null)
   const { activeOption } = useTapBarStore()
 
   const handleDeleteSession = (id: string) => {
     setBestSessions((prevSessions) =>
       prevSessions.filter((session) => session.id !== id),
     )
-    setErrorMessage('세션영상이 삭제되었습니다.')
-    setTimeout(() => setErrorMessage(null), 2000)
+    setMessage('세션영상이 삭제되었습니다.')
+    setTimeout(() => setMessage(null), 2000)
   }
   // const getBestSession = async () => {
   //   try {
@@ -96,9 +96,9 @@ export default function Page() {
   return (
     <div className="flex justify-center h-auto min-h-screen">
       <div className="flex flex-col">
-        {errorMessage && (
+        {message && (
           <div className="bg-red-500/80 z-50 rounded-md fixed text-white text-center bottom-5 left-1/2 transform -translate-x-1/2 px-4 py-2">
-            {errorMessage}
+            {message}
           </div>
         )}
         <div className="w-[1200px] text-left mt-14 mb-7">
