@@ -3,7 +3,7 @@ import TapBar from '@/components/common/TapBar'
 import AddBtn from '@/components/common/AddBtn'
 import BlogPost from '@/components/blog/BlogPost'
 import { useTapBarStore } from '@/store/tapBarStore'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 interface User {
   name: string
@@ -21,12 +21,13 @@ interface BlogProps {
 export default function Page() {
   const [blog, setBlog] = useState<BlogProps[]>([])
   const [message, setMessage] = useState<string | null>(null)
+  const { activeOption } = useTapBarStore()
   const handleDeleteSession = (id: string) => {
     setBlog((prevblogs) => prevblogs.filter((blog) => blog.id !== id))
     setMessage('블로그 글이 삭제되었습니다.')
     setTimeout(() => setMessage(null), 2000)
   }
-  const getBestBlog = async () => {
+  const getBestBlog = useCallback(async () => {
     try {
       const response = await fetch(
         'https://api.techeerzip.cloud/api/v1/blogs/best?offset=0&limit=10',
@@ -46,7 +47,7 @@ export default function Page() {
     } catch (err) {
       console.error('블로그 데이터 업로드 중 오류 발생:', err)
     }
-  }
+  }, [blog])
   const getBlog = async () => {
     const baseUrl = 'https://api.techeerzip.cloud/api/v1/blogs'
     const params = {
@@ -76,14 +77,13 @@ export default function Page() {
         setBlog(data.data || [])
       })
   }
-  const { activeOption } = useTapBarStore()
   useEffect(() => {
     if (activeOption == '금주의 블로그') {
       getBestBlog()
     } else if (activeOption == 'Techeer' || activeOption == 'Shared') {
       getBlog()
     }
-  }, [activeOption])
+  }, [activeOption, getBestBlog])
 
   return (
     <div className="flex justify-center h-auto min-h-screen">

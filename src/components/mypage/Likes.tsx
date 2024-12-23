@@ -29,14 +29,14 @@ export default function Likes() {
         placeholder="세션 제목 혹은 이름을 검색해보세요"
       />
       <div className="mt-5 grid grid-cols-2 gap-8">
-        {Session.map((session) => (
+        {/* {Session.map((session) => (
           <SessionPost
             key={session.id}
             title={session.title}
             date={session.date}
             name={session.name}
           />
-        ))}
+        ))} */}
       </div>
     </div>
   )
