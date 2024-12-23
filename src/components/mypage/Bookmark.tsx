@@ -35,14 +35,14 @@ export default function Bookmark() {
         placeholder="세션 제목 혹은 이름을 검색해보세요"
       />
       <div className="mt-5 grid grid-cols-2 gap-8">
-        {BookmarkProps.map((Bookmark) => (
+        {/* {BookmarkProps.map((Bookmark) => (
           <BlogPost
             key={Bookmark.id}
             title={Bookmark.title}
             date={Bookmark.date}
             name={Bookmark.name}
           />
-        ))}
+        ))} */}
       </div>
     </div>
   )

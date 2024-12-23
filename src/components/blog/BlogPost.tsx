@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import { useState } from 'react'
-import BlogMenu from './blogMenu'
+import BlogMenu from './BlogMenu'
 
 export interface BlogPostProps {
   readonly title: string
