@@ -15,6 +15,8 @@ interface Session {
   presenter: string
   likeCount: number
   thumbnail: string
+  videoUrl: string
+  fileUrl: string
 }
 
 export default function Page() {
@@ -30,31 +32,28 @@ export default function Page() {
     setMessage('세션영상이 삭제되었습니다.')
     setTimeout(() => setMessage(null), 2000)
   }
-  // const getBestSession = async () => {
-  //   try {
-  //     const response = await fetch(
-  //       'https://api.techeerzip.cloud/api/v1/sessions/best?offset=0&limit=10',
-  //       {
-  //         method: 'GET',
-  //       },
-  //     )
+  const getBestSession = async () => {
+    try {
+      const response = await fetch(
+        'https://api.techeerzip.cloud/api/v1/sessions/best?offset=0&limit=10',
+        {
+          method: 'GET',
+        },
+      )
 
-  //     if (!response.ok) {
-  //       throw new Error('세션 데이터를 업로드하는 데 실패했습니다.')
-  //     }
+      if (!response.ok) {
+        throw new Error('세션 데이터를 업로드하는 데 실패했습니다.')
+      }
 
-  //     const result = await response.json()
-  //     setBestSessions(result.data)
-  //     console.log(bestSessions)
-  //     console.log('세션이 성공적으로 추가되었습니다:', result.data)
-  //   } catch (err) {
-  //     console.error('세션 데이터 업로드 중 오류 발생:', err)
-  //   }
-  // }
-  // useEffect(() => {
-  //   getBestSession()
-  // }, [])
-  useEffect(() => {
+      const result = await response.json()
+      setBestSessions(result.data)
+      console.log(bestSessions)
+      console.log('세션이 성공적으로 추가되었습니다:', result.data)
+    } catch (err) {
+      console.error('세션 데이터 업로드 중 오류 발생:', err)
+    }
+  }
+  const getSession = async () => {
     const storedValue =
       activeOption === '부트캠프'
         ? 'BOOTCAMP'
@@ -91,6 +90,17 @@ export default function Page() {
       .then((data) => {
         setBestSessions(data.data || [])
       })
+  }
+  useEffect(() => {
+    if (activeOption == '금주의 세션') {
+      getBestSession()
+    } else if (
+      activeOption == '전체보기' ||
+      activeOption == '부트캠프' ||
+      activeOption == '파트너스'
+    ) {
+      getSession()
+    }
   }, [activeOption])
 
   return (
@@ -106,7 +116,7 @@ export default function Page() {
           <p className="text-xl">테커인들의 세션영상을 확인해보세요.</p>
         </div>
         <TapBar
-          options={['전체보기', '부트캠프', '파트너스']}
+          options={['금주의 세션', '전체보기', '부트캠프', '파트너스']}
           placeholder="세션 제목 혹은 이름을 검색해보세요"
         />
         <div className="flex justify-start my-6 gap-3">
@@ -137,7 +147,9 @@ export default function Page() {
               title={bestSession.title}
               date={bestSession.date}
               presenter={bestSession.presenter}
+              fileUrl={bestSession.fileUrl}
               onDelete={handleDeleteSession}
+              videoUrl={bestSession.videoUrl}
             />
           ))}
         </div>
