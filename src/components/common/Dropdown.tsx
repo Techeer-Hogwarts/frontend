@@ -71,12 +71,12 @@ const Dropdown: React.FC<DropdownProps> = ({
                   type="checkbox"
                   checked={selectedOptions.includes(option)}
                   onChange={() => handleSelect(option)}
-                  className="w-4 h-4 mr-2 border border-gray appearance-none rounded flex items-center justify-center checked:bg-[#FF7816] checked:border-[#FF7816] cursor-pointer checked:before:content-['✓'] checked:before:text-white checked:before:text-xs checked:before:flex checked:before:items-center checked:before:justify-center"
+                  className="w-4 h-4 mr-2 border border-gray appearance-none rounded flex items-center justify-center checked:bg-primary checked:border-primary cursor-pointer checked:before:content-['✓'] checked:before:text-white checked:before:text-xs checked:before:flex checked:before:items-center checked:before:justify-center"
                 />
                 {option}
               </div>
               {selectedOptions.includes(option) && (
-                <span className="font-medium text-[#FF7816]">✓</span>
+                <span className="font-medium text-primary">✓</span>
               )}
               {index !== options.length - 1 && (
                 <span className="absolute bottom-0 left-0 w-full h-[1px] bg-gray"></span>
