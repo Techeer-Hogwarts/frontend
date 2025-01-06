@@ -52,7 +52,7 @@ export default function OtherResume({ id, offset, limit }: OtherResumeProps) {
   return (
     <div className="flex flex-col w-[14.5rem] h-auto rounded-xl shadow-md">
       {otherData.map((user) => (
-        <div
+        <button
           key={user.id}
           onClick={() => handleResumeClick(user.id)}
           className="flex justify-center my-3 gap-2"
@@ -75,7 +75,7 @@ export default function OtherResume({ id, offset, limit }: OtherResumeProps) {
               <CareerTag career={user.career} />
             </div>
           </div>
-        </div>
+        </button>
       ))}
     </div>
   )
