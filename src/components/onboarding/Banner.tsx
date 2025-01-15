@@ -5,7 +5,7 @@ export default function Banner() {
       <div className="flex flex-col">
         <span className="font-logo text-primary text-[100px]">TECHEER</span>
         <span className="font-normal text-[22px]">
-          Technology부터 Carrer까지 모든 것을 담다.
+          Technology부터 Career까지 모든 것을 담다.
         </span>
       </div>
       <div className="relative w-[350px] h-[350px]">
