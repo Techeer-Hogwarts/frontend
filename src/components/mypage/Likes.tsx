@@ -1,7 +1,16 @@
+'use client'
+
+import { useState } from 'react'
 import TapBar from '../common/TapBar'
 import SessionPost from '../session/SessionPost'
 
 export default function Likes() {
+  const [inputValue, setInputValue] = useState('')
+
+  const handleSearch = (query: string) => {
+    sessionStorage.setItem('searchQuery', query)
+    setInputValue(query)
+  }
   const Session = [
     {
       id: 1,
@@ -27,6 +36,7 @@ export default function Likes() {
       <TapBar
         options={['이력서', '부트캠프', '파트너스']}
         placeholder="세션 제목 혹은 이름을 검색해보세요"
+        onSearch={handleSearch}
       />
       <div className="mt-5 grid grid-cols-2 gap-8">
         {/* {Session.map((session) => (

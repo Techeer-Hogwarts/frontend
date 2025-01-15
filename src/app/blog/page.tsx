@@ -22,6 +22,12 @@ export default function Page() {
   const [blog, setBlog] = useState<BlogProps[]>([])
   const [message, setMessage] = useState<string | null>(null)
   const { activeOption } = useTapBarStore()
+  const [inputValue, setInputValue] = useState('')
+
+  const handleSearch = (query: string) => {
+    sessionStorage.setItem('searchQuery', query)
+    setInputValue(query)
+  }
   const handleDeleteSession = (id: string) => {
     setBlog((prevblogs) => prevblogs.filter((blog) => blog.id !== id))
     setMessage('블로그 글이 삭제되었습니다.')
@@ -100,6 +106,7 @@ export default function Page() {
         <TapBar
           options={['금주의 블로그', 'Techeer', 'Shared']}
           placeholder="블로그 제목 혹은 이름을 검색해보세요"
+          onSearch={handleSearch}
         />
         <div className="grid grid-cols-3 gap-8 mt-8">
           {blog.map((blog, index) => (

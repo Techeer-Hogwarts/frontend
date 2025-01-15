@@ -1,7 +1,16 @@
+'use client'
+
 import TapBar from '../common/TapBar'
 import BlogPost from '../blog/BlogPost'
+import { useState } from 'react'
 
 export default function Bookmark() {
+  const [inputValue, setInputValue] = useState('')
+
+  const handleSearch = (query: string) => {
+    sessionStorage.setItem('searchQuery', query)
+    setInputValue(query)
+  }
   const BookmarkProps = [
     {
       id: 1,
@@ -33,6 +42,7 @@ export default function Bookmark() {
       <TapBar
         options={['이력서', '부트캠프', '파트너스']}
         placeholder="세션 제목 혹은 이름을 검색해보세요"
+        onSearch={handleSearch}
       />
       <div className="mt-5 grid grid-cols-2 gap-8">
         {/* {BookmarkProps.map((Bookmark) => (

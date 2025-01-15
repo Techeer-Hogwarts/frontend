@@ -8,9 +8,14 @@ import { useEffect } from 'react'
 interface TapBarProps {
   readonly options: string[]
   readonly placeholder: string
+  onSearch: (query: string) => void
 }
 
-export default function TapBar({ options, placeholder }: TapBarProps) {
+export default function TapBar({
+  options,
+  placeholder,
+  onSearch,
+}: TapBarProps) {
   const { activeOption, setActiveOption } = useTapBarStore()
   useEffect(() => {
     if (!activeOption && options.length > 0) {
@@ -36,7 +41,7 @@ export default function TapBar({ options, placeholder }: TapBarProps) {
         ))}
 
         <div className="ml-auto">
-          <SearchBar placeholder={placeholder} />
+          <SearchBar placeholder={placeholder} onSearch={onSearch} />
         </div>
       </div>
 
