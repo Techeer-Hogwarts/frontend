@@ -2,27 +2,23 @@
 
 import Image from 'next/image'
 import CategoryBtn from './CategoryBtn'
-import { ChangeEvent, useState } from 'react'
+import { useState } from 'react'
 import SessionDropdown from './SessionDropdown'
-import SessionFileUpload from './SessionFileUpload'
 import ModalInputField from '../common/ModalInputField'
+import Thumbnail from '@/../public/images/session/thumbnail.png'
 
 interface ModalProps {
   position: string
   modal: string
   onClose: () => void
 }
-type SelectedFilesState = {
-  file1: File | null
-  file2: File | null
-}
+
 export default function AddSessionModal({
   position,
   modal,
   onClose,
 }: ModalProps) {
   const [formData, setFormData] = useState({
-    userId: 1, // 추후 삭제 예정
     thumbnail: 'https://medium.com',
     title: '',
     presenter: '',
@@ -32,23 +28,7 @@ export default function AddSessionModal({
     videoUrl: '',
     fileUrl: '',
   })
-  const [pdfUrl, setPdfUrl] = useState<string | null>(null)
-  const [image, setImage] = useState<string | null>(null)
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
-  const [selectedFiles, setSelectedFiles] = useState<SelectedFilesState>({
-    file1: null,
-    file2: null,
-  })
-  const handleFileChange = (
-    event: ChangeEvent<HTMLInputElement>,
-    fileKey: string,
-  ) => {
-    const file = event.target.files?.[0] || null
-    setSelectedFiles((prev) => ({
-      ...prev,
-      [fileKey]: file,
-    }))
-  }
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
     setFormData({
@@ -70,83 +50,35 @@ export default function AddSessionModal({
       date: value,
     })
   }
-  // const postSession = async () => {
-  //   try {
-  //     const payload = {
-  //       userId: formData.userId,
-  //       thumbnail: formData.thumbnail,
-  //       title: formData.title,
-  //       presenter: formData.presenter,
-  //       date: formData.date,
-  //       position: formData.position,
-  //       category: formData.category,
-  //       videoUrl: selectedFiles.file1,
-  //       fileUrl: selectedFiles.file2,
-  //     }
-
-  //     const response = await fetch(
-  //       'https://api.techeerzip.cloud/api/v1/sessions',
-  //       {
-  //         method: 'POST',
-  //         headers: {
-  //           'Content-Type': 'application/json',
-  //         },
-  //         body: JSON.stringify(payload),
-  //       },
-  //     )
-  //     if (!response.ok) {
-  //       throw new Error('세션 데이터를 업로드하는 데 실패했습니다.')
-  //     }
-  //     const result = await response.json()
-  //     console.log('세션이 성공적으로 추가되었습니다:', result)
-  //     onClose() // 성공적으로 추가되면 모달 닫기
-  //   } catch (err) {
-  //     console.error('세션 데이터 업로드 중 오류 발생:', err)
-  //   }
-  // }
   const postSession = async () => {
     try {
-      const formDataToSend = new FormData()
-      formDataToSend.append('userId', formData.userId.toString())
-      formDataToSend.append('thumbnail', formData.thumbnail)
-      formDataToSend.append('title', formData.title)
-      formDataToSend.append('presenter', formData.presenter)
-      formDataToSend.append('date', formData.date)
-      formDataToSend.append('position', formData.position)
-      formDataToSend.append('category', formData.category)
-
-      // 파일 추가
-      if (selectedFiles.file1) {
-        formDataToSend.append('videoUrl', selectedFiles.file1) // File 객체 그대로 전송
-      }
-      if (selectedFiles.file2) {
-        formDataToSend.append('fileUrl', selectedFiles.file2) // File 객체 그대로 전송
+      const payload = {
+        thumbnail: formData.thumbnail,
+        title: formData.title,
+        presenter: formData.presenter,
+        date: formData.date,
+        position: formData.position,
+        category: formData.category,
+        videoUrl: formData.videoUrl,
+        fileUrl: formData.fileUrl,
       }
 
       const response = await fetch(
         'https://api.techeerzip.cloud/api/v1/sessions',
         {
           method: 'POST',
-          body: formDataToSend,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payload),
         },
       )
-
       if (!response.ok) {
         throw new Error('세션 데이터를 업로드하는 데 실패했습니다.')
       }
-
-      // 서버에서 URL을 반환한다고 가정
       const result = await response.json()
-
-      // 서버 응답에 포함된 videoUrl과 fileUrl을 formData에 업데이트
-      setFormData({
-        ...formData,
-        videoUrl: result.videoUrl, // 서버에서 반환된 videoUrl
-        fileUrl: result.fileUrl, // 서버에서 반환된 fileUrl
-      })
-
       console.log('세션이 성공적으로 추가되었습니다:', result)
-      onClose() // 모달 닫기
+      onClose()
     } catch (err) {
       console.error('세션 데이터 업로드 중 오류 발생:', err)
     }
@@ -159,35 +91,15 @@ export default function AddSessionModal({
           <p className="text-2xl text-center mt-9 mb-3 font-semibold">
             세션 영상 등록
           </p>
-          {pdfUrl ? (
-            <div>
-              <embed
-                src={pdfUrl}
-                type="application/pdf"
-                width="220px"
-                height="150px"
-                className="border rounded-md overflow-hidden"
-              />
-            </div>
-          ) : (
+          <div className="mt-4">
             <Image
-              src="/thumbnail.png"
-              alt="thumbnail"
+              src={Thumbnail}
+              alt="PDF First Page Preview"
+              className="w-full h-auto"
               width={220}
               height={150}
             />
-          )}
-          {/* <div className="mt-4">
-            {image && (
-              <Image
-                src={image}
-                alt="PDF First Page Preview"
-                className="w-full h-auto"
-                width={220}
-                height={150}
-              />
-            )}
-          </div> */}
+          </div>
         </div>
         <div className="flex flex-col relative mx-8 mt-8">
           <ModalInputField
@@ -279,23 +191,19 @@ export default function AddSessionModal({
               onSelect={() => handlePositionChange('OTHERS')}
             />
           </div>
-          <SessionFileUpload
-            fileKey="file1"
-            selectedFile={selectedFiles.file1}
-            handleFileChange={handleFileChange}
-            label="영상을 첨부해 주세요"
+          <ModalInputField
+            title="영상 링크를 첨부해 주세요"
+            placeholder="www.세션 제목.com"
+            name="videoUrl"
+            value={formData.videoUrl}
+            handleInputChange={handleInputChange}
           />
-          {/* <input
-            type="file"
-            accept="application/pdf"
-            onChange={handlePdfChange}
-            className="mb-4"
-          /> */}
-          <SessionFileUpload
-            fileKey="file2"
-            selectedFile={selectedFiles.file2}
-            handleFileChange={handleFileChange}
-            label="발표 자료를 첨부해주세요"
+          <ModalInputField
+            title="발표 자료 링크를 첨부해주세요"
+            placeholder="www.발표 자료 링크.com"
+            name="fileUrl"
+            value={formData.fileUrl}
+            handleInputChange={handleInputChange}
           />
         </div>
         <div className="flex gap-4">

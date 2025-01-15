@@ -4,6 +4,7 @@ import Image from 'next/image'
 import { useState } from 'react'
 import SessionMenu from './SessionMenu'
 import ReactPlayer from 'react-player'
+import { useRouter } from 'next/navigation'
 
 export interface SessionPostProps {
   id: string
@@ -31,6 +32,10 @@ export default function SessionPost({
   const [showModal, setShowModal] = useState(false)
   const [isLike, setIsLike] = useState(false)
   const [isVideo, setIsVideo] = useState(false)
+  const router = useRouter()
+  const onClick = () => {
+    router.push(`/session/video/${id}`)
+  }
   const clickModal = () => {
     setShowModal(!showModal)
   }
@@ -40,10 +45,10 @@ export default function SessionPost({
   const showVideo = () => {
     setIsVideo(!isVideo)
   }
-
+  // transition-transform transform hover:-translate-y-2
   return (
     <div className="flex ">
-      <div className="flex flex-col w-[379px] relative transition-transform transform hover:-translate-y-2">
+      <div className="flex flex-col w-[379px] relative ">
         <Image
           src={thumbnail}
           alt="testIMG"
@@ -52,7 +57,8 @@ export default function SessionPost({
           height={199}
           className="w-[379px] h-[199px] z-1"
           onClick={() => {
-            showVideo()
+            // showVideo()
+            onClick()
             console.log('hihi', videoUrl)
           }}
         />
@@ -114,7 +120,7 @@ export default function SessionPost({
               ✕
             </button>
             <div className="video-wrapper">
-              <ReactPlayer url={videoUrl} controls width="100%" height="100%" />
+              <ReactPlayer url={videoUrl} controls width="100%" heigh="100%" />
             </div>
           </div>
         </div>

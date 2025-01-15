@@ -1,13 +1,13 @@
 'use client'
 
+import { TbEdit } from 'react-icons/tb'
 import { MdDeleteOutline } from 'react-icons/md'
 import { MdBookmarkBorder } from 'react-icons/md'
 import { LiaDownloadSolid } from 'react-icons/lia'
-
 interface SessionMenuProps {
   id: string
-  onDelete: (id: string) => void
   fileUrl: string
+  onDelete: (id: string) => void
 }
 
 export default function SessionMenu({
@@ -21,15 +21,11 @@ export default function SessionMenu({
         `https://api.techeerzip.cloud/api/v1/sessions/${id}`,
         {
           method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json',
-          },
         },
       )
       if (!response.ok) {
         throw new Error('세션 삭제에 실패했습니다.')
       }
-
       await response.json()
       onDelete(id)
     } catch (error) {
@@ -48,7 +44,14 @@ export default function SessionMenu({
         <MdBookmarkBorder className="w-4 h-4" />
         북마크
       </button>
-      <button type="button" onClick={sessionDelete}></button>
+      <button
+        type="button"
+        onClick={sessionDelete}
+        className="flex items-center justify-start gap-1 pl-3 py-1 hover:bg-black/10"
+      >
+        <TbEdit className="w-4 h-4" />
+        수정
+      </button>
       <button
         onClick={handleDownload}
         className="flex items-center justify-start gap-1 pl-3 py-1 hover:bg-black/10"

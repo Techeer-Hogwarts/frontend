@@ -3,11 +3,13 @@
 import { useEffect, useState } from 'react'
 import TapBar from '@/components/common/TapBar'
 import AddBtn from '@/components/common/AddBtn'
+import { getSessions } from './_lib/getSessions'
 import Dropdown from '@/components/common/Dropdown'
 import { useTapBarStore } from '@/store/tapBarStore'
 import FilterBtn from '@/components/session/FilterBtn'
+import { getBestSessions } from './_lib/getBestSessions'
 import SessionPost from '@/components/session/SessionPost'
-
+import { useQuery } from '@tanstack/react-query'
 interface Session {
   id: string
   title: string
@@ -21,87 +23,72 @@ interface Session {
 
 export default function Page() {
   const [selectedPeriods, setSelectedPeriods] = useState<string[]>([])
-  const [bestSessions, setBestSessions] = useState<Session[]>([])
+  const [sessions, setSessions] = useState<Session[]>([])
   const [message, setMessage] = useState<string | null>(null)
   const { activeOption } = useTapBarStore()
+  const [inputValue, setInputValue] = useState('')
+
+  const handleSearch = (query: string) => {
+    sessionStorage.setItem('searchQuery', query)
+    setInputValue(query)
+  }
 
   const handleDeleteSession = (id: string) => {
-    setBestSessions((prevSessions) =>
+    setSessions((prevSessions) =>
       prevSessions.filter((session) => session.id !== id),
     )
     setMessage('세션영상이 삭제되었습니다.')
     setTimeout(() => setMessage(null), 2000)
   }
-  const getBestSession = async () => {
+
+  const fetchBestSession = async () => {
     try {
-      const response = await fetch(
-        'https://api.techeerzip.cloud/api/v1/sessions/best?offset=0&limit=10',
-        {
-          method: 'GET',
-        },
-      )
-
-      if (!response.ok) {
-        throw new Error('세션 데이터를 업로드하는 데 실패했습니다.')
-      }
-
-      const result = await response.json()
-      setBestSessions(result.data)
-      console.log(bestSessions)
-      console.log('세션이 성공적으로 추가되었습니다:', result.data)
+      const result = await getBestSessions()
+      setSessions(result)
+      console.log('세션이 성공적으로 추가되었습니다:', result)
     } catch (err) {
       console.error('세션 데이터 업로드 중 오류 발생:', err)
     }
   }
-  const getSession = async () => {
-    const storedValue =
-      activeOption === '부트캠프'
-        ? 'BOOTCAMP'
-        : activeOption === '파트너스'
-          ? 'PARTNERS'
-          : activeOption === '전체보기'
-            ? ''
-            : ''
-    const baseUrl = 'https://api.techeerzip.cloud/api/v1/sessions'
-    const params = {
-      keyword: '',
-      category: storedValue,
-      date: '',
-      position: '',
-      offset: String(0),
-      limit: String(10),
+  // const { data } = useQuery({
+  //   queryKey: ['bestSessions'],
+  //   queryFn: getBestSessions,
+  //   staleTime: 60 * 1000,
+  //   gcTime: 300 * 1000,
+  // })
+  // const { data: session } = useQuery({
+  //   queryKey: ['Sessions', inputValue, activeOption],
+  //   queryFn: getSessions(inputValue, activeOption),
+  //   staleTime: 60 * 1000,
+  //   gcTime: 300 * 1000,
+  // })
+
+  const fetchSession = async (query: string, category: string) => {
+    try {
+      const result = await getSessions(query, category)
+      setSessions(result)
+    } catch (err) {
+      console.error('세션 데이터 가져오기 실패:', err)
     }
-
-    const filteredParams = Object.fromEntries(
-      Object.entries(params).filter(
-        ([_, value]) => value !== null && value !== '',
-      ),
-    )
-    const queryString = new URLSearchParams(filteredParams).toString()
-    const url = `${baseUrl}?${queryString}`
-
-    fetch(url)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok')
-        }
-        return response.json()
-      })
-      .then((data) => {
-        setBestSessions(data.data || [])
-      })
   }
+
   useEffect(() => {
-    if (activeOption == '금주의 세션') {
-      getBestSession()
-    } else if (
-      activeOption == '전체보기' ||
-      activeOption == '부트캠프' ||
-      activeOption == '파트너스'
-    ) {
-      getSession()
+    if (activeOption) {
+      if (activeOption === '금주의 세션') {
+        fetchBestSession()
+      } else if (['전체보기', '부트캠프', '파트너스'].includes(activeOption)) {
+        const category =
+          activeOption === '부트캠프'
+            ? 'BOOTCAMP'
+            : activeOption === '파트너스'
+              ? 'PARTNERS'
+              : activeOption === '전체보기'
+                ? ''
+                : ''
+        fetchSession(inputValue, category)
+      }
     }
-  }, [activeOption])
+  }, [activeOption, inputValue])
 
   return (
     <div className="flex justify-center h-auto min-h-screen">
@@ -117,7 +104,8 @@ export default function Page() {
         </div>
         <TapBar
           options={['금주의 세션', '전체보기', '부트캠프', '파트너스']}
-          placeholder="세션 제목 혹은 이름을 검색해보세요"
+          placeholder="세션 제목 검색해보세요"
+          onSearch={handleSearch}
         />
         <div className="flex justify-start my-6 gap-3">
           <Dropdown
@@ -138,18 +126,18 @@ export default function Page() {
           <FilterBtn title="1기" />
         </div> */}
         <div className="grid grid-cols-3 gap-8">
-          {bestSessions.map((bestSession) => (
+          {sessions?.map((data: any) => (
             <SessionPost
-              key={bestSession.id}
-              likeCount={bestSession.likeCount}
-              id={bestSession.id}
-              thumbnail={bestSession.thumbnail}
-              title={bestSession.title}
-              date={bestSession.date}
-              presenter={bestSession.presenter}
-              fileUrl={bestSession.fileUrl}
+              key={data.id}
+              likeCount={data.likeCount}
+              id={data.id}
+              thumbnail={data.thumbnail}
+              title={data.title}
+              date={data.date}
+              presenter={data.presenter}
+              fileUrl={data.fileUrl}
               onDelete={handleDeleteSession}
-              videoUrl={bestSession.videoUrl}
+              videoUrl={data.videoUrl}
             />
           ))}
         </div>
