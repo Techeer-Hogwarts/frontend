@@ -1,6 +1,6 @@
 'use client'
 
-const profileId = 23
+const profileId = 1
 
 import Image from 'next/image'
 import Link from 'next/link'

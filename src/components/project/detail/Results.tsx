@@ -23,21 +23,19 @@ const ResultBox = ({ text, url }: ResultBoxProps) => {
   )
 }
 
-export default function Results() {
+export default function Results(resultImages) {
   return (
     <div>
-      <div className="text-[1.125rem] font-[600] mb-3">결과물</div>
-      <div className="grid grid-cols-2 gap-6">
-        <ResultBox text="회원가입 페이지" url="/path/to/image1.png" />
-        <ResultBox
-          text="회원가입 페이지 회원가입 페이지회원가입 페이지회원가입 페이지
-회원가입 페이지"
-          url="/path/to/image2.png"
-        />
-        <ResultBox text="회원가입 페이지" url="/path/to/image3.png" />
-        <ResultBox text="회원가입 페이지" url="/path/to/image4.png" />
-      </div>
+      {resultImages.length > 0 && (
+        <>
+          <div className="text-[1.125rem] font-[600] mb-3">결과물</div>
+          <div className="grid grid-cols-2 gap-6">
+            {resultImages.map((image) => (
+              <ResultBox key={image} text="회원가입 페이지" url={image} />
+            ))}
+          </div>
+        </>
+      )}
     </div>
   )
 }
-

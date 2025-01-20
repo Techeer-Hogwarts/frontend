@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react'
 import { IoAddCircleOutline } from 'react-icons/io5'
 import ResultImgBox from '../ResultImgBox'
 
-export default function AddResults() {
+export default function AddResults({ resultImages, onUpdate }) {
   const [boxes, setBoxes] = useState<number[]>([0, 1]) // 박스 개수 관리
   const [title, setTitle] = useState<string>('') // 상단 설명 문구 상태
 
@@ -16,7 +16,14 @@ export default function AddResults() {
       setProjectType(storedProjectType)
     }
   }, [])
-  
+
+  // 이미지 변경 핸들러
+  const handleImageChange = (index: number, image: string) => {
+    const updatedImages = [...resultImages]
+    updatedImages[index] = image
+    onUpdate('resultImages', updatedImages) // 부모 상태 업데이트
+  }
+
   // 박스 추가 함수
   const handleAddBox = () => {
     setBoxes([...boxes, boxes.length]) // 박스 개수를 증가시킴
@@ -52,6 +59,8 @@ export default function AddResults() {
           <ResultImgBox
             key={index}
             id={boxId}
+            image={resultImages[index] || ''}
+            onImageChange={(image) => handleImageChange(index, image)}
             onDelete={() => handleDeleteBox(index)}
           />
         ))}

@@ -1,6 +1,5 @@
 'use client'
 
-import { useState } from 'react'
 import Image from 'next/image'
 import { IoClose } from 'react-icons/io5'
 import { FaRegImage } from 'react-icons/fa6'
@@ -10,17 +9,16 @@ interface BoxProps {
   onDelete: () => void
 }
 
-const ResultImgBox = ({ id, onDelete }: BoxProps) => {
-  const [image, setImage] = useState<string | null>(null)
-  const [text, setText] = useState('')
-
+const ResultImgBox = ({ id, image, onImageChange, onDelete }: BoxProps) => {
   // 이미지 업로드 핸들러
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
     if (file) {
       const reader = new FileReader()
-      reader.onloadend = () => {
-        setImage(reader.result as string) // 이미지 URL 설정
+      reader.onload = (e) => {
+        if (e.target?.result) {
+          onImageChange(e.target.result.toString())
+        }
       }
       reader.readAsDataURL(file)
     }
@@ -61,15 +59,6 @@ const ResultImgBox = ({ id, onDelete }: BoxProps) => {
           className="absolute inset-0 opacity-0 cursor-pointer"
         />
       </label>
-
-      {/* 이미지 설명 입력 */}
-      <input
-        type="text"
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        placeholder="이미지에 대한 간단한 설명을 써주세요."
-        className="w-full p-2 border border-lightgray rounded-md"
-      />
     </div>
   )
 }

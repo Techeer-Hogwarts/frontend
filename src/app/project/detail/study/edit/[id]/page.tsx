@@ -1,7 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { useQuery } from '@tanstack/react-query'
 
 import AddMember from '@/components/project/add/AddMember'
 import AddProfile from '@/components/project/add/AddProfile'
@@ -11,12 +12,44 @@ import AddGoal from '@/components/project/add/study/AddGoal'
 import AddPlan from '@/components/project/add/study/AddPlan'
 import AddRecruit from '@/components/project/add/AddRecruit'
 
-import { handleAddStudy } from '@/api/project/study/\bstudy'
+import {
+  getStudyDetail,
+  getStudyMember,
+  handleEditStudy,
+} from '@/api/project/study/\bstudy'
 
 export default function AddStudyPage() {
   const router = useRouter()
 
-  const [studyData, setStudyData] = useState({
+  const projectId = Number(localStorage.getItem('projectId'))
+
+  const { data } = useQuery({
+    queryKey: ['getStudyDetailsAndApplicants', projectId],
+    queryFn: async () => {
+      const [studyDetails, studyMember] = await Promise.all([
+        getStudyDetail(projectId),
+        getStudyMember(projectId),
+      ])
+      return { studyDetails, studyMember }
+    },
+  })
+
+  type StudyDataType = {
+    name: string
+    githubLink: string
+    notionLink: string
+    studyExplain: string
+    goal: string
+    rule: string
+    isFinished: boolean
+    isRecruited: boolean
+    recruitNum: number
+    recruitExplain: string
+    studyMember: any[]
+    resultImages: string | string[]
+  }
+
+  const [studyData, setStudyData] = useState<StudyDataType>({
     name: '',
     githubLink: '',
     notionLink: '',
@@ -28,8 +61,28 @@ export default function AddStudyPage() {
     recruitNum: 0,
     recruitExplain: '',
     studyMember: [],
-    resultImages: '',
+    resultImages: [],
   })
+
+  useEffect(() => {
+    if (data?.studyDetails?.data && data?.studyMember?.data) {
+      setStudyData((prev) => ({
+        ...prev,
+        name: data.studyDetails.data.name,
+        githubLink: data.studyDetails.data.githubLink || '',
+        notionLink: data.studyDetails.data.notionLink || '',
+        studyExplain: data.studyDetails.data.studyExplain || '',
+        goal: data.studyDetails.data.goal || '',
+        rule: data.studyDetails.data.rule || '',
+        isFinished: data.studyDetails.data.isFinished,
+        isRecruited: data.studyDetails.data.isRecruited,
+        recruitNum: data.studyDetails.data.recruitNum || 0,
+        recruitExplain: data.studyDetails.data.recruitExplain || '',
+        studyMember: data?.studyMember?.data?.members || [],
+        resultImages: data.studyDetails.data.resultImages || [],
+      }))
+    }
+  }, [data])
 
   const handleUpdate = (key, value) => {
     setStudyData((prev) => ({ ...prev, [key]: value }))
@@ -44,7 +97,7 @@ export default function AddStudyPage() {
   const handleSubmit = async () => {
     console.log(studyData)
     try {
-      const response = await handleAddStudy(studyData, token)
+      const response = await handleEditStudy(studyData, token, projectId)
       if (response.status === 200) {
         router.push(`/project/detail/study/${response.data.id}`)
         localStorage.setItem('projectId', response.data.id)

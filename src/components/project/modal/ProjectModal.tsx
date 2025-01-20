@@ -6,24 +6,13 @@ import MemberBox from './BigMemberBox'
 import SmallMemberBox from './SmallMemberBox'
 import { useRouter } from 'next/navigation'
 
-interface Member {
-  name: string
-  generation: string
-  imageSrc: string | null
-}
-
-interface MemberModalProps {
-  initialMembers: Member[]
-}
-
-const MemberModal = ({ initialMembers }: MemberModalProps) => {
+const ProjectMemberModal = () => {
   const dropDownRef = useRef<HTMLInputElement>(null)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const [name, setName] = useState('')
   const router = useRouter()
   const [members, setMembers] = useState<Member[]>([])
-  const [dropdownOptions, setDropdownOptions] =
-    useState<Member[]>(initialMembers)
+  const [dropdownOptions, setDropdownOptions] = useState<Member[]>()
 
   const [projectType, setProjectType] = useState<null | string>(null)
 
@@ -166,4 +155,4 @@ const MemberModal = ({ initialMembers }: MemberModalProps) => {
   )
 }
 
-export default MemberModal
+export default ProjectMemberModal

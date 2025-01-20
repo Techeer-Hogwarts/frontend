@@ -46,7 +46,7 @@ export default function ProjectDetailpage() {
   const router = useRouter()
 
   const handleModal = () => {
-    router.push('/project/detail/project/23/applyModal')
+    router.push('/project/detail/project/1/applyProject')
   }
   return (
     <div className="relative flex justify-between mt-[2.75rem]">

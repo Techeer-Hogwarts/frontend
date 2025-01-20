@@ -1,8 +1,20 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
+  reactStrictMode: false,
   experimental: {
     appDir: true,
+  },
+  images: {
+    domains: ['example.com', 'avatars.slack-edge.com'], // 허용할 외부 도메인 추가
+  },
+
+  async rewrites() {
+    return [
+      {
+        source: '/:api/v1/:path*',
+        destination: 'https://api.techeerzip.cloud/api/v1/:path*',
+      },
+    ]
   },
   webpack: (config) => {
     // SVG 파일을 처리하는 설정

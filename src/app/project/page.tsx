@@ -2,16 +2,48 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import Card from '@/components/project/Card'
+import ProjectCard from '@/components/project/ProjectCard'
+import StudyCard from '@/components/project/StudyCard'
 import TapBar from '@/components/common/TapBar'
 import Dropdown from '@/components/common/Dropdown'
 import AddBtn from '../../components/project/add/AddBtn'
+import { useQuery } from '@tanstack/react-query'
+
+import { getAllTeams } from '@/api/project/project'
+
+type Team = {
+  id: number
+  isDeleted: boolean
+  isRecruited: boolean
+  isFinished: boolean
+  name: string
+  recruitNum: number
+  studyExplain: string
+}
+
+type TeamsResponse = {
+  code: number
+  message: string
+  data: {
+    projectTeams: Team[]
+    studyTeams: Team[]
+  }
+}
 
 export default function Project() {
+  const token =
+    'access_token:eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJybmpzY2tzZHVkMUBuYXZlci5jb20iLCJleHAiOjE3MTg3MTU1MTN9.XIlhOgOgxD7_VvLoervDYCbwEWbmFaIxzgIeM8MCe1o'
+
   const [selectedPeriods, setSelectedPeriods] = useState<string[]>(['0'])
+
+  const { data: allTeams } = useQuery<TeamsResponse>({
+    queryKey: ['getAllTeams', token],
+    queryFn: () => getAllTeams(token),
+  })
+
   return (
-    <div className=" max-w-[1200px] w-[1200px] mt-[3.56rem] items-center">
-      <div className="flex justify-between mb-[2.84rem] ">
+    <div className="max-w-[1200px] w-[1200px] mt-[3.56rem] items-center">
+      <div className="flex justify-between mb-[2.84rem]">
         {/* 왼쪽 텍스트 영역 */}
         <div>
           <div className="text-[2.5rem] font-bold">프로젝트</div>
@@ -25,7 +57,7 @@ export default function Project() {
           <Link
             href="/"
             type="button"
-            className="w-[13.1875rem] h-[3.3125rem] text-center  rounded-lg shadow-md justify-center text-[1.125rem] flex items-center hover:shadow-custom"
+            className="w-[13.1875rem] h-[3.3125rem] text-center rounded-lg shadow-md justify-center text-[1.125rem] flex items-center hover:shadow-custom"
           >
             내 프로젝트 확인하기
             <span className="ml-2">✨</span>
@@ -58,9 +90,12 @@ export default function Project() {
           setSelectedOptions={setSelectedPeriods}
         />
       </div>
-      <div className="flex gap-[1rem] flex-wrap ">
-        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16].map((el) => (
-          <Card key={el} />
+      <div className="flex gap-[1rem] flex-wrap">
+        {allTeams?.data.projectTeams.map((team) => (
+          <ProjectCard key={team.id} team={team} />
+        ))}
+        {allTeams?.data.studyTeams.map((team) => (
+          <StudyCard key={team.id} team={team}  />
         ))}
       </div>
       <AddBtn />

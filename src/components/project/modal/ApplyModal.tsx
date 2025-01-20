@@ -1,22 +1,54 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
+
+import { handleApplyStudy } from '@/api/project/study/\bstudy'
 
 const ApplyModal = () => {
   const [apply, setApply] = useState('')
   const [position, setPosition] = useState('')
+  const [projectType, setProjectType] = useState<null | string>(null)
   const router = useRouter()
 
-  // 지원동기
+  const projectId = Number(localStorage.getItem('projectId'))
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const storedProjectType = localStorage.getItem('projectType')
+      setProjectType(storedProjectType)
+    }
+  }, [])
+
   const handleApply = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setApply(e.target.value)
   }
 
+  const handleSave = async () => {
+    if (projectType === 'study') {
+      if (apply) {
+        const data = {
+          studyTeamId: projectId,
+          summary: apply,
+        }
+        const token = localStorage.getItem('token')
+        try {
+          const result = await handleApplyStudy(data, token)
+          alert('스터디 지원이 완료되었습니다.')
+          console.log('API 응답:', result)
+        } catch (error) {
+          alert('스터디 지원에 실패했습니다. 다시 시도해주세요.')
+        }
+      } else {
+        alert('지원 동기를 입력해주세요.')
+      }
+    }
+  }
+
   return (
     <div className="z-50 fixed inset-0 flex justify-center items-center bg-black bg-opacity-70 text-center">
-      <div className="flex flex-col p-8 w-[30.375rem] h-[39.375rem] bg-white border rounded-xl">
+      <div className="flex flex-col p-8 w-[30.375rem] max-h-[39.375rem] bg-white border rounded-xl">
         <p className="w-full text-[1.375rem] text-center mb-4">지원하기</p>
         <div className="flex justify-center mb-[1.56rem]">
           <Image
@@ -26,25 +58,29 @@ const ApplyModal = () => {
             alt="img"
           />
         </div>
-        {/* 스택 선택 */}
-        <div className="mb-4">
-          <p className="text-left mb-2">지원하고자하는 포지션을 선택주세요</p>
-          <div className="w-full flex justify-between mb-[2.5rem]">
-            {['Frontend', 'Backend', 'Full-Stack', 'DevOps'].map((el) => {
-              return (
-                <button
-                  key={el}
-                  className={`w-[5.875rem] h-[1.75rem] border border-lightprimary rounded-md ${position === el ? 'bg-lightprimary' : 'bg-white'} `}
-                  onClick={() => {
-                    setPosition(el)
-                  }}
-                >
-                  {el}
-                </button>
-              )
-            })}
+
+        {/*project일 경우에만 보임 : 스택 선택 */}
+        {projectType === 'project' && (
+          <div className="mb-4">
+            <p className="text-left mb-2">지원하고자하는 포지션을 선택주세요</p>
+            <div className="w-full flex justify-between mb-[2.5rem]">
+              {['Frontend', 'Backend', 'Full-Stack', 'DevOps'].map((el) => {
+                return (
+                  <button
+                    key={el}
+                    className={`w-[5.875rem] h-[1.75rem] border border-lightprimary rounded-md ${position === el ? 'bg-lightprimary' : 'bg-white'} `}
+                    onClick={() => {
+                      setPosition(el)
+                    }}
+                  >
+                    {el}
+                  </button>
+                )
+              })}
+            </div>
           </div>
-        </div>
+        )}
+
         {/* 지원동기 입력 필드*/}
         <div className="mb-4">
           <p className="text-left mb-2">지원동기를 입력해주세요</p>
@@ -67,8 +103,9 @@ const ApplyModal = () => {
           <button
             type="button"
             className={`w-[200px] rounded-md text-sm h-[34px] ${
-              position && apply ? 'bg-primary text-white' : 'bg-lightgray'
+              apply ? 'bg-primary text-white' : 'bg-lightgray'
             }`}
+            onClick={handleSave}
           >
             저장
           </button>
