@@ -40,17 +40,13 @@ interface GetStudyApplicantsResponse {
   }
 }
 
-const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL
-
 // 스터디 추가하기
-export const handleAddStudy = async (data, token) => {
+export const handleAddStudy = async (data) => {
   try {
     const response = await fetch(`/api/v1/studyTeams`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: token,
-      },
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
       body: JSON.stringify(data),
     })
 
@@ -68,14 +64,11 @@ export const handleAddStudy = async (data, token) => {
 }
 
 // 스터디 수정하기
-export const handleEditStudy = async (data, token, projectId) => {
+export const handleEditStudy = async (data, projectId) => {
   try {
     const response = await fetch(`/api/v1/studyTeams/${projectId}`, {
       method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: token,
-      },
+      credentials: 'include',
       body: JSON.stringify(data),
     })
 
@@ -123,9 +116,6 @@ export const getStudyMember = async (
   try {
     const response = await fetch(`/api/v1//studyTeams/${studyTeamId}/members`, {
       method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
     })
 
     if (!response.ok) {
@@ -141,14 +131,11 @@ export const getStudyMember = async (
 }
 
 // 스터디 지원하기
-export const handleApplyStudy = async (data, token) => {
+export const handleApplyStudy = async (data) => {
   try {
     const response = await fetch(`/api/v1/studyTeams/apply`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: token,
-      },
+      credentials: 'include',
       body: JSON.stringify(data),
     })
 
@@ -165,14 +152,11 @@ export const handleApplyStudy = async (data, token) => {
   }
 }
 // 스터디 지원 취소하기
-export const handleDenyStudy = async (studyTeamId, token) => {
+export const handleDenyStudy = async (studyTeamId) => {
   try {
     const response = await fetch(`/api/v1/studyTeams/${studyTeamId}/cancel`, {
       method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: token,
-      },
+      credentials: 'include',
     })
 
     if (!response.ok) {
@@ -189,14 +173,11 @@ export const handleDenyStudy = async (studyTeamId, token) => {
 }
 
 //스터디 공고 마감
-export const handleCloseStudy = async (studyTeamId: number, token: string) => {
+export const handleCloseStudy = async (studyTeamId) => {
   try {
     const response = await fetch(`/api/v1/studyTeams/close/${studyTeamId}`, {
       method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: token,
-      },
+      credentials: 'include',
     })
 
     if (!response.ok) {
@@ -213,18 +194,11 @@ export const handleCloseStudy = async (studyTeamId: number, token: string) => {
 }
 
 //스터디 공고 삭제
-export const deleteStudyTeam = async (projectId: number, token: string) => {
+export const deleteStudyTeam = async (projectId) => {
   try {
-    if (!token) {
-      throw new Error('토큰이 없습니다. 로그인 상태를 확인하세요.')
-    }
-
     const response = await fetch(`/api/v1/studyTeams/delete/${projectId}`, {
       method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: token,
-      },
+      credentials: 'include',
     })
 
     if (!response.ok) {
@@ -241,19 +215,13 @@ export const deleteStudyTeam = async (projectId: number, token: string) => {
 }
 
 //스터디 지원자 보기
-export const getStudyApplicants = async (
-  studyTeamId: number,
-  token: string,
-) => {
+export const getStudyApplicants = async (studyTeamId) => {
   try {
     const response = await fetch(
       `/api/v1/studyTeams/${studyTeamId}/applicants`,
       {
         method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: token,
-        },
+        credentials: 'include',
       },
     )
 
@@ -271,14 +239,11 @@ export const getStudyApplicants = async (
 }
 
 // 스터디 지원자 수락
-export const acceptStudyApplicant = async (data, token) => {
+export const acceptStudyApplicant = async (data) => {
   try {
     const response = await fetch(`/api/v1/studyTeams/applicants/accept`, {
       method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: token,
-      },
+      credentials: 'include',
       body: JSON.stringify(data),
     })
 
@@ -296,14 +261,11 @@ export const acceptStudyApplicant = async (data, token) => {
 }
 
 // 스터디 지원 거부
-export const denyStudyApplicant = async (data, token) => {
+export const denyStudyApplicant = async (data) => {
   try {
     const response = await fetch(`/api/v1/studyTeams/applicants/reject`, {
       method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: token,
-      },
+      credentials: 'include',
       body: JSON.stringify(data),
     })
 
@@ -319,5 +281,3 @@ export const denyStudyApplicant = async (data, token) => {
     throw error
   }
 }
-
-// 스터디 지원 취소

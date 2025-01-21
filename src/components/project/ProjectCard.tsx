@@ -1,10 +1,8 @@
 import Image from 'next/image'
 import Link from 'next/link'
 
-// 더미값
-const projectId = 1
-
 type Team = {
+  id: number
   name: string
   category: string
   isRecruited: string
@@ -14,78 +12,99 @@ type Team = {
 }
 
 export default function ProjectCard({ team }: { team: Team }) {
-  console.log(team)
+  // console.log(team)
+  const handleClick = () => {
+    localStorage.setItem('projectType', 'project')
+    localStorage.setItem('projectId', team.id.toString())
+  }
+  const projectId = localStorage.getItem('projectId')
 
   return (
     <Link
-      href={`/project/detail/study/1`}
+      href={`/project/detail/project/${projectId}`}
+      onClick={handleClick}
       className="relative group bg-[url('/images/project/projectCard.png')] bg-cover w-[18rem] h-[11.375rem]"
     >
       <div className="text-pink w-[4.375rem] pt-2 text-[0.71181rem] text-center">
         프로젝트
       </div>
-      <div className="flex items-center pt-[1rem] px-[0.75rem] gap-3 justify-center">
+
+      <div className="flex items-center pt-[1rem] px-[0.9rem] gap-3 justify-center">
         {/* 이미지 */}
-        <div className="min-w-[7.8125rem]">
+        <div className="w-[7.8125rem] h-[7.8125rem] min-w-[7.8125rem] rounded-2xl">
           <Image
             src="/images/project/example.png"
             alt="프로젝트 이미지"
             width={125}
             height={125}
-            className="rounded-md border bg-pink-300"
+            className="rounded-lg border bg-pink-300"
           />
         </div>
-        <div>
-          {/* 프로젝트 제목 */}
-          <h2 className="font-bold text-[1.01688rem] gap-[2.44rem]">
-            {team.name}
-          </h2>
 
-          {/* 모집 여부에 따른 조건부 렌더링 */}
-          {team.isRecruited === 'True' ? (
-            <>
-              {/* 프로젝트 설명 */}
-              <p className="text-[0.75rem] mb-[2.44rem]">
-                아이들의 &quot;오늘 하루 있었던 일&quot;을 주제로 캐릭터와...
+        <div className="h-[7rem] max-h-[7rem] min-h-[7rem] min-w-28 flex flex-col justify-start ">
+          <div className="mb-4 ">
+            {/* 프로젝트 제목 */}
+            <div className="max-w-28 truncate font-bold text-[1.01688rem] gap-[2.44rem]">
+              {team.name}
+            </div>
+
+            {team.frontendNum > 0 &&
+            team.backendNum > 0 &&
+            team.devopsNum > 0 ? (
+              <div className="h-5"></div>
+            ) : (
+              <p className="text-[0.75rem] max-w-28 max-h-8 truncate">
+                {team.projectExplain}
               </p>
+            )}
+          </div>
 
-              {/* 스택 카드 */}
-              <div className="mt-4 flex justify-end gap-2">
-                {['Next.js', 'Spring'].map((stack) => (
-                  <div
-                    key={stack}
-                    className="bg-lightprimary text-pink py-[0.19rem] px-[0.5rem] rounded-lg text-sm"
-                  >
-                    {stack}
-                  </div>
-                ))}
+          <div className="flex max-h-14 min-h-14 h-14">
+            {/* 모집 여부에 따른 조건부 렌더링 */}
+            {team.isRecruited ? (
+              <>
+                {/* 인원모집 */}
+                <div className=" flex flex-col justify-end gap-2">
+                  {team.frontendNum > 0 && (
+                    <div className="bg-lightblue text-blue py-[0.1rem] px-[0.8rem] rounded-lg text-[13px]">
+                      Frontend : {team.frontendNum}명
+                    </div>
+                  )}
+                  {team.backendNum > 0 && (
+                    <div className="bg-lightblue text-blue py-[0.1rem] px-[0.8rem] rounded-lg text-[13px]">
+                      Backend : {team.backendNum}명
+                    </div>
+                  )}
+                  {team.devopsNum > 0 && (
+                    <div className="bg-lightblue text-blue py-[0.1rem] px-[0.8rem] rounded-lg text-[13px]">
+                      Devops : {team.devopsNum}명
+                    </div>
+                  )}
+                </div>
+              </>
+            ) : (
+              <div className="flex gap-1">
+                {team.teamStacks.map(
+                  (stack) =>
+                    stack.isMain && (
+                      <div
+                        key={stack.stackName}
+                        className="bg-lightprimary text-pink max-h-[1.4181rem] px-[0.3rem] rounded-md text-[13px]"
+                      >
+                        {stack.stackName}
+                      </div>
+                    ),
+                )}
               </div>
-            </>
-          ) : (
-            <>
-              {/* 인원모집 */}
-              <div className="mt-8 flex flex-col justify-end gap-2">
-                {['Frontend : 1명', 'Backend : 1명'].map((stack) => (
-                  <div
-                    key={stack}
-                    className="bg-lightblue text-blue py-[0.19rem] px-[0.8rem] rounded-lg text-sm"
-                  >
-                    {stack}
-                  </div>
-                ))}
-              </div>
-            </>
-          )}
+            )}
+          </div>
         </div>
       </div>
 
       {/* 호버 시 표시되는 부분 */}
       <div className="w-[17.3rem] h-[9.6rem] py-[3.25rem] px-[3rem] rounded-[0.63rem] absolute left-1 bottom-1 bg-black bg-opacity-75 flex items-center justify-center text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
         <div className="text-white">
-          <p className="mt-2 text-sm">
-            아이들의 &quot;오늘 하루 있었던 일&quot;을 주제로 캐릭터와
-            음성채팅으로 대화를 나누며 하루를 돌아보고 기록해주는 서비스
-          </p>
+          <p className="mt-2 text-sm">{team.projectExplain}</p>
         </div>
       </div>
     </Link>

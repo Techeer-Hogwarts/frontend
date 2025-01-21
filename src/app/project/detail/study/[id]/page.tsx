@@ -39,21 +39,20 @@ export default function ProjectDetailpage() {
   }
 
   const MODAL_BTN_FUNCTION_MAP = {
-    delete: () => deleteStudyTeam(projectId, token),
+    delete: () => deleteStudyTeam(projectId),
     close: () => handleCloseStudy(projectId, token),
     cancel: () => handleDenyStudy(projectId, token),
   }
 
   const router = useRouter()
   const projectId = Number(localStorage.getItem('projectId'))
+  const projectType = localStorage.getItem('projectType')
 
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isApplicantModalOpen, setIsApplicantModalOpen] = useState(false)
   const [modalType, setModalType] = useState<
     'delete' | 'close' | 'cancel' | null
   >(null)
-
-  const token = localStorage.getItem('token')
 
   // React Query로 데이터 가져오기
   const { data } = useQuery({
@@ -116,11 +115,7 @@ export default function ProjectDetailpage() {
       </div>
       <div>
         <Profile
-          type={
-            data?.studyDetails.message === '스터디 상세 조회에 성공했습니다.'
-              ? 'study'
-              : 'project'
-          }
+          type={projectType === 'study' ? 'study' : 'project'}
           projectDetail={data?.studyDetails.data}
         />
         {/* <RecommendedMember studyDetail={} /> */}

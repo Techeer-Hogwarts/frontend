@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import ProjectCard from '@/components/project/ProjectCard'
 import StudyCard from '@/components/project/StudyCard'
@@ -9,7 +9,7 @@ import Dropdown from '@/components/common/Dropdown'
 import AddBtn from '../../components/project/add/AddBtn'
 import { useQuery } from '@tanstack/react-query'
 
-import { getAllTeams } from '@/api/project/project'
+import { getAllTeams } from '@/api/project/common'
 
 type Team = {
   id: number
@@ -31,15 +31,27 @@ type TeamsResponse = {
 }
 
 export default function Project() {
-  const token =
-    'access_token:eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJybmpzY2tzZHVkMUBuYXZlci5jb20iLCJleHAiOjE3MTg3MTU1MTN9.XIlhOgOgxD7_VvLoervDYCbwEWbmFaIxzgIeM8MCe1o'
-
   const [selectedPeriods, setSelectedPeriods] = useState<string[]>(['0'])
+  const [allTeams, setAllTeams] = useState()
+  
+  // const { data: allTeams } = useQuery<TeamsResponse>({
+  //   queryKey: ['getAllTeams'],
+  //   queryFn: () => getAllTeams(),
+  // })
 
-  const { data: allTeams } = useQuery<TeamsResponse>({
-    queryKey: ['getAllTeams', token],
-    queryFn: () => getAllTeams(token),
-  })
+  const fetchItems = async () => {
+    try {
+      const result = await getAllTeams()
+      setAllTeams(result)
+      console.log('성공:', result)
+    } catch (err) {
+      console.error('오류 발생:', err)
+    }
+  }
+
+  useEffect(() => {
+    fetchItems()
+  }, [])
 
   return (
     <div className="max-w-[1200px] w-[1200px] mt-[3.56rem] items-center">
@@ -95,7 +107,7 @@ export default function Project() {
           <ProjectCard key={team.id} team={team} />
         ))}
         {allTeams?.data.studyTeams.map((team) => (
-          <StudyCard key={team.id} team={team}  />
+          <StudyCard key={team.id} team={team} />
         ))}
       </div>
       <AddBtn />

@@ -19,7 +19,7 @@ type TeamsResponse = {
 const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL
 
 //프로젝트 페이지 불러오기
-export const getAllTeams = async (token: string): Promise<TeamsResponse> => {
+export const getAllTeams = async (): Promise<TeamsResponse> => {
   if (!baseUrl) {
     throw new Error('NEXT_PUBLIC_API_BASE_URL 환경 변수가 설정되지 않았습니다.')
   }
@@ -29,7 +29,6 @@ export const getAllTeams = async (token: string): Promise<TeamsResponse> => {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: token,
       },
     })
 

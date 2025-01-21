@@ -14,7 +14,7 @@ type Team = {
 }
 
 export default function StudyCard({ team }: { team: Team }) {
-  console.log('study', team)
+  // console.log('study', team)
 
   const handleClick = () => {
     localStorage.setItem('projectType', 'study')
@@ -29,17 +29,13 @@ export default function StudyCard({ team }: { team: Team }) {
       <div className="text-blue w-[4.375rem] pl-1 pt-2 text-[0.71181rem] text-center">
         스터디
       </div>
+
       <div className="flex items-center pt-[1rem] px-[0.9rem] gap-3 justify-center">
         {/* 이미지 */}
-        <div className="min-w-[7.8125rem]">
-          <Image
-            src="/images/project/example.png"
-            alt="프로젝트 이미지"
-            width={125}
-            height={125}
-            className="rounded-md border bg-pink-300"
-          />
+        <div className="flex w-[7.8125rem] h-[7.8125rem] bg-gradient-to-b from-[#FF8B20] to-[#FFC14F] rounded-lg text-white justify-center text-center items-center text-[1rem] font-medium">
+          {team.name}
         </div>
+
         <div className="h-[7.8125rem] flex flex-col justify-start ">
           {/* 프로젝트 제목 */}
           <h2 className="max-w-28 truncate font-bold text-[1.01688rem] gap-[2.44rem]">
@@ -50,7 +46,7 @@ export default function StudyCard({ team }: { team: Team }) {
           </p>
 
           {team.isRecruited && (
-            <div className="bg-lightblue mt-9 py-[0.19rem] px-[0.8rem]  text-blue rounded-lg text-sm text-center">
+            <div className="bg-lightblue mt-9 py-[0.19rem] px-[0.8rem]  text-blue rounded-lg text-[13px] text-center">
               모집인원 : {team.recruitNum} 명
             </div>
           )}

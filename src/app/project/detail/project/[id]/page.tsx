@@ -12,6 +12,10 @@ import { useRouter } from 'next/navigation'
 
 import ApplyModal from '@/components/project/modal/ApplyModal'
 
+import { getProjectDetail } from '@/api/project/project/project'
+import { useQuery } from '@tanstack/react-query'
+import { log } from "node:console"
+
 let members = [
   { name: '홍길동', role: 'Backend' },
   { name: '김영희', role: 'Frontend' },
@@ -44,6 +48,22 @@ let stacks = {
 
 export default function ProjectDetailpage() {
   const router = useRouter()
+  const projectId = Number(localStorage.getItem('projectId'))
+
+  // React Query로 데이터 가져오기
+  const { data } = useQuery({
+    queryKey: ['getProjectDetailsAndApplicants', projectId],
+    queryFn: async () => {
+      const [projectDetails, studyMember, studyApplicants] = await Promise.all([
+        getProjectDetail(projectId),
+        // getStudyMember(projectId),
+        // getStudyApplicants(projectId, token),
+      ])
+      return { projectDetails, studyMember, studyApplicants }
+    },
+  })
+console.log(data?.projectDetail);
+
 
   const handleModal = () => {
     router.push('/project/detail/project/1/applyProject')
@@ -61,7 +81,9 @@ export default function ProjectDetailpage() {
       </div>
 
       <div>
-        <Profile />
+        <Profile
+          projectDetail={data?.projectDetails?.data}
+        />
         <RecommendedMember />
       </div>
       <div className="flex flex-col gap-7">

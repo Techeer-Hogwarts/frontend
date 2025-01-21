@@ -1,7 +1,6 @@
 import Image from 'next/image'
 
 interface ProfileProps {
-  type: string
   projectDetail?: {
     id: number
     name: string
@@ -19,7 +18,10 @@ interface ProfileProps {
   }
 }
 
-export default function Profile({ type, projectDetail }: ProfileProps) {
+export default function Profile({ projectDetail }: ProfileProps) {
+  const projectType = localStorage.getItem('projectType')
+console.log(projectDetail);
+
   return (
     <div
       className={`flex flex-col items-center ${
@@ -37,7 +39,7 @@ export default function Profile({ type, projectDetail }: ProfileProps) {
           <div className=" text-pink ">진행중</div>
         )}
       </div>
-      {type === 'study' ? (
+      {projectType === 'study' ? (
         <div className="flex w-[15.875rem] h-[15.875rem] bg-gradient-to-b from-[#FF8B20] to-[#FFC14F] rounded-2xl text-white justify-center text-center items-center text-[1.5rem] font-bold">
           {projectDetail?.name}
         </div>
@@ -57,7 +59,7 @@ export default function Profile({ type, projectDetail }: ProfileProps) {
         </div>
 
         <div className="flex gap-2">
-          {type === 'study' ? (
+          {projectType === 'study' ? (
             ''
           ) : (
             <button type="button">

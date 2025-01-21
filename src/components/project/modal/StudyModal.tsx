@@ -5,7 +5,7 @@ import Image from 'next/image'
 import SmallMemberBox from './SmallMemberBox'
 import { useRouter } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
-import { getAllUsers } from '@/api/project/project'
+import { getAllUsers } from '@/api/project/common'
 
 interface Member {
   id: number
