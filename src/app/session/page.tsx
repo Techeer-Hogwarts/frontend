@@ -9,7 +9,7 @@ import { useTapBarStore } from '@/store/tapBarStore'
 import FilterBtn from '@/components/session/FilterBtn'
 import { getBestSessions } from './_lib/getBestSessions'
 import SessionPost from '@/components/session/SessionPost'
-import { useQuery } from '@tanstack/react-query'
+// import { useQuery } from '@tanstack/react-query'
 interface Session {
   id: string
   title: string
@@ -121,10 +121,10 @@ export default function Page() {
             setSelectedOptions={setSelectedPeriods}
           />
         </div>
-        {/* <div className="bg-filterbg flex items-center w-[1200px] h-[100px] px-4 gap-4 my-4">
+        <div className="bg-filterbg flex items-center w-[1200px] h-[100px] px-4 gap-4 mt-3 mb-5">
           <FilterBtn title="Frontend" />
           <FilterBtn title="1기" />
-        </div> */}
+        </div>
         <div className="grid grid-cols-3 gap-8">
           {sessions?.map((data: any) => (
             <SessionPost

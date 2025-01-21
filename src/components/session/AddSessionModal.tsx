@@ -19,7 +19,7 @@ export default function AddSessionModal({
   onClose,
 }: ModalProps) {
   const [formData, setFormData] = useState({
-    thumbnail: 'https://medium.com',
+    thumbnail: '',
     title: '',
     presenter: '',
     date: '',
@@ -29,13 +29,13 @@ export default function AddSessionModal({
     fileUrl: '',
   })
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
+  const [previewThumbnail, setPreviewThumbnail] = useState('')
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
     setFormData({
       ...formData,
       [name]: value,
     })
-    console.log(value)
   }
   const handlePositionChange = (category: string) => {
     setSelectedCategory(category)
@@ -49,6 +49,9 @@ export default function AddSessionModal({
       ...formData,
       date: value,
     })
+  }
+  const handleApplyThumbnail = () => {
+    setPreviewThumbnail(formData.thumbnail)
   }
   const postSession = async () => {
     try {
@@ -70,6 +73,7 @@ export default function AddSessionModal({
           headers: {
             'Content-Type': 'application/json',
           },
+          credentials: 'include',
           body: JSON.stringify(payload),
         },
       )
@@ -86,22 +90,32 @@ export default function AddSessionModal({
 
   return (
     <div className="w-screen h-screen flex items-center justify-center bg-black/50 fixed inset-0">
-      <div className="w-[486px] min-h-[740px] h-auto flex flex-col items-center bg-white rounded-lg">
+      <div className="w-[486px] min-h-[750px] h-auto flex flex-col items-center bg-white rounded-lg">
         <div>
-          <p className="text-2xl text-center mt-9 mb-3 font-semibold">
+          <p className="text-2xl text-center mt-6 mb-3 font-semibold">
             세션 영상 등록
           </p>
-          <div className="mt-4">
-            <Image
-              src={Thumbnail}
-              alt="PDF First Page Preview"
-              className="w-full h-auto"
-              width={220}
-              height={150}
-            />
+          <div className="mt-2 relative ">
+            {previewThumbnail ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={previewThumbnail}
+                alt="PDF First Page Preview"
+                className="object-cover w-[230px] h-[140px]"
+                onError={(e: any) => {
+                  e.target.src = '/images/session/thumbnail.png' // 대체 이미지 경로
+                }}
+              />
+            ) : (
+              <Image
+                src={Thumbnail}
+                alt="PDF First Page Preview"
+                className="w-[230px] h-[140px]"
+              />
+            )}
           </div>
         </div>
-        <div className="flex flex-col relative mx-8 mt-8">
+        <div className="flex flex-col relative mx-8 mt-4">
           <ModalInputField
             title="세션 제목을 입력해주세요"
             placeholder="세션 제목"
@@ -116,7 +130,23 @@ export default function AddSessionModal({
             value={formData.presenter}
             handleInputChange={handleInputChange}
           />
-          <div className="flex justify-between mt-1 mb-3 items-start">
+          <div className="relative">
+            <ModalInputField
+              title="썸네일을 입력해주세요"
+              placeholder="썸네일"
+              name="thumbnail"
+              value={formData.thumbnail}
+              handleInputChange={handleInputChange}
+            />
+            <button
+              type="button"
+              onClick={handleApplyThumbnail}
+              className="w-10 h-[22px] border border-lightgray flex items-center justify-center text-gray text-xs absolute right-0 top-0 rounded-sm bg-white hover:border-primary hover:text-primary"
+            >
+              적용
+            </button>
+          </div>
+          <div className="flex justify-between mt-1 mb-2 items-start">
             <span>
               기간을 입력해주세요 <span className="text-primary">*</span>
             </span>
@@ -165,11 +195,10 @@ export default function AddSessionModal({
               />
             )}
           </div>
-
           <p>
             카테고리를 선택해주세요 <span className="text-primary">*</span>
           </p>
-          <div className="flex gap-3 mt-1 mb-3">
+          <div className="flex gap-3 mt-1 mb-2">
             <CategoryBtn
               title="Frontend"
               isSelected={selectedCategory === 'FRONTEND'}
@@ -206,18 +235,18 @@ export default function AddSessionModal({
             handleInputChange={handleInputChange}
           />
         </div>
-        <div className="flex gap-4">
+        <div className="flex gap-4 mt-1">
           <button
             type="button"
             onClick={onClose}
-            className="w-[200px] rounded-md text-sm h-[34px] bg-white text-gray border border-lightgray"
+            className="w-[202px] rounded-md text-sm h-[34px] bg-white text-gray border border-lightgray"
           >
             취소
           </button>
           <button
             type="button"
             onClick={postSession}
-            className="w-[200px] rounded-md text-sm h-[34px] bg-primary text-white"
+            className="w-[202px] rounded-md text-sm h-[34px] bg-primary text-white"
           >
             등록
           </button>

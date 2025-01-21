@@ -4,7 +4,6 @@ import { useParams, useRouter } from 'next/navigation'
 import ReactPlayer from 'react-player'
 import { getSingleSession } from '@/app/session/_lib/getSingleSession'
 import { useEffect, useState } from 'react'
-// import { useQuery } from '@tanstack/react-query'
 
 interface Session {
   videoUrl: string
@@ -18,7 +17,6 @@ export default function ShowVideo() {
   const onClickBack = () => {
     router.back()
   }
-  // const {data: session, error} = useQuery(id)
   const fetchSignleSession = async () => {
     if (!sessionId) {
       console.error('Session ID is missing!')
@@ -46,28 +44,7 @@ export default function ShowVideo() {
           ✕
         </button>
         <div className="video-wrapper">
-          {/* {session ? (
-            <div className="video-wrapper">
-              <ReactPlayer
-                url={session.videoUrl}
-                // url="https://www.youtube.com/watch?v=xy3AcmW0lrQ&ab_channel=DjoMusic"
-                controls
-                width="100%"
-                height="100%"
-              />
-            </div>
-          ) : (
-            <p className="text-white">Loading video...</p>
-          )} */}
-
-          <div className="video-wrapper">
-            <ReactPlayer
-              // url={session?.videoUrl}
-              url="https://www.youtube.com/watch?v=xy3AcmW0lrQ&ab_channel=DjoMusic"
-              controls
-              width="100%"
-            />
-          </div>
+          <ReactPlayer url={session?.videoUrl} controls width="100%" />
         </div>
       </div>
     </div>

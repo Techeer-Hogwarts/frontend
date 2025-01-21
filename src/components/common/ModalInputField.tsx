@@ -24,7 +24,7 @@ export default function ModalInputField({
         value={value}
         onChange={handleInputChange}
         placeholder={placeholder}
-        className="w-[420px] pl-2 text-sm mt-1 mb-3 outline-none h-[34px] border border-lightgray"
+        className="w-[420px] pl-2 text-sm mt-1 mb-2 outline-none h-[34px] border border-lightgray"
       />
     </div>
   )

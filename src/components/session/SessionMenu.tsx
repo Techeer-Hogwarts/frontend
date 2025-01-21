@@ -4,34 +4,52 @@ import { TbEdit } from 'react-icons/tb'
 import { MdDeleteOutline } from 'react-icons/md'
 import { MdBookmarkBorder } from 'react-icons/md'
 import { LiaDownloadSolid } from 'react-icons/lia'
+import { deleteSession } from '@/app/session/_lib/deleteSession'
+import { useMutation } from '@tanstack/react-query'
 interface SessionMenuProps {
   id: string
-  fileUrl: string
   onDelete: (id: string) => void
+  title: string
+  date: string
+  presenter: string
+  thumbnail: string
+  videoUrl: string
+  fileUrl: string
 }
 
 export default function SessionMenu({
   id,
   onDelete,
   fileUrl,
+  title,
+  date,
+  presenter,
+  thumbnail,
+  videoUrl,
 }: SessionMenuProps) {
-  const sessionDelete = async () => {
+  const { mutateAsync } = useMutation({ mutationFn: deleteSession })
+  const fetchDeleteSession = async () => {
     try {
-      const response = await fetch(
-        `https://api.techeerzip.cloud/api/v1/sessions/${id}`,
-        {
-          method: 'DELETE',
-        },
-      )
-      if (!response.ok) {
-        throw new Error('세션 삭제에 실패했습니다.')
-      }
-      await response.json()
+      await mutateAsync(id)
       onDelete(id)
-    } catch (error) {
-      console.error('세션 삭제 중 오류 발생:', error)
+    } catch (err) {
+      console.error('세션 데이터 삭제 실패:', err)
     }
   }
+  const goToEditPage = () => {
+    const sessionValuses = {
+      title: title,
+      date: date,
+      presenter: presenter,
+      thumbnail: thumbnail,
+      videoUrl: videoUrl,
+      fileUrl: fileUrl,
+    }
+    sessionStorage.setItem('sessionValuses', JSON.stringify(sessionValuses))
+    window.location.href = `/session/edit/${id}`
+  }
+  // window.location.href = `/session/edit/${id}`
+
   const handleDownload = () => {
     window.open(fileUrl)
   }
@@ -46,7 +64,7 @@ export default function SessionMenu({
       </button>
       <button
         type="button"
-        onClick={sessionDelete}
+        onClick={goToEditPage}
         className="flex items-center justify-start gap-1 pl-3 py-1 hover:bg-black/10"
       >
         <TbEdit className="w-4 h-4" />
@@ -62,7 +80,7 @@ export default function SessionMenu({
       <button
         type="button"
         className="flex items-center justify-start gap-1 pl-3 py-1 hover:bg-black/10"
-        onClick={sessionDelete}
+        onClick={fetchDeleteSession}
       >
         <MdDeleteOutline className="w-4 h-4" />
         삭제

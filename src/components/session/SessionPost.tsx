@@ -33,21 +33,8 @@ export default function SessionPost({
   const [isLike, setIsLike] = useState(false)
   const [isVideo, setIsVideo] = useState(false)
   const router = useRouter()
-  const onClick = () => {
-    router.push(`/session/video/${id}`)
-  }
-  const clickModal = () => {
-    setShowModal(!showModal)
-  }
-  const handleLikeClick = () => {
-    setIsLike(!isLike)
-  }
-  const showVideo = () => {
-    setIsVideo(!isVideo)
-  }
-  // transition-transform transform hover:-translate-y-2
   return (
-    <div className="flex ">
+    <div className="flex transition-transform transform hover:-translate-y-2">
       <div className="flex flex-col w-[379px] relative ">
         <Image
           src={thumbnail}
@@ -57,9 +44,7 @@ export default function SessionPost({
           height={199}
           className="w-[379px] h-[199px] z-1"
           onClick={() => {
-            // showVideo()
-            onClick()
-            console.log('hihi', videoUrl)
+            router.push(`/session/video/${id}`)
           }}
         />
         <div className="rounded-b-lg w-[379px] min-h-[100px] h-auto py-2  bg-white shadow-[0px_5px_8px_#bfbfbf]">
@@ -71,11 +56,22 @@ export default function SessionPost({
               width={24}
               height={24}
               className="absolute right-0 top-0"
-              onClick={clickModal}
+              onClick={() => {
+                setShowModal(!showModal)
+              }}
             />
             {showModal && (
               <div className="absolute top-[-5%] right-0 z-10">
-                <SessionMenu id={id} onDelete={onDelete} fileUrl={fileUrl} />
+                <SessionMenu
+                  id={id}
+                  onDelete={onDelete}
+                  title={title}
+                  date={date}
+                  presenter={presenter}
+                  thumbnail={thumbnail}
+                  videoUrl={videoUrl}
+                  fileUrl={fileUrl}
+                />
               </div>
             )}
           </div>
@@ -89,7 +85,12 @@ export default function SessionPost({
             </div>
             <div className="flex mr-2">
               <span className="mr-1">{likeCount}</span>
-              <button type="button" onClick={handleLikeClick}>
+              <button
+                type="button"
+                onClick={() => {
+                  setIsLike(!isLike)
+                }}
+              >
                 {isLike ? (
                   <Image
                     src="/images/like-on.svg"
@@ -114,7 +115,9 @@ export default function SessionPost({
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className=" rounded-lg p-4 relative w-1/2">
             <button
-              onClick={showVideo}
+              onClick={() => {
+                setIsVideo(!isVideo)
+              }}
               className="absolute top-6 right-6 z-40 text-gray-500 w-7 h-7 flex justify-center items-center text-white rounded-full bg-black/60 hover:text-white/70"
             >
               ✕
