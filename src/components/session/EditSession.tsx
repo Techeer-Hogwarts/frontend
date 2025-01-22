@@ -1,48 +1,29 @@
 /* eslint-disable @next/next/no-img-element */
 'use client'
 
-import CategoryBtn from './CategoryBtn'
 import { useEffect, useState } from 'react'
-import SessionDropdown from './SessionDropdown'
-import ModalInputField from '../common/ModalInputField'
-import { useRouter } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
+import ModalInputField from '@/components/common/ModalInputField'
+import CategoryBtn from '@/components/session/CategoryBtn'
+import SessionDropdown from '@/components/session/SessionDropdown'
+import Link from 'next/link'
+import { getSingleSession } from '@/app/session/_lib/getSingleSession'
 
-interface ModalProps {
-  position: string
-  modal: string
-  onClose: () => void
-}
-
-export default function AddSessionModal({
-  position,
-  modal,
-  onClose,
-}: ModalProps) {
+export default function EditSession() {
+  const params = useParams()
+  const router = useRouter()
+  const sessionId = params.id as string
   const [formData, setFormData] = useState({
     thumbnail: '',
     title: '',
     presenter: '',
     date: '',
     position: '',
-    category: position,
+    category: '',
     videoUrl: '',
     fileUrl: '',
   })
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
-  const router = useRouter()
-  const [debouncedThumbnail, setDebouncedThumbnail] = useState(
-    formData.thumbnail,
-  )
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedThumbnail(formData.thumbnail)
-    }, 1000)
-
-    return () => {
-      clearTimeout(timer)
-    }
-  }, [formData.thumbnail])
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
     setFormData({
@@ -63,7 +44,7 @@ export default function AddSessionModal({
       date: value,
     })
   }
-  const postSession = async () => {
+  const patchSession = async () => {
     try {
       const payload = {
         thumbnail: formData.thumbnail,
@@ -77,9 +58,9 @@ export default function AddSessionModal({
       }
 
       const response = await fetch(
-        'https://api.techeerzip.cloud/api/v1/sessions',
+        `https://api.techeerzip.cloud/api/v1/sessions/${sessionId}`,
         {
-          method: 'POST',
+          method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
           },
@@ -87,24 +68,48 @@ export default function AddSessionModal({
           body: JSON.stringify(payload),
         },
       )
+      router.push('/session')
       if (!response.ok) {
-        throw new Error('세션 데이터를 업로드하는 데 실패했습니다.')
+        throw new Error('세션 데이터를 수정하는 데 실패했습니다.')
       }
       const result = await response.json()
-      console.log('세션이 성공적으로 추가되었습니다:', result)
-      router.replace('/session')
-      onClose()
+      console.log('세션이 성공적으로 수정되었습니다:', result)
+      // onClose()
     } catch (err) {
-      console.error('세션 데이터 업로드 중 오류 발생:', err)
+      console.error('세션 데이터 수정 중 오류 발생:', err)
     }
   }
+  const fetchSignleSession = async () => {
+    try {
+      const singleVideo = await getSingleSession(sessionId)
+      setFormData(singleVideo)
+      setSelectedCategory(singleVideo.category)
+    } catch (err) {
+      console.error('세션 데이터 가져오기 실패:', err)
+    }
+  }
+  const [debouncedThumbnail, setDebouncedThumbnail] = useState(
+    formData.thumbnail,
+  )
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedThumbnail(formData.thumbnail)
+    }, 1000)
 
+    return () => {
+      clearTimeout(timer)
+    }
+  }, [formData.thumbnail])
+
+  useEffect(() => {
+    fetchSignleSession()
+  }, [])
   return (
     <div className="w-screen h-screen flex items-center justify-center bg-black/50 fixed inset-0">
       <div className="w-[486px] min-h-[750px] h-auto flex flex-col items-center bg-white rounded-lg">
         <div>
           <p className="text-2xl text-center mt-6 mb-3 font-semibold">
-            세션 영상 등록
+            세션 영상 수정
           </p>
           <div className="mt-2 relative ">
             <img
@@ -112,7 +117,7 @@ export default function AddSessionModal({
               alt="PDF First Page Preview"
               className="object-cover w-[230px] h-[140px]"
               onError={(e: any) => {
-                e.target.src = '/images/session/thumbnail.png' // 대체 이미지 경로
+                e.target.src = '/images/session/thumbnail.png'
               }}
             />
           </div>
@@ -145,7 +150,7 @@ export default function AddSessionModal({
             <span>
               기간을 입력해주세요 <span className="text-primary">*</span>
             </span>
-            {modal === '1' && (
+            {formData.category === 'PARTNERS' && (
               <SessionDropdown
                 titles={[
                   '1기',
@@ -167,10 +172,11 @@ export default function AddSessionModal({
                   'SEVENTH',
                   'EIGHTH',
                 ]}
+                selectedOption={formData.date}
                 onSelect={handleDropdownChange}
               />
             )}
-            {modal === '2' && (
+            {formData.category === 'BOOTCAMP' && (
               <SessionDropdown
                 titles={[
                   '2022년 여름',
@@ -186,6 +192,7 @@ export default function AddSessionModal({
                   'WINTER_2023',
                   'SUMMER_2024',
                 ]}
+                selectedOption={formData.date}
                 onSelect={handleDropdownChange}
               />
             )}
@@ -231,16 +238,15 @@ export default function AddSessionModal({
           />
         </div>
         <div className="flex gap-4 mt-1">
-          <button
-            type="button"
-            onClick={onClose}
-            className="w-[202px] rounded-md text-sm h-[34px] bg-white text-gray border border-lightgray"
+          <Link
+            href="/session"
+            className="flex items-center justify-center w-[202px] rounded-md text-sm h-[34px] bg-white text-gray border border-lightgray"
           >
             취소
-          </button>
+          </Link>
           <button
             type="button"
-            onClick={postSession}
+            onClick={patchSession}
             className="w-[202px] rounded-md text-sm h-[34px] bg-primary text-white"
           >
             등록

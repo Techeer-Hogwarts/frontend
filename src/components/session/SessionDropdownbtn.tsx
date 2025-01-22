@@ -1,13 +1,11 @@
 export interface SessionDropdownbtnProps {
-  children: string
+  title: string
 }
 
-export default function SessionDropdownbtn({
-  children,
-}: SessionDropdownbtnProps) {
+export default function SessionDropdownbtn({ title }: SessionDropdownbtnProps) {
   return (
-    <button type="button" className="flex ml-5 items-center h-[34px]">
-      {children}
+    <button type="button" className="flex ml-5 text-sm items-center h-6">
+      {title}
     </button>
   )
 }

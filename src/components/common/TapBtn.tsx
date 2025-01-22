@@ -1,17 +1,16 @@
 'use client'
 
-import { useState } from 'react'
-
-interface NavbarBtnProps {
+interface TapBtnProps {
   children: string
+  isActive: boolean
+  onClick: () => void
 }
-export default function TapBtn({ children }: NavbarBtnProps) {
-  const [isClicked, setIsClicked] = useState(false)
+export default function TapBtn({ children, isActive, onClick }: TapBtnProps) {
   return (
     <button
       type="button"
-      onClick={() => setIsClicked(!isClicked)}
-      className={`px-4 text-xl ${isClicked ? 'text-primary ' : ' text-black '}`}
+      onClick={onClick}
+      className={`px-4 text-xl ${isActive ? 'text-primary ' : ' text-black '}`}
     >
       {children}
     </button>

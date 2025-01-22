@@ -57,6 +57,12 @@ export default function Project() {
     setProjectId(id)
   }, [])
 
+  const [inputValue, setInputValue] = useState('')
+
+  const handleSearch = (query: string) => {
+    sessionStorage.setItem('searchQuery', query)
+    setInputValue(query)
+  }
   return (
     <div className="max-w-[1200px] w-[1200px] mt-[3.56rem] items-center">
       <div className="flex justify-between mb-[2.84rem]">
@@ -85,6 +91,7 @@ export default function Project() {
       <TapBar
         options={['전체보기', '모집 중']}
         placeholder="프로젝트 명 혹은 이름으로 검색해보세요"
+        onSearch={handleSearch}
       />
       <div className="flex justify-start mt-5 gap-3 mb-[2.31rem]">
         <Dropdown

@@ -1,18 +1,39 @@
+'use client'
+
 import TapBtn from './TapBtn'
 import SearchBar from './SearchBar'
+import { useTapBarStore } from '@/store/tapBarStore'
+import { useEffect } from 'react'
 
 interface TapBarProps {
   readonly options: string[]
   readonly placeholder: string
+  onSearch: (query: string) => void
 }
 
-export default function TapBar({ options, placeholder }: TapBarProps) {
+export default function TapBar({
+  options,
+  placeholder,
+  onSearch,
+}: TapBarProps) {
+  const { activeOption, setActiveOption } = useTapBarStore()
+  useEffect(() => {
+    if (!activeOption && options.length > 0) {
+      setActiveOption(options[0])
+    }
+  })
+
   return (
     <div>
       <div className="flex items-center">
         {options.map((option) => (
           <div key={option} className="flex items-center">
-            <TapBtn>{option}</TapBtn>
+            <TapBtn
+              isActive={activeOption === option}
+              onClick={() => setActiveOption(option)}
+            >
+              {option}
+            </TapBtn>
             {option !== options[options.length - 1] && (
               <div className="h-4 w-[1px] bg-gray" />
             )}
@@ -20,7 +41,7 @@ export default function TapBar({ options, placeholder }: TapBarProps) {
         ))}
 
         <div className="ml-auto">
-          <SearchBar placeholder={placeholder} />
+          <SearchBar placeholder={placeholder} onSearch={onSearch} />
         </div>
       </div>
 
