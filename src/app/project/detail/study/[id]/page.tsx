@@ -29,7 +29,7 @@ export default function ProjectDetailpage() {
   const MODAL_TEXT_MAP = {
     delete: '스터디를 삭제하시겠습니까?',
     close: '스터디를 마감하시겠습니까?',
-    cancel: '지원을 취소하시겠습니까?',
+    cancel: '스터디 지원을 취소하시겠습니까?',
   }
 
   const MODAL_BTN_TEXT_MAP = {
@@ -40,8 +40,8 @@ export default function ProjectDetailpage() {
 
   const MODAL_BTN_FUNCTION_MAP = {
     delete: () => deleteStudyTeam(projectId),
-    close: () => handleCloseStudy(projectId, token),
-    cancel: () => handleDenyStudy(projectId, token),
+    close: () => handleCloseStudy(projectId),
+    cancel: () => handleDenyStudy(projectId),
   }
 
   const router = useRouter()
@@ -61,7 +61,7 @@ export default function ProjectDetailpage() {
       const [studyDetails, studyMember, studyApplicants] = await Promise.all([
         getStudyDetail(projectId),
         getStudyMember(projectId),
-        // getStudyApplicants(projectId, token),
+        // getStudyApplicants(projectId),
       ])
       return { studyDetails, studyMember, studyApplicants }
     },
@@ -130,8 +130,8 @@ export default function ProjectDetailpage() {
         <StudyPlan rule={data?.studyDetails?.data.rule} />
         {data?.studyDetails.data.isRecruited && (
           <FindMember
-            recruitNum={data?.studyDetails.data.recruitNum}
-            recruitExplain={data?.studyDetails.data.recruitExplain}
+            projectDetail={data?.studyDetails?.data}
+            projectType={projectType}
           />
         )}
         <Results resultImages={data?.studyDetails.data.resultImages} />

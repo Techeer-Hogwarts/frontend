@@ -16,20 +16,16 @@ type TeamsResponse = {
     studyTeams: Team[]
   }
 }
-const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL
 
 //프로젝트 페이지 불러오기
 export const getAllTeams = async (): Promise<TeamsResponse> => {
-  if (!baseUrl) {
-    throw new Error('NEXT_PUBLIC_API_BASE_URL 환경 변수가 설정되지 않았습니다.')
-  }
-
   try {
-    const response = await fetch(`${baseUrl}/projectTeams/allTeams`, {
+    const response = await fetch(`/api/v1/projectTeams/allTeams`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
       },
+      credentials: 'include',
     })
 
     if (!response.ok) {
@@ -46,20 +42,14 @@ export const getAllTeams = async (): Promise<TeamsResponse> => {
 
 // 테커 모든 인원 조회
 export const getAllUsers = async () => {
-  if (!baseUrl) {
-    throw new Error('NEXT_PUBLIC_API_BASE_URL 환경 변수가 설정되지 않았습니다.')
-  }
-
   try {
-    const response = await fetch(
-      `${baseUrl}/users/profiles?offset=0&limit=10`,
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+    const response = await fetch(`/api/v1/users/profiles?offset=0&limit=10`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
       },
-    )
+      credentials: 'include',
+    })
 
     if (!response.ok) {
       throw new Error(`GET 요청 실패: ${response.status}`)

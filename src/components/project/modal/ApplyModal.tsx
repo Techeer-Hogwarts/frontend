@@ -32,10 +32,8 @@ const ApplyModal = () => {
           studyTeamId: projectId,
           summary: apply,
         }
-        const token = localStorage.getItem('token')
         try {
-          const result = await handleApplyStudy(data, token)
-          alert('스터디 지원이 완료되었습니다.')
+          const result = await handleApplyStudy(data)
           console.log('API 응답:', result)
         } catch (error) {
           alert('스터디 지원에 실패했습니다. 다시 시도해주세요.')

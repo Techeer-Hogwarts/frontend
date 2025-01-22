@@ -237,7 +237,7 @@ export const getStudyApplicants = async (studyTeamId) => {
     throw error
   }
 }
-
+ 
 // 스터디 지원자 수락
 export const acceptStudyApplicant = async (data) => {
   try {

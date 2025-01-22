@@ -1,12 +1,25 @@
-export default function FindMember({ recruitNum, recruitExplain }) {
+export default function FindMember({ projectDetail, projectType }) {
+  console.log(projectDetail)
+
   return (
     <div>
       <div className="text-[1.125rem] font-[600] mb-3">모집 정보</div>
       <div className="flex gap-3 mb-3">
-        <BlueBox role="모집인원" num={recruitNum} />
+        {projectType === 'study' && (
+          <BlueBox role="모집인원" num={projectDetail.recruitNum} />
+        )}
+        {projectType === 'project' && projectDetail.frontendNum > 0 && (
+          <BlueBox role="Frontend" num={projectDetail.frontendNum} />
+        )}
+        {projectType === 'project' && projectDetail.backendNum > 0 && (
+          <BlueBox role="Backend" num={projectDetail.backendNum} />
+        )}
+        {projectType === 'project' && projectDetail.devopsNum > 0 && (
+          <BlueBox role="DevOps" num={projectDetail.devopsNum} />
+        )}
       </div>
       <div className="w-[52.5rem] p-[1.25rem] whitespace-pre-line rounded-2xl border border-gray">
-        {recruitExplain}
+        {projectDetail.recruitExplain}
       </div>
     </div>
   )

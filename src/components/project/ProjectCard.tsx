@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
+import { useEffect, useState } from 'react'
 
 type Team = {
   id: number
@@ -17,11 +18,10 @@ export default function ProjectCard({ team }: { team: Team }) {
     localStorage.setItem('projectType', 'project')
     localStorage.setItem('projectId', team.id.toString())
   }
-  const projectId = localStorage.getItem('projectId')
 
   return (
     <Link
-      href={`/project/detail/project/${projectId}`}
+      href={`/project/detail/project/${team.id}`}
       onClick={handleClick}
       className="relative group bg-[url('/images/project/projectCard.png')] bg-cover w-[18rem] h-[11.375rem]"
     >

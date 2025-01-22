@@ -31,26 +31,30 @@ type TeamsResponse = {
 }
 
 export default function Project() {
+  const [projectId, setProjectId] = useState<number | null>(null)
   const [selectedPeriods, setSelectedPeriods] = useState<string[]>(['0'])
-  const [allTeams, setAllTeams] = useState()
-  
-  // const { data: allTeams } = useQuery<TeamsResponse>({
-  //   queryKey: ['getAllTeams'],
-  //   queryFn: () => getAllTeams(),
-  // })
 
-  const fetchItems = async () => {
-    try {
-      const result = await getAllTeams()
-      setAllTeams(result)
-      console.log('성공:', result)
-    } catch (err) {
-      console.error('오류 발생:', err)
-    }
-  }
+  const { data: allTeams } = useQuery<TeamsResponse>({
+    queryKey: ['getAllTeams', projectId],
+    queryFn: () => getAllTeams(),
+  })
+  
+
+  // const [allTeams, setAllTeams] = useState()
+  // const fetchItems = async () => {
+  //   try {
+  //     const result = await getAllTeams()
+  //     setAllTeams(result)
+  //     console.log('성공:', result)
+  //   } catch (err) {
+  //     console.error('오류 발생:', err)
+  //   }
+  // }
 
   useEffect(() => {
-    fetchItems()
+    // fetchItems()
+    const id = Number(localStorage.getItem('projectId'))
+    setProjectId(id)
   }, [])
 
   return (

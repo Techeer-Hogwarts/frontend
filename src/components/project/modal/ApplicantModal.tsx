@@ -26,30 +26,36 @@ export default function ApplicantModal({
   const [projectType, setProjectType] = useState<null | string>(null)
   const [approve, setApprove] = useState(true)
   const projectId = Number(localStorage.getItem('projectId'))
-  const token = localStorage.getItem('token')
+  console.log(applicant)
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const storedProjectType = localStorage.getItem('projectType')
       setProjectType(storedProjectType)
     }
-    if (!token) {
-      alert('로그인이 필요합니다.')
-      return
-    }
+
+    console.log(applicant)
   }, [])
 
   // 승인 버튼 핸들러
   const handleApprove = async () => {
+    let data
     try {
-      const data = {
-        studyTeamId: projectId,
-        applicantId: applicant.id,
+      if (projectType === 'study') {
+        data = {
+          studyTeamId: projectId,
+          applicantId: applicant.id,
+        }
+      } else {
+        data = {
+          projectTeamId: projectId,
+          applicantId: applicant.id,
+        }
       }
 
-      await acceptStudyApplicant(data, token)
+      await acceptStudyApplicant(data)
 
-      alert(`${applicant.name}님의 지원이 승인되었습니다.`)
+      // alert(`${applicant.name}님의 지원이 승인되었습니다.`)
       onClose()
     } catch (error) {
       console.error(error)
@@ -64,8 +70,7 @@ export default function ApplicantModal({
         studyTeamId: projectId,
         applicantId: applicant.id,
       }
-      await denyStudyApplicant(data, token)
-      alert(`${applicant.name}님의 지원이 거절되었습니다.`)
+      await denyStudyApplicant(data)
       onClose()
     } catch (error) {
       console.error(error)
@@ -80,7 +85,6 @@ export default function ApplicantModal({
     } else {
       handleReject()
     }
-    alert('저장되었습니다.')
     onClose()
   }
 
@@ -100,7 +104,9 @@ export default function ApplicantModal({
           />
         </div>
         <div className="flex items-center justify-center gap-2 mb-3">
-          <p className="text-lg font-bold">홍길동</p>
+          <p className="text-lg font-bold">{applicant.user.name}</p>
+
+          {/* 추후 수정 예정 */}
           <span className="text-gray-500 text-sm">| 8기</span>
         </div>
 
@@ -127,14 +133,14 @@ export default function ApplicantModal({
         {/*project일 경우에만 보임 : 스택 선택 */}
         {projectType === 'project' && (
           <div className="mb-4">
-            <p className="text-left mb-2">지원하고자하는 포지션을 선택주세요</p>
+            <p className="text-left mb-2 font-medium">지원한 포지션</p>
             <div className="w-full flex justify-between">
               {['Frontend', 'Backend', 'Full-Stack', 'DevOps'].map((el) => {
                 return (
                   <div
                     key={el}
-                    // className={`w-[5.875rem] h-[1.75rem] border border-lightprimary rounded-md ${position === el ? 'bg-lightprimary' : 'bg-white'} `}
-                    className={`w-[5.875rem] h-[1.75rem] border border-lightprimary rounded-md `}
+                    className={`w-[5.875rem] h-[1.75rem] border border-lightprimary rounded-md ${applicant.teamRole === el ? 'bg-lightprimary text-primary' : 'bg-white text-gray'} `}
+                    // className={`w-[5.875rem] h-[1.75rem] border border-lightprimary rounded-md `}
                   >
                     {el}
                   </div>
@@ -145,9 +151,11 @@ export default function ApplicantModal({
         )}
         {/* 지원 동기 */}
         <div className="mb-4">
-          <p className="text-left mb-2 font-bold">{'홍길동'}의 지원동기</p>
+          <p className="text-left mb-2 font-medium">
+            {applicant.user.name}의 지원동기
+          </p>
           <div className="w-full p-1 h-[9.3125rem] border border-lightgray rounded-sm text-start">
-            지원동기지원동지원동기지원동기지원동기지원동기지원동기지원동기지원동기지원동기지원동기지원동기지원동기지원동기
+            {applicant.summary}
           </div>
         </div>
 

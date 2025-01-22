@@ -6,77 +6,79 @@ import { IoChevronDownSharp, IoChevronUpSharp } from 'react-icons/io5'
 
 interface Applicant {
   id: number
-  name: string
-  email: string
-  num: number
-  status: string
-  summary: string
-  userId: number
+  createdAt: string
+  updatedAt: string
+  isDeleted: boolean
   isLeader: boolean
-  position: string
-  profileImage?: string | null
+  teamRole: string
+  projectTeamId: number
+  summary: string
+  status: string
+  userId: number
+  user: {
+    name: string
+    email: string
+  }
 }
 
 interface ApplicantsProps {
   applicants: Applicant[]
-  onOpen: () => void
+  onOpen: (applicant: Applicant) => void
 }
-const members = [
-  {
-    id: 10,
-    createdAt: '2025-01-20T01:42:14.900Z',
-    updatedAt: '2025-01-20T01:42:14.900Z',
-    isDeleted: false,
-    isLeader: false,
-    studyTeamId: 4,
-    summary: '스터디에 참여하고 싶습니다!',
-    status: 'PENDING',
-    userId: 2,
-    num: 8,
-    position: 'Frontend',
-    user: {
-      name: '주영준',
-      email: 'yeongjun0129@gmail.com',
-      profileImage: '',
+const members = {
+  code: 200,
+  message: '프로젝트 지원자 조회에 성공했습니다.',
+  data: [
+    {
+      id: 11,
+      createdAt: '2025-01-22T01:50:53.255Z',
+      updatedAt: '2025-01-22T01:50:53.255Z',
+      isDeleted: false,
+      isLeader: false,
+      teamRole: 'Frontend',
+      projectTeamId: 8,
+      summary: '이 프로젝트에 참여하고 싶습니다!',
+      status: 'PENDING',
+      userId: 2,
+      user: {
+        name: '주영준',
+        email: 'yeongjun0129@gmail.com',
+      },
     },
-  },
-  {
-    id: 11,
-    createdAt: '2025-01-20T01:42:14.900Z',
-    updatedAt: '2025-01-20T01:42:14.900Z',
-    isDeleted: false,
-    isLeader: false,
-    studyTeamId: 4,
-    summary: '스터디에 참여하고 싶습니다!',
-    status: 'PENDING',
-    userId: 2,
-    num: 9,
-    position: 'Backend',
-    user: {
-      name: '1',
-      email: 'yeongjun0129@gmail.com',
-      profileImage: '',
+    {
+      id: 12,
+      createdAt: '2025-01-22T01:50:53.255Z',
+      updatedAt: '2025-01-22T01:50:53.255Z',
+      isDeleted: false,
+      isLeader: false,
+      teamRole: 'Backend',
+      projectTeamId: 8,
+      summary: '이 프로젝트에 참여하고 싶습니다!',
+      status: 'PENDING',
+      userId: 3,
+      user: {
+        name: '홍길동',
+        email: 'yeongjun0129@gmail.com',
+      },
     },
-  },
-  {
-    id: 12,
-    createdAt: '2025-01-20T01:42:14.900Z',
-    updatedAt: '2025-01-20T01:42:14.900Z',
-    isDeleted: false,
-    isLeader: false,
-    studyTeamId: 4,
-    summary: '스터디에 참여하고 싶습니다!',
-    status: 'PENDING',
-    userId: 2,
-    num: 10,
-    position: 'Frontend',
-    user: {
-      name: '2',
-      email: 'yeongjun0129@gmail.com',
-      profileImage: '',
+    {
+      id: 13,
+      createdAt: '2025-01-22T01:50:53.255Z',
+      updatedAt: '2025-01-22T01:50:53.255Z',
+      isDeleted: false,
+      isLeader: false,
+      teamRole: 'Frontend',
+      projectTeamId: 8,
+      summary: '이 프로젝트에 참여하고 싶습니다!',
+      status: 'PENDING',
+      userId: 3,
+      user: {
+        name: '김철수',
+        email: 'yeongjun0129@gmail.com',
+      },
     },
-  },
-]
+  ],
+}
 
 function Box({
   name,
@@ -149,14 +151,15 @@ export default function Applicants({ applicants, onOpen }: ApplicantsProps) {
             profileImage={applicant.user.profileImage} // 이미지 추가 수정 예정
           />
         ))} */}
-        {members.map((applicant) => (
+        {members.data.map((applicant) => (
+          // {applicants.data.map((applicant) => (
           <Box
             key={applicant.id}
             name={applicant.user.name}
             num={applicant.num} //기수 추가 수정 예정
             position={applicant.position} //포지션 추가 수정 예정
             profileImage={applicant.user.profileImage} // 이미지 추가 수정 예정
-            onClick={onOpen}
+            onClick={() => onOpen(applicant)}
           />
         ))}
       </div>

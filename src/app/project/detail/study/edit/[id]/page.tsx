@@ -88,16 +88,10 @@ export default function AddStudyPage() {
     setStudyData((prev) => ({ ...prev, [key]: value }))
   }
 
-  const token = localStorage.getItem('token')
-  // if (!token) {
-  //   alert('로그인이 필요합니다.')
-  //   return
-  // }
-
   const handleSubmit = async () => {
     console.log(studyData)
     try {
-      const response = await handleEditStudy(studyData, token, projectId)
+      const response = await handleEditStudy(studyData, projectId)
       if (response.status === 200) {
         router.push(`/project/detail/study/${response.data.id}`)
         localStorage.setItem('projectId', response.data.id)

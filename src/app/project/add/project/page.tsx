@@ -20,7 +20,7 @@ export default function page() {
         <button
           type="button"
           className="w-full h-[2.16044rem] rounded-[0.3125rem] text-primary border border-primary"
-        >
+        > 
           등록하기
         </button>
       </div>

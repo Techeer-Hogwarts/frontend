@@ -5,7 +5,9 @@ interface ProfileProps {
     id: number
     name: string
     notionLink: string
+    githubLink: string
     recruitExplain: string
+    projectExplain: string
     recruitNum: number
     rule: string
     goal: string
@@ -20,7 +22,6 @@ interface ProfileProps {
 
 export default function Profile({ projectDetail }: ProfileProps) {
   const projectType = localStorage.getItem('projectType')
-console.log(projectDetail);
 
   return (
     <div
@@ -62,7 +63,10 @@ console.log(projectDetail);
           {projectType === 'study' ? (
             ''
           ) : (
-            <button type="button">
+            <button
+              type="button"
+              onClick={() => (window.location.href = projectDetail?.githubLink)}
+            >
               <Image
                 src="/images/project/github.png"
                 width={20}
@@ -74,7 +78,7 @@ console.log(projectDetail);
 
           <button
             type="button"
-            onClick={() => (window.location.href = projectDetail.notionLink)}
+            onClick={() => (window.location.href = projectDetail?.notionLink)}
           >
             <Image
               src="/images/project/notion.png"
@@ -85,8 +89,11 @@ console.log(projectDetail);
           </button>
         </div>
       </div>
-
-      <div className="w-[15.875rem]">{projectDetail?.studyExplain}</div>
+      <div className="w-[15.875rem]">
+        {projectType === 'study'
+          ? projectDetail?.studyExplain
+          : projectDetail?.projectExplain}
+      </div>
     </div>
   )
 }
