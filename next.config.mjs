@@ -4,6 +4,7 @@ const nextConfig = {
   experimental: {
     appDir: true,
   },
+
   images: {
     domains: ['example.com', 'avatars.slack-edge.com'], // 허용할 외부 도메인 추가
   },
