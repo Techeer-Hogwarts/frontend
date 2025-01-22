@@ -32,7 +32,7 @@ const PositionTag = ({ position }: Position) => {
 
   return (
     <div
-      className={`flex justify-center w-[6.5rem] h-[1.4rem] ${styles.bg} rounded-md`}
+      className={`inline-flex justify-center px-3 h-[1.4rem] ${styles.bg} rounded-md`}
     >
       <span className={styles.text}>{position}</span>
     </div>

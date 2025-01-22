@@ -16,8 +16,8 @@ interface ProfileQueryParams {
   year?: number
   university?: string
   grade?: string
-  offset: number
-  limit: number
+  offset?: number
+  limit?: number
 }
 
 export default function ProfileList({
@@ -27,7 +27,7 @@ export default function ProfileList({
   grade = '',
   offset,
   limit,
-}: ProfileQueryParams) {
+}: ProfileQueryParams = {}) {
   const {
     data: profiles,
     isLoading,

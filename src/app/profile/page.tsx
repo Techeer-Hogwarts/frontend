@@ -1,24 +1,42 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import TapBar from '@/components/common/TapBar'
-import Dropdown from '@/components/common/Dropdown'
+import { useState } from 'react'
+import Dropdown from '@/components/profile/Dropdown'
 import FilterBtn from '@/components/session/FilterBtn'
-import AddBtn from '@/components/common/AddBtn'
-import ProfileCard from '@/components/profile/ProfileCard'
-import { getProfileList } from './api/getProfileList'
-import { useGetProfileQuery } from './query/useGetProfileQuery'
 import ProfileList from './@projectList'
 
 export default function Page() {
   const [selectedPeriods, setSelectedPeriods] = useState<string[]>([])
+  const [selectedPosition, setSelectedPosition] = useState<string[]>([])
+  const [selectedYear, setSelectedYear] = useState<string[]>([])
+  const [selectedActive, setSelectedActive] = useState<string[]>([])
+  const [selectedUniversity, setSelectedUniversity] = useState<string[]>([])
 
-  const position = ''
-  const year = ''
-  const university = ''
-  const grade = ''
-  const offset = 0
-  const limit = 10
+  const positionOptions = ['Frontend', 'Backend', 'DataEngineer', 'DevOps']
+  const yearOptions = ['1기', '2기', '3기', '4기', '5기', '6기', '7기', '8기']
+  const activeOptions = ['활동 중', '활동 안함']
+  const universityOptions = [
+    '강원대',
+    '성결대',
+    '안양대',
+    '인천대',
+    '충남대',
+    '한국공학대',
+  ]
+
+  const handleRemoveFilter = (filter: string, type: string) => {
+    if (type === 'position') {
+      setSelectedPosition(selectedPosition.filter((item) => item !== filter))
+    } else if (type === 'year') {
+      setSelectedYear(selectedYear.filter((item) => item !== filter))
+    } else if (type === 'active') {
+      setSelectedActive(selectedActive.filter((item) => item !== filter))
+    } else if (type === 'university') {
+      setSelectedUniversity(
+        selectedUniversity.filter((item) => item !== filter),
+      )
+    }
+  }
 
   return (
     <div className="flex justify-center">
@@ -30,42 +48,66 @@ export default function Page() {
         <div className="flex justify-start mt-5 gap-3">
           <Dropdown
             title="포지션"
-            options={['Frontend', 'Backend', 'DevOps', 'Others']}
-            selectedOptions={selectedPeriods}
-            setSelectedOptions={setSelectedPeriods}
+            options={positionOptions}
+            selectedOptions={selectedPosition}
+            setSelectedOptions={setSelectedPosition}
           />
           <Dropdown
             title="기수"
-            options={['1기', '2기', '3기', '4기', '5기', '6기', '7기', '8기']}
-            selectedOptions={selectedPeriods}
-            setSelectedOptions={setSelectedPeriods}
+            options={yearOptions}
+            selectedOptions={selectedYear}
+            setSelectedOptions={setSelectedYear}
           />
           <Dropdown
             title="현재 상태"
-            options={['진행 중', '완료']}
-            selectedOptions={selectedPeriods}
-            setSelectedOptions={setSelectedPeriods}
+            options={activeOptions}
+            selectedOptions={selectedActive}
+            setSelectedOptions={setSelectedActive}
           />
           <Dropdown
             title="대학"
-            options={['한국공대', '성결대', '인천대']}
-            selectedOptions={selectedPeriods}
-            setSelectedOptions={setSelectedPeriods}
+            options={universityOptions}
+            selectedOptions={selectedUniversity}
+            setSelectedOptions={setSelectedUniversity}
             // selectedOptions={selectedUniversity}
             // setSelectedOptions={setSelectedUniversity}
           />
         </div>
         <div className="bg-filterbg flex items-center w-[1200px] h-[100px] px-4 gap-4 my-6">
-          <FilterBtn title="Frontend" />
-          <FilterBtn title="1기" />
+          {selectedPosition.map((item) => (
+            <FilterBtn
+              key={item}
+              title={item}
+              onClick={() => handleRemoveFilter(item, 'position')}
+            />
+          ))}
+          {selectedYear.map((item) => (
+            <FilterBtn
+              key={item}
+              title={item}
+              onClick={() => handleRemoveFilter(item, 'year')}
+            />
+          ))}
+          {selectedActive.map((item) => (
+            <FilterBtn
+              key={item}
+              title={item}
+              onClick={() => handleRemoveFilter(item, 'active')}
+            />
+          ))}
+          {selectedUniversity.map((item) => (
+            <FilterBtn
+              key={item}
+              title={item}
+              onClick={() => handleRemoveFilter(item, 'university')}
+            />
+          ))}
         </div>
         <ProfileList
-          position={position}
-          year={year}
-          university={university}
-          grade={grade}
-          offset={offset}
-          limit={limit}
+          position={selectedPosition.join(',')}
+          year={selectedYear.join(',')}
+          university={selectedUniversity.join(',')}
+          grade={selectedActive.join(',')}
         />
       </div>
     </div>

@@ -88,7 +88,10 @@ export default function ProfileBox({ profileData }: ProfileProps) {
           </div>
           {/** 소속 정보 */}
           <div className="flex flex-row justify-between gap-2 mt-1">
-            <div className="">{school}</div>
+            <div className="">
+              {' '}
+              {school.length > 6 ? `${school.substring(0, 6)}...` : school}
+            </div>
             <span className="h-[1.25rem] mt-[0.125rem] border-right border-[0.08rem] border-gray"></span>
             <div className="">4학년</div>
             <span className="h-[1.25rem] mt-[0.125rem] border-right border-[0.08rem] border-gray"></span>
@@ -97,7 +100,11 @@ export default function ProfileBox({ profileData }: ProfileProps) {
           {/** 포지션/경력 */}
           <div className="flex flex-row gap-2 mt-1">
             <PositionTag position={mainPosition} />
-            <CareerTag career={school} />
+            <CareerTag
+              career={
+                school.length > 6 ? `${school.substring(0, 6)}...` : school
+              }
+            />
           </div>
         </div>
       </div>
