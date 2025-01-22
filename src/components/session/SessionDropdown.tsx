@@ -1,21 +1,32 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import SessionDropdownbtn from './SessionDropdownbtn'
 
 interface SessionDropdownProps {
   titles: string[]
   options: string[]
+  selectedOption?: string
   onSelect: (option: string) => void
 }
 
 export default function SessionDropdown({
   titles,
   options,
+  selectedOption,
   onSelect,
 }: SessionDropdownProps) {
   const [isClick, setIsClick] = useState(false)
   const [selectedTitle, setSelectedTitle] = useState('기간')
+
+  useEffect(() => {
+    if (selectedOption) {
+      const index = options.indexOf(selectedOption)
+      if (index !== -1) {
+        setSelectedTitle(titles[index])
+      }
+    }
+  }, [selectedOption, titles, options])
 
   const handleClick = () => {
     setIsClick(!isClick)
@@ -32,7 +43,7 @@ export default function SessionDropdown({
       <button
         type="button"
         onClick={handleClick}
-        className={`w-[200px] px-4 rounded-sm text-sm flex items-center outline-none h-[34px] border ${isClick ? 'text-primary  border-primary' : ' text-gray border-lightgray'} justify-between`}
+        className={`w-[200px] px-4 rounded-sm text-sm flex items-center outline-none h-[34px] border ${isClick ? 'text-primary border-primary' : 'text-gray border-lightgray'} justify-between`}
       >
         {selectedTitle}
         {isClick ? (

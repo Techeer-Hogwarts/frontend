@@ -19,7 +19,6 @@ export default function CategoryBtn({
     setIsClicked(!isClicked)
     onSelect(title) // 카테고리를 선택할 때 부모로 전달
   }
-
   return (
     <button
       type="button"
