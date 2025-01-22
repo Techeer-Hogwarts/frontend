@@ -12,9 +12,15 @@ const meta = {
 
 export default meta
 type Story = StoryObj<typeof meta>
-
+const value = '가나다'
+const handleInputChange = () => {
+  console.log('handleInputChange')
+}
 export const Default: Story = {
   args: {
+    name: 'title',
+    value: value,
+    handleInputChange: handleInputChange,
     title: '입력 제목에 대한 내용입니다',
     placeholder: 'placeholder',
   },
