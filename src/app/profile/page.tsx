@@ -1,106 +1,32 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import TapBar from '@/components/common/TapBar'
 import Dropdown from '@/components/common/Dropdown'
 import FilterBtn from '@/components/session/FilterBtn'
 import AddBtn from '@/components/common/AddBtn'
 import ProfileCard from '@/components/profile/ProfileCard'
+import { getProfileList } from './api/getProfileList'
+import { useGetProfileQuery } from './query/useGetProfileQuery'
+import ProfileList from './@projectList'
 
 export default function Page() {
-  const dummyDataArray = [
-    {
-      name: '홍길동',
-      university: '공학대',
-      year: '4학년',
-      profileImage: '/profile.png', // 실제 이미지 경로
-      role: 'Backend',
-      skills: ['Python', 'Java', 'Nest.js', 'SpringBoot', 'Nest.js'],
-      projects: ['/project1.png', '/project2.png'], // 실제 이미지 경로
-      generation: '8',
-    },
-    {
-      name: '김철수',
-      university: '공학대',
-      year: '3학년',
-      profileImage: '/profile.png', // 실제 이미지 경로
-      role: 'Frontend',
-      skills: ['React', 'TypeScript', 'GraphQL'],
-      projects: ['/project3.png', '/project4.png'], // 실제 이미지 경로
-      generation: '7',
-    },
-    {
-      name: '김철수',
-      university: '공학대',
-      year: '3학년',
-      profileImage: '/profile.png', // 실제 이미지 경로
-      role: 'Frontend',
-      skills: ['React', 'TypeScript', 'GraphQL'],
-      projects: ['/project3.png', '/project4.png'], // 실제 이미지 경로
-      generation: '7',
-    },
-    {
-      name: '김철수',
-      university: '공학대',
-      year: '3학년',
-      profileImage: '/profile.png', // 실제 이미지 경로
-      role: 'Frontend',
-      skills: ['React', 'TypeScript', 'GraphQL'],
-      projects: ['/project3.png', '/project4.png'], // 실제 이미지 경로
-      generation: '7',
-    },
-    {
-      name: '김철수',
-      university: '공학대',
-      year: '3학년',
-      profileImage: '/profile.png', // 실제 이미지 경로
-      role: 'Frontend',
-      skills: ['React', 'TypeScript', 'GraphQL'],
-      projects: ['/project3.png', '/project4.png'], // 실제 이미지 경로
-      generation: '7',
-    },
-    {
-      name: '김철수',
-      university: '공학대',
-      year: '3학년',
-      profileImage: '/profile.png', // 실제 이미지 경로
-      role: 'Frontend',
-      skills: ['React', 'TypeScript', 'GraphQL'],
-      projects: ['/project3.png', '/project4.png'], // 실제 이미지 경로
-      generation: '7',
-    },
-    {
-      name: '김철수',
-      university: '공학대',
-      year: '3학년',
-      profileImage: '/profile.png', // 실제 이미지 경로
-      role: 'Frontend',
-      skills: ['React', 'TypeScript', 'GraphQL'],
-      projects: ['/project3.png', '/project4.png'], // 실제 이미지 경로
-      generation: '7',
-    },
-    {
-      name: '김철수',
-      university: '공학대',
-      year: '3학년',
-      profileImage: '/profile.png', // 실제 이미지 경로
-      role: 'Frontend',
-      skills: ['React', 'TypeScript', 'GraphQL'],
-      projects: ['/project3.png', '/project4.png'], // 실제 이미지 경로
-      generation: '7',
-    },
-    // 원하는 만큼 더 추가하세요
-  ]
-
   const [selectedPeriods, setSelectedPeriods] = useState<string[]>([])
+
+  const position = ''
+  const year = ''
+  const university = ''
+  const grade = ''
+  const offset = 0
+  const limit = 10
+
   return (
     <div className="flex justify-center">
       <div className="flex flex-col">
-        <div className="w-[1200px] text-left mt-14 mb-7">
+        <div className="max-w-[1200px] w-[1200px] text-left mt-[3.56rem] mb-[2rem]">
           <p className="text-4xl mb-5 font-bold">프로필</p>
           <p className="text-xl">모든 테커인들의 프로필 정보를 확인해보세요.</p>
         </div>
-
         <div className="flex justify-start mt-5 gap-3">
           <Dropdown
             title="포지션"
@@ -122,21 +48,25 @@ export default function Page() {
           />
           <Dropdown
             title="대학"
-            options={['한국공대', '성결대']}
+            options={['한국공대', '성결대', '인천대']}
             selectedOptions={selectedPeriods}
             setSelectedOptions={setSelectedPeriods}
+            // selectedOptions={selectedUniversity}
+            // setSelectedOptions={setSelectedUniversity}
           />
         </div>
-
         <div className="bg-filterbg flex items-center w-[1200px] h-[100px] px-4 gap-4 my-6">
           <FilterBtn title="Frontend" />
           <FilterBtn title="1기" />
         </div>
-        <div className="grid grid-cols-4 gap-x-7 gap-y-[0.94rem]">
-          {dummyDataArray.map((data, index) => (
-            <ProfileCard key={index} {...data} />
-          ))}
-        </div>
+        <ProfileList
+          position={position}
+          year={year}
+          university={university}
+          grade={grade}
+          offset={offset}
+          limit={limit}
+        />
       </div>
     </div>
   )

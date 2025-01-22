@@ -4,6 +4,9 @@ const nextConfig = {
   experimental: {
     appDir: true,
   },
+  images: {
+    domains: ['example.com', 'avatars.slack-edge.com'], // 허용할 외부 도메인 추가
+  },
 
   async rewrites() {
     return [
@@ -24,22 +27,9 @@ const nextConfig = {
     config.module.rules.push({
       test: /pdf\.worker\.mjs$/,
       type: 'asset/resource',
-      //   use: {
-      //     loader: 'file-loader',
-      //     options: {
-      //       name: '[name].[hash].[ext]',
-      //       // publicPath: '/_next/static/worker',
-      //       // outputPath: 'static/worker',
-      //     },
-      // },
     })
 
     config.resolve.alias.canvas = false
-    // config.module.rules.push({
-    //   test: /\.mjs$/,
-    //   include: /node_modules/,
-    //   type: 'javascript/auto',
-    // })
 
     return config
   },

@@ -31,6 +31,9 @@ export default function NevBar() {
           <Link href="/project" className="hover:text-gray-700 cursor-pointer">
             프로젝트
           </Link>
+          <Link href="/profile" className="hover:text-gray-700 cursor-pointer">
+            프로필
+          </Link>
           <Link href="/blog" className="hover:text-gray-700 cursor-pointer">
             블로그
           </Link>
@@ -72,9 +75,9 @@ export default function NevBar() {
         <Link href="/mypage" className="p-2">
           <IoPersonCircle size={24} />
         </Link>
-        <button type="button" className="hover:text-gray-800">
-          로그아웃
-        </button>
+        <Link href="/login" className="p-2">
+          로그인
+        </Link>
       </div>
     </div>
   )
