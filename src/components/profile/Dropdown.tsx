@@ -29,11 +29,9 @@ const Dropdown: React.FC<DropdownProps> = ({
 
   // 선택된 옵션이 변경될 때 드롭다운 타이틀 업데이트
   useEffect(() => {
-    if (selectedOptions.length > 0) {
-      setSelectedTitle(selectedOptions.join(', '))
-    } else {
-      setSelectedTitle(title) // 초기 제목으로 복구
-    }
+    setSelectedTitle(
+      selectedOptions.length > 0 ? selectedOptions.join(', ') : title,
+    )
   }, [selectedOptions, title])
 
   // 드롭다운 외부 클릭 감지 및 닫기 기능
@@ -52,6 +50,15 @@ const Dropdown: React.FC<DropdownProps> = ({
       document.removeEventListener('mousedown', handleClickOutside)
     }
   }, [])
+  const getListItem = (index: number) => {
+    return [
+      'relative flex items-center justify-between px-2.5 py-2.5 cursor-pointer hover:bg-[#FFF3EC]',
+      index === 0 ? 'rounded-t-lg' : '',
+      index === options.length - 1 ? 'rounded-b-lg' : '',
+    ]
+      .filter(Boolean)
+      .join(' ')
+  }
 
   return (
     <div ref={dropdownRef} className="relative w-[10.5rem]">
@@ -69,11 +76,7 @@ const Dropdown: React.FC<DropdownProps> = ({
               key={option}
               role="button"
               onClick={() => handleSelect(option)}
-              className={`relative flex items-center justify-between px-2.5 py-2.5 cursor-pointer ${
-                selectedOptions.includes(option) ? 'bg-[#FFF3EC]' : ''
-              } hover:bg-[#FFF3EC] ${index === 0 ? 'rounded-t-lg' : ''} ${
-                index === options.length - 1 ? 'rounded-b-lg' : ''
-              }`}
+              className={getListItem(index)}
             >
               <div className="flex items-center">
                 <input

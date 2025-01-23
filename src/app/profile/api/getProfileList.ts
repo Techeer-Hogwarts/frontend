@@ -15,18 +15,19 @@ export async function getProfileList({
 }) {
   try {
     // URLSearchParams를 사용하여 동적으로 쿼리 문자열 생성
-    const queryParams = new URLSearchParams()
 
-    if (position) queryParams.set('position', position)
-    if (year) queryParams.set('year', year.toString())
-    if (university) queryParams.set('university', university)
-    if (grade) queryParams.set('grade', grade)
-    queryParams.set('offset', offset.toString())
-    queryParams.set('limit', limit.toString())
+    const queryParams = new URLSearchParams(
+      Object.entries({
+        position,
+        year: year?.toString(),
+        university,
+        grade,
+        offset: offset.toString(),
+        limit: limit.toString(),
+      }).filter(([, value]) => value !== undefined) as [string, string][], // 값이 있는 항목만 포함
+    )
 
-    // 최종 URL 생성
     const url = `/api/v1/users/profiles?${queryParams.toString()}`
-
     const response = await fetch(url, {
       method: 'GET',
       headers: {
