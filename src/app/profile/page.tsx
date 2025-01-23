@@ -69,8 +69,6 @@ export default function Page() {
             options={universityOptions}
             selectedOptions={selectedUniversity}
             setSelectedOptions={setSelectedUniversity}
-            // selectedOptions={selectedUniversity}
-            // setSelectedOptions={setSelectedUniversity}
           />
         </div>
         <div className="bg-filterbg flex items-center w-[1200px] h-[100px] px-4 gap-4 my-6">
@@ -78,7 +76,9 @@ export default function Page() {
             <FilterBtn
               key={item}
               title={item}
-              onClick={() => handleRemoveFilter(item, 'position')}
+              onClick={() => {
+                handleRemoveFilter(item, 'position')
+              }}
             />
           ))}
           {selectedYear.map((item) => (

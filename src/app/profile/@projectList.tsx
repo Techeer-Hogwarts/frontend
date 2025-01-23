@@ -1,5 +1,7 @@
 import ProfileCard from '@/components/profile/ProfileCard' // 경로는 실제 파일 위치에 맞게 조정
 import { useGetProfileQuery } from './query/useGetProfileQuery'
+import SkeletonProfileCard from './SkeletonProfileCard'
+import EmptyLottie from '@/components/common/EmptyLottie'
 
 interface Profile {
   id: number
@@ -42,11 +44,24 @@ export default function ProfileList({
   })
 
   if (isLoading) {
-    return <div>Loading...</div> // 로딩 중일 때 표시할 문구
+    return (
+      <div className="grid grid-cols-4 gap-4">
+        {Array.from({ length: 12 }).map((_, index) => (
+          <SkeletonProfileCard key={index} />
+        ))}
+      </div>
+    )
   }
 
-  if (isError) {
-    return <div>프로필 데이터를 가져오는 데 오류가 발생했습니다.</div> // 오류 발생 시 표시할 문구
+  if (isError || profiles?.length === 0) {
+    return (
+      <div className="flex justify-center">
+        <EmptyLottie
+          text="검색한 데이터가 없습니다."
+          link="다시 검색해주세요"
+        />
+      </div>
+    ) // 오류 발생 시 표시할 문구
   }
 
   return (

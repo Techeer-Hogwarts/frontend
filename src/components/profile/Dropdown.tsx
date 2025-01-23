@@ -22,18 +22,19 @@ const Dropdown: React.FC<DropdownProps> = ({
   const toggleDropdown = () => setIsOpen(!isOpen)
 
   const handleSelect = (option: string) => {
-    // if (selectedOptions.includes(option)) {
-    //   setSelectedOptions(selectedOptions.filter((item) => item !== option))
-    // } else {
-    //   setSelectedOptions([...selectedOptions, option])
-    // }
-    // 클릭한 항목으로 타이틀 변경
-    setSelectedTitle(option)
-    // 선택된 항목 리스트 업데이트 (단일 선택으로 가정)
-    setSelectedOptions([option])
-    // 드롭다운 닫기
-    setIsOpen(false)
+    setSelectedTitle(option) // 클릭한 항목으로 타이틀 변경
+    setSelectedOptions([option]) // 선택된 항목 리스트 업데이트 (단일 선택으로 가정)
+    setIsOpen(false) // 드롭다운 닫기
   }
+
+  // 선택된 옵션이 변경될 때 드롭다운 타이틀 업데이트
+  useEffect(() => {
+    if (selectedOptions.length > 0) {
+      setSelectedTitle(selectedOptions.join(', '))
+    } else {
+      setSelectedTitle(title) // 초기 제목으로 복구
+    }
+  }, [selectedOptions, title])
 
   // 드롭다운 외부 클릭 감지 및 닫기 기능
   useEffect(() => {
