@@ -16,7 +16,7 @@ export default function page() {
           <FilterBtn title="컨퍼런스" />
           <FilterBtn title="지원 공고" />
         </div>
-        <SearchBar placeholder="일정을 검색해보세요." />
+        {/* <SearchBar placeholder="일정을 검색해보세요." /> */}
       </div>
       <Calendar />
       {/* <AddCalenderModal /> */}

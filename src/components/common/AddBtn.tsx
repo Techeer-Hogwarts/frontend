@@ -44,8 +44,20 @@ export default function AddBtn() {
           </button>
         </div>
       )}
-      {modal === 1 && <AddSessionModal modal="1" onClose={handleCloseModal} />}
-      {modal === 2 && <AddSessionModal modal="2" onClose={handleCloseModal} />}
+      {modal === 1 && (
+        <AddSessionModal
+          position="PARTNERS"
+          modal="1"
+          onClose={handleCloseModal}
+        />
+      )}
+      {modal === 2 && (
+        <AddSessionModal
+          position="BOOTCAMP"
+          modal="2"
+          onClose={handleCloseModal}
+        />
+      )}
     </div>
   )
 }

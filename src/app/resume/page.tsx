@@ -10,6 +10,15 @@ import BestResume from '@/components/resume/BestResume'
 
 export default function Resume() {
   const router = useRouter() // Resume 페이지에서 useRouter 사용
+  const [inputValue, setInputValue] = useState('')
+
+  const handleSearch = (query: string) => {
+    sessionStorage.setItem('searchQuery', query)
+    setInputValue(query)
+  }
+  const handleFolderClick = () => {
+    router.push('/detail') // Resume 페이지에서 라우팅 처리
+  }
 
   const openModal = () => {
     router.push('/resume?modal=true') // 모달 경로로 라우팅
@@ -54,6 +63,7 @@ export default function Resume() {
       <TapBar
         options={options}
         placeholder="프로젝트 명 혹은 이름으로 검색해보세요"
+        onSearch={handleSearch}
       />
       <div className="flex justify-between">
         <div className="flex gap-3">
