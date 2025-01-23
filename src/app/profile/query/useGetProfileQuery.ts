@@ -1,14 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { getProfileList } from '../api/getProfileList'
-
-interface ProfileQueryParams {
-  position?: string
-  year?: number
-  university?: string
-  grade?: string
-  offset?: number
-  limit?: number
-}
+import { ProfileQueryParams } from '@/types/queryParams'
 
 export function useGetProfileQuery({
   position = '',

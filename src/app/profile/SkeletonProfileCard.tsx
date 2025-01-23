@@ -2,7 +2,6 @@ export default function SkeletonProfileCard() {
   return (
     <div className="flex flex-wrap gap-5 animate-pulse">
       <div className="flex flex-col w-[17.50938rem] h-[12.375rem] bg-lightgray rounded-lg">
-        {/* <div className="font-medium w-[3rem] pt-1 text-center bg-gray h-[1.5rem] rounded-md mx-auto"></div> */}
         <div className="flex items-start gap-[0.58rem] px-[0.64rem] pt-[0.64rem] pb-[0.4rem]">
           <div className="w-[92px] h-[92px] bg-gray rounded-md"></div>
           <div className="flex flex-col gap-2 flex-1">

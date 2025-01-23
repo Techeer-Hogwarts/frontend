@@ -8,12 +8,18 @@ import ProfileList from './@projectList'
 export default function Page() {
   // const [selectedPeriods, setSelectedPeriods] = useState<string[]>([])
   const [selectedPosition, setSelectedPosition] = useState<string[]>([])
-  const [selectedYear, setSelectedYear] = useState<string[]>([])
+  const [selectedYear, setSelectedYear] = useState<number[]>([])
   const [selectedActive, setSelectedActive] = useState<string[]>([])
   const [selectedUniversity, setSelectedUniversity] = useState<string[]>([])
 
-  const positionOptions = ['Frontend', 'Backend', 'DataEngineer', 'DevOps']
-  const yearOptions = ['1기', '2기', '3기', '4기', '5기', '6기', '7기', '8기']
+  const positionOptions = [
+    'Frontend',
+    'Backend',
+    'DataEngineer',
+    'DevOps',
+    'Other',
+  ]
+  const yearOptions = ['1', '2', '3', '4', '5', '6', '7', '8']
   const activeOptions = ['활동 중', '활동 안함']
   const universityOptions = [
     '강원대',
@@ -24,7 +30,7 @@ export default function Page() {
     '한국공학대',
   ]
 
-  const handleRemoveFilter = (filter: string, type: string) => {
+  const handleRemoveFilter = (filter: string | number, type: string) => {
     if (type === 'position') {
       setSelectedPosition(selectedPosition.filter((item) => item !== filter))
     } else if (type === 'year') {
@@ -54,9 +60,11 @@ export default function Page() {
           />
           <Dropdown
             title="기수"
-            options={yearOptions}
-            selectedOptions={selectedYear}
-            setSelectedOptions={setSelectedYear}
+            options={yearOptions} // Dropdown 컴포넌트에서 문자열로 처리
+            selectedOptions={selectedYear.map(String)} // 숫자를 문자열로 변환
+            setSelectedOptions={
+              (values) => setSelectedYear(values.map(Number)) // 문자열을 숫자로 변환
+            }
           />
           <Dropdown
             title="현재 상태"
@@ -84,7 +92,7 @@ export default function Page() {
           {selectedYear.map((item) => (
             <FilterBtn
               key={item}
-              title={item}
+              title={item.toString()}
               onClick={() => handleRemoveFilter(item, 'year')}
             />
           ))}
@@ -105,7 +113,7 @@ export default function Page() {
         </div>
         <ProfileList
           position={selectedPosition.join(',')}
-          year={selectedYear.join(',')}
+          year={selectedYear.length > 0 ? selectedYear[0] : undefined}
           university={selectedUniversity.join(',')}
           grade={selectedActive.join(',')}
         />

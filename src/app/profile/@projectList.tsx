@@ -1,7 +1,8 @@
-import ProfileCard from '@/components/profile/ProfileCard' // 경로는 실제 파일 위치에 맞게 조정
+import ProfileCard from '@/components/profile/ProfileCard'
 import { useGetProfileQuery } from './query/useGetProfileQuery'
 import SkeletonProfileCard from './SkeletonProfileCard'
 import EmptyLottie from '@/components/common/EmptyLottie'
+import { ProfileQueryParams } from '@/types/queryParams'
 
 interface Profile {
   id: number
@@ -11,15 +12,6 @@ interface Profile {
   profileImage: string
   school: string
   class: string
-}
-
-interface ProfileQueryParams {
-  position?: string
-  year?: number
-  university?: string
-  grade?: string
-  offset?: number
-  limit?: number
 }
 
 export default function ProfileList({
@@ -46,7 +38,7 @@ export default function ProfileList({
   if (isLoading) {
     return (
       <div className="grid grid-cols-4 gap-4">
-        {Array.from({ length: 12 }).map((_, index) => (
+        {Array.from({ length: 8 }).map((_, index) => (
           <SkeletonProfileCard key={index} />
         ))}
       </div>
@@ -68,7 +60,7 @@ export default function ProfileList({
     <div className="grid grid-cols-4 gap-4">
       {profiles?.map((profile: Profile) => (
         <ProfileCard
-          key={profile.id} // 고유한 key 값 설정
+          key={profile.id}
           id={profile.id}
           userId={profile.userId}
           name={profile.name}
