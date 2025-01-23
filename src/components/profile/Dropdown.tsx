@@ -67,6 +67,7 @@ const Dropdown: React.FC<DropdownProps> = ({
           {options.map((option, index) => (
             <li
               key={option}
+              role="button"
               onClick={() => handleSelect(option)}
               className={`relative flex items-center justify-between px-2.5 py-2.5 cursor-pointer ${
                 selectedOptions.includes(option) ? 'bg-[#FFF3EC]' : ''

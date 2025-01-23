@@ -6,7 +6,7 @@ interface LottieProps {
   link: string
 }
 
-export default function EmptyLottie({ text, link }: LottieProps) {
+export default function EmptyLottie({ text, link }: Readonly<LottieProps>) {
   return (
     <div className="flex flex-col justify-center items-center w-[32rem] h-[25rem]">
       <Lottie loop animationData={lottie} play style={{ margin: '20px' }} />

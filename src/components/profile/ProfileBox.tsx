@@ -16,7 +16,7 @@ interface ProfileProps {
   }
 }
 
-export default function ProfileBox({ profileData }: ProfileProps) {
+export default function ProfileBox({ profileData }: Readonly<ProfileProps>) {
   if (!profileData) {
     return <div>프로필 정보를 가져오는 중입니다...</div>
   }

@@ -1,6 +1,6 @@
 import ProfileCard from '@/components/profile/ProfileCard'
 import { useGetProfileQuery } from './query/useGetProfileQuery'
-import SkeletonProfileCard from './SkeletonProfileCard'
+import SkeletonProfileCard from '../../components/profile/SkeletonProfileCard'
 import EmptyLottie from '@/components/common/EmptyLottie'
 import { ProfileQueryParams } from '@/types/queryParams'
 
@@ -36,10 +36,13 @@ export default function ProfileList({
   })
 
   if (isLoading) {
+    const skeletons = Array.from({ length: 8 }).map((_, i) => ({
+      id: `skeleton-${i}`,
+    }))
     return (
       <div className="grid grid-cols-4 gap-4">
-        {Array.from({ length: 8 }).map((_, index) => (
-          <SkeletonProfileCard key={index} />
+        {skeletons.map((skeleton) => (
+          <SkeletonProfileCard key={skeleton.id} />
         ))}
       </div>
     )
