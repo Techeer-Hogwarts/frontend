@@ -39,7 +39,7 @@ export default function ProfileCard({
               alt="profile"
               width={92}
               height={92}
-              className="w-[92px] h-[92px] bg-lightgray rounded-md"
+              className="w-[5.75rem] h-[5.75rem] bg-lightgray rounded-md"
             />
             <div className="flex flex-col">
               <p className="text-[1.01688rem] font-normal">{mainPosition}</p>
@@ -74,7 +74,7 @@ export default function ProfileCard({
               alt="Project"
               width={45}
               height={45}
-              className="w-[45px] h-[45px] bg-lightgray rounded-md"
+              className="w-[2.813rem] h-[2.813rem] bg-lightgray rounded-md"
             />
           </div>
         </div>

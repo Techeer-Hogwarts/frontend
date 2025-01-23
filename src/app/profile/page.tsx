@@ -6,7 +6,7 @@ import FilterBtn from '@/components/session/FilterBtn'
 import ProfileList from './@projectList'
 
 export default function Page() {
-  const [selectedPeriods, setSelectedPeriods] = useState<string[]>([])
+  // const [selectedPeriods, setSelectedPeriods] = useState<string[]>([])
   const [selectedPosition, setSelectedPosition] = useState<string[]>([])
   const [selectedYear, setSelectedYear] = useState<string[]>([])
   const [selectedActive, setSelectedActive] = useState<string[]>([])
@@ -41,7 +41,7 @@ export default function Page() {
   return (
     <div className="flex justify-center">
       <div className="flex flex-col">
-        <div className="max-w-[1200px] w-[1200px] text-left mt-[3.56rem] mb-[2rem]">
+        <div className="max-w-[75rem] w-[75rem] text-left mt-[3.56rem] mb-[2rem]">
           <p className="text-4xl mb-5 font-bold">프로필</p>
           <p className="text-xl">모든 테커인들의 프로필 정보를 확인해보세요.</p>
         </div>
@@ -71,7 +71,7 @@ export default function Page() {
             setSelectedOptions={setSelectedUniversity}
           />
         </div>
-        <div className="bg-filterbg flex items-center w-[1200px] h-[100px] px-4 gap-4 my-6">
+        <div className="bg-filterbg flex items-center w-[75rem] h-[4.375rem] px-4 gap-4 my-6">
           {selectedPosition.map((item) => (
             <FilterBtn
               key={item}

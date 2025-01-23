@@ -9,7 +9,7 @@ export default function FilterBtn({ title, onClick }: FilterBtnProps) {
   return (
     <div
       onClick={onClick}
-      className="relative w-[167px] flex items-center justify-center rounded-2xl text-lg h-9 border bg-[#FFF6F0] text-[#DD7E3A] border-primary"
+      className="relative w-[10.438rem] flex items-center justify-center rounded-2xl text-lg h-9 border bg-[#FFF6F0] text-[#DD7E3A] border-primary"
     >
       {title}
       <Image
