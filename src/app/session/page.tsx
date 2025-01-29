@@ -122,8 +122,8 @@ export default function Page() {
           />
         </div>
         <div className="bg-filterbg flex items-center w-[1200px] h-[100px] px-4 gap-4 mt-3 mb-5">
-          <FilterBtn title="Frontend" />
-          <FilterBtn title="1기" />
+          {/* <FilterBtn title="Frontend" />
+          <FilterBtn title="1기" /> */}
         </div>
         <div className="grid grid-cols-3 gap-8">
           {sessions?.map((data: any) => (
