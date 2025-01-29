@@ -34,7 +34,7 @@ export default function Detail({ params }: { params: { resumeId: string } }) {
   const [showOther, setShowOther] = useState(false) // Other 컴포넌트 표시 여부 상태 추가
 
   const [profileData, setProfileData] = useState<any>(null)
-  // 다른 사람 이력서 보기를 클릭했을 때 Ather 컴포넌트 표시 토글
+  // 다른 사람 이력서 보기를 클릭했을 때 Other 컴포넌트 표시 토글
   const handleToggleOther = () => {
     setShowOther((prev) => !prev) // 상태를 토글하여 보이기/숨기기 처리
   }
@@ -70,9 +70,9 @@ export default function Detail({ params }: { params: { resumeId: string } }) {
   }
 
   // 신입/경력 구분
-  const isIntern = resume.user.isIntern
-  const userCareer = isIntern ? '경력' : '신입'
-  const career = 'Frontend'
+  // const isIntern = resume.user.isIntern
+  // const userCareer = isIntern ? '경력' : '신입'
+  // const career = 'Frontend'
 
   return (
     <div className="flex justify-between mt-10">

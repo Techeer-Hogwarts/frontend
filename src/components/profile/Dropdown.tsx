@@ -72,27 +72,28 @@ const Dropdown: React.FC<DropdownProps> = ({
       {isOpen && (
         <ul className="absolute left-0 right-0 z-10 bg-white rounded-lg shadow-lg mt-1.5">
           {options.map((option, index) => (
-            <li
-              key={option}
-              role="button"
-              onClick={() => handleSelect(option)}
-              className={getListItem(index)}
-            >
-              <div className="flex items-center">
-                <input
-                  type="checkbox"
-                  checked={selectedOptions.includes(option)}
-                  onChange={() => handleSelect(option)}
-                  className="w-4 h-4 mr-2 border border-gray appearance-none rounded flex items-center justify-center checked:bg-primary checked:border-primary cursor-pointer checked:before:content-['✓'] checked:before:text-white checked:before:text-xs checked:before:flex checked:before:items-center checked:before:justify-center"
-                />
-                {option}
-              </div>
-              {selectedOptions.includes(option) && (
-                <span className="font-medium text-primary">✓</span>
-              )}
-              {index !== options.length - 1 && (
-                <span className="absolute bottom-0 left-0 w-full h-[1px] bg-gray"></span>
-              )}
+            <li key={option} className={getListItem(index)}>
+              <button
+                type="button"
+                onClick={() => handleSelect(option)}
+                className="relative flex items-center justify-between w-full px-2.5 py-2.5 cursor-pointer hover:bg-[#FFF3EC] text-left"
+              >
+                <div className="flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={selectedOptions.includes(option)}
+                    onChange={() => handleSelect(option)}
+                    className="w-4 h-4 mr-2 border border-gray appearance-none rounded flex items-center justify-center checked:bg-primary checked:border-primary cursor-pointer checked:before:content-['✓'] checked:before:text-white checked:before:text-xs checked:before:flex checked:before:items-center checked:before:justify-center"
+                  />
+                  {option}
+                </div>
+                {selectedOptions.includes(option) && (
+                  <span className="font-medium text-primary">✓</span>
+                )}
+                {index !== options.length - 1 && (
+                  <span className="absolute bottom-0 left-0 w-full h-[1px] bg-gray"></span>
+                )}
+              </button>
             </li>
           ))}
         </ul>
