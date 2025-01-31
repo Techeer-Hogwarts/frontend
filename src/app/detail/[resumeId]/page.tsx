@@ -7,6 +7,7 @@ import Image from 'next/image'
 import Other from '@/components/resume/OtherResume'
 import { fetchResumeById } from '../../resume/api/getResume'
 import PdfViewer from '@/components/resume/Pdf'
+import EmptyLottie from '@/components/common/EmptyLottie'
 
 // workerSrc 정의 하지 않으면 pdf 보여지지 않습니다.
 pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.mjs`
@@ -32,7 +33,8 @@ export default function Detail({ params }: { params: { resumeId: string } }) {
   const [error, setError] = useState<string | null>(null)
   const [showOther, setShowOther] = useState(false) // Other 컴포넌트 표시 여부 상태 추가
 
-  // 다른 사람 이력서 보기를 클릭했을 때 Ather 컴포넌트 표시 토글
+  const [profileData, setProfileData] = useState<any>(null)
+  // 다른 사람 이력서 보기를 클릭했을 때 Other 컴포넌트 표시 토글
   const handleToggleOther = () => {
     setShowOther((prev) => !prev) // 상태를 토글하여 보이기/숨기기 처리
   }
@@ -42,6 +44,7 @@ export default function Detail({ params }: { params: { resumeId: string } }) {
       try {
         const data = await fetchResumeById(Number(resumeId))
         setResume(data)
+        setProfileData(data.user)
         console.log('detail 페이지 조회 성공')
       } catch (err: any) {
         setError(err.message)
@@ -51,13 +54,15 @@ export default function Detail({ params }: { params: { resumeId: string } }) {
     loadResume()
   }, [resumeId])
 
-  // resume이 null인 경우 처리
-  // if (isLoading) {
-  //   return <div>Loading...</div>
-  // }
-
-  if (error) {
-    return <div>Error: {error}</div>
+  if (error || profileData?.length === 0) {
+    return (
+      <div className="flex justify-center">
+        <EmptyLottie
+          text="이력서를 조회하는데 실패했습니다."
+          link="다시 조회해주세요"
+        />
+      </div>
+    ) // 오류 발생 시 표시할 문구
   }
 
   if (!resume) {
@@ -65,15 +70,15 @@ export default function Detail({ params }: { params: { resumeId: string } }) {
   }
 
   // 신입/경력 구분
-  const isIntern = resume.user.isIntern
-  const userCareer = isIntern ? '경력' : '신입'
-  const career = 'Frontend'
+  // const isIntern = resume.user.isIntern
+  // const userCareer = isIntern ? '경력' : '신입'
+  // const career = 'Frontend'
 
   return (
     <div className="flex justify-between mt-10">
       {/** 좌측 영역 */}
       <div className="flex flex-col w-[15rem] gap-6">
-        <ProfileBox position={career} career={userCareer} />
+        <ProfileBox profileData={profileData} />
         <div className="flex flex-col">
           <button
             className="flex justify-between items-center w-[14.25rem] h-[2.5rem] px-4 shadow-md border-2 border-primary rounded-xl font-medium text-[1rem]"
@@ -90,7 +95,6 @@ export default function Detail({ params }: { params: { resumeId: string } }) {
       <div className="flex flex-col">
         <div className="flex w-[55rem] h-[50rem] gap-5">
           {/** pdf 이력서 */}
-
           <div className="flex w-[50rem] h-[60rem]">
             <PdfViewer url={resume.url} />
           </div>

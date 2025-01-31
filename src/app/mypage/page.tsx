@@ -15,14 +15,13 @@ export default function Mypage() {
     'home' | 'profile' | 'resume' | 'bookmark' | 'likes' | 'settings'
   >('home')
 
-  const position = 'Frontend'
-  const career = '신입'
+  const [profileData, setProfileData] = useState<any>(null)
 
   return (
     <div className="flex gap-16 mt-10">
       {/** 좌측 영역 */}
       <div className="flex flex-col w-[15rem] gap-6 ">
-        <ProfileBox position={position} career={career} />
+        <ProfileBox profileData={profileData} />
         <MypageTap activeTab={activeTab} setActiveTab={setActiveTab} />
       </div>
 
