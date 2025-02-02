@@ -72,6 +72,7 @@ export default function Mypage() {
     fetchUserProfile()
   }, [])
 
+
   return (
     <div className="flex gap-16 mt-10">
       {/** 좌측 영역 */}

@@ -5,46 +5,15 @@ import ResumeFolder from '../resume/ResumeFolder'
 import AddResume from './AddResume'
 import Link from 'next/link'
 
-let resumes = [
-  {
-    name: '박명수',
-    period: '8기',
-    position: 'Frontend',
-    career: '신입',
-    date: '2024.09.21',
-  },
-  {
-    name: '유재석',
-    period: '7기',
-    position: 'Backend',
-    career: '경력',
-    date: '2024.09.19',
-  },
-  {
-    name: '정준하',
-    period: '6기',
-    position: 'DataEngineer',
-    career: '신입',
-    date: '2024.09.18',
-  },
-  {
-    name: '하하',
-    period: '4기',
-    position: 'Backend',
-    career: '경력',
-    date: '2024.09.19',
-  },
-  {
-    name: '노홍철',
-    period: '8기',
-    position: 'Frontend',
-    career: '신입',
-    date: '2024.09.21',
-  },
-]
-
 export default function Resume() {
   const [modal, setModal] = useState(false)
+
+  const [selectedPosition, setSelectedPosition] = useState<string | undefined>(
+    undefined,
+  )
+  const [selectedYear, setSelectedYear] = useState<number | undefined>(
+    undefined,
+  )
   const handleClickAddResume = () => {
     setModal(!modal)
   }
@@ -60,7 +29,12 @@ export default function Resume() {
         {modal && <AddResume setModal={setModal} />}
       </div>
       <Link href="/detail">
-        <ResumeFolder resumes={resumes} />
+        <ResumeFolder
+          position={selectedPosition}
+          year={selectedYear}
+          offset={0}
+          limit={10}
+        />
       </Link>
     </div>
   )
