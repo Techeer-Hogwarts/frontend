@@ -1,14 +1,12 @@
 'use client'
 
-import InputField from '@/components/common/InputField'
+import React, { useState } from 'react'
 import Link from 'next/link'
-import { useState } from 'react'
-import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import { useAuthStore } from '@/store/authStore'
+import InputField from '@/components/common/InputField'
 
 export default function Login() {
-  const [isChecked, setIsChecked] = useState(false)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [isLoggingIn, setIsLoggingIn] = useState(false)
@@ -30,37 +28,47 @@ export default function Login() {
     setIsLoggingIn(true)
 
     try {
-      const response = await axios.post(
+      // fetch로 로그인 요청
+      const response = await fetch(
         'https://api.techeerzip.cloud/api/v1/auth/login',
         {
-          email,
-          password,
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          withCredentials: true,
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({
+            email,
+            password,
+          }),
         },
       )
 
-      if (response.status === 201) {
-        // 로그인 성공 처리
-        setIsLoggedIn(true)
-        setIsError(false)
-        setMessage('로그인에 성공하였습니다.')
-        router.push('/project')
+      // 응답 상태 확인
+      if (!response.ok) {
+        // 실패
+        if (response.status === 401) {
+          setIsError(true)
+          setMessage('이메일 또는 비밀번호가 올바르지 않습니다.')
+        } else {
+          setIsError(true)
+          setMessage('로그인에 실패하였습니다.')
+        }
       } else {
-        setIsError(true)
-        setMessage('로그인에 실패하였습니다.')
+        // 201 Created 가정
+        if (response.status === 201) {
+          setIsLoggedIn(true)
+          setIsError(false)
+          setMessage('로그인에 성공하였습니다.')
+          router.push('/project')
+        } else {
+          setIsError(true)
+          setMessage('로그인 응답이 예상과 다릅니다.')
+        }
       }
-    } catch (error: any) {
+    } catch (error) {
+      // 네트워크 에러, CORS 문제 등
+      console.error('Login error:', error)
       setIsError(true)
-      if (error.response && error.response.status === 401) {
-        setMessage('이메일 또는 비밀번호가 올바르지 않습니다.')
-      } else {
-        setMessage('네트워크 오류가 발생했습니다.')
-      }
+      setMessage('네트워크 오류가 발생했습니다.')
     } finally {
       setIsLoggingIn(false)
     }

@@ -2,28 +2,28 @@
 
 import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
-import axios from 'axios'
 
 interface EmailVerificationProps {
   email: string
+  isVerified: boolean
   setEmail: (email: string) => void
   setIsVerified: (verified: boolean) => void
 }
 
 export default function EmailVerification({
   email,
+  isVerified,
   setEmail,
   setIsVerified,
 }: EmailVerificationProps) {
   const [code, setCode] = useState('')
   const [isRequesting, setIsRequesting] = useState(false)
   const [isVerifying, setIsVerifying] = useState(false)
-  const [isVerified, setIsVerifiedState] = useState(false)
   const [timer, setTimer] = useState(300) // 5분(300초) 타이머
   const [timerActive, setTimerActive] = useState(false)
   const [timeExpired, setTimeExpired] = useState(false)
 
-  // ↓↓↓ 추가: 메시지 상태(인증요청 / 인증확인)
+  // 메시지 상태(인증요청 / 인증확인)
   const [requestMessage, setRequestMessage] = useState('')
   const [requestIsError, setRequestIsError] = useState(false)
   const [verifyMessage, setVerifyMessage] = useState('')
@@ -47,11 +47,20 @@ export default function EmailVerification({
     setTimeExpired(false)
 
     try {
-      const response = await axios.post(
+      const response = await fetch(
         'https://api.techeerzip.cloud/api/v1/auth/email',
-        { email },
-        { headers: { 'Content-Type': 'application/json' } },
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email }),
+        },
       )
+
+      if (!response.ok) {
+        setRequestIsError(true)
+        setRequestMessage('인증 코드 전송에 실패했습니다.')
+        return
+      }
 
       if (response.status === 201) {
         setRequestIsError(false)
@@ -70,7 +79,6 @@ export default function EmailVerification({
 
   // 인증 코드 확인 함수
   const handleVerify = async () => {
-    // 매번 새 요청 전, 이전 메시지 초기화
     setVerifyMessage('')
     setVerifyIsError(false)
 
@@ -80,7 +88,6 @@ export default function EmailVerification({
       return
     }
 
-    // 타이머 만료 여부 확인
     if (timeExpired) {
       setVerifyIsError(true)
       setVerifyMessage('시간이 초과되었습니다. 인증 코드를 다시 요청해주세요.')
@@ -89,17 +96,24 @@ export default function EmailVerification({
 
     setIsVerifying(true)
     try {
-      const response = await axios.post(
+      const response = await fetch(
         'https://api.techeerzip.cloud/api/v1/auth/code',
-        { email, code },
-        { headers: { 'Content-Type': 'application/json' } },
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, code }),
+        },
       )
 
-      // 백엔드 로직에 따라 200/201 분기 다를 수 있음
-      // 여기서는 기존 코드에서 201을 성공으로 가정
+      if (!response.ok) {
+        setVerifyIsError(true)
+        setVerifyMessage('인증 코드가 올바르지 않습니다.')
+        return
+      }
+
       if (response.status === 201) {
+        // 부모에서 전달받은 setIsVerified 호출 → 인증 상태 유지됨
         setIsVerified(true)
-        setIsVerifiedState(true)
         setTimerActive(false)
         setVerifyIsError(false)
         setVerifyMessage('이메일 인증이 완료되었습니다.')
@@ -115,7 +129,6 @@ export default function EmailVerification({
     }
   }
 
-  // 타이머 효과
   useEffect(() => {
     if (timerActive && timer > 0) {
       const interval = setInterval(() => {
@@ -128,7 +141,6 @@ export default function EmailVerification({
     }
   }, [timerActive, timer])
 
-  // 남은 시간을 분:초 형식으로 변환
   const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60)
     const secs = seconds % 60
@@ -149,7 +161,6 @@ export default function EmailVerification({
         />
       </div>
 
-      {/* 이메일 입력 + 인증요청 버튼 */}
       <div className="flex justify-between mb-2">
         <input
           type="text"
@@ -158,7 +169,7 @@ export default function EmailVerification({
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           className="w-[21.75rem] h-10 px-4 border border-gray rounded-[0.25rem] focus:outline-none focus:border-primary"
-          disabled={isVerified} // 인증 완료 후 비활성화
+          disabled={isVerified}
         />
         <button
           type="button"
@@ -170,16 +181,16 @@ export default function EmailVerification({
         </button>
       </div>
 
-      {/* 인증요청 결과 메시지 */}
       {requestMessage && (
         <p
-          className={`mb-4 text-sm ${requestIsError ? 'text-red-500' : 'text-green'}`}
+          className={`mb-4 text-sm ${
+            requestIsError ? 'text-red-500' : 'text-green'
+          }`}
         >
           {requestMessage}
         </p>
       )}
 
-      {/* 인증코드 입력 + 인증하기 버튼 */}
       <div className="flex justify-between mb-2">
         <input
           type="text"
@@ -200,16 +211,16 @@ export default function EmailVerification({
         </button>
       </div>
 
-      {/* 인증 확인 결과 메시지 */}
       {verifyMessage && (
         <p
-          className={`mb-2 text-sm ${verifyIsError ? 'text-red-500' : 'text-green-500'}`}
+          className={`mb-2 text-sm ${
+            verifyIsError ? 'text-red-500' : 'text-green'
+          }`}
         >
           {verifyMessage}
         </p>
       )}
 
-      {/* 이메일 재전송 + 타이머 */}
       <div className="flex justify-between text-sm mt-2">
         <button
           className="text-primary underline underline-offset-2"

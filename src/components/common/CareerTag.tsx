@@ -4,7 +4,7 @@ interface Career {
 
 const CareerTag = ({ career }: Career) => {
   return (
-    <div className="flex justify-center w-[3rem] h-[1.4rem] bg-lightgray rounded-md">
+    <div className="flex justify-center w-[3rem] h-[1.4rem] bg-lightgray rounded-md text-sm items-center">
       <span className="text-gray-700">{career}</span>
     </div>
     // <div className="flex justify-center w-[3rem] h-[1.4rem] bg-gray-200 rounded-md">

@@ -7,22 +7,20 @@ import {
   IoCalendarOutline,
   IoPersonCircle,
 } from 'react-icons/io5'
-import Cookies from 'js-cookie'
 import { useRouter } from 'next/navigation'
 import { useAuthStore } from '@/store/authStore'
 
 export default function NevBar() {
   const [isSearchOpen, setIsSearchOpen] = useState(false)
-  const { isLoggedIn, setIsLoggedIn, logout } = useAuthStore()
+  const { isLoggedIn, checkAuth, logout } = useAuthStore()
   const router = useRouter()
 
   useEffect(() => {
-    const accessToken = Cookies.get('accessToken')
-    setIsLoggedIn(!!accessToken)
-  }, [setIsLoggedIn])
+    checkAuth()
+  }, [checkAuth])
 
   const toggleSearch = () => {
-    setIsSearchOpen((prev) => !prev)
+    setIsSearchOpen(!isSearchOpen)
   }
 
   const handleLogout = async () => {
@@ -34,7 +32,6 @@ export default function NevBar() {
       alert('로그아웃에 실패하였습니다.')
     }
   }
-
   return (
     <div className="flex items-center w-[1200px] max-w-[1200px] h-[3.8125rem] justify-between border-b border-[#D7D7D7]">
       <div className="flex">
@@ -88,14 +85,14 @@ export default function NevBar() {
           <IoCalendarOutline size={24} />
         </Link>
         {/* 마이페이지 아이콘 */}
-        <Link href="/detail" className="p-2">
+        <Link href="/mypage" className="p-2">
           <IoPersonCircle size={24} />
         </Link>
 
         {isLoggedIn ? (
           <button
             type="button"
-            className="ml-4 text-gray-600 hover:text-gray-800 h"
+            className="ml-4 text-gray-600 hover:text-gray-800"
             onClick={handleLogout}
           >
             로그아웃

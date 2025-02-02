@@ -1,22 +1,22 @@
 interface Position {
-  position: 'Frontend' | 'Backend' | 'DataEngineer' | string
+  position: 'FRONTEND' | 'BACKEND' | 'DATAENGINEER' | string
 }
 
 const PositionTag = ({ position }: Position) => {
   // 포지션에 따른 색상 매핑
   const positionStyles: Record<
-    'Frontend' | 'Backend' | 'DataEngineer',
+    'FRONTEND' | 'BACKEND' | 'DATAENGINEER',
     { bg: string; text: string }
   > = {
-    Frontend: {
+    FRONTEND: {
       bg: 'bg-lightblue',
       text: 'text-blue',
     },
-    Backend: {
+    BACKEND: {
       bg: 'bg-lightgreen',
       text: 'text-green',
     },
-    DataEngineer: {
+    DATAENGINEER: {
       bg: 'bg-lightpurple',
       text: 'text-purple',
     },
@@ -24,7 +24,7 @@ const PositionTag = ({ position }: Position) => {
 
   // 해당 포지션이 없으면 기본값 사용
   const styles = positionStyles[
-    position as 'Frontend' | 'Backend' | 'DataEngineer'
+    position as 'FRONTEND' | 'BACKEND' | 'DATAENGINEER'
   ] || {
     bg: 'bg-lightgray',
     text: 'text-black',
@@ -32,7 +32,7 @@ const PositionTag = ({ position }: Position) => {
 
   return (
     <div
-      className={`flex justify-center w-[6.5rem] h-[1.4rem] ${styles.bg} rounded-md`}
+      className={`flex justify-center w-[6.5rem] h-[1.4rem] ${styles.bg} rounded-md text-sm items-center`}
     >
       <span className={styles.text}>{position}</span>
     </div>

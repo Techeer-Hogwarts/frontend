@@ -1,7 +1,6 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import InputField from '@/components/common/InputField'
 
@@ -27,7 +26,7 @@ const ChangePassword = () => {
 
   const router = useRouter()
 
-  // 이메일 인증 코드 요청 함수
+  // 이메일 인증 코드 요청
   const handleRequestVerification = async () => {
     // 기존 메시지 초기화
     setRequestMessage('')
@@ -45,12 +44,22 @@ const ChangePassword = () => {
     setTimeExpired(false)
 
     try {
-      const response = await axios.post(
+      const response = await fetch(
         'https://api.techeerzip.cloud/api/v1/auth/email',
-        { email },
-        { headers: { 'Content-Type': 'application/json' } },
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email }),
+        },
       )
 
+      if (!response.ok) {
+        setRequestIsError(true)
+        setRequestMessage('인증 코드 전송에 실패했습니다.')
+        return
+      }
+
+      // 성공 (status === 201 가정)
       if (response.status === 201) {
         setRequestIsError(false)
         setRequestMessage('인증 코드가 이메일로 전송되었습니다.')
@@ -66,7 +75,7 @@ const ChangePassword = () => {
     }
   }
 
-  // 비밀번호 재설정 함수
+  // 비밀번호 재설정
   const handleResetPassword = async () => {
     // 기존 메시지 초기화
     setResetMessage('')
@@ -91,20 +100,32 @@ const ChangePassword = () => {
     }
 
     try {
-      const response = await axios.patch(
+      const response = await fetch(
         'https://api.techeerzip.cloud/api/v1/auth/findPwd',
         {
-          email,
-          code,
-          newPassword,
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email,
+            code,
+            newPassword,
+          }),
         },
       )
 
+      if (!response.ok) {
+        // 실패 시, 오류 메시지 파싱
+        const errorData = await response.json().catch(() => null)
+        setResetIsError(true)
+        setResetMessage(
+          errorData?.message
+            ? `오류: ${errorData.message}`
+            : '비밀번호 변경에 실패하였습니다.',
+        )
+        return
+      }
+
+      // 성공 (status === 200)
       if (response.status === 200) {
         setResetIsError(false)
         setResetMessage('비밀번호가 성공적으로 변경되었습니다.')
@@ -115,17 +136,12 @@ const ChangePassword = () => {
       }
     } catch (error: any) {
       setResetIsError(true)
-
-      if (error.response?.data?.message) {
-        setResetMessage(`오류: ${error.response.data.message}`)
-      } else {
-        setResetMessage('비밀번호 변경에 실패하였습니다.')
-      }
+      setResetMessage('비밀번호 변경에 실패하였습니다.')
       console.error('Password reset error:', error)
     }
   }
 
-  // 타이머 효과
+  // 3) 타이머 효과
   useEffect(() => {
     if (timerActive && timer > 0) {
       const interval = setInterval(() => {
@@ -181,7 +197,7 @@ const ChangePassword = () => {
           {requestMessage && (
             <p
               className={`mb-2 text-sm ${
-                requestIsError ? 'text-red-500' : 'text-green-500'
+                requestIsError ? 'text-red-500' : 'text-green'
               }`}
             >
               {requestMessage}
