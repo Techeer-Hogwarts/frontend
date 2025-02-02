@@ -14,16 +14,13 @@ export default function Page() {
     setIsError(false)
 
     try {
-      const response = await fetch(
-        'https://api.techeerzip.cloud/api/v1/users',
-        {
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          credentials: 'include',
+      const response = await fetch('/api/v1/users', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
         },
-      )
+        credentials: 'include',
+      })
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => null)

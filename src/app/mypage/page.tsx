@@ -47,13 +47,10 @@ export default function Mypage() {
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
-        const response = await fetch(
-          'https://api.techeerzip.cloud/api/v1/users',
-          {
-            method: 'GET',
-            credentials: 'include',
-          },
-        )
+        const response = await fetch('/api/v1/users', {
+          method: 'GET',
+          credentials: 'include',
+        })
         if (!response.ok) {
           const errorData = await response.json().catch(() => null)
           throw new Error(
@@ -71,7 +68,6 @@ export default function Mypage() {
     }
     fetchUserProfile()
   }, [])
-
 
   return (
     <div className="flex gap-16 mt-10">

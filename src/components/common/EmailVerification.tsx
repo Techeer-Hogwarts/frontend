@@ -47,14 +47,11 @@ export default function EmailVerification({
     setTimeExpired(false)
 
     try {
-      const response = await fetch(
-        'https://api.techeerzip.cloud/api/v1/auth/email',
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email }),
-        },
-      )
+      const response = await fetch('/api/v1/auth/email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      })
 
       if (!response.ok) {
         setRequestIsError(true)
@@ -96,14 +93,11 @@ export default function EmailVerification({
 
     setIsVerifying(true)
     try {
-      const response = await fetch(
-        'https://api.techeerzip.cloud/api/v1/auth/code',
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, code }),
-        },
-      )
+      const response = await fetch('/api/v1/auth/code', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, code }),
+      })
 
       if (!response.ok) {
         setVerifyIsError(true)

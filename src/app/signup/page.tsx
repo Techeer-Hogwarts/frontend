@@ -187,13 +187,10 @@ const Signup = () => {
         JSON.stringify(requestPayload),
       )
 
-      const response = await fetch(
-        'https://api.techeerzip.cloud/api/v1/users/signup',
-        {
-          method: 'POST',
-          body: formDataToSend,
-        },
-      )
+      const response = await fetch('/api/v1/users/signup', {
+        method: 'POST',
+        body: formDataToSend,
+      })
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => null)

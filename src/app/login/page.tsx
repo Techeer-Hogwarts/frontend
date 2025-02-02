@@ -29,18 +29,15 @@ export default function Login() {
 
     try {
       // fetch로 로그인 요청
-      const response = await fetch(
-        'https://api.techeerzip.cloud/api/v1/auth/login',
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
-          body: JSON.stringify({
-            email,
-            password,
-          }),
-        },
-      )
+      const response = await fetch('/api/v1/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      })
 
       // 응답 상태 확인
       if (!response.ok) {

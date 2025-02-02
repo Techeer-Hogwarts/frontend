@@ -122,17 +122,14 @@ export default function Profile({ profile }: ProfileProps) {
       return
     }
     try {
-      const response = await fetch(
-        'https://api.techeerzip.cloud/api/v1/users/profileImage',
-        {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          credentials: 'include',
-          body: JSON.stringify({ email }),
+      const response = await fetch('/api/v1/users/profileImage', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
         },
-      )
+        credentials: 'include',
+        body: JSON.stringify({ email }),
+      })
 
       if (!response.ok) {
         const errData = await response.json().catch(() => null)
@@ -174,15 +171,12 @@ export default function Profile({ profile }: ProfileProps) {
     }
 
     try {
-      const response = await fetch(
-        'https://api.techeerzip.cloud/api/v1/users/update',
-        {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
-          body: JSON.stringify(payload),
-        },
-      )
+      const response = await fetch('/api/v1/users/update', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify(payload),
+      })
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => null)

@@ -44,14 +44,11 @@ const ChangePassword = () => {
     setTimeExpired(false)
 
     try {
-      const response = await fetch(
-        'https://api.techeerzip.cloud/api/v1/auth/email',
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email }),
-        },
-      )
+      const response = await fetch('/api/v1/auth/email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      })
 
       if (!response.ok) {
         setRequestIsError(true)
@@ -100,18 +97,15 @@ const ChangePassword = () => {
     }
 
     try {
-      const response = await fetch(
-        'https://api.techeerzip.cloud/api/v1/auth/findPwd',
-        {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            email,
-            code,
-            newPassword,
-          }),
-        },
-      )
+      const response = await fetch('/api/v1/auth/findPwd', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email,
+          code,
+          newPassword,
+        }),
+      })
 
       if (!response.ok) {
         // 실패 시, 오류 메시지 파싱
