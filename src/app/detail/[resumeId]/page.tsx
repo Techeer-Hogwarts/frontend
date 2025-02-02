@@ -78,7 +78,7 @@ export default function Detail({ params }: { params: { resumeId: string } }) {
     <div className="flex justify-between mt-10">
       {/** 좌측 영역 */}
       <div className="flex flex-col w-[15rem] gap-6">
-        <ProfileBox profileData={profileData} />
+        <ProfileBox profile={profileData} loading={false} error={''} />
         <div className="flex flex-col">
           <button
             className="flex justify-between items-center w-[14.25rem] h-[2.5rem] px-4 shadow-md border-2 border-primary rounded-xl font-medium text-[1rem]"
