@@ -13,6 +13,7 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
+    "@sentry/nextjs": "^8",
     "@storybook/addons": "^7.6.17",
     "@storybook/testing-library": "^0.2.2",
     "@tanstack/react-query": "^5.56.2",
