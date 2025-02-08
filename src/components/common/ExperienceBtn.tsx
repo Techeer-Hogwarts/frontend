@@ -20,7 +20,7 @@ export default function ExperienceBtn({
       key={key}
       type="button"
       onClick={() => handlePositionClick(position)}
-      className={`${btnPadding} rounded-md border border-lightprimary  ${
+      className={`${btnPadding} rounded-md border border-lightprimary px-3 py-2  ${
         selectedPosition.includes(position) ? 'bg-lightprimary' : 'bg-white'
       }`}
     >

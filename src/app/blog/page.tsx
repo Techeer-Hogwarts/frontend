@@ -35,12 +35,9 @@ export default function Page() {
   }
   const getBestBlog = useCallback(async () => {
     try {
-      const response = await fetch(
-        'https://api.techeerzip.cloud/api/v1/blogs/best?offset=0&limit=10',
-        {
-          method: 'GET',
-        },
-      )
+      const response = await fetch('/api/v1/blogs/best?offset=0&limit=10', {
+        method: 'GET',
+      })
 
       if (!response.ok) {
         throw new Error('세션 데이터를 업로드하는 데 실패했습니다.')
@@ -55,7 +52,7 @@ export default function Page() {
     }
   }, [blog])
   const getBlog = async () => {
-    const baseUrl = 'https://api.techeerzip.cloud/api/v1/blogs'
+    const baseUrl = '/api/v1/blogs'
     const params = {
       keyword: '',
       category: '',

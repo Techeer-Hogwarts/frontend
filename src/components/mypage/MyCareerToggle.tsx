@@ -1,3 +1,5 @@
+'use client'
+
 import React from 'react'
 
 interface CareerToggleProps {
@@ -17,9 +19,9 @@ const MyCareerToggle: React.FC<CareerToggleProps> = ({
       <div className="flex justify-between space-x-1 text-sm">
         <button
           type="button"
-          onClick={() => setValue('yes')}
+          onClick={() => setValue('있어요')}
           className={`w-[90px] h-10 border rounded-md ${
-            value === 'yes'
+            value === '있어요'
               ? 'bg-primary text-white border-primary'
               : 'text-gray border-gray'
           }`}
@@ -28,9 +30,9 @@ const MyCareerToggle: React.FC<CareerToggleProps> = ({
         </button>
         <button
           type="button"
-          onClick={() => setValue('no')}
+          onClick={() => setValue('없어요')}
           className={`w-[90px] h-10 border rounded-md ${
-            value === 'no'
+            value === '없어요'
               ? 'bg-primary text-white border-primary'
               : 'text-gray border-gray'
           }`}

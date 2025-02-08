@@ -13,7 +13,7 @@ const CareerToggle: React.FC<CareerToggleProps> = ({
 }) => {
   return (
     <div className="flex justify-between items-center">
-      <label className="text-lg text-gray">
+      <label className="text-lg ">
         {title} <span className="text-primary"> *</span>
       </label>
       <div className="flex justify-between space-x-3 text-sm">
