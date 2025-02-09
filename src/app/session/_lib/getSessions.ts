@@ -1,12 +1,18 @@
-export const getSessions = async (query: string, category: string) => {
+export const getSessions = async (
+  query: string,
+  category: string,
+  newLimit: number,
+  date: string = '',
+  position: string = '',
+) => {
   const baseUrl = 'https://api.techeerzip.cloud/api/v1/sessions'
   const params = {
     keyword: query,
     category,
-    date: '',
-    position: '',
+    date: date ?? '',
+    position: position ?? '',
     offset: '0',
-    limit: '10',
+    limit: String(newLimit),
   }
   const filteredParams = Object.fromEntries(
     Object.entries(params).filter(
