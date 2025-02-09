@@ -264,21 +264,21 @@ export default function Page() {
               <FilterBtn
                 key={period}
                 title={period}
-                setSelectedPeriods={setSelectedPeriodsP}
+                onClick={() => setSelectedPeriodsP([])}
               />
             ))}
             {selectedPeriodsB.map((period) => (
               <FilterBtn
                 key={period}
                 title={period}
-                setSelectedPeriods={setSelectedPeriodsB}
+                onClick={() => setSelectedPeriodsB([])}
               />
             ))}
             {selectedPeriodsPo.map((period) => (
               <FilterBtn
                 key={period}
                 title={period}
-                setSelectedPeriods={setSelectedPeriodsPo}
+                onClick={() => setSelectedPeriodsPo([])}
               />
             ))}
           </div>
