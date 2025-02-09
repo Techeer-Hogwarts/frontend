@@ -25,6 +25,7 @@ interface ProfileData {
   email: string
   school: string
   grade: string
+  year: number
   mainPosition: string
   subPosition: string
   githubUrl: string

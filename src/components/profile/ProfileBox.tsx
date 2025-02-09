@@ -11,6 +11,7 @@ interface ProfileData {
   email: string
   school: string
   grade: string
+  year: number
   mainPosition: string
   subPosition: string
   githubUrl: string
@@ -112,7 +113,7 @@ export default function ProfileBox({
             <span className="h-[1.25rem] border-r border-gray" />
             <div>{profile.grade}</div>
             <span className="h-[1.25rem] border-r border-gray" />
-            <div>7기</div>
+            <div>{profile.year}기</div>
           </div>
 
           {/* 포지션/경력 (mainPosition, subPosition) */}

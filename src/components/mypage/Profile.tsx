@@ -24,6 +24,7 @@ interface ProfileData {
   email: string
   school: string
   grade: string
+  year: number
   mainPosition: string
   subPosition: string
   githubUrl: string
@@ -47,6 +48,7 @@ export default function Profile({ profile }: ProfileProps) {
   const [email, setEmail] = useState(profile?.email || '')
   const [school, setSchool] = useState(profile?.school || '')
   const [classYear, setClassYear] = useState(profile?.grade || '')
+  const [year, setYear] = useState(profile?.year || '')
   const [githubUrl, setGithubUrl] = useState(profile?.githubUrl || '')
   const [mediumUrl, setMediumUrl] = useState(profile?.mediumUrl || '')
   const [velogUrl, setVelogUrl] = useState(profile?.velogUrl || '')
@@ -60,9 +62,6 @@ export default function Profile({ profile }: ProfileProps) {
   const [recommendation, setRecommendation] = useState<string>(
     profile ? (profile.isLft ? '예' : '아니요') : '아니요',
   )
-
-  // 기수 (year): Select 값은 "X기" 형태이며, 숫자만 따로 관리
-  const [year, setYear] = useState<number>(6)
 
   // 경험 초기값 계산: experiences 배열에 해당 카테고리의 데이터가 있으면 "있어요", 없으면 "없어요"
   const initialInternshipExperience =
