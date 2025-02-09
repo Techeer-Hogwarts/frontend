@@ -69,6 +69,10 @@ export default function EditSession() {
         },
       )
       router.push('/session')
+      if (response.status == 403) {
+        alert('본인이 작성한 게시물만 수정할 수 있습니다.')
+        throw new Error('세션 데이터를 수정하는 데 실패했습니다.')
+      }
       if (!response.ok) {
         throw new Error('세션 데이터를 수정하는 데 실패했습니다.')
       }
@@ -202,22 +206,22 @@ export default function EditSession() {
           </p>
           <div className="flex gap-3 mt-1 mb-2">
             <CategoryBtn
-              title="Frontend"
+              title="FRONTEND"
               isSelected={selectedCategory === 'FRONTEND'}
               onSelect={() => handlePositionChange('FRONTEND')}
             />
             <CategoryBtn
-              title="Backend"
+              title="BACKEND"
               isSelected={selectedCategory === 'BACKEND'}
               onSelect={() => handlePositionChange('BACKEND')}
             />
             <CategoryBtn
-              title="DevOps"
+              title="DEVOPS"
               isSelected={selectedCategory === 'DEVOPS'}
               onSelect={() => handlePositionChange('DEVOPS')}
             />
             <CategoryBtn
-              title="Others"
+              title="OTHERS"
               isSelected={selectedCategory === 'OTHERS'}
               onSelect={() => handlePositionChange('OTHERS')}
             />
