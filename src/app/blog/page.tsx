@@ -69,7 +69,7 @@ export default function Page() {
       offset: '0',
       limit: String(newLimit),
     }
-    console.log('aaaaaa', inputValue)
+    // console.log('aaaaaa', inputValue)
     const filteredParams = Object.fromEntries(
       Object.entries(params).filter(
         ([_, value]) => value !== null && value !== '',

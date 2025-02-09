@@ -113,7 +113,7 @@ export default function Page() {
 
   useEffect(() => {
     if (!inView) return // inView가 false면 실행 x
-    console.log('inView   :   ', inView)
+    // console.log('inView   :   ', inView)
     if (activeOption === '금주의 세션') {
       fetchBestSession(limit + 3)
       return
@@ -283,7 +283,7 @@ export default function Page() {
             ))}
           </div>
         )}
-        <div className=" flex-col grid grid-cols-3 gap-8">
+        <div className="flex-col grid grid-cols-3 gap-8">
           {sessions?.map((data: any) => (
             <SessionPost
               key={data.id}
