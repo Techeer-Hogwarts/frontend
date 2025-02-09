@@ -1,142 +1,122 @@
 'use client'
 
 import { useState } from 'react'
-import TapBar from '@/components/common/TapBar'
-import Dropdown from '@/components/common/Dropdown'
+import Dropdown from '@/components/profile/Dropdown'
 import FilterBtn from '@/components/session/FilterBtn'
-import AddBtn from '@/components/common/AddBtn'
-import ProfileCard from '@/components/profile/ProfileCard'
+import ProfileList from './@projectList'
 
 export default function Page() {
-  const dummyDataArray = [
-    {
-      name: '홍길동',
-      university: '공학대',
-      year: '4학년',
-      profileImage: '/profile.png', // 실제 이미지 경로
-      role: 'Backend',
-      skills: ['Python', 'Java', 'Nest.js', 'SpringBoot', 'Nest.js'],
-      projects: ['/project1.png', '/project2.png'], // 실제 이미지 경로
-      generation: '8',
-    },
-    {
-      name: '김철수',
-      university: '공학대',
-      year: '3학년',
-      profileImage: '/profile.png', // 실제 이미지 경로
-      role: 'Frontend',
-      skills: ['React', 'TypeScript', 'GraphQL'],
-      projects: ['/project3.png', '/project4.png'], // 실제 이미지 경로
-      generation: '7',
-    },
-    {
-      name: '김철수',
-      university: '공학대',
-      year: '3학년',
-      profileImage: '/profile.png', // 실제 이미지 경로
-      role: 'Frontend',
-      skills: ['React', 'TypeScript', 'GraphQL'],
-      projects: ['/project3.png', '/project4.png'], // 실제 이미지 경로
-      generation: '7',
-    },
-    {
-      name: '김철수',
-      university: '공학대',
-      year: '3학년',
-      profileImage: '/profile.png', // 실제 이미지 경로
-      role: 'Frontend',
-      skills: ['React', 'TypeScript', 'GraphQL'],
-      projects: ['/project3.png', '/project4.png'], // 실제 이미지 경로
-      generation: '7',
-    },
-    {
-      name: '김철수',
-      university: '공학대',
-      year: '3학년',
-      profileImage: '/profile.png', // 실제 이미지 경로
-      role: 'Frontend',
-      skills: ['React', 'TypeScript', 'GraphQL'],
-      projects: ['/project3.png', '/project4.png'], // 실제 이미지 경로
-      generation: '7',
-    },
-    {
-      name: '김철수',
-      university: '공학대',
-      year: '3학년',
-      profileImage: '/profile.png', // 실제 이미지 경로
-      role: 'Frontend',
-      skills: ['React', 'TypeScript', 'GraphQL'],
-      projects: ['/project3.png', '/project4.png'], // 실제 이미지 경로
-      generation: '7',
-    },
-    {
-      name: '김철수',
-      university: '공학대',
-      year: '3학년',
-      profileImage: '/profile.png', // 실제 이미지 경로
-      role: 'Frontend',
-      skills: ['React', 'TypeScript', 'GraphQL'],
-      projects: ['/project3.png', '/project4.png'], // 실제 이미지 경로
-      generation: '7',
-    },
-    {
-      name: '김철수',
-      university: '공학대',
-      year: '3학년',
-      profileImage: '/profile.png', // 실제 이미지 경로
-      role: 'Frontend',
-      skills: ['React', 'TypeScript', 'GraphQL'],
-      projects: ['/project3.png', '/project4.png'], // 실제 이미지 경로
-      generation: '7',
-    },
-    // 원하는 만큼 더 추가하세요
+  // const [selectedPeriods, setSelectedPeriods] = useState<string[]>([])
+  const [selectedPosition, setSelectedPosition] = useState<string[]>([])
+  const [selectedYear, setSelectedYear] = useState<number[]>([])
+  const [selectedActive, setSelectedActive] = useState<string[]>([])
+  const [selectedUniversity, setSelectedUniversity] = useState<string[]>([])
+
+  const positionOptions = [
+    'Frontend',
+    'Backend',
+    'DataEngineer',
+    'DevOps',
+    'Other',
+  ]
+  const yearOptions = ['1', '2', '3', '4', '5', '6', '7', '8']
+  const activeOptions = ['활동 중', '활동 안함']
+  const universityOptions = [
+    '강원대',
+    '성결대',
+    '안양대',
+    '인천대',
+    '충남대',
+    '한국공학대',
   ]
 
-  const [selectedPeriods, setSelectedPeriods] = useState<string[]>([])
+  const handleRemoveFilter = (filter: string | number, type: string) => {
+    if (type === 'position') {
+      setSelectedPosition(selectedPosition.filter((item) => item !== filter))
+    } else if (type === 'year') {
+      setSelectedYear(selectedYear.filter((item) => item !== filter))
+    } else if (type === 'active') {
+      setSelectedActive(selectedActive.filter((item) => item !== filter))
+    } else if (type === 'university') {
+      setSelectedUniversity(
+        selectedUniversity.filter((item) => item !== filter),
+      )
+    }
+  }
+
   return (
     <div className="flex justify-center">
       <div className="flex flex-col">
-        <div className="w-[1200px] text-left mt-14 mb-7">
+        <div className="max-w-[75rem] w-[75rem] text-left mt-[3.56rem] mb-[2rem]">
           <p className="text-4xl mb-5 font-bold">프로필</p>
           <p className="text-xl">모든 테커인들의 프로필 정보를 확인해보세요.</p>
         </div>
-
         <div className="flex justify-start mt-5 gap-3">
           <Dropdown
             title="포지션"
-            options={['Frontend', 'Backend', 'DevOps', 'Others']}
-            selectedOptions={selectedPeriods}
-            setSelectedOptions={setSelectedPeriods}
+            options={positionOptions}
+            selectedOptions={selectedPosition}
+            setSelectedOptions={setSelectedPosition}
           />
           <Dropdown
             title="기수"
-            options={['1기', '2기', '3기', '4기', '5기', '6기', '7기', '8기']}
-            selectedOptions={selectedPeriods}
-            setSelectedOptions={setSelectedPeriods}
+            options={yearOptions} // Dropdown 컴포넌트에서 문자열로 처리
+            selectedOptions={selectedYear.map(String)} // 숫자를 문자열로 변환
+            setSelectedOptions={
+              (values) => setSelectedYear(values.map(Number)) // 문자열을 숫자로 변환
+            }
           />
           <Dropdown
             title="현재 상태"
-            options={['진행 중', '완료']}
-            selectedOptions={selectedPeriods}
-            setSelectedOptions={setSelectedPeriods}
+            options={activeOptions}
+            selectedOptions={selectedActive}
+            setSelectedOptions={setSelectedActive}
           />
           <Dropdown
             title="대학"
-            options={['한국공대', '성결대']}
-            selectedOptions={selectedPeriods}
-            setSelectedOptions={setSelectedPeriods}
+            options={universityOptions}
+            selectedOptions={selectedUniversity}
+            setSelectedOptions={setSelectedUniversity}
           />
         </div>
-
-        <div className="bg-filterbg flex items-center w-[1200px] h-[100px] px-4 gap-4 my-6">
-          <FilterBtn title="Frontend" />
-          <FilterBtn title="1기" />
-        </div>
-        <div className="grid grid-cols-4 gap-x-7 gap-y-[0.94rem]">
-          {dummyDataArray.map((data, index) => (
-            <ProfileCard key={index} {...data} />
+        <div className="bg-filterbg flex items-center w-[75rem] h-[4.375rem] px-4 gap-4 my-6">
+          {selectedPosition.map((item) => (
+            <FilterBtn
+              key={item}
+              title={item}
+              onClick={() => {
+                handleRemoveFilter(item, 'position')
+              }}
+            />
+          ))}
+          {selectedYear.map((item) => (
+            <FilterBtn
+              key={item}
+              title={item.toString()}
+              onClick={() => handleRemoveFilter(item, 'year')}
+            />
+          ))}
+          {selectedActive.map((item) => (
+            <FilterBtn
+              key={item}
+              title={item}
+              onClick={() => handleRemoveFilter(item, 'active')}
+            />
+          ))}
+          {selectedUniversity.map((item) => (
+            <FilterBtn
+              key={item}
+              title={item}
+              onClick={() => handleRemoveFilter(item, 'university')}
+            />
           ))}
         </div>
+        <ProfileList
+          position={selectedPosition.join(',')}
+          year={selectedYear.length > 0 ? selectedYear[0] : undefined}
+          university={selectedUniversity.join(',')}
+          grade={selectedActive.join(',')}
+        />
       </div>
     </div>
   )
