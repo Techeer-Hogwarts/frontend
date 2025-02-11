@@ -11,6 +11,7 @@ export interface BlogPostProps {
   id: string
   url: string
   likeCount: number
+  image: string
   onDelete: (id: string) => void
 }
 
@@ -21,6 +22,7 @@ export default function BlogPost({
   id,
   likeCount,
   url,
+  image,
   onDelete,
 }: BlogPostProps) {
   const [showModal, setShowModal] = useState(false)
@@ -38,10 +40,10 @@ export default function BlogPost({
   return (
     <div className="flex">
       <div className="flex flex-col w-[379px] relative ">
-        <Image
-          src="/images/win.png"
+        <img
+          src={image}
           alt="testIMG"
-          unoptimized
+          // unoptimized
           width={379}
           height={199}
           className="w-[379px] h-[199px] z-1"

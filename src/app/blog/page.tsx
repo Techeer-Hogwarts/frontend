@@ -10,6 +10,11 @@ interface User {
   name: string
 }
 
+interface Author {
+  authorName: string
+  authorImage: string
+}
+
 interface BlogProps {
   title: string
   id: string
@@ -17,6 +22,7 @@ interface BlogProps {
   url: string
   likeCount: number
   user: User
+  author: Author
 }
 
 export default function Page() {
@@ -51,7 +57,7 @@ export default function Page() {
         }
 
         const result = await response.json()
-        setBlog(result.data)
+        setBlog(result)
         setLimit(newLimit)
         console.log(blog)
         console.log('블로그api가 성공적으로 통신되었습니다:', result.data)
@@ -86,7 +92,7 @@ export default function Page() {
         return response.json()
       })
       .then((data) => {
-        setBlog(data.data || [])
+        setBlog(data || [])
       })
   }
   useEffect(() => {
@@ -133,7 +139,8 @@ export default function Page() {
               date={blog.date}
               url={blog.url}
               likeCount={blog.likeCount}
-              name={blog.user.name}
+              name={blog.author.authorName}
+              image={blog.author.authorImage}
               onDelete={handleDeleteSession}
             />
           ))}
