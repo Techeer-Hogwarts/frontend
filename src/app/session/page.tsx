@@ -3,13 +3,13 @@
 import { useEffect, useState } from 'react'
 import TapBar from '@/components/common/TapBar'
 import AddBtn from '@/components/common/AddBtn'
-import { getSessions } from './_lib/getSessions'
 import Dropdown from '@/components/common/Dropdown'
 import { useTapBarStore } from '@/store/tapBarStore'
 import FilterBtn from '@/components/session/FilterBtn'
 import { useInView } from 'react-intersection-observer'
-import { getBestSessions } from './_lib/getBestSessions'
 import SessionPost from '@/components/session/SessionPost'
+import { useSessionsQuery } from './_lib/useSessionsQuery'
+
 interface Session {
   id: string
   title: string
@@ -25,127 +25,65 @@ export default function Page() {
   const [selectedPeriodsP, setSelectedPeriodsP] = useState<string[]>([])
   const [selectedPeriodsB, setSelectedPeriodsB] = useState<string[]>([])
   const [selectedPeriodsPo, setSelectedPeriodsPo] = useState<string[]>([])
-  const [sessions, setSessions] = useState<Session[]>([])
   const [message, setMessage] = useState<string | null>(null)
   const { activeOption } = useTapBarStore()
   const [inputValue, setInputValue] = useState('')
-  const [limit, setLimit] = useState(3)
+  const [limit, setLimit] = useState(6)
+  const [allSessions, setAllSessions] = useState<Session[]>([])
   const [ref, inView] = useInView({ triggerOnce: false, threshold: 0.5 })
+
+  const { data: newSessions, refetch } = useSessionsQuery({
+    activeOption: activeOption || '',
+    inputValue,
+    limit,
+    selectedPeriodsP,
+    selectedPeriodsB,
+    selectedPeriodsPo,
+  })
 
   const handleSearch = (query: string) => {
     sessionStorage.setItem('searchQuery', query)
     setInputValue(query)
   }
-  const handleDeleteSession = (id: string) => {
-    setSessions((prevSessions) =>
-      prevSessions.filter((session) => session.id !== id),
-    )
+
+  const showMessage = () => {
     setMessage('세션영상이 삭제되었습니다.')
     setTimeout(() => setMessage(null), 2000)
-  }
-
-  const fetchBestSession = async (newLimit: number) => {
-    try {
-      const result = await getBestSessions(newLimit)
-      setSessions(result)
-      setLimit(newLimit)
-    } catch (err) {
-      console.error('세션 데이터 통신 중 오류 발생:', err)
-    }
-  }
-  const fetchSession = async (
-    query: string,
-    category: string,
-    newLimit: number,
-    date: string,
-    position: string,
-  ) => {
-    try {
-      const result = await getSessions(
-        query,
-        category,
-        newLimit,
-        date,
-        position,
-      )
-      setSessions(result)
-    } catch (err) {
-      console.error('세션 데이터 가져오기 실패:', err)
-    }
+    refetch()
   }
   useEffect(() => {
-    const category =
-      activeOption === '부트캠프'
-        ? 'BOOTCAMP'
-        : activeOption === '파트너스'
-          ? 'PARTNERS'
-          : activeOption === '전체보기'
-            ? ''
-            : ''
-    if (activeOption === '금주의 세션') {
-      fetchBestSession(3)
-    } else if (activeOption === '전체보기') {
-      fetchSession(inputValue, category, 3, '', selectedPeriodsPo[0])
-    } else if (activeOption === '부트캠프') {
-      fetchSession(
-        inputValue,
-        category,
-        3,
-        selectedPeriodsB[0],
-        selectedPeriodsPo[0],
-      )
-    } else if (activeOption === '파트너스') {
-      fetchSession(
-        inputValue,
-        category,
-        3,
-        selectedPeriodsP[0],
-        selectedPeriodsPo[0],
-      )
+    if (newSessions) {
+      // 중복 제거하면서 새로운 세션 추가
+      setAllSessions((prev) => {
+        const uniqueSessions = [...prev]
+        newSessions.forEach((newSession: any) => {
+          if (!uniqueSessions.some((session) => session.id === newSession.id)) {
+            uniqueSessions.push(newSession)
+          }
+        })
+        return uniqueSessions
+      })
     }
-  }, [
-    activeOption,
-    inputValue,
-    selectedPeriodsP,
-    selectedPeriodsPo,
-    selectedPeriodsB,
-  ])
+  }, [newSessions, activeOption])
+  useEffect(() => {
+    setLimit(6)
+    setAllSessions([])
+    const timer = setTimeout(() => {
+      refetch()
+    }, 0)
+    return () => clearTimeout(timer)
+  }, [activeOption])
 
   useEffect(() => {
-    if (!inView) return // inView가 false면 실행 x
-    // console.log('inView   :   ', inView)
-    if (activeOption === '금주의 세션') {
-      fetchBestSession(limit + 3)
-      return
-    }
-    const category =
-      activeOption === '부트캠프'
-        ? 'BOOTCAMP'
-        : activeOption === '파트너스'
-          ? 'PARTNERS'
-          : activeOption === '전체보기'
-            ? ''
-            : ''
-    if (activeOption === '전체보기') {
-      fetchSession(inputValue, category, limit + 3, '', selectedPeriodsPo[0])
-    } else if (activeOption === '부트캠프') {
-      fetchSession(
-        inputValue,
-        category,
-        limit + 3,
-        selectedPeriodsB[0],
-        selectedPeriodsPo[0],
-      )
-    } else if (activeOption === '파트너스') {
-      fetchSession(
-        inputValue,
-        category,
-        limit + 3,
-        selectedPeriodsP[0],
-        selectedPeriodsPo[0],
-      )
-    }
-  }, [activeOption, inView])
+    if (activeOption === '금주의 세션') return
+    setLimit(3)
+    setAllSessions([])
+  }, [selectedPeriodsP, selectedPeriodsB, selectedPeriodsPo, inputValue])
+
+  useEffect(() => {
+    if (!inView) return
+    setLimit((prev) => prev + 3)
+  }, [inView])
 
   return (
     <div className="flex justify-center h-auto min-h-screen">
@@ -284,7 +222,7 @@ export default function Page() {
           </div>
         )}
         <div className="flex-col grid grid-cols-3 gap-8">
-          {sessions?.map((data: any) => (
+          {allSessions.map((data: Session) => (
             <SessionPost
               key={data.id}
               likeCount={data.likeCount}
@@ -294,8 +232,7 @@ export default function Page() {
               date={data.date}
               presenter={data.presenter}
               fileUrl={data.fileUrl}
-              onDelete={handleDeleteSession}
-              videoUrl={data.videoUrl}
+              showMessage={showMessage}
             />
           ))}
           <div ref={ref} />
