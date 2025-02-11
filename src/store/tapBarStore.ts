@@ -6,7 +6,7 @@ interface TapBarState {
 }
 
 export const useTapBarStore = create<TapBarState>((set) => ({
-  activeOption: null,
+  activeOption: '',
   setActiveOption: (option) => {
     set({ activeOption: option })
   },
