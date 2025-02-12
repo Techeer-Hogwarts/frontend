@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Dropdown from '@/components/profile/Dropdown'
 import FilterBtn from '@/components/session/FilterBtn'
-import ProfileList from './@projectList'
+// import ProfileList from './@projectList'
 
 export default function Page() {
   // const [selectedPeriods, setSelectedPeriods] = useState<string[]>([])
@@ -111,12 +111,12 @@ export default function Page() {
             />
           ))}
         </div>
-        <ProfileList
+        {/* <ProfileList
           position={selectedPosition.join(',')}
           year={selectedYear.length > 0 ? selectedYear[0] : undefined}
           university={selectedUniversity.join(',')}
           grade={selectedActive.join(',')}
-        />
+        /> */}
       </div>
     </div>
   )

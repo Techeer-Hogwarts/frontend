@@ -11,6 +11,7 @@ const meta = {
 } satisfies Meta<typeof BlogPost>
 
 export default meta
+
 type Story = StoryObj<typeof meta>
 const onDelete = (id: string) => {
   console.log(`Deleted post with id: ${id}`)
@@ -23,6 +24,7 @@ export const Default: Story = {
     id: '2',
     likeCount: 0,
     url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
+    image: '/images/default-thumbnail.png',
     onDelete: onDelete,
   },
 }
@@ -36,6 +38,7 @@ export const LongTitle: Story = {
     id: '2',
     likeCount: 0,
     url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
+    image: '/images/default-thumbnail.png',
     onDelete: onDelete,
   },
 }

@@ -11,6 +11,7 @@ export interface BlogPostProps {
   id: string
   url: string
   likeCount: number
+  image: string
   onDelete: (id: string) => void
 }
 
@@ -21,6 +22,7 @@ export default function BlogPost({
   id,
   likeCount,
   url,
+  image,
   onDelete,
 }: BlogPostProps) {
   const [showModal, setShowModal] = useState(false)
@@ -38,15 +40,15 @@ export default function BlogPost({
   return (
     <div className="flex">
       <div className="flex flex-col w-[379px] relative ">
-        <Image
-          src="/images/win.png"
-          alt="testIMG"
-          unoptimized
-          width={379}
-          height={199}
-          className="w-[379px] h-[199px] z-1"
-          onClick={handleClickUrl}
-        />
+        <button onClick={handleClickUrl}>
+          <img
+            src={image}
+            alt="testIMG"
+            width={379}
+            height={199}
+            className="w-[379px] h-[199px] z-1"
+          />
+        </button>
         <div className="rounded-b-lg w-[379px] min-h-[100px] h-auto py-2  bg-white shadow-[0px_5px_8px_#bfbfbf]">
           <div className="flex justify-between relative">
             <p className="text-base mx-5 mb-1 truncate">{title}</p>
