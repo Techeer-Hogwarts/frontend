@@ -32,17 +32,20 @@ export default function SessionPost({
   return (
     <div className="flex transition-transform transform hover:-translate-y-2">
       <div className="flex flex-col w-[379px] relative">
-        <Image
-          src={thumbnail}
-          alt="testIMG"
-          unoptimized
-          width={379}
-          height={199}
-          className="w-[379px] h-[199px] z-1"
+        <button
           onClick={() => {
             router.push(`/session/video/${id}`)
           }}
-        />
+        >
+          <Image
+            src={thumbnail}
+            alt="testIMG"
+            unoptimized
+            width={379}
+            height={199}
+            className="w-[379px] h-[199px] z-1"
+          />
+        </button>
         <div className="rounded-b-lg w-[379px] min-h-[100px] h-auto py-2  bg-white shadow-[0px_5px_8px_#bfbfbf]">
           <div className="flex justify-between relative">
             <p className="text-base mx-5 mb-1 truncate">{title}</p>

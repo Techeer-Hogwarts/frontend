@@ -97,7 +97,7 @@ export default function Page() {
           <p className="text-4xl mb-5 font-bold">세션영상</p>
           <p className="text-xl">테커인들의 세션영상을 확인해보세요.</p>
         </div>
-        <div
+        <button
           onClick={() => {
             setSelectedPeriodsP([])
             setSelectedPeriodsPo([])
@@ -109,7 +109,7 @@ export default function Page() {
             placeholder="세션 제목을 검색해보세요"
             onSearch={handleSearch}
           />
-        </div>
+        </button>
         <div className="flex justify-start my-6 gap-3">
           {activeOption === '부트캠프' && (
             <>
