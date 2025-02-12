@@ -24,9 +24,7 @@ export const useSessionsQuery = ({
       ? 'BOOTCAMP'
       : activeOption === '파트너스'
         ? 'PARTNERS'
-        : activeOption === '전체보기'
-          ? ''
-          : ''
+        : ''
 
   return useQuery({
     queryKey: [
