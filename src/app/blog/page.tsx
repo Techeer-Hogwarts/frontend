@@ -144,7 +144,7 @@ export default function Page() {
               onDelete={handleDeleteSession}
             />
           ))}
-          {/* <div ref={ref} /> */}
+          <div ref={ref} />
         </div>
       </div>
       <AddBtn />
