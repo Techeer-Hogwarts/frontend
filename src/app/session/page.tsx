@@ -32,7 +32,11 @@ export default function Page() {
   const [allSessions, setAllSessions] = useState<Session[]>([])
   const [ref, inView] = useInView({ triggerOnce: false, threshold: 0.5 })
 
-  const { data: newSessions, refetch } = useSessionsQuery({
+  const {
+    data: newSessions,
+    isLoading,
+    refetch,
+  } = useSessionsQuery({
     activeOption: activeOption || '',
     inputValue,
     limit,
@@ -51,40 +55,49 @@ export default function Page() {
     setTimeout(() => setMessage(null), 2000)
     refetch()
   }
+
+  const handleFilterChange = () => {
+    if (activeOption === '금주의 세션') return
+
+    Promise.all([setLimit(3), setAllSessions([])]).then(() => {
+      refetch()
+    })
+  }
+
+  // 새로운 세션 데이터 업데이트
   useEffect(() => {
-    if (newSessions) {
-      // 중복 제거하면서 새로운 세션 추가
-      setAllSessions((prev) => {
-        const uniqueSessions = [...prev]
-        newSessions.forEach((newSession: any) => {
-          if (!uniqueSessions.some((session) => session.id === newSession.id)) {
-            uniqueSessions.push(newSession)
-          }
-        })
-        return uniqueSessions
+    if (!newSessions || isLoading) return
+    setAllSessions((prev) => {
+      const uniqueSessions = [...prev]
+      newSessions.forEach((newSession: Session) => {
+        if (!uniqueSessions.some((session) => session.id === newSession.id)) {
+          uniqueSessions.push(newSession)
+        }
       })
-    }
-  }, [newSessions, activeOption])
+      return uniqueSessions
+    })
+  }, [newSessions, isLoading])
+
+  // 탭 변경 시 상태 초기화
   useEffect(() => {
     setLimit(6)
     setAllSessions([])
     const timer = setTimeout(() => {
       refetch()
-    }, 0)
+    }, 100) // 약간의 지연을 추가하여 상태 업데이트가 완료되도록 함
     return () => clearTimeout(timer)
   }, [activeOption])
 
+  // 필터 변경 시 처리
   useEffect(() => {
-    if (activeOption === '금주의 세션') return
-    setLimit(3)
-    setAllSessions([])
+    handleFilterChange()
   }, [selectedPeriodsP, selectedPeriodsB, selectedPeriodsPo, inputValue])
 
+  // 무한 스크롤 처리
   useEffect(() => {
     if (!inView) return
     setLimit((prev) => prev + 3)
   }, [inView])
-
   return (
     <div className="flex justify-center h-auto min-h-screen">
       <div className="flex flex-col">

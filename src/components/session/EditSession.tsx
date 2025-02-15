@@ -137,7 +137,7 @@ export default function EditSession() {
 
   useEffect(() => {
     fetchSignleSession()
-  }, [sessionId])
+  }, [sessionId, fetchSignleSession])
 
   useEffect(() => {
     const timer = setTimeout(() => {

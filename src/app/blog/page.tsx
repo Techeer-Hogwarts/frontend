@@ -67,41 +67,44 @@ export default function Page() {
     },
     [blog],
   )
-  const getBlog = async (newLimit: number, query: string, category: string) => {
-    const baseUrl = 'https://api.techeerzip.cloud/api/v1/blogs'
-    const params = {
-      keyword: query,
-      category: category,
-      offset: '0',
-      limit: String(newLimit),
-    }
-    // console.log('aaaaaa', inputValue)
-    const filteredParams = Object.fromEntries(
-      Object.entries(params).filter(
-        ([_, value]) => value !== null && value !== '',
-      ),
-    )
-    const queryString = new URLSearchParams(filteredParams).toString()
-    const url = `${baseUrl}?${queryString}`
+  const getBlog = useCallback(
+    async (newLimit: number, query: string, category: string) => {
+      const baseUrl = 'https://api.techeerzip.cloud/api/v1/blogs'
+      const params = {
+        keyword: query,
+        category: category,
+        offset: '0',
+        limit: String(newLimit),
+      }
+      // console.log('aaaaaa', inputValue)
+      const filteredParams = Object.fromEntries(
+        Object.entries(params).filter(
+          ([_, value]) => value !== null && value !== '',
+        ),
+      )
+      const queryString = new URLSearchParams(filteredParams).toString()
+      const url = `${baseUrl}?${queryString}`
 
-    fetch(url)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok')
-        }
-        return response.json()
-      })
-      .then((data) => {
-        setBlog(data || [])
-      })
-  }
+      fetch(url)
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok')
+          }
+          return response.json()
+        })
+        .then((data) => {
+          setBlog(data || [])
+        })
+    },
+    [],
+  )
   useEffect(() => {
     if (activeOption == '금주의 블로그') {
       getBestBlog(3)
     } else if (activeOption == 'TECHEER' || activeOption == 'SHARED') {
       getBlog(3, inputValue, activeOption)
     }
-  }, [activeOption, inputValue])
+  }, [activeOption, inputValue, getBestBlog, getBlog])
 
   useEffect(() => {
     if (!inView) return // inView가 false면 실행 x
