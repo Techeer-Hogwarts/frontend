@@ -42,31 +42,27 @@ export default function Page() {
     setMessage('블로그 글이 삭제되었습니다.')
     setTimeout(() => setMessage(null), 2000)
   }
-  const getBestBlog = useCallback(
-    async (newLimit: number) => {
-      try {
-        const response = await fetch(
-          `https://api.techeerzip.cloud/api/v1/blogs/best?offset=0&limit=${newLimit}`,
-          {
-            method: 'GET',
-          },
-        )
+  const getBestBlog = useCallback(async (newLimit: number) => {
+    try {
+      const response = await fetch(
+        `https://api.techeerzip.cloud/api/v1/blogs/best?offset=0&limit=${newLimit}`,
+        {
+          method: 'GET',
+        },
+      )
 
-        if (!response.ok) {
-          throw new Error('세션 데이터를 업로드하는 데 실패했습니다.')
-        }
-
-        const result = await response.json()
-        setBlog(result)
-        setLimit(newLimit)
-        console.log(blog)
-        console.log('블로그api가 성공적으로 통신되었습니다:', result.data)
-      } catch (err) {
-        console.error('블로그 데이터 업로드 중 오류 발생:', err)
+      if (!response.ok) {
+        throw new Error('세션 데이터를 업로드하는 데 실패했습니다.')
       }
-    },
-    [blog],
-  )
+
+      const result = await response.json()
+      setBlog(result) // 상태 업데이트
+      setLimit(newLimit)
+      console.log('블로그api가 성공적으로 통신되었습니다:', result.data)
+    } catch (err) {
+      console.error('블로그 데이터 업로드 중 오류 발생:', err)
+    }
+  }, [])
   const getBlog = useCallback(
     async (newLimit: number, query: string, category: string) => {
       const baseUrl = 'https://api.techeerzip.cloud/api/v1/blogs'
@@ -76,7 +72,7 @@ export default function Page() {
         offset: '0',
         limit: String(newLimit),
       }
-      // console.log('aaaaaa', inputValue)
+
       const filteredParams = Object.fromEntries(
         Object.entries(params).filter(
           ([_, value]) => value !== null && value !== '',
@@ -85,26 +81,27 @@ export default function Page() {
       const queryString = new URLSearchParams(filteredParams).toString()
       const url = `${baseUrl}?${queryString}`
 
-      fetch(url)
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error('Network response was not ok')
-          }
-          return response.json()
-        })
-        .then((data) => {
-          setBlog(data || [])
-        })
+      try {
+        const response = await fetch(url)
+        if (!response.ok) {
+          throw new Error('Network response was not ok')
+        }
+        const data = await response.json()
+        setBlog(data || [])
+      } catch (err) {
+        console.error('블로그 데이터 로딩 중 오류 발생:', err)
+      }
     },
     [],
   )
+
   useEffect(() => {
     if (activeOption == '금주의 블로그') {
       getBestBlog(3)
     } else if (activeOption == 'TECHEER' || activeOption == 'SHARED') {
       getBlog(3, inputValue, activeOption)
     }
-  }, [activeOption, inputValue, getBestBlog, getBlog])
+  }, [activeOption, inputValue])
 
   useEffect(() => {
     if (!inView) return // inView가 false면 실행 x
@@ -147,7 +144,7 @@ export default function Page() {
               onDelete={handleDeleteSession}
             />
           ))}
-          <div ref={ref} />
+          {/* <div ref={ref} /> */}
         </div>
       </div>
       <AddBtn />
