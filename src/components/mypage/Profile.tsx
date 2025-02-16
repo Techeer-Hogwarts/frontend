@@ -10,6 +10,7 @@ import MyExperienceSection from './MyExperienceSection'
 import { useRouter } from 'next/navigation'
 
 interface Experience {
+  id?: number
   position: string
   companyName: string
   startDate: string
@@ -42,28 +43,28 @@ interface ProfileProps {
 export default function Profile({ profile }: ProfileProps) {
   const router = useRouter()
 
-  // 프로필 API 값이 없으면 빈 문자열 등으로 초기화합니다.
+  // 기본 프로필 데이터 상태
   const [profileImage, setProfileImage] = useState(profile?.profileImage || '')
   const [name, setName] = useState(profile?.name || '')
   const [email, setEmail] = useState(profile?.email || '')
   const [school, setSchool] = useState(profile?.school || '')
   const [classYear, setClassYear] = useState(profile?.grade || '')
-  const [year, setYear] = useState(profile?.year || '')
+  const [year, setYear] = useState<number>(profile?.year || 6)
   const [githubUrl, setGithubUrl] = useState(profile?.githubUrl || '')
   const [mediumUrl, setMediumUrl] = useState(profile?.mediumUrl || '')
   const [velogUrl, setVelogUrl] = useState(profile?.velogUrl || '')
   const [tistoryUrl, setTistoryUrl] = useState(profile?.tistoryUrl || '')
 
-  // 메인, 서브 포지션 상태 (API의 값은 대문자 문자열로 들어옵니다)
+  // 포지션 상태
   const [mainPosition, setMainPosition] = useState(profile?.mainPosition || '')
   const [subPosition, setSubPosition] = useState(profile?.subPosition || '')
 
-  // 추천 여부: 프로필의 isLft 값에 따라 '예' 또는 '아니요'
+  // 추천 여부: isLft에 따라
   const [recommendation, setRecommendation] = useState<string>(
     profile ? (profile.isLft ? '예' : '아니요') : '아니요',
   )
 
-  // 경험 초기값 계산: experiences 배열에 해당 카테고리의 데이터가 있으면 "있어요", 없으면 "없어요"
+  // 경험 초기값 계산
   const initialInternshipExperience =
     profile?.experiences &&
     profile.experiences.some((exp) => exp.category === '인턴')
@@ -81,18 +82,12 @@ export default function Profile({ profile }: ProfileProps) {
   const [jobExperience, setJobExperience] =
     useState<string>(initialJobExperience)
 
-  const initialInternshipCount = profile?.experiences
-    ? profile.experiences.filter((exp) => exp.category === '인턴').length
-    : 0
-  const initialJobCount = profile?.experiences
-    ? profile.experiences.filter((exp) => exp.category === '정규직').length
-    : 0
-
-  const [internshipItems, setInternshipItems] = useState<number[]>(() =>
-    Array.from({ length: initialInternshipCount }, (_, i) => i + 1),
-  )
-  const [jobItems, setJobItems] = useState<number[]>(() =>
-    Array.from({ length: initialJobCount }, (_, i) => i + 1),
+  // 경험 데이터를 상위 상태로 관리 (인턴 / 정규직)
+  const [internshipExperiences, setInternshipExperiences] = useState<
+    Experience[]
+  >(profile?.experiences?.filter((exp) => exp.category === '인턴') || [])
+  const [fullTimeExperiences, setFullTimeExperiences] = useState<Experience[]>(
+    profile?.experiences?.filter((exp) => exp.category === '정규직') || [],
   )
 
   // 동기화 메시지 상태 (프로필 사진 동기화)
@@ -104,11 +99,6 @@ export default function Profile({ profile }: ProfileProps) {
   const [updateError, setUpdateError] = useState('')
 
   const bottomRef = useRef<HTMLDivElement>(null)
-
-  // 디버깅: 경험 데이터 확인
-  useEffect(() => {
-    console.log('Profile experiences:', profile?.experiences)
-  }, [profile?.experiences])
 
   // 동기화 버튼 핸들러 (프로필 사진 동기화)
   const handleSync = async () => {
@@ -160,12 +150,12 @@ export default function Profile({ profile }: ProfileProps) {
         mainPosition: mainPosition,
         subPosition: subPosition,
         githubUrl: githubUrl,
-        mediumUrl: mediumUrl,
-        velogUrl: velogUrl,
-        tistoryUrl: tistoryUrl,
+        ...(mediumUrl.trim() ? { mediumUrl } : {}),
+        ...(velogUrl.trim() ? { velogUrl } : {}),
+        ...(tistoryUrl.trim() ? { tistoryUrl } : {}),
       },
       experienceRequest: {
-        experiences: profile?.experiences || [],
+        experiences: [...internshipExperiences, ...fullTimeExperiences],
       },
     }
 
@@ -177,6 +167,8 @@ export default function Profile({ profile }: ProfileProps) {
         body: JSON.stringify(payload),
       })
 
+      console.log('payload', payload)
+
       if (!response.ok) {
         const errorData = await response.json().catch(() => null)
         setUpdateError(
@@ -186,7 +178,7 @@ export default function Profile({ profile }: ProfileProps) {
       }
 
       setUpdateMessage('프로필 업데이트가 완료되었습니다.')
-      // 업데이트 후 페이지 새로고침: 전체 페이지를 새로고침하여 최신 데이터를 반영
+      // 업데이트 후 페이지 새로고침: 최신 데이터를 반영
       window.location.reload()
     } catch (error: any) {
       setUpdateError('네트워크 오류가 발생했습니다.')
@@ -198,8 +190,8 @@ export default function Profile({ profile }: ProfileProps) {
     'FRONTEND',
     'BACKEND',
     'DEVOPS',
-    'FULL-STACK',
-    'DATA ENGINEER',
+    'FULL_STACK',
+    'DATA_ENGINEER',
   ]
 
   return (
@@ -286,20 +278,30 @@ export default function Profile({ profile }: ProfileProps) {
           />
           <Select
             title="학년"
-            options={['1학년', '2학년', '3학년', '4학년', '해당 없음']}
+            options={['1학년', '2학년', '3학년', '4학년', '졸업', '해당 없음']}
             value={classYear}
             onChange={(val) => setClassYear(val)}
           />
         </div>
       </div>
 
-      {/* 기수: 기수 Select의 값이 year state에 저장됨 */}
+      {/* 기수 */}
       <div className="flex items-center">
         <h3 className="w-[130px] text-lg mt-[6px]">기수</h3>
         <div className="flex w-80 justify-start space-x-5">
           <Select
             title="기수"
-            options={['1기', '2기', '3기', '4기', '5기', '6기', '7기', '8기']}
+            options={[
+              '1기',
+              '2기',
+              '3기',
+              '4기',
+              '5기',
+              '6기',
+              '7기',
+              '8기',
+              '9기',
+            ]}
             value={year ? `${year}기` : ''}
             onChange={(val) => setYear(parseInt(val.replace('기', '')))}
           />
@@ -390,9 +392,8 @@ export default function Profile({ profile }: ProfileProps) {
         title="인턴 경험이 있나요?"
         experienceStatus={internshipExperience}
         setExperienceStatus={setInternshipExperience}
-        initialExperiences={
-          profile?.experiences?.filter((exp) => exp.category === '인턴') || []
-        }
+        experienceData={internshipExperiences}
+        setExperienceData={setInternshipExperiences}
         experienceType="인턴"
       />
 
@@ -401,9 +402,8 @@ export default function Profile({ profile }: ProfileProps) {
         title="정규직 경험이 있나요?"
         experienceStatus={jobExperience}
         setExperienceStatus={setJobExperience}
-        initialExperiences={
-          profile?.experiences?.filter((exp) => exp.category === '정규직') || []
-        }
+        experienceData={fullTimeExperiences}
+        setExperienceData={setFullTimeExperiences}
         experienceType="정규직"
       />
 

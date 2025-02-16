@@ -14,8 +14,8 @@ const PositionSelect: React.FC<PositionSelectProps> = ({
     'FRONTEND',
     'BACKEND',
     'DEVOPS',
-    'FULL-STACK',
-    'DATA ENGINEER',
+    'FULL_STACK',
+    'DATA_ENGINEER',
   ]
 
   return (

@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import MyCareerToggle from './MyCareerToggle'
 import ExperienceItem from '../signup/ExperienceItem'
 
@@ -8,9 +8,8 @@ export interface MyExperienceSectionProps {
   readonly title: string
   readonly experienceStatus: string | null
   readonly setExperienceStatus: (value: string) => void
-  // 기존에 API에서 받은 경험 데이터 (없으면 빈 배열)
-  readonly initialExperiences?: any[]
-  // 경험 타입: 'intern' 또는 'fullTime'
+  readonly experienceData: any[]
+  readonly setExperienceData: (data: any[]) => void
   readonly experienceType: '인턴' | '정규직'
 }
 
@@ -18,30 +17,29 @@ export default function MyExperienceSection({
   title,
   experienceStatus,
   setExperienceStatus,
-  initialExperiences = [],
+  experienceData,
+  setExperienceData,
   experienceType,
 }: MyExperienceSectionProps) {
-  // local state로 경험 데이터 관리 (초기값은 API에서 받은 데이터)
-  const [experiences, setExperiences] = useState<any[]>(initialExperiences)
-
   // 새 경험 항목 추가 함수
   const addExperience = () => {
-    setExperiences([...experiences, {}])
+    setExperienceData([...experienceData, {}])
   }
 
   // 경험 항목 삭제 함수
   const removeExperience = (index: number) => {
-    setExperiences(experiences.filter((_, i) => i !== index))
+    const newData = [...experienceData]
+    newData.splice(index, 1)
+    setExperienceData(newData)
   }
 
-  // 디버깅: 현재 경험 데이터 출력
-  useEffect(() => {
-    console.log(`${title} experiences:`, experiences)
-  }, [experiences, title])
-
-  // "있어요" 또는 "yes"일 때만 경험 항목 UI 표시
-  const shouldShowExperienceUI =
-    experienceStatus === '있어요' || experienceStatus === 'yes'
+  // 경험 업데이트 함수
+  const updateExperience = (index: number, updatedItem: any) => {
+    const newData = experienceData.map((item, i) =>
+      i === index ? updatedItem : item,
+    )
+    setExperienceData(newData)
+  }
 
   return (
     <div className="flex flex-col w-full">
@@ -50,7 +48,8 @@ export default function MyExperienceSection({
         value={experienceStatus}
         setValue={setExperienceStatus}
       />
-      {shouldShowExperienceUI && (
+
+      {(experienceStatus === '있어요' || experienceStatus === 'yes') && (
         <>
           <button
             type="button"
@@ -60,22 +59,15 @@ export default function MyExperienceSection({
             <span>+</span>
             <span>경력 추가</span>
           </button>
-          {experiences.map((expData, index) => (
+          {experienceData.map((_, index) => (
             <ExperienceItem
               key={index}
               index={index}
-              data={expData}
-              onChange={(updated) => {
-                setExperiences((prev) => {
-                  const newExperiences = [...prev]
-                  newExperiences[index] = updated
-                  return newExperiences
-                })
-                console.log('Updated data:', updated)
-              }}
+              data={experienceData[index]}
+              onChange={(updatedItem) => updateExperience(index, updatedItem)}
+              onDelete={() => removeExperience(index)}
               experienceType={experienceType}
               btnPadding="px-6 py-2"
-              onDelete={() => removeExperience(index)}
             />
           ))}
         </>

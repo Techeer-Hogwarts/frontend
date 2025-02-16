@@ -11,10 +11,8 @@ import EmailVerification from '@/components/common/EmailVerification'
 import Link from 'next/link'
 
 const Signup = () => {
-  // 추가: 회원가입 관련 메시지 상태
   const [signupError, setSignupError] = useState<string>('')
-
-  const router = useRouter() // 로그인 페이지로 이동하기 위한 라우터
+  const router = useRouter()
 
   const [step, setStep] = useState(1)
   const [formData, setFormData] = useState({
@@ -35,33 +33,33 @@ const Signup = () => {
     selectedPositions: [] as string[],
     recommendation: null as string | null,
     employmentStatus: null as string | null,
+    // CareerToggle에서 "있어요" 버튼을 누르면 'yes'로 저장됩니다.
     internshipExperience: null as string | null,
     jobExperience: null as string | null,
 
-    // 경력 정보
+    // 경험 정보: 기존의 키 대신 unified한 키로 관리
     internships: [] as {
-      internCompanyName: string
-      internPositions: string[]
-      internStartDate: string
-      internEndDate: string
+      companyName: string
+      position: string
+      startDate: string
+      endDate: string
       isCurrentJob: boolean
     }[],
     fullTimes: [] as {
-      fullTimeCompanyName: string
-      fullTimePositions: string[]
-      fullTimeStartDate: string
-      fullTimeEndDate: string
+      companyName: string
+      position: string
+      startDate: string
+      endDate: string
       isCurrentJob: boolean
     }[],
 
     // 이력서 추가 정보
     resumeFile: null as File | null,
-    resumeCategory: 'RESUME', // 기본값
+    resumeCategory: 'RESUME',
     resumeIsMain: true,
     resumePosition: '',
   })
 
-  // 입력 핸들러
   const handleChange = (
     e:
       | React.ChangeEvent<HTMLInputElement>
@@ -75,7 +73,7 @@ const Signup = () => {
   }
 
   const handleNext = () => {
-    setSignupError('') // 단계 전환 시 이전 메시지 초기화
+    setSignupError('')
     if (step < 2) {
       setStep(step + 1)
     }
@@ -88,14 +86,12 @@ const Signup = () => {
     }
   }
 
-  // 비밀번호/비밀번호 확인 일치 여부 (입력란 바로 아래에 이미 보여줌)
   const passwordsMatch =
     formData.password === formData.confirmPassword &&
     formData.password.length > 0
 
-  // 회원가입 API
   const handleSignup = async () => {
-    setSignupError('') // 이전 메시지 초기화
+    setSignupError('')
 
     if (!formData.isVerified) {
       setSignupError('이메일 인증을 완료해주세요.')
@@ -107,10 +103,10 @@ const Signup = () => {
       return
     }
 
-    // 인턴십 및 정규직 경험 데이터를 백엔드 스웨거 스키마에 맞게 변환
+    // 경험 데이터를 백엔드 형식으로 통합
     const experiences: {
-      position: string
       companyName: string
+      position: string
       startDate: string
       endDate: string
       category: string
@@ -119,13 +115,10 @@ const Signup = () => {
     if (formData.internshipExperience === 'yes') {
       experiences.push(
         ...formData.internships.map((item) => ({
-          position:
-            (item.internPositions && item.internPositions[0]) ||
-            formData.selectedPositions[0] ||
-            '',
-          companyName: item.internCompanyName || '',
-          startDate: item.internStartDate || '',
-          endDate: item.isCurrentJob ? '' : item.internEndDate || '',
+          companyName: item.companyName || '',
+          position: item.position || formData.selectedPositions[0] || '',
+          startDate: item.startDate || '',
+          endDate: item.isCurrentJob ? '' : item.endDate || '',
           category: '인턴',
         })),
       )
@@ -134,13 +127,10 @@ const Signup = () => {
     if (formData.jobExperience === 'yes') {
       experiences.push(
         ...formData.fullTimes.map((item) => ({
-          position:
-            (item.fullTimePositions && item.fullTimePositions[0]) ||
-            formData.selectedPositions[0] ||
-            '',
-          companyName: item.fullTimeCompanyName || '',
-          startDate: item.fullTimeStartDate || '',
-          endDate: item.isCurrentJob ? '' : item.fullTimeEndDate || '',
+          companyName: item.companyName || '',
+          position: item.position || formData.selectedPositions[0] || '',
+          startDate: item.startDate || '',
+          endDate: item.isCurrentJob ? '' : item.endDate || '',
           category: '정규직',
         })),
       )
@@ -159,22 +149,20 @@ const Signup = () => {
       year: parseInt(formData.selectedBatch),
     }
 
+    if (formData.tistoryUrl) {
+      createUserRequest.tistoryUrl = formData.tistoryUrl
+    }
     if (formData.mediumUrl) {
       createUserRequest.mediumUrl = formData.mediumUrl
     }
-
     if (formData.velogUrl) {
       createUserRequest.velogUrl = formData.velogUrl
-    }
-
-    if (formData.tistoryUrl) {
-      createUserRequest.tistoryUrl = formData.tistoryUrl
     }
 
     const requestPayload = {
       createUserRequest,
       createUserExperienceRequest: {
-        experiences: experiences,
+        experiences,
       },
       createResumeRequest: {
         category: formData.resumeCategory,
@@ -184,10 +172,9 @@ const Signup = () => {
       },
     }
 
-    //console.log('Signup payload:', requestPayload)
+    console.log('Signup payload:', requestPayload)
 
     try {
-      // FormData를 사용하여 파일과 JSON 데이터를 함께 전송
       const formDataToSend = new FormData()
       if (formData.resumeFile) {
         formDataToSend.append('file', formData.resumeFile)
@@ -204,7 +191,6 @@ const Signup = () => {
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => null)
-        //console.log('Signup error response:', errorData)
         if (errorData?.message) {
           if (errorData.message.includes('Unique constraint failed')) {
             setSignupError(
@@ -219,10 +205,8 @@ const Signup = () => {
         return
       }
 
-      // 회원가입 성공 시 로그인 페이지로 이동
       router.push('/login')
     } catch (err: any) {
-      //console.log('Signup exception:', err)
       setSignupError('네트워크 오류가 발생했습니다.')
     }
   }
@@ -243,7 +227,6 @@ const Signup = () => {
     }
   }
 
-  // 인턴 경험 데이터 업데이트 함수
   const setInternships = (internships: any[]) => {
     setFormData((prev) => ({
       ...prev,
@@ -251,7 +234,6 @@ const Signup = () => {
     }))
   }
 
-  // 정규직 경험 데이터 업데이트 함수
   const setFullTimes = (fullTimes: any[]) => {
     setFormData((prev) => ({
       ...prev,
@@ -292,7 +274,6 @@ const Signup = () => {
         <h2 className="text-4xl font-extrabold text-center my-8 text-primary">
           Sign up
         </h2>
-
         {step === 1 ? (
           <div className="flex flex-col w-[30.25rem] space-y-9 justify-center my-auto">
             <InputField
@@ -303,8 +284,6 @@ const Signup = () => {
               value={formData.name}
               onChange={handleChange}
             />
-
-            {/* 부모의 isVerified 상태를 prop으로 전달 */}
             <EmailVerification
               email={formData.email}
               isVerified={formData.isVerified}
@@ -313,7 +292,6 @@ const Signup = () => {
                 setFormData((prev) => ({ ...prev, isVerified: verified }))
               }
             />
-
             <InputField
               label="비밀번호"
               name="password"
@@ -323,7 +301,6 @@ const Signup = () => {
               value={formData.password}
               onChange={handleChange}
             />
-
             <div className="relative">
               <InputField
                 label="비밀번호 확인"
@@ -359,7 +336,6 @@ const Signup = () => {
                 대학교 및 학년을 선택해주세요{' '}
                 <span className="text-primary">*</span>
               </p>
-
               <div className="flex justify-between space-x-5">
                 <Select
                   title="대학교"
@@ -462,13 +438,12 @@ const Signup = () => {
                   <input
                     type="file"
                     name="resumeFile"
-                    onChange={(e) => {
-                      if (e.target.files) {
-                        setFormData((prev) => ({
-                          ...prev,
-                          resumeFile: e.target.files ? e.target.files[0] : null,
-                        }))
-                      }
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                      const file = e.target.files?.[0] ?? null
+                      setFormData((prev) => ({
+                        ...prev,
+                        resumeFile: file,
+                      }))
                     }}
                     className="w-full"
                   />
@@ -517,8 +492,8 @@ const Signup = () => {
                         'FRONTEND',
                         'BACKEND',
                         'DEVOPS',
-                        'FULL-STACK',
-                        'DATA ENGINEER',
+                        'FULL_STACK',
+                        'DATA_ENGINEER',
                       ]}
                       value={formData.resumePosition}
                       onChange={(value) =>

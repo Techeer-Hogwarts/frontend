@@ -20,7 +20,7 @@ const ExperienceItem: React.FC<ExperienceItemProps> = ({
   onChange,
   experienceType,
 }) => {
-  // ISO 형식 날짜 문자열을 "YYYY-MM-DD"로 변환하는 함수
+  // ISO 형식 날짜 문자열을 "YYYY-MM-DD" 형식으로 변환하는 함수
   const convertDate = (rawDate: string): string => {
     if (!rawDate) return ''
     const date = new Date(rawDate)
@@ -28,79 +28,44 @@ const ExperienceItem: React.FC<ExperienceItemProps> = ({
     return date.toISOString().substring(0, 10)
   }
 
-  // 초기 상태 설정: 날짜는 변환해서 사용
+  // 공통 키 사용: 모든 경험 항목은 동일한 필드로 관리합니다.
   const [companyName, setCompanyName] = useState(data.companyName || '')
-  const [startDate, setStartDate] = useState(() => {
-    const raw =
-      data.internStartDate || data.fullTimeStartDate || data.startDate || ''
-    return convertDate(raw)
-  })
-  const [endDate, setEndDate] = useState(() => {
-    const raw = data.internEndDate || data.fullTimeEndDate || data.endDate || ''
-    return convertDate(raw)
-  })
-  // endDate가 null이면 현재 재직중으로 판단
+  const [startDate, setStartDate] = useState(() =>
+    convertDate(data.startDate || ''),
+  )
+  const [endDate, setEndDate] = useState(() => convertDate(data.endDate || ''))
+  // endDate가 없으면 현재 재직중으로 간주
   const [isCurrentJob, setIsCurrentJob] = useState(
-    data.endDate === null ? true : data.isCurrentJob || false,
+    data.endDate === null || data.endDate === '' ? true : false,
   )
-  // 포지션 배열: API에서 여러 포지션이 전달되었을 경우 사용; 없으면 단일 값을 배열로 만듭니다.
-  const [selectedPosition, setSelectedPosition] = useState<string[]>(
-    data.internPositions ||
-      data.fullTimePositions ||
-      (data.position ? [data.position] : []),
-  )
+  // 단일 포지션 사용
+  const [position, setPosition] = useState(data.position || '')
 
   const positions = [
     'FRONTEND',
     'BACKEND',
     'DEVOPS',
-    'FULL-STACK',
-    'DATA ENGINEER',
+    'FULL_STACK',
+    'DATA_ENGINEER',
   ]
 
-  const handlePositionClick = (position: string) => {
-    setSelectedPosition((prevSelected) => {
-      if (prevSelected.includes(position)) {
-        return prevSelected.filter((item) => item !== position)
-      } else {
-        if (prevSelected.length < 2) {
-          return [...prevSelected, position]
-        } else {
-          return prevSelected
-        }
-      }
-    })
+  const handlePositionClick = (pos: string) => {
+    setPosition(pos)
   }
 
-  // onChange 호출: 입력값 변경 시 부모로 업데이트된 데이터를 전달합니다.
-  // onChange prop은 의존성 배열에서 제외하여 무한 업데이트를 방지합니다.
+  // 상태 변경 시 부모에 업데이트된 데이터를 전달합니다.
   useEffect(() => {
-    const updatedData =
-      experienceType === '인턴'
-        ? {
-            internCompanyName: companyName,
-            internPositions: selectedPosition,
-            internStartDate: startDate,
-            internEndDate: isCurrentJob ? '' : endDate,
-            isCurrentJob,
-          }
-        : {
-            fullTimeCompanyName: companyName,
-            fullTimePositions: selectedPosition,
-            fullTimeStartDate: startDate,
-            fullTimeEndDate: isCurrentJob ? '' : endDate,
-            isCurrentJob,
-          }
+    const updatedData = {
+      companyName,
+      startDate,
+      endDate: isCurrentJob ? '' : endDate,
+      position,
+      category: experienceType, // "인턴" 또는 "정규직"
+      isCurrentJob,
+    }
     onChange(updatedData)
-  }, [
-    companyName,
-    selectedPosition,
-    startDate,
-    endDate,
-    isCurrentJob,
-    experienceType,
-    // onChange는 제외
-  ])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [companyName, startDate, endDate, isCurrentJob, position, experienceType])
 
   return (
     <div className="relative p-4 bg-filterbg rounded-md mt-4">
@@ -111,7 +76,6 @@ const ExperienceItem: React.FC<ExperienceItemProps> = ({
       >
         ×
       </button>
-
       <div className="flex flex-col space-y-2">
         <input
           type="text"
@@ -150,13 +114,13 @@ const ExperienceItem: React.FC<ExperienceItemProps> = ({
           <label className="text-xs text-gray">재직중</label>
         </div>
         <div className="flex justify-between text-pink text-[10px] mt-2">
-          {positions.map((position, idx) => (
+          {positions.map((pos, idx) => (
             <ExperienceBtn
               key={idx}
-              position={position}
+              position={pos}
               handlePositionClick={handlePositionClick}
               btnPadding={btnPadding}
-              selectedPosition={selectedPosition}
+              selectedPosition={[position]}
             />
           ))}
         </div>

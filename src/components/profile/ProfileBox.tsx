@@ -4,6 +4,7 @@ import React from 'react'
 import Image from 'next/image'
 import PositionTag from '@/components/common/PositionTag'
 import CareerTag from '@/components/common/CareerTag'
+import SkeletonProfileBox from './SkeletonProfileBox'
 
 interface ProfileData {
   profileImage: string
@@ -18,6 +19,16 @@ interface ProfileData {
   mediumUrl: string
   velogUrl: string
   tistoryUrl: string
+  experiences?: Experience[]
+}
+
+interface Experience {
+  position: string
+  companyName: string
+  startDate: string
+  endDate: string | null
+  category: string
+  isFinished: boolean
 }
 
 interface ProfileBoxProps {
@@ -32,13 +43,13 @@ export default function ProfileBox({
   error,
 }: ProfileBoxProps) {
   if (loading) {
-    return <div>로딩 중...</div>
+    return <SkeletonProfileBox />
   }
   if (error) {
     return <div className="text-red-500">{error}</div>
   }
   if (!profile) {
-    return <div>데이터가 없습니다.</div>
+    return <SkeletonProfileBox />
   }
 
   return (
@@ -119,7 +130,9 @@ export default function ProfileBox({
           {/* 포지션/경력 (mainPosition, subPosition) */}
           <div className="flex flex-row gap-2 mt-1">
             <PositionTag position={profile.mainPosition || ''} />
-            <CareerTag career="신입" />
+            {profile.experiences && profile.experiences.length > 0 && (
+              <CareerTag career={profile.experiences[0].category} />
+            )}
           </div>
         </div>
       </div>

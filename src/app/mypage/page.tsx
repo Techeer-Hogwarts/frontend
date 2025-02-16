@@ -10,6 +10,29 @@ import Bookmark from '@/components/mypage/Bookmark'
 import MypageTap from '@/components/mypage/MypageTap'
 import ProfileBox from '@/components/profile/ProfileBox'
 
+// 더미 데이터 정의
+const dummyProjectTeams = [
+  { id: 1, name: 'Project Alpha', mainImage: '/images/project/example.png' },
+  { id: 2, name: 'Project Beta', mainImage: '/images/project/example.png' },
+  { id: 3, name: 'Project Gamma', mainImage: '/images/project/example.png' },
+  { id: 4, name: 'Project Delta', mainImage: '/images/project/example.png' },
+  { id: 5, name: 'Project 1', mainImage: '/images/project/example.png' },
+  { id: 6, name: 'Project 2', mainImage: '/images/project/example.png' },
+  { id: 7, name: 'Project 3', mainImage: '/images/project/example.png' },
+  { id: 8, name: 'Project 4', mainImage: '/images/project/example.png' },
+  { id: 9, name: 'Project 2', mainImage: '/images/project/example.png' },
+  { id: 10, name: 'Project 3', mainImage: '/images/project/example.png' },
+  { id: 11, name: 'Project 4', mainImage: '/images/project/example.png' },
+  { id: 12, name: 'Project 5', mainImage: '/images/project/example.png' },
+]
+
+const dummyStudyTeams = [
+  { id: 1, name: 'Study Group A', mainImage: '/images/project/example.png' },
+  { id: 2, name: 'Study Group B', mainImage: '/images/project/example.png' },
+  { id: 3, name: 'Study Group C', mainImage: '/images/project/example.png' },
+  { id: 4, name: 'Study Group D', mainImage: '/images/project/example.png' },
+]
+
 interface Experience {
   position: string
   companyName: string
@@ -17,6 +40,12 @@ interface Experience {
   endDate: string | null
   category: string
   isFinished: boolean
+}
+
+interface Team {
+  id: number
+  name: string
+  mainImage: string
 }
 
 interface ProfileData {
@@ -33,6 +62,8 @@ interface ProfileData {
   velogUrl: string
   tistoryUrl: string
   isLft: boolean
+  projectTeams?: Team[]
+  studyTeams?: Team[]
   experiences?: Experience[]
 }
 
@@ -79,7 +110,13 @@ export default function Mypage() {
       </div>
 
       {/** 우측 컨텐츠 영역 */}
-      {activeTab === 'home' && <Home />}
+      {activeTab === 'home' && (
+        <Home
+          projectTeams={dummyProjectTeams}
+          studyTeams={dummyStudyTeams}
+          experiences={profile?.experiences}
+        />
+      )}
       {activeTab === 'profile' && <Profile profile={profile} />}
       {activeTab === 'resume' && <Resume />}
       {activeTab === 'bookmark' && <Bookmark />}
