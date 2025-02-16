@@ -1,3 +1,5 @@
+'use client'
+
 import React from 'react'
 import MyCareerToggle from './MyCareerToggle'
 import ExperienceItem from '../signup/ExperienceItem'
@@ -6,19 +8,39 @@ export interface MyExperienceSectionProps {
   readonly title: string
   readonly experienceStatus: string | null
   readonly setExperienceStatus: (value: string) => void
-  readonly items: number[]
-  readonly addExperience: () => void
-  readonly removeExperience: (index: number) => void
+  readonly experienceData: any[]
+  readonly setExperienceData: (data: any[]) => void
+  readonly experienceType: '인턴' | '정규직'
 }
 
 export default function MyExperienceSection({
   title,
   experienceStatus,
   setExperienceStatus,
-  items,
-  addExperience,
-  removeExperience,
+  experienceData,
+  setExperienceData,
+  experienceType,
 }: MyExperienceSectionProps) {
+  // 새 경험 항목 추가 함수
+  const addExperience = () => {
+    setExperienceData([...experienceData, {}])
+  }
+
+  // 경험 항목 삭제 함수
+  const removeExperience = (index: number) => {
+    const newData = [...experienceData]
+    newData.splice(index, 1)
+    setExperienceData(newData)
+  }
+
+  // 경험 업데이트 함수
+  const updateExperience = (index: number, updatedItem: any) => {
+    const newData = experienceData.map((item, i) =>
+      i === index ? updatedItem : item,
+    )
+    setExperienceData(newData)
+  }
+
   return (
     <div className="flex flex-col w-full">
       <MyCareerToggle
@@ -26,7 +48,8 @@ export default function MyExperienceSection({
         value={experienceStatus}
         setValue={setExperienceStatus}
       />
-      {experienceStatus === 'yes' && (
+
+      {(experienceStatus === '있어요' || experienceStatus === 'yes') && (
         <>
           <button
             type="button"
@@ -36,11 +59,15 @@ export default function MyExperienceSection({
             <span>+</span>
             <span>경력 추가</span>
           </button>
-          {items.map((_, item) => (
+          {experienceData.map((_, index) => (
             <ExperienceItem
-              key={item}
+              key={index}
+              index={index}
+              data={experienceData[index]}
+              onChange={(updatedItem) => updateExperience(index, updatedItem)}
+              onDelete={() => removeExperience(index)}
+              experienceType={experienceType}
               btnPadding="px-6 py-2"
-              onDelete={() => removeExperience(item)}
             />
           ))}
         </>

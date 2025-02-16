@@ -39,13 +39,13 @@ export default function Page({ params }: { params: { userId: string } }) {
     <div className="flex gap-16 mt-10">
       {/** 좌측 영역 */}
       <div className="flex flex-col w-[15rem] gap-6 ">
-        <ProfileBox profileData={profileData} />
+        <ProfileBox profile={profileData} loading={false} error={''} />
         <ProfilepageTap activeTab={activeTab} setActiveTab={setActiveTab} />
       </div>
 
       {/** 우측 컨텐츠 영역 */}
       {activeTab === 'home' && <Home />}
-      {activeTab === 'profile' && <Profile />}
+      {activeTab === 'profile' && <Profile profile={profileData} />}
       {activeTab === 'resume' && <Resume />}
     </div>
   )

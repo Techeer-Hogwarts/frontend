@@ -1,99 +1,157 @@
-import AddBtn from './AddBtn'
-import Image from 'next/image'
-import { HiMiniChevronLeft, HiMiniChevronRight } from 'react-icons/hi2'
+'use client'
 
-export default function Home() {
+import AddBtn from './AddBtn'
+import Carousel from './Carousel'
+interface Team {
+  id: number
+  name: string
+  mainImage: string
+}
+
+interface Experience {
+  id?: number
+  companyName: string
+  startDate: string
+  endDate: string | null
+  position: string
+  category: string
+  isFinished: boolean
+}
+
+interface HomeProps {
+  projectTeams?: Team[]
+  studyTeams?: Team[]
+  experiences?: Experience[]
+}
+
+// ISO 형식 날짜 문자열을 "YYYY-MM-DD" 형식으로 변환하는 함수
+const convertDate = (rawDate: string): string => {
+  if (!rawDate) return ''
+  const date = new Date(rawDate)
+  if (isNaN(date.getTime())) return ''
+  return date.toISOString().substring(0, 10)
+}
+
+export default function Home({
+  projectTeams = [],
+  studyTeams = [],
+  experiences = [],
+}: HomeProps) {
+  // 경력 데이터는 category를 기준으로 분리
+  const internExperiences = experiences.filter((exp) => exp.category === '인턴')
+  const fullTimeExperiences = experiences.filter(
+    (exp) => exp.category === '정규직',
+  )
+
   return (
-    <div className="flex flex-col w-full gap-6">
+    <div className="flex flex-col gap-6 w-[890px]">
       {/* 기술 스택 */}
       <div>
         <h2 className="text-lg font-semibold mb-2 text-black/70">기술 스택</h2>
-        <div className="w-[890px] h-[165px] border border-lightgray rounded-lg" />
+        <div className="w-[890px] h-[165px] border border-lightgray rounded-lg">
+          {/* 기술 스택 내용 */}
+        </div>
       </div>
+
       {/* 프로젝트 */}
       <div>
         <div className="flex justify-between">
           <h2 className="text-lg font-semibold mb-2 text-black/70">프로젝트</h2>
-          <AddBtn title="+ 프로젝트 추가" />
+          <AddBtn title="+ 프로젝트 추가" href="/project/add/project" />
         </div>
-        <div className="flex relative h-[140px] px-8 w-[890px] gap-3 overflow-x-auto items-center justify-start border border-lightgray rounded-lg">
-          <HiMiniChevronLeft className="w-10 h-8 absolute left-0 top-[52px] text-black/20" />
-          <Image
-            src="/images/project/example.png"
-            alt="thumbnail"
-            width={64}
-            height={64}
-          />
-          <Image
-            src="/images/project/example.png"
-            alt="thumbnail"
-            width={64}
-            height={64}
-          />
-          <HiMiniChevronRight className="w-10 h-8 absolute right-0 top-[52px] text-black/20" />
-        </div>
+        {projectTeams.length === 0 ? (
+          <div className="flex relative h-[140px] px-10 w-[890px] gap-3 overflow-x-auto items-center justify-center border border-lightgray rounded-lg">
+            <span className="text-sm text-gray">프로젝트가 없습니다.</span>
+          </div>
+        ) : (
+          <Carousel teams={projectTeams} />
+        )}
       </div>
 
       {/* 스터디 */}
       <div>
         <div className="flex justify-between">
           <h2 className="text-lg font-semibold mb-2 text-black/70">스터디</h2>
-          <AddBtn title="+ 스터디 추가" />
+          <AddBtn title="+ 스터디 추가" href="/project/add/study" />
         </div>
-        <div className="flex relative h-[140px] px-8 w-[890px] gap-3 overflow-x-auto items-center justify-start border border-lightgray rounded-lg">
-          <HiMiniChevronLeft className="w-10 h-8 absolute left-0 top-[52px] text-black/20" />
-          <Image
-            src="/images/project/example.png"
-            alt="thumbnail"
-            width={64}
-            height={64}
-          />
-          <Image
-            src="/images/project/example.png"
-            alt="thumbnail"
-            width={64}
-            height={64}
-          />
-          <HiMiniChevronRight className="w-10 h-8 absolute right-0 top-[52px] text-black/20" />
-        </div>
+        {studyTeams.length === 0 ? (
+          <div className="flex relative h-[140px] px-10 w-[890px] gap-3 overflow-x-auto items-center justify-center border border-lightgray rounded-lg">
+            <span className="text-sm text-gray">스터디가 없습니다.</span>
+          </div>
+        ) : (
+          <Carousel teams={studyTeams} />
+        )}
       </div>
 
       {/* 경력 */}
       <div>
         <div className="flex justify-between">
           <h2 className="text-lg font-semibold mb-2 text-black/70">경력</h2>
-          <AddBtn title="+ 경력 추가" />
         </div>
         <div className="flex flex-col relative min-h-[140px] px-12 py-10 w-[890px] gap-3 overflow-x-auto border border-lightgray rounded-lg">
-          <h3 className="text-lg mb-3 text-black/70">인턴</h3>
-          <div className="my-2 text-black/70">
-            <div className="flex justify-between items-center">
-              <span className="text-lg font-semibold">네이버 웹툰</span>
-              <span className="text-sm">YYYY.MM - YYYY.MM</span>
+          {internExperiences.length === 0 &&
+          fullTimeExperiences.length === 0 ? (
+            <div className="flex justify-center items-center h-[100px]">
+              <span className="text-sm text-gray">경력이 없습니다.</span>
             </div>
-            <div className="flex justify-between items-center">
-              <span className="">프론트엔드 엔지니어</span>
-              <label>
-                <input type="checkbox" /> 재직중
-              </label>
-            </div>
-            <div className="my-4 border-lightgray border-t-[1px]" />
-          </div>
-
-          <h3 className="text-lg text-black/70">정규직</h3>
-          <div className="my-2 text-black/70">
-            <div className="flex justify-between items-center">
-              <span className="text-lg font-semibold">네이버 웹툰</span>
-              <span className="text-sm">YYYY.MM - YYYY.MM</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="">프론트엔드 엔지니어</span>
-              <label>
-                <input type="checkbox" /> 재직중
-              </label>
-            </div>
-            <div className="my-4 border-lightgray border-t-[1px]" />
-          </div>
+          ) : (
+            <>
+              {internExperiences.length > 0 && (
+                <>
+                  <h3 className="text-lg mb-3 text-black/70">인턴</h3>
+                  {internExperiences.map((exp, index) => (
+                    <div
+                      key={exp.id ? `intern-${exp.id}` : `intern-${index}`}
+                      className="my-2 text-black/70"
+                    >
+                      <div className="flex justify-between items-center">
+                        <span className="text-lg font-semibold">
+                          {exp.companyName}
+                        </span>
+                        <span className="text-sm">
+                          {convertDate(exp.startDate)} ~{' '}
+                          {exp.endDate ? convertDate(exp.endDate) : '재직중'}
+                        </span>
+                      </div>
+                      <div className="flex justify-start items-center">
+                        <span className="text-sm text-gray">
+                          {exp.position}
+                        </span>
+                      </div>
+                      <div className="my-4 border-lightgray border-t-[1px]" />
+                    </div>
+                  ))}
+                </>
+              )}
+              {fullTimeExperiences.length > 0 && (
+                <>
+                  <h3 className="text-lg mb-3 text-black/70">정규직</h3>
+                  {fullTimeExperiences.map((exp, index) => (
+                    <div
+                      key={exp.id ? `fulltime-${exp.id}` : `fulltime-${index}`}
+                      className="my-2 text-black/70"
+                    >
+                      <div className="flex justify-between items-center">
+                        <span className="text-lg font-semibold">
+                          {exp.companyName}
+                        </span>
+                        <span className="text-sm">
+                          {convertDate(exp.startDate)} ~{' '}
+                          {exp.endDate ? convertDate(exp.endDate) : '재직중'}
+                        </span>
+                      </div>
+                      <div className="flex justify-start items-center">
+                        <span className="text-sm text-gray">
+                          {exp.position}
+                        </span>
+                      </div>
+                      <div className="my-4 border-lightgray border-t-[1px]" />
+                    </div>
+                  ))}
+                </>
+              )}
+            </>
+          )}
         </div>
       </div>
     </div>

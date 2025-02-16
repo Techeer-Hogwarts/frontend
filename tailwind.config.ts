@@ -17,6 +17,7 @@ const config: Config = {
         primary: '#FE9142',
         gray: '#AEAEAE',
         lightgray: '#D7D7D7',
+        darkgray: '#5A5A5A',
         filterbg: '#FAFAFA',
         lightblue: '#CFE2FF',
         blue: '#2D5289',

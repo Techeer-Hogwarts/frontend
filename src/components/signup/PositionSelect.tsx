@@ -11,22 +11,22 @@ const PositionSelect: React.FC<PositionSelectProps> = ({
   handlePositionSelect,
 }) => {
   const positions = [
-    'Frontend',
-    'Backend',
-    'DevOps',
-    'Full-Stack',
-    'Data Engineer',
+    'FRONTEND',
+    'BACKEND',
+    'DEVOPS',
+    'FULL_STACK',
+    'DATA_ENGINEER',
   ]
 
   return (
     <div>
-      <div className="flex items-center bg-[#F8F8F8] rounded-md text-xs text-pink justify-between px-4 py-4">
+      <div className="flex items-center bg-filterbg rounded-md text-xs text-pink justify-between px-3 py-4">
         {positions.map((position) => (
           <button
             key={position}
             type="button"
             onClick={() => handlePositionSelect(position)}
-            className={`px-3.5 relative py-2 border border-lightprimary ${
+            className={`cursor-pointer px-2 relative py-2 border border-lightprimary ${
               selectedPositions.includes(position)
                 ? 'bg-lightprimary'
                 : 'bg-white'
@@ -34,9 +34,7 @@ const PositionSelect: React.FC<PositionSelectProps> = ({
           >
             {position}
             {selectedPositions.includes(position) && (
-              <span
-                className={`absolute -top-1 -right-1 w-5 h-5 flex items-center justify-center rounded-full bg-[#FF7816] text-white text-xs font-bold`}
-              >
+              <span className="absolute -top-1 -right-1 w-5 h-5 flex items-center justify-center rounded-full bg-[#FF7816] text-white text-xs font-bold">
                 {selectedPositions.indexOf(position) + 1}
               </span>
             )}

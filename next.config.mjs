@@ -1,7 +1,18 @@
 import { withSentryConfig } from '@sentry/nextjs'
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: false,
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'avatars.slack-edge.com',
+        port: '',
+        pathname: '/**',
+      },
+    ],
+  },
+  reactStrictMode: true,
+
   experimental: {
     appDir: true,
   },
