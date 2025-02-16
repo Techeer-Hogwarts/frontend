@@ -17,22 +17,22 @@ export default function ShowVideo() {
   const onClickBack = () => {
     router.back()
   }
-  const fetchSignleSession = async () => {
-    if (!sessionId) {
-      console.error('Session ID is missing!')
-      return
-    }
-    try {
-      const singleVideo = await getSingleSession(sessionId)
-      setSession(singleVideo)
-    } catch (err) {
-      console.error('세션 데이터 가져오기 실패:', err)
-    }
-  }
   useEffect(() => {
+    const fetchSignleSession = async (sessionId: string) => {
+      if (!sessionId) {
+        console.error('Session ID is missing!')
+        return
+      }
+      try {
+        const singleVideo = await getSingleSession(sessionId)
+        setSession(singleVideo)
+      } catch (err) {
+        console.error('세션 데이터 가져오기 실패:', err)
+      }
+    }
     console.log('Session ID:', sessionId)
-    fetchSignleSession()
-  }, [])
+    fetchSignleSession(sessionId)
+  }, [sessionId])
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
