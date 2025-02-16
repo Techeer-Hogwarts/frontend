@@ -8,7 +8,7 @@ export interface ExperienceSectionProps {
   setExperienceStatus: (value: string) => void
   experienceData: any[]
   setExperienceData: (data: any[]) => void
-  experienceType: 'intern' | 'fullTime'
+  experienceType: '인턴' | '정규직'
 }
 
 const ExperienceSection: React.FC<ExperienceSectionProps> = ({

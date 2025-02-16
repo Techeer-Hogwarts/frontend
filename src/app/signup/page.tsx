@@ -56,7 +56,7 @@ const Signup = () => {
 
     // 이력서 추가 정보
     resumeFile: null as File | null,
-    resumeCategory: 'PORTFOLIO', // 기본값
+    resumeCategory: 'RESUME', // 기본값
     resumeIsMain: true,
     resumePosition: '',
   })
@@ -146,35 +146,45 @@ const Signup = () => {
       )
     }
 
-    // 백엔드 스웨거에 맞춘 요청 본문 구성
+    const createUserRequest: any = {
+      mainPosition: formData.selectedPositions[0] || '',
+      subPosition: formData.selectedPositions[1] || '',
+      name: formData.name,
+      githubUrl: formData.githubUrl,
+      isLft: formData.recommendation === 'yes',
+      school: formData.school,
+      grade: formData.classYear,
+      password: formData.password,
+      email: formData.email,
+      year: parseInt(formData.selectedBatch),
+    }
+
+    if (formData.mediumUrl) {
+      createUserRequest.mediumUrl = formData.mediumUrl
+    }
+
+    if (formData.velogUrl) {
+      createUserRequest.velogUrl = formData.velogUrl
+    }
+
+    if (formData.tistoryUrl) {
+      createUserRequest.tistoryUrl = formData.tistoryUrl
+    }
+
     const requestPayload = {
-      createUserRequest: {
-        mainPosition: formData.selectedPositions[0] || '',
-        subPosition: formData.selectedPositions[1] || '',
-        name: formData.name,
-        githubUrl: formData.githubUrl,
-        tistoryUrl: formData.tistoryUrl,
-        isLft: formData.recommendation === 'yes',
-        school: formData.school,
-        grade: formData.classYear,
-        mediumUrl: formData.mediumUrl,
-        velogUrl: formData.velogUrl,
-        password: formData.password,
-        email: formData.email,
-        year: parseInt(formData.selectedBatch),
-      },
+      createUserRequest,
       createUserExperienceRequest: {
         experiences: experiences,
       },
       createResumeRequest: {
         category: formData.resumeCategory,
-        position: formData.resumePosition, // 부모에서 선택한 이력서 포지션 값 사용
+        position: formData.resumePosition,
         title: formData.resumeTitle,
         isMain: formData.resumeIsMain,
       },
     }
 
-    console.log('Signup payload:', requestPayload)
+    //console.log('Signup payload:', requestPayload)
 
     try {
       // FormData를 사용하여 파일과 JSON 데이터를 함께 전송
@@ -194,7 +204,7 @@ const Signup = () => {
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => null)
-        console.log('Signup error response:', errorData)
+        //console.log('Signup error response:', errorData)
         if (errorData?.message) {
           if (errorData.message.includes('Unique constraint failed')) {
             setSignupError(
@@ -212,7 +222,7 @@ const Signup = () => {
       // 회원가입 성공 시 로그인 페이지로 이동
       router.push('/login')
     } catch (err: any) {
-      console.log('Signup exception:', err)
+      //console.log('Signup exception:', err)
       setSignupError('네트워크 오류가 발생했습니다.')
     }
   }
@@ -389,7 +399,14 @@ const Signup = () => {
                 />
                 <Select
                   title="학년"
-                  options={['1학년', '2학년', '3학년', '4학년', '해당 없음']}
+                  options={[
+                    '1학년',
+                    '2학년',
+                    '3학년',
+                    '4학년',
+                    '졸업',
+                    '해당 없음',
+                  ]}
                   value={formData.classYear}
                   onChange={(value) =>
                     setFormData((prev) => ({ ...prev, classYear: value }))
@@ -414,6 +431,7 @@ const Signup = () => {
                     '6기',
                     '7기',
                     '8기',
+                    '9기',
                   ]}
                   value={formData.selectedBatch}
                   onChange={(value) =>
@@ -479,7 +497,7 @@ const Signup = () => {
                     </label>
                     <Select
                       title="카테고리"
-                      options={['PORTFOLIO', 'RESUME', 'CV']}
+                      options={['RESUME', 'PORTFOLIO', 'ICT', 'OTHER']}
                       value={formData.resumeCategory}
                       onChange={(value) =>
                         setFormData((prev) => ({
@@ -562,9 +580,7 @@ const Signup = () => {
             </div>
 
             <div>
-              <p className="block text-lg mb-2.5">
-                링크를 입력해주세요 <span className="text-primary">*</span>
-              </p>
+              <p className="block text-lg mb-2.5">링크를 입력해주세요</p>
               <div className="flex flex-col space-y-2">
                 <div className="flex justify-between space-x-5">
                   <div className="flex items-center justify-center w-[10rem] h-10 rounded-[0.25rem] text-primary border border-primary">
@@ -638,7 +654,7 @@ const Signup = () => {
                   }
                   experienceData={formData.internships}
                   setExperienceData={setInternships}
-                  experienceType="intern"
+                  experienceType="인턴"
                 />
                 <ExperienceSection
                   title="정규직 경험이 있나요?"
@@ -651,7 +667,7 @@ const Signup = () => {
                   }
                   experienceData={formData.fullTimes}
                   setExperienceData={setFullTimes}
-                  experienceType="fullTime"
+                  experienceType="정규직"
                 />
               </>
             )}

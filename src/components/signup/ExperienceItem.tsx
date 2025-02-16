@@ -8,7 +8,7 @@ export interface ExperienceItemProps {
   data: any
   onDelete?: () => void
   onChange: (data: any) => void
-  experienceType: 'intern' | 'fullTime'
+  experienceType: '인턴' | '정규직'
   btnPadding: string
 }
 
@@ -72,10 +72,11 @@ const ExperienceItem: React.FC<ExperienceItemProps> = ({
     })
   }
 
-  // onChange 호출: 입력 값들이 변경될 때마다 부모로 업데이트된 데이터를 전달합니다.
+  // onChange 호출: 입력값 변경 시 부모로 업데이트된 데이터를 전달합니다.
+  // onChange prop은 의존성 배열에서 제외하여 무한 업데이트를 방지합니다.
   useEffect(() => {
     const updatedData =
-      experienceType === 'intern'
+      experienceType === '인턴'
         ? {
             internCompanyName: companyName,
             internPositions: selectedPosition,
@@ -98,7 +99,7 @@ const ExperienceItem: React.FC<ExperienceItemProps> = ({
     endDate,
     isCurrentJob,
     experienceType,
-    onChange,
+    // onChange는 제외
   ])
 
   return (

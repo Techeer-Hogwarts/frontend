@@ -393,7 +393,7 @@ export default function Profile({ profile }: ProfileProps) {
         initialExperiences={
           profile?.experiences?.filter((exp) => exp.category === '인턴') || []
         }
-        experienceType="intern"
+        experienceType="인턴"
       />
 
       {/* 정규직 경험 */}
@@ -404,7 +404,7 @@ export default function Profile({ profile }: ProfileProps) {
         initialExperiences={
           profile?.experiences?.filter((exp) => exp.category === '정규직') || []
         }
-        experienceType="fullTime"
+        experienceType="정규직"
       />
 
       {updateMessage && <p className="text-green text-sm">{updateMessage}</p>}

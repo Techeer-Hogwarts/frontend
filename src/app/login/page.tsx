@@ -54,7 +54,6 @@ export default function Login() {
         if (response.status === 201) {
           setIsLoggedIn(true)
           setIsError(false)
-          setMessage('로그인에 성공하였습니다.')
           router.push('/project')
         } else {
           setIsError(true)

@@ -11,7 +11,7 @@ export interface MyExperienceSectionProps {
   // 기존에 API에서 받은 경험 데이터 (없으면 빈 배열)
   readonly initialExperiences?: any[]
   // 경험 타입: 'intern' 또는 'fullTime'
-  readonly experienceType: 'intern' | 'fullTime'
+  readonly experienceType: '인턴' | '정규직'
 }
 
 export default function MyExperienceSection({
