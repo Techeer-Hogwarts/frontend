@@ -192,8 +192,13 @@ const Signup = () => {
       if (!response.ok) {
         const errorData = await response.json().catch(() => null)
 
+        if (response.status === 400) {
+          setSignupError('필수 항목을 모두 입력해주세요.')
+          return
+        }
+
         if (response.status === 500) {
-          setSignupError('필수 값이 누락되었습니다.')
+          setSignupError('이미 등록된 이메일입니다.')
           return
         }
 
@@ -201,7 +206,7 @@ const Signup = () => {
           setSignupError(errorData.message)
           return
         }
-    }
+      }
 
       router.push('/login')
     } catch (err: any) {
@@ -649,9 +654,9 @@ const Signup = () => {
         )}
 
         <div className="flex flex-col my-10">
-        {signupError && (
-          <p className="text-sm text-red-500 mb-2">{signupError}</p>
-        )}
+          {signupError && (
+            <p className="text-sm text-red-500 mb-2">{signupError}</p>
+          )}
           {step === 1 ? (
             <button
               type="button"
