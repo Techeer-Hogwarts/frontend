@@ -1,10 +1,21 @@
 import { withSentryConfig } from '@sentry/nextjs'
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: false,
-  experimental: {
-    appDir: true,
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'avatars.slack-edge.com',
+        port: '',
+        pathname: '/**',
+      },
+    ],
   },
+  reactStrictMode: true,
+
+  // experimental: {
+  //   appDir: true,
+  // },
   images: {
     domains: ['example.com', 'avatars.slack-edge.com'], // 허용할 외부 도메인 추가
   },
@@ -12,7 +23,7 @@ const nextConfig = {
   async rewrites() {
     return [
       {
-        source: '/:api/v1/:path*',
+        source: '/api/v1/:path*',
         destination: 'https://api.techeerzip.cloud/api/v1/:path*',
       },
     ]
@@ -41,7 +52,7 @@ export default withSentryConfig(nextConfig, {
   // https://github.com/getsentry/sentry-webpack-plugin#options
 
   org: 'techeerzip',
-  project: 'javascript-nextjs',
+  project: 'techeerzip-next',
   authToken: process.env.SENTRY_AUTH_TOKEN,
 
   // Only print logs for uploading source maps in CI

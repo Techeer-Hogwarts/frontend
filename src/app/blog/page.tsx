@@ -62,6 +62,7 @@ export default function Page() {
     } catch (err) {
       console.error('블로그 데이터 업로드 중 오류 발생:', err)
     }
+
   }, [])
   const getBlog = useCallback(
     async (newLimit: number, query: string, category: string) => {
