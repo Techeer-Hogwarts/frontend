@@ -48,8 +48,8 @@ export default function Home({
       {/* 기술 스택 */}
       <div>
         <h2 className="text-lg font-semibold mb-2 text-black/70">기술 스택</h2>
-        <div className="w-[890px] h-[165px] border border-lightgray rounded-lg">
-          {/* 기술 스택 내용 */}
+        <div className="flex relative h-[140px] px-10 w-[890px] gap-3 overflow-x-auto items-center justify-center border border-lightgray rounded-lg">
+          <span className="text-sm text-gray">추후 업데이트 예정입니다.</span>
         </div>
       </div>
 
@@ -64,7 +64,7 @@ export default function Home({
             <span className="text-sm text-gray">프로젝트가 없습니다.</span>
           </div>
         ) : (
-          <Carousel teams={projectTeams} />
+          <Carousel teams={projectTeams} routePrefix="/project/detail/project" />
         )}
       </div>
 
@@ -79,7 +79,7 @@ export default function Home({
             <span className="text-sm text-gray">스터디가 없습니다.</span>
           </div>
         ) : (
-          <Carousel teams={studyTeams} />
+          <Carousel teams={studyTeams} routePrefix="/project/detail/study" />
         )}
       </div>
 

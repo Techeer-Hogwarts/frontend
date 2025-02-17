@@ -23,7 +23,7 @@ const nextConfig = {
   async rewrites() {
     return [
       {
-        source: '/:api/v1/:path*',
+        source: '/api/v1/:path*',
         destination: 'https://api.techeerzip.cloud/api/v1/:path*',
       },
     ]

@@ -9,6 +9,7 @@ import Settings from '@/components/mypage/Settings'
 import Bookmark from '@/components/mypage/Bookmark'
 import MypageTap from '@/components/mypage/MypageTap'
 import ProfileBox from '@/components/profile/ProfileBox'
+import AuthModal from '@/components/common/AuthModal'
 
 // 더미 데이터 정의
 const dummyProjectTeams = [
@@ -75,6 +76,7 @@ export default function Mypage() {
   const [profile, setProfile] = useState<ProfileData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [authModalOpen, setAuthModalOpen] = useState(false)
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -83,6 +85,13 @@ export default function Mypage() {
           method: 'GET',
           credentials: 'include',
         })
+
+        if (response.status === 401) {
+          // 401이면 로그인 모달 오픈
+          setAuthModalOpen(true)
+          return
+        }
+
         if (!response.ok) {
           const errorData = await response.json().catch(() => null)
           throw new Error(
@@ -92,8 +101,7 @@ export default function Mypage() {
         const result = await response.json()
         setProfile(result as ProfileData)
       } catch (err: any) {
-        console.error(err)
-        setError(err.message || '유저 정보를 불러오는 중 오류가 발생했습니다.')
+        setError('유저 정보를 불러오지 못했습니다.')
       } finally {
         setLoading(false)
       }
@@ -103,6 +111,10 @@ export default function Mypage() {
 
   return (
     <div className="flex gap-16 mt-10">
+      <AuthModal
+        isOpen={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+      />
       {/** 좌측 영역 */}
       <div className="flex flex-col w-[15rem] gap-6 ">
         <ProfileBox profile={profile} loading={loading} error={error} />

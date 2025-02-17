@@ -53,6 +53,7 @@ export default function Login() {
         // 201 Created 가정
         if (response.status === 201) {
           setIsLoggedIn(true)
+          setMessage('로그인이 완료되었습니다.')
           setIsError(false)
           router.push('/project')
         } else {

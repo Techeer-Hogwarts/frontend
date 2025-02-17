@@ -4,6 +4,7 @@ import React from 'react'
 import Slider from 'react-slick'
 import Image from 'next/image'
 import { HiMiniChevronLeft, HiMiniChevronRight } from 'react-icons/hi2'
+import Link from 'next/link'
 
 interface Team {
   id: number
@@ -13,6 +14,7 @@ interface Team {
 
 interface CarouselProps {
   teams: Team[]
+  routePrefix: string
 }
 
 // 캐러셀에 사용하는 화살표
@@ -36,7 +38,7 @@ function PrevArrow(props: any) {
   )
 }
 
-const Carousel: React.FC<CarouselProps> = ({ teams }) => {
+const Carousel: React.FC<CarouselProps> = ({ teams, routePrefix }) => {
   const settings = {
     dots: false,
     infinite: teams.length > 10,
@@ -52,7 +54,11 @@ const Carousel: React.FC<CarouselProps> = ({ teams }) => {
     return (
       <div className="flex relative h-[140px] px-10 w-[890px] gap-[17px] items-center justify-start border border-lightgray rounded-lg">
         {teams.map((team) => (
-          <div key={team.id} className="relative group cursor-pointer">
+          <Link
+            key={team.id}
+            href={`${routePrefix}/${team.id}`}
+            className="relative group cursor-pointer"
+          >
             <Image
               src={team.mainImage}
               alt={team.name}
@@ -63,7 +69,7 @@ const Carousel: React.FC<CarouselProps> = ({ teams }) => {
             <div className="absolute w-[64px] h-[64px] top-0 bg-black bg-opacity-60 text-white text-xs flex items-center justify-center text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded">
               {team.name}
             </div>
-          </div>
+          </Link>
         ))}
       </div>
     )
@@ -77,7 +83,10 @@ const Carousel: React.FC<CarouselProps> = ({ teams }) => {
     >
       {teams.map((team) => (
         <div key={team.id}>
-          <div className="relative group cursor-pointer">
+          <Link
+            href={`${routePrefix}/${team.id}`}
+            className="relative group cursor-pointer"
+          >
             <Image
               src={team.mainImage}
               alt={team.name}
@@ -88,7 +97,7 @@ const Carousel: React.FC<CarouselProps> = ({ teams }) => {
             <div className="absolute w-[64px] h-[64px] top-0 bg-black bg-opacity-60 text-white text-xs flex items-center justify-center text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded">
               {team.name}
             </div>
-          </div>
+          </Link>
         </div>
       ))}
     </Slider>

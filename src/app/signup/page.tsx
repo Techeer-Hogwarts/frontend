@@ -191,19 +191,17 @@ const Signup = () => {
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => null)
-        if (errorData?.message) {
-          if (errorData.message.includes('Unique constraint failed')) {
-            setSignupError(
-              '이미 등록된 이메일입니다. 다른 이메일을 사용해주세요.',
-            )
-          } else {
-            setSignupError(`회원가입 실패: ${errorData.message}`)
-          }
-        } else {
-          setSignupError('회원가입 실패: 알 수 없는 오류가 발생했습니다.')
+
+        if (response.status === 500) {
+          setSignupError('필수 값이 누락되었습니다.')
+          return
         }
-        return
-      }
+
+        if (response.status === 401) {
+          setSignupError(errorData.message)
+          return
+        }
+    }
 
       router.push('/login')
     } catch (err: any) {
@@ -646,16 +644,14 @@ const Signup = () => {
                 />
               </>
             )}
-
-            {signupError && (
-              <p className="text-sm mt-2 text-red-500">{signupError}</p>
-            )}
-
             <div ref={bottomRef}></div>
           </div>
         )}
 
-        <div className="flex my-10">
+        <div className="flex flex-col my-10">
+        {signupError && (
+          <p className="text-sm text-red-500 mb-2">{signupError}</p>
+        )}
           {step === 1 ? (
             <button
               type="button"
