@@ -18,22 +18,19 @@ export default function AddPostModal() {
 
   const PostBlog = async () => {
     try {
-      const response = await fetch(
-        'https://api.techeerzip.cloud/api/v1/blogs',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ link: blogLink }),
-        },
-      )
+      const blogUrl = encodeURIComponent(blogLink)
+      const response = await fetch(`/api/v1/blogs?url=${blogLink}`, {
+        method: 'POST',
+        credentials: 'include',
+      })
+
       if (!response.ok) {
         throw new Error('블로그 데이터를 업로드하는 데 실패했습니다.')
       }
+
       const result = await response.json()
-      console.log('블로그가 성공적으로 추가되었습니다:', result.data)
-      setBlogLink('')
+      console.log('블로그가 성공적으로 추가되었습니다:', result)
+      setBlogLink('') // 입력값 초기화
     } catch (err) {
       console.error('블로그 데이터 업로드 중 오류 발생:', err)
     }
