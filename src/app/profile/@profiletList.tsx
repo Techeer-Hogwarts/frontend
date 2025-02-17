@@ -6,27 +6,23 @@ import { ProfileQueryParams } from '@/types/queryParams'
 
 interface Profile {
   id: number
-  userId: number
+  // userId: number
   name: string
   mainPosition: string
   profileImage: string
   school: string
-  class: string
+  grade: string
 }
 
 export default function ProfileList({
-  position = '',
-  year,
-  university = '',
-  grade = '',
+  position = [],
+  year = [],
+  university = [],
+  grade = [],
   offset,
   limit,
 }: ProfileQueryParams = {}) {
-  const {
-    data: profiles,
-    isLoading,
-    isError,
-  } = useGetProfileQuery({
+  const { data, isLoading, isError } = useGetProfileQuery({
     position,
     year,
     university,
@@ -34,6 +30,10 @@ export default function ProfileList({
     offset,
     limit,
   })
+
+  console.log('isLoading:', isLoading)
+  console.log('isError:', isError)
+  console.log('profiles:', data, Array.isArray(data), data?.length)
 
   if (isLoading) {
     const skeletons = Array.from({ length: 8 }).map((_, i) => ({
@@ -47,8 +47,10 @@ export default function ProfileList({
       </div>
     )
   }
+  console.log('API 응답 데이터:', data)
 
-  if (isError || profiles?.length === 0) {
+  if (isError || !data || !Array.isArray(data) || data.length === 0) {
+    console.error('데이터 로드 실패 또는 빈 배열:', data)
     return (
       <div className="flex justify-center">
         <EmptyLottie
@@ -61,16 +63,16 @@ export default function ProfileList({
 
   return (
     <div className="grid grid-cols-4 gap-4">
-      {profiles?.map((profile: Profile) => (
+      {data?.map((profile: Profile) => (
         <ProfileCard
           key={profile.id}
           id={profile.id}
-          userId={profile.userId}
+          userId={profile.id}
           name={profile.name}
           mainPosition={profile.mainPosition}
           profileImage={profile.profileImage}
           school={profile.school}
-          class={profile.class}
+          class={profile.grade}
         />
       ))}
     </div>

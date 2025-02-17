@@ -37,7 +37,7 @@ export default function Resume() {
   const yearOptions = ['8기', '7기', '6기', '5기', '4기', '3기', '2기', '1기']
 
   //기수 탭
-  const options = ['전체', '이력서', '포트폴리오', 'OTHER']
+  const options = ['전체', '이력서', '포트폴리오', 'ICT', 'OTHER']
 
   return (
     <div className="flex flex-col max-w-[1200px] w-[1200px] mt-[3.56rem] gap-6">

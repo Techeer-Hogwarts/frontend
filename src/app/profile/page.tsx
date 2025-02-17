@@ -3,12 +3,12 @@
 import { useState } from 'react'
 import Dropdown from '@/components/profile/Dropdown'
 import FilterBtn from '@/components/session/FilterBtn'
-import ProfileList from './@projectList'
+import ProfileList from './@profiletList'
 
 export default function Page() {
   // const [selectedPeriods, setSelectedPeriods] = useState<string[]>([])
   const [selectedPosition, setSelectedPosition] = useState<string[]>([])
-  const [selectedYear, setSelectedYear] = useState<number[]>([])
+  const [selectedYear, setSelectedYear] = useState<string[]>([])
   const [selectedActive, setSelectedActive] = useState<string[]>([])
   const [selectedUniversity, setSelectedUniversity] = useState<string[]>([])
 
@@ -62,9 +62,7 @@ export default function Page() {
             title="기수"
             options={yearOptions} // Dropdown 컴포넌트에서 문자열로 처리
             selectedOptions={selectedYear.map(String)} // 숫자를 문자열로 변환
-            setSelectedOptions={
-              (values) => setSelectedYear(values.map(Number)) // 문자열을 숫자로 변환
-            }
+            setSelectedOptions={setSelectedYear}
           />
           <Dropdown
             title="현재 상태"
@@ -112,10 +110,10 @@ export default function Page() {
           ))}
         </div>
         <ProfileList
-          position={selectedPosition.join(',')}
-          year={selectedYear.length > 0 ? selectedYear[0] : undefined}
-          university={selectedUniversity.join(',')}
-          grade={selectedActive.join(',')}
+          position={selectedPosition}
+          year={selectedYear}
+          university={selectedUniversity}
+          grade={selectedActive}
         />
       </div>
     </div>
