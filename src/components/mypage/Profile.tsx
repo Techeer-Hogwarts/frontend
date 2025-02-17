@@ -179,7 +179,7 @@ export default function Profile({ profile }: ProfileProps) {
 
       setUpdateMessage('프로필 업데이트가 완료되었습니다.')
       // 업데이트 후 페이지 새로고침: 최신 데이터를 반영
-      window.location.reload()
+      //window.location.reload()
     } catch (error: any) {
       setUpdateError('네트워크 오류가 발생했습니다.')
     }

@@ -3,24 +3,33 @@
 import React, { useState, useEffect } from 'react'
 import ExperienceBtn from '../common/ExperienceBtn'
 
+export interface Experience {
+  id?: number
+  companyName: string
+  position: string
+  startDate: string
+  endDate: string | null
+  category: string
+  isFinished?: boolean
+  isCurrentJob?: boolean
+}
+
 export interface ExperienceItemProps {
-  index: number
-  data: any
+  data: Experience
   onDelete?: () => void
-  onChange: (data: any) => void
+  onChange: (updated: Experience) => void
   experienceType: '인턴' | '정규직'
   btnPadding: string
 }
 
-const ExperienceItem: React.FC<ExperienceItemProps> = ({
-  btnPadding,
-  index,
+export default function ExperienceItem({
   data,
   onDelete,
   onChange,
   experienceType,
-}) => {
-  // ISO 형식 날짜 문자열을 "YYYY-MM-DD" 형식으로 변환하는 함수
+  btnPadding,
+}: ExperienceItemProps) {
+  // 날짜 문자열을 "YYYY-MM-DD"로 변환
   const convertDate = (rawDate: string): string => {
     if (!rawDate) return ''
     const date = new Date(rawDate)
@@ -28,17 +37,16 @@ const ExperienceItem: React.FC<ExperienceItemProps> = ({
     return date.toISOString().substring(0, 10)
   }
 
-  // 공통 키 사용: 모든 경험 항목은 동일한 필드로 관리합니다.
+  // 상태 초기화
   const [companyName, setCompanyName] = useState(data.companyName || '')
   const [startDate, setStartDate] = useState(() =>
     convertDate(data.startDate || ''),
   )
   const [endDate, setEndDate] = useState(() => convertDate(data.endDate || ''))
-  // endDate가 없으면 현재 재직중으로 간주
+  // endDate가 없으면 현재 재직중
   const [isCurrentJob, setIsCurrentJob] = useState(
-    data.endDate === null || data.endDate === '' ? true : false,
+    !data.endDate || data.endDate === '' ? true : false,
   )
-  // 단일 포지션 사용
   const [position, setPosition] = useState(data.position || '')
 
   const positions = [
@@ -53,18 +61,17 @@ const ExperienceItem: React.FC<ExperienceItemProps> = ({
     setPosition(pos)
   }
 
-  // 상태 변경 시 부모에 업데이트된 데이터를 전달합니다.
+  // 상태 변경 시, 상위로 업데이트
   useEffect(() => {
-    const updatedData = {
+    const updated: Experience = {
+      ...data, // 기존 데이터(id 포함)
       companyName,
       startDate,
       endDate: isCurrentJob ? '' : endDate,
       position,
-      category: experienceType, // "인턴" 또는 "정규직"
-      isCurrentJob,
+      category: experienceType, // "인턴" or "정규직"
     }
-    onChange(updatedData)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    onChange(updated)
   }, [companyName, startDate, endDate, isCurrentJob, position, experienceType])
 
   return (
@@ -76,23 +83,28 @@ const ExperienceItem: React.FC<ExperienceItemProps> = ({
       >
         ×
       </button>
+
       <div className="flex flex-col space-y-2">
         <input
           type="text"
           value={companyName}
           onChange={(e) => setCompanyName(e.target.value)}
           placeholder="회사명을 입력해주세요"
-          className="w-3/5 h-9 px-4 py-2 border border-gray rounded-md focus:outline-none focus:border-primary"
+          className="w-3/5 h-9 px-4 border border-gray rounded-md focus:outline-none focus:border-primary"
         />
+
         <div className="flex justify-between items-center text-sm mt-2">
+          {/* 시작일 */}
           <input
             type="date"
             value={startDate}
             onChange={(e) => setStartDate(convertDate(e.target.value))}
-            className="w-[48%] h-9 px-4 py-2 border border-gray rounded-md focus:outline-none focus:border-primary"
+            className="w-[48%] h-9 px-4 border border-gray rounded-md focus:outline-none focus:border-primary"
           />
+
+          {/* 종료일 or 현재 재직중 */}
           {isCurrentJob ? (
-            <div className="w-[48%] h-9 px-4 py-2 border border-gray rounded-md bg-gray-100 flex items-center justify-center text-gray-400">
+            <div className="w-[48%] h-9 px-4 border border-gray rounded-md bg-gray-100 flex items-center justify-center text-gray-400">
               현재 재직중
             </div>
           ) : (
@@ -100,10 +112,12 @@ const ExperienceItem: React.FC<ExperienceItemProps> = ({
               type="date"
               value={endDate}
               onChange={(e) => setEndDate(convertDate(e.target.value))}
-              className="w-[48%] h-9 px-4 py-2 border border-gray rounded-md focus:outline-none focus:border-primary"
+              className="w-[48%] h-9 px-4 border border-gray rounded-md focus:outline-none focus:border-primary"
             />
           )}
         </div>
+
+        {/* 재직중 체크 */}
         <div className="flex items-center mt-2">
           <input
             type="checkbox"
@@ -113,6 +127,8 @@ const ExperienceItem: React.FC<ExperienceItemProps> = ({
           />
           <label className="text-xs text-gray">재직중</label>
         </div>
+
+        {/* 포지션 버튼 */}
         <div className="flex justify-between text-pink text-[10px] mt-2">
           {positions.map((pos, idx) => (
             <ExperienceBtn
@@ -128,5 +144,3 @@ const ExperienceItem: React.FC<ExperienceItemProps> = ({
     </div>
   )
 }
-
-export default ExperienceItem
