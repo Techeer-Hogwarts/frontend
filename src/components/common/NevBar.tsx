@@ -28,8 +28,7 @@ export default function NevBar() {
       await logout()
       router.push('/login')
     } catch (error) {
-      console.error('Logout error:', error)
-      alert('로그아웃에 실패하였습니다.')
+      router.push('/login')
     }
   }
   return (
@@ -107,7 +106,6 @@ export default function NevBar() {
             로그인
           </Link>
         )}
-
       </div>
     </div>
   )
