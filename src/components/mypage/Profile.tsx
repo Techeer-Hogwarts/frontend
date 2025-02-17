@@ -1,10 +1,10 @@
 'use client'
 
+import { useState, useRef } from 'react'
 import Image from 'next/image'
 import Select from '../signup/Select'
-import { useRef, useState, useEffect } from 'react'
-import { AiOutlineSync } from 'react-icons/ai'
 import ProfileInputField from './ProfileInputField'
+import { AiOutlineSync } from 'react-icons/ai'
 import { RxQuestionMarkCircled } from 'react-icons/rx'
 import MyExperienceSection from './MyExperienceSection'
 import { useRouter } from 'next/navigation'
@@ -15,8 +15,8 @@ interface Experience {
   companyName: string
   startDate: string
   endDate: string | null
-  category: string
-  isFinished: boolean
+  category?: string
+  isCurrentJob?: boolean
 }
 
 interface ProfileData {
@@ -43,7 +43,6 @@ interface ProfileProps {
 export default function Profile({ profile }: ProfileProps) {
   const router = useRouter()
 
-  // 기본 프로필 데이터 상태
   const [profileImage, setProfileImage] = useState(profile?.profileImage || '')
   const [name, setName] = useState(profile?.name || '')
   const [email, setEmail] = useState(profile?.email || '')
@@ -55,52 +54,42 @@ export default function Profile({ profile }: ProfileProps) {
   const [velogUrl, setVelogUrl] = useState(profile?.velogUrl || '')
   const [tistoryUrl, setTistoryUrl] = useState(profile?.tistoryUrl || '')
 
-  // 포지션 상태
   const [mainPosition, setMainPosition] = useState(profile?.mainPosition || '')
   const [subPosition, setSubPosition] = useState(profile?.subPosition || '')
-
-  // 추천 여부: isLft에 따라
   const [recommendation, setRecommendation] = useState<string>(
-    profile ? (profile.isLft ? '예' : '아니요') : '아니요',
+    profile && profile.isLft ? '예' : '아니요',
   )
 
-  // 경험 초기값 계산
-  const initialInternshipExperience =
-    profile?.experiences &&
-    profile.experiences.some((exp) => exp.category === '인턴')
-      ? '있어요'
-      : '없어요'
-  const initialJobExperience =
-    profile?.experiences &&
-    profile.experiences.some((exp) => exp.category === '정규직')
-      ? '있어요'
-      : '없어요'
+  const internshipInitial =
+    profile?.experiences?.filter((exp) => exp.category === '인턴') || []
+  const fullTimeInitial =
+    profile?.experiences?.filter((exp) => exp.category === '정규직') || []
 
   const [internshipExperience, setInternshipExperience] = useState<string>(
-    initialInternshipExperience,
+    internshipInitial.length > 0 ? '있어요' : '없어요',
   )
-  const [jobExperience, setJobExperience] =
-    useState<string>(initialJobExperience)
+  const [jobExperience, setJobExperience] = useState<string>(
+    fullTimeInitial.length > 0 ? '있어요' : '없어요',
+  )
 
-  // 경험 데이터를 상위 상태로 관리 (인턴 / 정규직)
   const [internshipExperiences, setInternshipExperiences] = useState<
     Experience[]
-  >(profile?.experiences?.filter((exp) => exp.category === '인턴') || [])
+  >(() => JSON.parse(JSON.stringify(internshipInitial)))
+
   const [fullTimeExperiences, setFullTimeExperiences] = useState<Experience[]>(
-    profile?.experiences?.filter((exp) => exp.category === '정규직') || [],
+    () => JSON.parse(JSON.stringify(fullTimeInitial)),
   )
 
-  // 동기화 메시지 상태 (프로필 사진 동기화)
+  const [deletedInternshipIds, setDeletedInternshipIds] = useState<number[]>([])
+  const [deletedFullTimeIds, setDeletedFullTimeIds] = useState<number[]>([])
   const [syncMessage, setSyncMessage] = useState('')
   const [syncIsError, setSyncIsError] = useState(false)
-
-  // 프로필 업데이트 메시지
   const [updateMessage, setUpdateMessage] = useState('')
   const [updateError, setUpdateError] = useState('')
 
   const bottomRef = useRef<HTMLDivElement>(null)
 
-  // 동기화 버튼 핸들러 (프로필 사진 동기화)
+  // 프로필 사진 동기화
   const handleSync = async () => {
     setSyncMessage('')
     setSyncIsError(false)
@@ -113,9 +102,7 @@ export default function Profile({ profile }: ProfileProps) {
     try {
       const response = await fetch('/api/v1/users/profileImage', {
         method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
         body: JSON.stringify({ email }),
       })
@@ -126,36 +113,111 @@ export default function Profile({ profile }: ProfileProps) {
         setSyncMessage(`동기화 실패: ${errData?.message || '알 수 없는 오류'}`)
         return
       }
-
       setSyncIsError(false)
       setSyncMessage('프로필 사진 동기화가 완료되었습니다.')
     } catch (err) {
-      console.error('프로필 동기화 에러:', err)
       setSyncIsError(true)
       setSyncMessage('네트워크 오류가 발생했습니다.')
     }
   }
 
-  // 프로필 업데이트 API 호출 (PATCH)
+  // 삭제 요청: 인턴 / 정규직
+  //  - MyExperienceSection에서 삭제 버튼을 누르면 호출됨
+  const handleDeleteInternExp = (id: number) => {
+    // 이미 DB에 있던 항목이면, DELETE API를 위해 id를 저장
+    if (id) {
+      setDeletedInternshipIds((prev) => [...prev, id])
+    }
+    setInternshipExperiences((prev) => prev.filter((item) => item.id !== id))
+  }
+
+  const handleDeleteFullTimeExp = (id: number) => {
+    if (id) {
+      setDeletedFullTimeIds((prev) => [...prev, id])
+    }
+    setFullTimeExperiences((prev) => prev.filter((item) => item.id !== id))
+  }
+
+  // 최종 수정 로직
   const handleProfileUpdate = async () => {
     setUpdateMessage('')
     setUpdateError('')
 
+    // 경력 삭제
+    try {
+      // 인턴
+      for (const delId of deletedInternshipIds) {
+        await fetch(`/api/v1/users/experience/${delId}`, {
+          method: 'DELETE',
+          credentials: 'include',
+        })
+      }
+      // 정규직
+      for (const delId of deletedFullTimeIds) {
+        await fetch(`/api/v1/users/experience/${delId}`, {
+          method: 'DELETE',
+          credentials: 'include',
+        })
+      }
+    } catch (err) {
+      setUpdateError('경력 삭제 중 오류가 발생했습니다.')
+      return
+    }
+
+    const finalInternships = internshipExperiences.map((exp) => {
+      // 음수 ID => 새로 추가된 항목
+      if (exp.id && exp.id < 0) {
+        const { id, ...rest } = exp
+        return {
+          ...rest,
+          category: '인턴',
+        }
+      } else {
+        // 양수 ID => 기존 항목
+        const { id, ...rest } = exp
+        return {
+          experienceId: id, // id → experienceId
+          ...rest,
+          category: '인턴',
+        }
+      }
+    })
+
+    const finalFullTimes = fullTimeExperiences.map((exp) => {
+      if (exp.id && exp.id < 0) {
+        // 새 항목
+        const { id, ...rest } = exp
+        return {
+          ...rest,
+          category: '정규직',
+        }
+      } else {
+        // 기존 항목
+        const { id, ...rest } = exp
+        return {
+          experienceId: id, // id → experienceId
+          ...rest,
+          category: '정규직',
+        }
+      }
+    })
+
+    // PATCH "수정/추가" 처리
     const payload = {
       updateRequest: {
-        year: year, // 기수 값
+        year,
         isLft: recommendation === '예',
-        school: school,
+        school,
         grade: classYear,
-        mainPosition: mainPosition,
-        subPosition: subPosition,
-        githubUrl: githubUrl,
+        mainPosition,
+        subPosition,
+        githubUrl,
         ...(mediumUrl.trim() ? { mediumUrl } : {}),
         ...(velogUrl.trim() ? { velogUrl } : {}),
         ...(tistoryUrl.trim() ? { tistoryUrl } : {}),
       },
       experienceRequest: {
-        experiences: [...internshipExperiences, ...fullTimeExperiences],
+        experiences: [...finalInternships, ...finalFullTimes],
       },
     }
 
@@ -167,25 +229,22 @@ export default function Profile({ profile }: ProfileProps) {
         body: JSON.stringify(payload),
       })
 
-      console.log('payload', payload)
-
       if (!response.ok) {
-        const errorData = await response.json().catch(() => null)
-        setUpdateError(
-          `프로필 업데이트 실패: ${errorData?.message || '알 수 없는 오류'}`,
-        )
+        if (response.status === 400) {
+          setUpdateError('항목을 모두 입력해주세요.')
+          return
+        }
         return
       }
 
       setUpdateMessage('프로필 업데이트가 완료되었습니다.')
-      // 업데이트 후 페이지 새로고침: 최신 데이터를 반영
-      //window.location.reload()
+      window.location.reload()
     } catch (error: any) {
       setUpdateError('네트워크 오류가 발생했습니다.')
     }
   }
 
-  // 포지션 옵션 (대문자 문자열)
+  // 포지션 옵션
   const positionOptions = [
     'FRONTEND',
     'BACKEND',
@@ -196,7 +255,7 @@ export default function Profile({ profile }: ProfileProps) {
 
   return (
     <div className="w-[750px] min-h-[1000px] flex flex-col gap-8">
-      {/* 프로필 사진 및 동기화 */}
+      {/* 프로필 사진 */}
       <div className="flex">
         <h3 className="w-32 text-lg mt-[6px]">프로필 사진</h3>
         <Image
@@ -221,7 +280,9 @@ export default function Profile({ profile }: ProfileProps) {
             </button>
             {syncMessage && (
               <p
-                className={`mt-1 text-sm ${syncIsError ? 'text-red-500' : 'text-green'}`}
+                className={`mt-1 text-sm ${
+                  syncIsError ? 'text-red-500' : 'text-green'
+                }`}
               >
                 {syncMessage}
               </p>
@@ -230,7 +291,7 @@ export default function Profile({ profile }: ProfileProps) {
         </div>
       </div>
 
-      {/* 이름 입력 */}
+      {/* 이름 */}
       <ProfileInputField
         title="이름"
         placeholder="이름을 입력해주세요(시니어멘토는 영어 이름 입력 가능)"
@@ -308,7 +369,7 @@ export default function Profile({ profile }: ProfileProps) {
         </div>
       </div>
 
-      {/* 메인/서브 포지션 선택 */}
+      {/* 메인/서브 포지션 */}
       <div className="flex items-center justify-between">
         <div className="flex">
           <h3 className="w-[130px] text-lg mt-[6px]">메인 포지션</h3>
@@ -334,7 +395,7 @@ export default function Profile({ profile }: ProfileProps) {
         </div>
       </div>
 
-      {/* 깃허브, Medium, Velog, Tistory 입력 */}
+      {/* 링크 입력 */}
       <ProfileInputField
         title="깃허브"
         placeholder="깃허브 주소"
@@ -395,6 +456,7 @@ export default function Profile({ profile }: ProfileProps) {
         experienceData={internshipExperiences}
         setExperienceData={setInternshipExperiences}
         experienceType="인턴"
+        onDeleteItem={handleDeleteInternExp}
       />
 
       {/* 정규직 경험 */}
@@ -405,11 +467,16 @@ export default function Profile({ profile }: ProfileProps) {
         experienceData={fullTimeExperiences}
         setExperienceData={setFullTimeExperiences}
         experienceType="정규직"
+        onDeleteItem={handleDeleteFullTimeExp}
       />
 
+      {/* 업데이트 메시지 */}
       {updateMessage && <p className="text-green text-sm">{updateMessage}</p>}
       {updateError && <p className="text-red-500 text-sm">{updateError}</p>}
+
       <div ref={bottomRef} className="border border-t-[1px] border-lightgray" />
+
+      {/* 저장 버튼 */}
       <div className="flex justify-end">
         <button
           type="button"

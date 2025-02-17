@@ -4,13 +4,24 @@ import React, { useState } from 'react'
 import MyCareerToggle from './MyCareerToggle'
 import ExperienceItem from '../signup/ExperienceItem'
 
-export interface MyExperienceSectionProps {
-  readonly title: string
-  readonly experienceStatus: string | null
-  readonly setExperienceStatus: (value: string) => void
-  readonly experienceData: any[]
-  readonly setExperienceData: (data: any[]) => void
-  readonly experienceType: '인턴' | '정규직'
+export interface Experience {
+  id?: number
+  companyName: string
+  position: string
+  startDate: string
+  endDate: string | null
+  category?: string
+  isFinished?: boolean
+}
+
+interface MyExperienceSectionProps {
+  title: string
+  experienceStatus: string | null
+  setExperienceStatus: (value: string) => void
+  experienceData: Experience[]
+  setExperienceData: (data: Experience[]) => void
+  experienceType: '인턴' | '정규직'
+  onDeleteItem: (id: number) => void // 상위에서 삭제 API를 위해 ID를 등록
 }
 
 export default function MyExperienceSection({
@@ -20,56 +31,57 @@ export default function MyExperienceSection({
   experienceData,
   setExperienceData,
   experienceType,
+  onDeleteItem,
 }: MyExperienceSectionProps) {
-  // 고유 ID를 생성하기 위한 상태
-  const [nextId, setNextId] = useState(() => {
-    // 이미 존재하는 항목 중 가장 큰 id를 찾고 +1로 시작하거나, 기본 1로 시작
-    const maxExistingId = experienceData.reduce(
-      (max: number, item: any) => (item.id && item.id > max ? item.id : max),
-      0,
-    )
-    return maxExistingId + 1
-  })
+  const [nextTempId, setNextTempId] = useState(1)
 
   // 새 경험 항목 추가
   const addExperience = () => {
-    const newItem = {
-      id: nextId,
+    const newItem: Experience = {
+      id: -nextTempId, // 새 항목은 ID 없이 보냄(백엔드에서 CREATE 처리)
       companyName: '',
       position: '',
       startDate: '',
       endDate: '',
-      isCurrentJob: false,
+      isFinished: false,
     }
     setExperienceData([...experienceData, newItem])
-    setNextId(nextId + 1)
+    setNextTempId(nextTempId + 1)
   }
 
-  // 경험 항목 삭제 (id로 식별)
-  const removeExperience = (id: number) => {
+  // 경험 항목 삭제
+  const removeExperience = (id?: number) => {
+    // id가 있는 항목(원래 DB에 존재)은 상위 콜백으로 삭제 알림
+    if (id !== undefined) {
+      onDeleteItem(id)
+    }
+    // 로컬 배열에서도 제거
     const newData = experienceData.filter((item) => item.id !== id)
     setExperienceData(newData)
   }
 
-  // 경험 항목 업데이트 (id로 식별)
-  const updateExperience = (id: number, updatedItem: any) => {
+  // 경험 항목 업데이트
+  const updateExperience = (
+    id: number | undefined,
+    updatedItem: Experience,
+  ) => {
     const newData = experienceData.map((item) =>
       item.id === id ? { ...item, ...updatedItem } : item,
     )
     setExperienceData(newData)
   }
 
-  // 경험 상태(Toggle) 변경 시, "없어요"/"no"로 바뀌면 경력 배열 초기화
+  // 경험 상태(Toggle) 변경 시, "없어요"로 바뀌면 배열 비움
   const handleToggleChange = (value: string) => {
     setExperienceStatus(value)
-
-    // "없어요" 혹은 "no"라면 경력 배열 비우기
     if (value === '없어요' || value === 'no') {
+      // 이미 있던 ID들도 전부 삭제 API를 호출해야 한다면,
+      // 상위 콜백을 통해 한꺼번에 처리할 수도 있음.
+      // 여기서는 간단히 배열만 초기화
       setExperienceData([])
     }
   }
 
-  // "있어요" or "yes"인 경우에만 ExperienceItem을 보여줍니다.
   const shouldShow = experienceStatus === '있어요' || experienceStatus === 'yes'
 
   return (
@@ -92,7 +104,7 @@ export default function MyExperienceSection({
           </button>
           {experienceData.map((item) => (
             <ExperienceItem
-              key={item.id} // 여기서 고유 id 사용
+              key={item.id}
               data={item}
               onChange={(updated) => updateExperience(item.id, updated)}
               onDelete={() => removeExperience(item.id)}

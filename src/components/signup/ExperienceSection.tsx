@@ -37,7 +37,7 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({
       position: '',
       startDate: '',
       endDate: '',
-      isCurrentJob: false,
+      isFinished: false,
     }
     setExperienceData([...experienceData, newItem])
     setNextId(nextId + 1) // 다음에 쓸 ID 증가
