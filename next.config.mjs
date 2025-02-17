@@ -52,7 +52,7 @@ export default withSentryConfig(nextConfig, {
   // https://github.com/getsentry/sentry-webpack-plugin#options
 
   org: 'techeerzip',
-  project: 'javascript-nextjs',
+  project: 'techeerzip-next',
   authToken: process.env.SENTRY_AUTH_TOKEN,
 
   // Only print logs for uploading source maps in CI
