@@ -28,7 +28,6 @@ export const useAuthStore = create<AuthState>((set) => ({
         set({ isLoggedIn: false })
       }
     } catch (error) {
-      console.error('checkAuth error:', error)
       set({ isLoggedIn: false })
     }
   },
