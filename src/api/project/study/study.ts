@@ -53,6 +53,8 @@ interface PostResponse {
   data: any
 }
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL
+
 // 스터디 추가하기
 export const handleAddStudy = async (data) => {
   try {
@@ -81,15 +83,14 @@ export const handleAddStudy = async (data) => {
 
 // 스터디 수정하기
 export const handleEditStudy = async (data, projectId) => {
+  console.log(data)
+
   try {
-    const response = await fetch(
-      `https://api.techeerzip.cloud/api/v1/studyTeams/${projectId}`,
-      {
-        method: 'PATCH',
-        credentials: 'include',
-        body: JSON.stringify(data),
-      },
-    )
+    const response = await fetch(`/api/v1/studyTeams/${projectId}`, {
+      method: 'PATCH',
+      credentials: 'include',
+      body: JSON.stringify(data),
+    })
 
     if (!response.ok) {
       throw new Error(`POST 요청 실패: ${response.status}`)

@@ -11,7 +11,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
 import ApplyModal from '@/components/project/modal/ApplyModal'
-
+import ProjectMemberModal from "@/components/project/modal/ProjectModal"
 import {
   getProjectDetail,
   deleteProjectTeam,
@@ -72,7 +72,6 @@ export default function ProjectDetailpage() {
           onClose={handleModalClose}
         />
       )}
-
       <div className="flex rounded-xl items-center justify-center border border-primary absolute top-[-1rem] right-0 w-[8.375rem] h-[2.125rem]">
         <Link
           href={`/project/detail/project/edit/${projectId}`}

@@ -39,16 +39,13 @@ export default function AddProjectPage() {
 
   const handleSubmit = async () => {
     console.log(projectData)
-    try {
-      const response = await handleAddProject(projectData)
-      if (response.status === 200) {
-        router.push(`/project/detail/project/${response.data.id}`)
-        localStorage.setItem('projectId', response.data.id)
-      } else {
-        alert('등록에 실패하였습니다. 다시 시도해주세요.')
-      }
-    } catch (error) {
-      alert('서버 요청 중 오류가 발생했습니다.')
+
+    const response = await handleAddProject(projectData)
+    if (response) {
+      router.push(`/project/detail/project/${response.data.id}`)
+      localStorage.setItem('projectId', response.data.id)
+    } else {
+      alert('등록에 실패하였습니다. 다시 시도해주세요.')
     }
   }
 
@@ -59,12 +56,12 @@ export default function AddProjectPage() {
       </div>
       <div className="flex flex-col gap-7">
         {/* 추후처리 */}
-        {/* <AddMember
+        <AddMember
           projectMember={projectData.projectMember}
           onUpdateMember={(newMembers) =>
             handleUpdate('projectMember', newMembers)
           }
-        /> */}
+        />
         <NecessaryQuestions
           isFinished={projectData.isFinished}
           onUpdate={handleUpdate}

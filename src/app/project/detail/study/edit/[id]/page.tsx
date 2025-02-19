@@ -82,13 +82,9 @@ export default function AddStudyPage() {
 
   const handleSubmit = async () => {
     console.log(studyData)
-    try {
-      const response = await handleEditStudy(studyData, projectId)
-      router.push(`/project/detail/study/${response.data.id}`)
-      localStorage.setItem('projectId', response.data.id)
-    } catch (error) {
-      alert('서버 요청 중 오류가 발생했습니다.')
-    }
+    const response = await handleEditStudy(studyData, projectId)
+    // router.push(`/project/detail/study/${response.data.id}`)
+    // localStorage.setItem('projectId', response.data.id)
   }
 
   return (
