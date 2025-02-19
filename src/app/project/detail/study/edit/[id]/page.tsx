@@ -54,20 +54,7 @@ export default function AddStudyPage() {
     resultImages: string[]
   }
 
-  const [studyData, setStudyData] = useState<StudyDataType>({
-    name: '',
-    githubLink: '',
-    notionLink: '',
-    studyExplain: '',
-    goal: '',
-    rule: '',
-    isFinished: false,
-    isRecruited: true,
-    recruitNum: 0,
-    recruitExplain: '',
-    studyMember: [],
-    resultImages: [],
-  })
+  const [studyData, setStudyData] = useState<StudyDataType | null>(null)
 
   useEffect(() => {
     if (studyDetails) {
@@ -78,8 +65,8 @@ export default function AddStudyPage() {
         studyExplain: studyDetails.studyExplain || '',
         goal: studyDetails.goal || '',
         rule: studyDetails.rule || '',
-        isFinished: studyDetails.isFinished,
-        isRecruited: studyDetails.isRecruited,
+        isFinished: studyDetails.isFinished || false,
+        isRecruited: studyDetails.isRecruited || false,
         recruitNum: studyDetails.recruitNum || 0,
         recruitExplain: studyDetails.recruitExplain || '',
         studyMember: studyDetails.studyMember || [],
@@ -106,41 +93,45 @@ export default function AddStudyPage() {
 
   return (
     <div className="relative flex justify-between mt-[2.75rem]">
-      <div>
-        <AddProfile studyData={studyData} onUpdate={handleUpdate} />
-      </div>
-      <div className="flex flex-col gap-7">
-        <AddMember
-          studyMember={studyData.studyMember}
-          onUpdateMember={(newMembers) =>
-            handleUpdate('studyMember', newMembers)
-          }
-        />
-        <AddGoal goal={studyData.goal} onUpdate={handleUpdate} />
-        <AddPlan rule={studyData.rule} onUpdate={handleUpdate} />
-        <NecessaryQuestions
-          isFinished={studyData.isFinished}
-          onUpdate={handleUpdate}
-        />
-        <AddRecruit
-          isRecruited={studyData.isRecruited}
-          recruitNum={studyData.recruitNum}
-          recruitExplain={studyData.recruitExplain}
-          onUpdate={handleUpdate}
-        />
-        <AddResults
-          resultImages={studyData.resultImages || []}
-          onUpdate={handleUpdate}
-        />
+      {studyData && (
+        <>
+          <div>
+            <AddProfile projectData={studyData} onUpdate={handleUpdate} />
+          </div>
+          <div className="flex flex-col gap-7">
+            <AddMember
+              projectMember={studyData.studyMember}
+              onUpdateMember={(newMembers) =>
+                handleUpdate('studyMember', newMembers)
+              }
+            />
+            <AddGoal goal={studyData.goal} onUpdate={handleUpdate} />
+            <AddPlan rule={studyData.rule} onUpdate={handleUpdate} />
+            <NecessaryQuestions
+              isFinished={studyData.isFinished}
+              onUpdate={handleUpdate}
+            />
+            <AddRecruit
+              isRecruited={studyData.isRecruited}
+              recruitNum={studyData.recruitNum}
+              recruitExplain={studyData.recruitExplain}
+              onUpdate={handleUpdate}
+            />
+            <AddResults
+              resultImages={studyData.resultImages || []}
+              onUpdate={handleUpdate}
+            />
 
-        <button
-          type="button"
-          className="w-full h-[2.16044rem] rounded-[0.3125rem] text-primary border border-primary"
-          onClick={handleSubmit}
-        >
-          등록하기
-        </button>
-      </div>
+            <button
+              type="button"
+              className="w-full h-[2.16044rem] rounded-[0.3125rem] text-primary border border-primary"
+              onClick={handleSubmit}
+            >
+              등록하기
+            </button>
+          </div>
+        </>
+      )}
     </div>
   )
 }
