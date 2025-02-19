@@ -7,52 +7,62 @@ import StudyCard from '@/components/project/StudyCard'
 import TapBar from '@/components/common/TapBar'
 import Dropdown from '@/components/common/Dropdown'
 import AddBtn from '../../components/project/add/AddBtn'
-import { useQuery } from '@tanstack/react-query'
+import { useQueries } from '@tanstack/react-query'
 
-import { getAllTeams } from '@/api/project/common'
+import { getAllTeams } from '@/api/project/common'
+import { getMyInfo } from '@/api/project/common'
 
-type Team = {
+interface TeamBase {
   id: number
   isDeleted: boolean
   isRecruited: boolean
   isFinished: boolean
   name: string
+  createdAt: string
+}
+
+interface ProjectTeam extends TeamBase {
+  type: 'project'
+  frontendNum: number
+  backendNum: number
+  devopsNum: number
+  uiuxNum: number
+  dataEngineerNum: number
+  projectExplain: string
+  mainImages: string[]
+  teamStacks: { stackName: string; isMain: boolean }[]
+}
+
+interface StudyTeam extends TeamBase {
+  type: 'study'
   recruitNum: number
   studyExplain: string
 }
 
-type TeamsResponse = {
-  code: number
-  message: string
-  data: {
-    projectTeams: Team[]
-    studyTeams: Team[]
-  }
+type Team = ProjectTeam | StudyTeam
+
+interface TeamsResponse {
+  allTeams: Team[]
 }
 
 export default function Project() {
   const [projectId, setProjectId] = useState<number | null>(null)
   const [selectedPeriods, setSelectedPeriods] = useState<string[]>(['0'])
 
-  const { data: allTeams } = useQuery<TeamsResponse>({
-    queryKey: ['getAllTeams', projectId],
-    queryFn: () => getAllTeams(),
+  const [{ data: allTeams }] = useQueries({
+    queries: [
+      // {
+      //   queryKey: ['getMyInfo'],
+      //   queryFn: getMyInfo,
+      // },
+      {
+        queryKey: ['getAllTeams', projectId],
+        queryFn: getAllTeams,
+      },
+    ],
   })
-  
-
-  // const [allTeams, setAllTeams] = useState()
-  // const fetchItems = async () => {
-  //   try {
-  //     const result = await getAllTeams()
-  //     setAllTeams(result)
-  //     console.log('성공:', result)
-  //   } catch (err) {
-  //     console.error('오류 발생:', err)
-  //   }
-  // }
 
   useEffect(() => {
-    // fetchItems()
     const id = Number(localStorage.getItem('projectId'))
     setProjectId(id)
   }, [])
@@ -114,13 +124,15 @@ export default function Project() {
         />
       </div>
       <div className="flex gap-[1rem] flex-wrap">
-        {allTeams?.data.projectTeams.map((team) => (
-          <ProjectCard key={team.id} team={team} />
-        ))}
-        {allTeams?.data.studyTeams.map((team) => (
-          <StudyCard key={team.id} team={team} />
-        ))}
+        {allTeams?.allTeams?.map((team) =>
+          team.type === 'project' ? (
+            <ProjectCard key={'project' + team.id} team={team} />
+          ) : (
+            <StudyCard key={team.id} team={team} />
+          ),
+        )}
       </div>
+
       <AddBtn />
     </div>
   )

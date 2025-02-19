@@ -1,5 +1,4 @@
 export default function FindMember({ projectDetail, projectType }) {
-  console.log(projectDetail)
 
   return (
     <div>

@@ -16,23 +16,28 @@ import {
   getStudyDetail,
   getStudyMember,
   handleEditStudy,
-} from '@/api/project/study/\bstudy'
+} from '@/api/project/study/study'
 
 export default function AddStudyPage() {
   const router = useRouter()
 
   const projectId = Number(localStorage.getItem('projectId'))
 
-  const { data } = useQuery({
-    queryKey: ['getStudyDetailsAndApplicants', projectId],
-    queryFn: async () => {
-      const [studyDetails, studyMember] = await Promise.all([
-        getStudyDetail(projectId),
-        getStudyMember(projectId),
-      ])
-      return { studyDetails, studyMember }
-    },
+  const { data: studyDetails } = useQuery({
+    queryKey: ['getStudyDetails', projectId],
+    queryFn: () => getStudyDetail(projectId),
   })
+  console.log(studyDetails)
+
+  type StudyMember = {
+    id: number
+    name: string
+    isDeleted: boolean
+    isLeader: boolean
+    studyTeamId: number
+    userId: number
+    email: string
+  }
 
   type StudyDataType = {
     name: string
@@ -45,8 +50,8 @@ export default function AddStudyPage() {
     isRecruited: boolean
     recruitNum: number
     recruitExplain: string
-    studyMember: any[]
-    resultImages: string | string[]
+    studyMember: StudyMember[]
+    resultImages: string[]
   }
 
   const [studyData, setStudyData] = useState<StudyDataType>({
@@ -65,24 +70,24 @@ export default function AddStudyPage() {
   })
 
   useEffect(() => {
-    if (data?.studyDetails?.data && data?.studyMember?.data) {
-      setStudyData((prev) => ({
-        ...prev,
-        name: data.studyDetails.data.name,
-        githubLink: data.studyDetails.data.githubLink || '',
-        notionLink: data.studyDetails.data.notionLink || '',
-        studyExplain: data.studyDetails.data.studyExplain || '',
-        goal: data.studyDetails.data.goal || '',
-        rule: data.studyDetails.data.rule || '',
-        isFinished: data.studyDetails.data.isFinished,
-        isRecruited: data.studyDetails.data.isRecruited,
-        recruitNum: data.studyDetails.data.recruitNum || 0,
-        recruitExplain: data.studyDetails.data.recruitExplain || '',
-        studyMember: data?.studyMember?.data?.members || [],
-        resultImages: data.studyDetails.data.resultImages || [],
-      }))
+    if (studyDetails) {
+      setStudyData({
+        name: studyDetails.name,
+        githubLink: studyDetails.githubLink || '',
+        notionLink: studyDetails.notionLink || '',
+        studyExplain: studyDetails.studyExplain || '',
+        goal: studyDetails.goal || '',
+        rule: studyDetails.rule || '',
+        isFinished: studyDetails.isFinished,
+        isRecruited: studyDetails.isRecruited,
+        recruitNum: studyDetails.recruitNum || 0,
+        recruitExplain: studyDetails.recruitExplain || '',
+        studyMember: studyDetails.studyMember || [],
+        resultImages:
+          studyDetails.resultImages.map((img) => img.imageUrl) || [],
+      })
     }
-  }, [data])
+  }, [studyDetails])
 
   const handleUpdate = (key, value) => {
     setStudyData((prev) => ({ ...prev, [key]: value }))
@@ -92,12 +97,8 @@ export default function AddStudyPage() {
     console.log(studyData)
     try {
       const response = await handleEditStudy(studyData, projectId)
-      if (response.status === 200) {
-        router.push(`/project/detail/study/${response.data.id}`)
-        localStorage.setItem('projectId', response.data.id)
-      } else {
-        alert('등록에 실패하였습니다. 다시 시도해주세요.')
-      }
+      router.push(`/project/detail/study/${response.data.id}`)
+      localStorage.setItem('projectId', response.data.id)
     } catch (error) {
       alert('서버 요청 중 오류가 발생했습니다.')
     }

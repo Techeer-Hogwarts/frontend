@@ -2,17 +2,30 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 
-type Team = {
+interface TeamBase {
   id: number
+  isDeleted: boolean
+  isRecruited: boolean
+  isFinished: boolean
   name: string
-  category: string
-  isRecruited: string
-  isFinished: string
-  teamStack: string
   createdAt: string
 }
 
-export default function ProjectCard({ team }: { team: Team }) {
+interface ProjectTeam extends TeamBase {
+  id: number
+  type: 'project'
+  category: string
+  frontendNum: number
+  backendNum: number
+  devopsNum: number
+  uiuxNum: number
+  dataEngineerNum: number
+  projectExplain: string
+  mainImages: string[]
+  teamStacks: { stackName: string; isMain: boolean }[]
+}
+
+export default function ProjectCard({ team }: { team: ProjectTeam }) {
   // console.log(team)
   const handleClick = () => {
     localStorage.setItem('projectType', 'project')

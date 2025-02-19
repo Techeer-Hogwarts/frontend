@@ -22,62 +22,9 @@ interface Applicant {
 }
 
 interface ApplicantsProps {
+  projectType: string
   applicants: Applicant[]
   onOpen: (applicant: Applicant) => void
-}
-const members = {
-  code: 200,
-  message: '프로젝트 지원자 조회에 성공했습니다.',
-  data: [
-    {
-      id: 11,
-      createdAt: '2025-01-22T01:50:53.255Z',
-      updatedAt: '2025-01-22T01:50:53.255Z',
-      isDeleted: false,
-      isLeader: false,
-      teamRole: 'Frontend',
-      projectTeamId: 8,
-      summary: '이 프로젝트에 참여하고 싶습니다!',
-      status: 'PENDING',
-      userId: 2,
-      user: {
-        name: '주영준',
-        email: 'yeongjun0129@gmail.com',
-      },
-    },
-    {
-      id: 12,
-      createdAt: '2025-01-22T01:50:53.255Z',
-      updatedAt: '2025-01-22T01:50:53.255Z',
-      isDeleted: false,
-      isLeader: false,
-      teamRole: 'Backend',
-      projectTeamId: 8,
-      summary: '이 프로젝트에 참여하고 싶습니다!',
-      status: 'PENDING',
-      userId: 3,
-      user: {
-        name: '홍길동',
-        email: 'yeongjun0129@gmail.com',
-      },
-    },
-    {
-      id: 13,
-      createdAt: '2025-01-22T01:50:53.255Z',
-      updatedAt: '2025-01-22T01:50:53.255Z',
-      isDeleted: false,
-      isLeader: false,
-      teamRole: 'Frontend',
-      projectTeamId: 8,
-      summary: '이 프로젝트에 참여하고 싶습니다!',
-      status: 'PENDING',
-      userId: 3,
-      user: {
-        name: '김철수',
-        email: 'yeongjun0129@gmail.com',
-      },
-    },
-  ],
 }
 
 function Box({
@@ -118,9 +65,12 @@ function Box({
   )
 }
 
-export default function Applicants({ applicants, onOpen }: ApplicantsProps) {
+export default function Applicants({
+  projectType,
+  applicants,
+  onOpen,
+}: ApplicantsProps) {
   const [isOpen, setIsOpen] = useState(false)
-
   const toggleDropdown = () => {
     setIsOpen(!isOpen)
   }
@@ -133,7 +83,7 @@ export default function Applicants({ applicants, onOpen }: ApplicantsProps) {
         onClick={toggleDropdown}
         className="w-[19rem] gap-32 px-[1.63rem] h-[2.4375rem] flex items-center bg-white rounded-lg shadow-md border border-primary cursor-pointer"
       >
-        스터디 지원자
+        {projectType === 'study' ? '스터디 지원자' : '프로젝트 지원자'}
         {isOpen ? <IoChevronUpSharp /> : <IoChevronDownSharp />}
       </div>
       {/* 드롭다운 내용 */}
@@ -142,17 +92,7 @@ export default function Applicants({ applicants, onOpen }: ApplicantsProps) {
           isOpen ? 'max-h-60' : 'max-h-0'
         } overflow-y-auto transition-max-height duration-500 ease-in-out w-[19rem] mt-3 flex flex-col gap-2 shadow-bgshadow rounded-[0.63rem]`}
       >
-        {/* {applicants.map((applicant) => (
-          <Box
-            key={applicant.id}
-            name={applicant.user.name}
-            // num={applicant.status} //기수 추가 수정 예정
-            // position={applicant.user.position} //포지션 추가 수정 예정
-            profileImage={applicant.user.profileImage} // 이미지 추가 수정 예정
-          />
-        ))} */}
-        {members.data.map((applicant) => (
-          // {applicants.data.map((applicant) => (
+        {applicants?.map((applicant) => (
           <Box
             key={applicant.id}
             name={applicant.user.name}

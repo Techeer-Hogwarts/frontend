@@ -23,8 +23,8 @@ interface Member {
 }
 
 interface AddMemberProps {
-  studyMember: Member[]
-  onUpdateMember: (newMembers: Member[]) => void
+  projectMember: Member[]
+  onUpdateMember?: (newMembers: Member[]) => void
 }
 
 function Tag({ position }: TagProps) {
@@ -36,7 +36,7 @@ function Tag({ position }: TagProps) {
 }
 
 export default function AddMember({
-  studyMember,
+  projectMember,
   onUpdateMember,
 }: AddMemberProps) {
   const [projectType, setProjectType] = useState<null | string>(null)
@@ -62,11 +62,11 @@ export default function AddMember({
   // 모달에서 "저장하기" 눌렀을 때 → 부모로 members 전달
   const handleSaveMembers = (selectedMembers: Member[]) => {
     const merged = [
-      ...studyMember,
+      ...projectMember,
       ...selectedMembers
         .filter(
           (newMember) =>
-            !studyMember.some((member) => member.userId === newMember.id),
+            !projectMember.some((member) => member.userId === newMember.id),
         )
         .map((member) => ({
           userId: member.id,
@@ -82,7 +82,7 @@ export default function AddMember({
 
   // 멤버 삭제 함수
   const handleDelete = (id: number) => {
-    const filtered = studyMember.filter((member) => member.id !== id)
+    const filtered = projectMember.filter((member) => member.id !== id)
     onUpdateMember(filtered)
   }
 
@@ -92,7 +92,10 @@ export default function AddMember({
         {/* 모달 */}
         {isModalOpen &&
           (projectType === 'project' ? (
-            <ProjectMemberModal />
+            <ProjectMemberModal
+              onClose={handleCloseModal}
+              onSave={handleSaveMembers}
+            />
           ) : (
             <MemberModal
               onClose={handleCloseModal}
@@ -105,8 +108,7 @@ export default function AddMember({
       </div>
       <div className="flex items-start pt-[1.5rem] pb-[1.5rem] gap-3 w-[52.5rem]  px-[1.25rem] rounded-2xl border border-gray">
         {/* 멤버카드 */}
-        {studyMember.map((member) => (
-          
+        {projectMember.map((member) => (
           <div
             key={member.name}
             className="relative w-[4.75rem]  flex flex-col items-center"

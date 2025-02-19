@@ -5,7 +5,7 @@ import Image from 'next/image'
 import {
   acceptStudyApplicant,
   denyStudyApplicant,
-} from '@/api/project/study/\bstudy'
+} from '@/api/project/study/study'
 
 interface ApplicantModalProps {
   onClose: () => void
@@ -33,8 +33,6 @@ export default function ApplicantModal({
       const storedProjectType = localStorage.getItem('projectType')
       setProjectType(storedProjectType)
     }
-
-    console.log(applicant)
   }, [])
 
   // 승인 버튼 핸들러
@@ -152,10 +150,10 @@ export default function ApplicantModal({
         {/* 지원 동기 */}
         <div className="mb-4">
           <p className="text-left mb-2 font-medium">
-            {applicant.user.name}의 지원동기
+            {applicant?.user?.name}의 지원동기
           </p>
           <div className="w-full p-1 h-[9.3125rem] border border-lightgray rounded-sm text-start">
-            {applicant.summary}
+            {applicant?.summary}
           </div>
         </div>
 

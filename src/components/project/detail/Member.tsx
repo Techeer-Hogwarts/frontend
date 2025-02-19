@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 
 interface MemberProps {
-  members: Array<{ name: string; isLeader: boolean; role: string }>
+  members: Array<{ name: string; isLeader: boolean; teamRole: string }>
 }
 
 export default function Member({ members }: MemberProps) {
@@ -16,7 +16,6 @@ export default function Member({ members }: MemberProps) {
       setProjectType(storedProjectType)
     }
   }, [])
-  console.log(members)
 
   return (
     <div>
@@ -47,7 +46,7 @@ export default function Member({ members }: MemberProps) {
                 <div
                   className={`w-[5.875rem] h-[1.75rem] rounded-md bg-lightprimary text-pink text-[0.9375rem] text-center`}
                 >
-                  {member.role}
+                  {member.teamRole}
                 </div>
               )}
             </div>

@@ -4,12 +4,27 @@ import { useEffect, useState } from 'react'
 
 import RecruitInput from '../RecruitInput'
 
+interface AddRecruitProps {
+  isRecruited: boolean
+  recruitNum?: number
+  frontendNum?: number
+  backendNum?: number
+  devopsNum?: number
+  fullStackNum?: number
+  recruitExplain: string
+  onUpdate: (key: string, value: any) => void
+}
+
 export default function AddRecruit({
   isRecruited,
   recruitNum,
+  frontendNum,
+  backendNum,
+  devopsNum,
+  fullStackNum,
   recruitExplain,
   onUpdate,
-}) {
+}: AddRecruitProps) {
   const [projectType, setProjectType] = useState<null | string>(null)
 
   useEffect(() => {
@@ -23,8 +38,16 @@ export default function AddRecruit({
     onUpdate('isRecruited', status === '모집')
   }
 
-  const handleRecruitNumChange = (event) => {
-    onUpdate('recruitNum', Number(event.target.value))
+  // const handleRecruitNumChange = (event) => {
+  //   onUpdate('recruitNum', Number(event.target.value))
+  // }
+
+  const handleRecruitNumChange = (
+    role: string,
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const value = Number(event.target.value)
+    onUpdate(role, value)
   }
 
   const handleRecruitExplainChange = (event) => {
@@ -42,7 +65,7 @@ export default function AddRecruit({
           <button
             onClick={() => handleRecruitStatusChange('모집')}
             className={`w-[10.875rem] h-[2.125rem] border ${
-              isRecruited 
+              isRecruited
                 ? 'border-primary text-primary'
                 : 'border-gray text-gray'
             } rounded-[0.1875rem]`}
@@ -75,7 +98,9 @@ export default function AddRecruit({
                 role="인원 입력"
                 placeholder="1명"
                 value={recruitNum || ''}
-                onChange={handleRecruitNumChange}
+                onChange={(event) =>
+                  handleRecruitNumChange('recruitNum', event)
+                }
               />
             ) : (
               // 여러 역할 입력을 표시
@@ -84,19 +109,33 @@ export default function AddRecruit({
                   role="Frontend"
                   placeholder="1명"
                   value={recruitNum || ''}
-                  onChange={handleRecruitNumChange}
+                  onChange={(event) =>
+                    handleRecruitNumChange('frontendNum', event)
+                  }
                 />
                 <RecruitInput
                   role="Backend"
                   placeholder="1명"
                   value={recruitNum || ''}
-                  onChange={handleRecruitNumChange}
+                  onChange={(event) =>
+                    handleRecruitNumChange('backendNum', event)
+                  }
                 />
                 <RecruitInput
                   role="DevOps"
                   placeholder="1명"
                   value={recruitNum || ''}
-                  onChange={handleRecruitNumChange}
+                  onChange={(event) =>
+                    handleRecruitNumChange('devopsNum', event)
+                  }
+                />
+                <RecruitInput
+                  role="Full Stack"
+                  placeholder="1명"
+                  value={fullStackNum || ''}
+                  onChange={(event) =>
+                    handleRecruitNumChange('fullStackNum', event)
+                  }
                 />
               </>
             )}

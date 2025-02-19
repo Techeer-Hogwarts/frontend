@@ -189,16 +189,14 @@ export default function Stack() {
   }, {})
 
   const categoryEntries = Object.entries(categories)
-console.log(categoryEntries);
 
   return (
     <div>
       <div className="text-[1.125rem] font-[600] mb-3">기술 스택</div>
       <div className="flex flex-col w-[52.5rem] p-4 rounded-2xl bg-filterbg gap-4">
         {categoryEntries.map(([category, stackNames], index) => (
-          <div>
+          <div key={category}>
             <StackCategory
-              key={category}
               title={convertCategoryName(category)}
               stack={stackNames}
             />

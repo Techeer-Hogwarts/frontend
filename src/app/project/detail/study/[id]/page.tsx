@@ -7,7 +7,6 @@ import StudyGoal from '@/components/project/detail/StudyGoal'
 import StudyPlan from '@/components/project/detail/StudyPlan'
 import Results from '@/components/project/detail/Results'
 import BaseModal from '@/components/project/modal/BaseModal'
-// import RecommendedMember from '@/components/project/detail/RecommendedMember'
 import Applicants from '@/components/project/detail/Applicants'
 import ApplicantModal from '@/components/project/modal/ApplicantModal'
 
@@ -18,12 +17,11 @@ import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 import {
   getStudyDetail,
-  getStudyMember,
   handleCloseStudy,
   deleteStudyTeam,
   getStudyApplicants,
   handleDenyStudy,
-} from '@/api/project/study/\bstudy'
+} from '@/api/project/study/study'
 
 export default function ProjectDetailpage() {
   const MODAL_TEXT_MAP = {
@@ -35,13 +33,7 @@ export default function ProjectDetailpage() {
   const MODAL_BTN_TEXT_MAP = {
     delete: '삭제',
     close: '마감',
-    cancel: '취소',
-  }
-
-  const MODAL_BTN_FUNCTION_MAP = {
-    delete: () => deleteStudyTeam(projectId),
-    close: () => handleCloseStudy(projectId),
-    cancel: () => handleDenyStudy(projectId),
+    cancel: '확인',
   }
 
   const router = useRouter()
@@ -58,12 +50,11 @@ export default function ProjectDetailpage() {
   const { data } = useQuery({
     queryKey: ['getStudyDetailsAndApplicants', projectId],
     queryFn: async () => {
-      const [studyDetails, studyMember, studyApplicants] = await Promise.all([
+      const [studyDetails, studyApplicants] = await Promise.all([
         getStudyDetail(projectId),
-        getStudyMember(projectId),
         // getStudyApplicants(projectId),
       ])
-      return { studyDetails, studyMember, studyApplicants }
+      return { studyDetails, studyApplicants }
     },
   })
 
@@ -78,6 +69,7 @@ export default function ProjectDetailpage() {
   const handleModal = () => {
     router.push(`/project/detail/study/${projectId}/applyStudy`)
   }
+
   return (
     <div className="relative flex justify-between mt-[2.75rem]">
       {isModalOpen && (
@@ -85,12 +77,16 @@ export default function ProjectDetailpage() {
           text={MODAL_TEXT_MAP[modalType]}
           btn={MODAL_BTN_TEXT_MAP[modalType]}
           onClose={() => setIsModalOpen(false)}
-          onClick={MODAL_BTN_FUNCTION_MAP[modalType]}
+          onClick={() => {
+            if (modalType === 'delete') deleteStudyTeam(projectId)
+            if (modalType === 'close') handleCloseStudy(projectId)
+            if (modalType === 'cancel') handleDenyStudy(projectId)
+          }}
         />
       )}
       {isApplicantModalOpen && (
         <ApplicantModal
-          applicant={data?.studyApplicants?.data}
+          applicant={data?.studyApplicants?.[0]}
           onClose={onClose}
         />
       )}
@@ -116,25 +112,21 @@ export default function ProjectDetailpage() {
       <div>
         <Profile
           type={projectType === 'study' ? 'study' : 'project'}
-          projectDetail={data?.studyDetails.data}
+          projectDetail={data?.studyDetails}
         />
-        {/* <RecommendedMember studyDetail={} /> */}
-        <Applicants
-          applicants={data?.studyApplicants?.data || []}
-          onOpen={onOpen}
-        />
+        {/* <Applicants applicants={data?.studyApplicants || []} onOpen={onOpen} /> */}
       </div>
       <div className="flex flex-col gap-7">
-        <Member members={data?.studyMember?.data.members} />
-        <StudyGoal goal={data?.studyDetails?.data.goal} />
-        <StudyPlan rule={data?.studyDetails?.data.rule} />
-        {data?.studyDetails.data.isRecruited && (
+        <Member members={data?.studyDetails?.studyMember || []} />
+        <StudyGoal goal={data?.studyDetails?.goal} />
+        <StudyPlan rule={data?.studyDetails?.rule} />
+        {data?.studyDetails?.isRecruited && (
           <FindMember
-            projectDetail={data?.studyDetails?.data}
+            projectDetail={data?.studyDetails}
             projectType={projectType}
           />
         )}
-        <Results resultImages={data?.studyDetails.data.resultImages} />
+        <Results resultImages={data?.studyDetails?.resultImages} />
 
         <button
           onClick={handleModal}

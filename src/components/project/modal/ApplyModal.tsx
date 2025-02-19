@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 
-import { handleApplyStudy } from '@/api/project/study/\bstudy'
+import { handleApplyStudy } from '@/api/project/study/study'
 
 const ApplyModal = () => {
   const [apply, setApply] = useState('')
@@ -29,12 +29,11 @@ const ApplyModal = () => {
     if (projectType === 'study') {
       if (apply) {
         const data = {
-          studyTeamId: projectId,
-          summary: apply,
+          studyTeamId: 9,
+          summary: '스터디에 참여하고 싶습니다!',
         }
         try {
           const result = await handleApplyStudy(data)
-          console.log('API 응답:', result)
         } catch (error) {
           alert('스터디 지원에 실패했습니다. 다시 시도해주세요.')
         }

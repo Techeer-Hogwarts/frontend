@@ -5,7 +5,7 @@ import { useState, useEffect, useRef } from 'react'
 import { FaRegImage } from 'react-icons/fa6'
 import { BiSolidPencil } from 'react-icons/bi'
 
-export default function AddProfile({ studyData, onUpdate }) {
+export default function AddProfile({ projectData, onUpdate }) {
   const [imgSrc, setImgSrc] = useState<string | null>('') // 기본 이미지 설정
   const [projectType, setProjectType] = useState<null | string>(null)
 
@@ -23,24 +23,16 @@ export default function AddProfile({ studyData, onUpdate }) {
     }
   }, [])
 
-  const handleImageChange = async (e: any) => {
-    const file = e.target.files[0]
-    if (!file) return
-
-    const reader = new FileReader()
-    reader.readAsDataURL(file)
-    reader.onload = (e: any) => {
-      if (reader.readyState === 2) {
-        setImgSrc(e.target.result) // 이미지 미리보기 업데이트
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (file) {
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        const imageUrl = reader.result as string
+        setImgSrc(imageUrl) // 미리보기
+        onUpdate('projectImage', imageUrl) // 부모 컴포넌트에 이미지 업데이트
       }
-    }
-
-    // 이미지를 서버로 전송하는 부분
-    const formData = new FormData()
-    formData.append('image', file)
-    try {
-    } catch (e) {
-      console.error('이미지 업로드 오류:', e)
+      reader.readAsDataURL(file)
     }
   }
 
@@ -52,7 +44,7 @@ export default function AddProfile({ studyData, onUpdate }) {
           onChange={handleInputChange}
           className="flex w-[15.875rem] h-[15.875rem] bg-gradient-to-b from-[#FF8B20] to-[#FFC14F] rounded-2xl text-white justify-center text-center items-center text-[1.5rem] font-bold"
         >
-          {studyData.name}
+          {projectData.name}
         </div>
       )}
 
@@ -100,7 +92,7 @@ export default function AddProfile({ studyData, onUpdate }) {
           <p className="text-sm mb-1 text-gray">프로젝트 이름을 입력해주세요</p>
           <input
             name="name"
-            value={studyData.name}
+            value={projectData.name}
             onChange={handleInputChange}
             className="font-medium w-[15.8125rem] h-[1.875rem] p-2 border border-gray rounded-[0.25rem] focus:outline-none"
             placeholder="프로젝트 이름"
@@ -118,7 +110,7 @@ export default function AddProfile({ studyData, onUpdate }) {
             </div>
             <input
               name="githubLink"
-              value={studyData.githubLink}
+              value={projectData.githubLink}
               onChange={handleInputChange}
               className="w-[11.1875rem] h-[1.5625rem] p-2 border border-gray rounded-[0.25rem] focus:outline-none"
               placeholder="레포지토리 주소"
@@ -131,7 +123,7 @@ export default function AddProfile({ studyData, onUpdate }) {
             </div>
             <input
               name="notionLink"
-              value={studyData.notionLink}
+              value={projectData.notionLink}
               onChange={handleInputChange}
               className="w-[11.1875rem] h-[1.5625rem] p-2 border border-gray rounded-[0.25rem] focus:outline-none"
               placeholder="노션 주소"
@@ -145,14 +137,14 @@ export default function AddProfile({ studyData, onUpdate }) {
 
         <textarea
           name="studyExplain"
-          value={studyData.studyExplain}
+          value={projectData.studyExplain}
           onChange={handleInputChange}
           maxLength={200}
           className="w-full p-2 border border-gray rounded-lg focus:outline-none"
           rows={7}
         />
         <p className="text-right text-xs mt-1">
-          {studyData.studyExplain.length}/200
+          {projectData?.studyExplain?.length}/200
         </p>
       </div>
     </div>

@@ -1,31 +1,41 @@
+interface ResultImage {
+  id: number
+  isDeleted: boolean
+  imageUrl: string
+}
+
+interface StudyMember {
+  id: number
+  name: string
+  isDeleted: boolean
+  isLeader: boolean
+  studyTeamId: number
+  userId: number
+  email: string
+}
+
 interface StudyDetail {
   id: number
-  createdAt: string
-  updatedAt: string
-  isDeleted: boolean
+  name: string
+  notionLink: string
+  recruitExplain: string
+  recruitNum: number
+  rule: string
+  goal: string
+  studyExplain: string
   isRecruited: boolean
   isFinished: boolean
-  name: string
-  githubLink: string
-  notionLink: string
-  studyExplain: string
-  goal: string
-  rule: string
-  recruitNum: number
-  recruitExplain: string
-  resultImages: string[]
-  studyMember: string[]
+  resultImages: ResultImage[]
+  studyMember: StudyMember[]
+  likeCount: number
+  viewCount: number
 }
 
-interface GetStudyDetailResponse {
-  code: number
-  message: string
-  data: StudyDetail
-}
+type GetStudyDetailResponse = StudyDetail
 
-interface ApplicantUser {
+interface StudyApplicant {
   name: string
-  email: string
+  isLeader: boolean
 }
 
 interface GetStudyApplicantsResponse {
@@ -33,22 +43,28 @@ interface GetStudyApplicantsResponse {
   message: string
   data: {
     studyName: string
-    members: Array<{
-      name: string
-      isLeader: boolean
-    }>
+    members: StudyApplicant[]
   }
+}
+
+interface PostResponse {
+  code: number
+  message: string
+  data: any
 }
 
 // 스터디 추가하기
 export const handleAddStudy = async (data) => {
   try {
-    const response = await fetch(`/api/v1/studyTeams`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify(data),
-    })
+    const response = await fetch(
+      `https://api.techeerzip.cloud/api/v1/studyTeams`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify(data),
+      },
+    )
 
     if (!response.ok) {
       throw new Error(`POST 요청 실패: ${response.status}`)
@@ -66,11 +82,14 @@ export const handleAddStudy = async (data) => {
 // 스터디 수정하기
 export const handleEditStudy = async (data, projectId) => {
   try {
-    const response = await fetch(`/api/v1/studyTeams/${projectId}`, {
-      method: 'PATCH',
-      credentials: 'include',
-      body: JSON.stringify(data),
-    })
+    const response = await fetch(
+      `https://api.techeerzip.cloud/api/v1/studyTeams/${projectId}`,
+      {
+        method: 'PATCH',
+        credentials: 'include',
+        body: JSON.stringify(data),
+      },
+    )
 
     if (!response.ok) {
       throw new Error(`POST 요청 실패: ${response.status}`)
@@ -90,12 +109,15 @@ export const getStudyDetail = async (
   studyTeamId: number,
 ): Promise<GetStudyDetailResponse> => {
   try {
-    const response = await fetch(`/api/v1/studyTeams/${studyTeamId}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
+    const response = await fetch(
+      `https://api.techeerzip.cloud/api/v1/studyTeams/${studyTeamId}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
       },
-    })
+    )
 
     if (!response.ok) {
       throw new Error(`GET 요청 실패: ${response.status}`)
@@ -114,9 +136,12 @@ export const getStudyMember = async (
   studyTeamId: number,
 ): Promise<GetStudyApplicantsResponse> => {
   try {
-    const response = await fetch(`/api/v1//studyTeams/${studyTeamId}/members`, {
-      method: 'GET',
-    })
+    const response = await fetch(
+      `https://api.techeerzip.cloud/api/v1/studyTeams/${studyTeamId}/members`,
+      {
+        method: 'GET',
+      },
+    )
 
     if (!response.ok) {
       throw new Error(`GET 요청 실패: ${response.status}`)
@@ -133,11 +158,14 @@ export const getStudyMember = async (
 // 스터디 지원하기
 export const handleApplyStudy = async (data) => {
   try {
-    const response = await fetch(`/api/v1/studyTeams/apply`, {
-      method: 'POST',
-      credentials: 'include',
-      body: JSON.stringify(data),
-    })
+    const response = await fetch(
+      `https://api.techeerzip.cloud/api/v1/studyTeams/apply`,
+      {
+        method: 'POST',
+        credentials: 'include',
+        body: JSON.stringify(data),
+      },
+    )
 
     if (!response.ok) {
       throw new Error(`POST 요청 실패: ${response.status}`)
@@ -154,10 +182,13 @@ export const handleApplyStudy = async (data) => {
 // 스터디 지원 취소하기
 export const handleDenyStudy = async (studyTeamId) => {
   try {
-    const response = await fetch(`/api/v1/studyTeams/${studyTeamId}/cancel`, {
-      method: 'PATCH',
-      credentials: 'include',
-    })
+    const response = await fetch(
+      `https://api.techeerzip.cloud/api/v1/studyTeams/${studyTeamId}/cancel`,
+      {
+        method: 'PATCH',
+        credentials: 'include',
+      },
+    )
 
     if (!response.ok) {
       throw new Error(`PATCH 요청 실패: ${response.status}`)
@@ -175,10 +206,13 @@ export const handleDenyStudy = async (studyTeamId) => {
 //스터디 공고 마감
 export const handleCloseStudy = async (studyTeamId) => {
   try {
-    const response = await fetch(`/api/v1/studyTeams/close/${studyTeamId}`, {
-      method: 'PATCH',
-      credentials: 'include',
-    })
+    const response = await fetch(
+      `https://api.techeerzip.cloud/api/v1/studyTeams/close/${studyTeamId}`,
+      {
+        method: 'PATCH',
+        credentials: 'include',
+      },
+    )
 
     if (!response.ok) {
       throw new Error(`PATCH 요청 실패: ${response.status}`)
@@ -196,10 +230,13 @@ export const handleCloseStudy = async (studyTeamId) => {
 //스터디 공고 삭제
 export const deleteStudyTeam = async (projectId) => {
   try {
-    const response = await fetch(`/api/v1/studyTeams/delete/${projectId}`, {
-      method: 'PATCH',
-      credentials: 'include',
-    })
+    const response = await fetch(
+      `https://api.techeerzip.cloud/api/v1/studyTeams/delete/${projectId}`,
+      {
+        method: 'PATCH',
+        credentials: 'include',
+      },
+    )
 
     if (!response.ok) {
       throw new Error(`PATCH 요청 실패: ${response.status}`)
@@ -218,7 +255,7 @@ export const deleteStudyTeam = async (projectId) => {
 export const getStudyApplicants = async (studyTeamId) => {
   try {
     const response = await fetch(
-      `/api/v1/studyTeams/${studyTeamId}/applicants`,
+      `https://api.techeerzip.cloud/api/v1/studyTeams/${studyTeamId}/applicants`,
       {
         method: 'GET',
         credentials: 'include',
@@ -237,15 +274,18 @@ export const getStudyApplicants = async (studyTeamId) => {
     throw error
   }
 }
- 
+
 // 스터디 지원자 수락
 export const acceptStudyApplicant = async (data) => {
   try {
-    const response = await fetch(`/api/v1/studyTeams/applicants/accept`, {
-      method: 'PATCH',
-      credentials: 'include',
-      body: JSON.stringify(data),
-    })
+    const response = await fetch(
+      `https://api.techeerzip.cloud/api/v1/studyTeams/applicants/accept`,
+      {
+        method: 'PATCH',
+        credentials: 'include',
+        body: JSON.stringify(data),
+      },
+    )
 
     if (!response.ok) {
       throw new Error(`PATCH 요청 실패: ${response.status}`)
@@ -263,11 +303,14 @@ export const acceptStudyApplicant = async (data) => {
 // 스터디 지원 거부
 export const denyStudyApplicant = async (data) => {
   try {
-    const response = await fetch(`/api/v1/studyTeams/applicants/reject`, {
-      method: 'PATCH',
-      credentials: 'include',
-      body: JSON.stringify(data),
-    })
+    const response = await fetch(
+      `https://api.techeerzip.cloud/api/v1/studyTeams/applicants/reject`,
+      {
+        method: 'PATCH',
+        credentials: 'include',
+        body: JSON.stringify(data),
+      },
+    )
 
     if (!response.ok) {
       throw new Error(`PATCH 요청 실패: ${response.status}`)

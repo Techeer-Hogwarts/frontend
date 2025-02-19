@@ -11,7 +11,7 @@ import AddGoal from '@/components/project/add/study/AddGoal'
 import AddPlan from '@/components/project/add/study/AddPlan'
 import AddRecruit from '@/components/project/add/AddRecruit'
 
-import { handleAddStudy } from '@/api/project/study/\bstudy'
+import { handleAddStudy } from '@/api/project/study/study'
 
 export default function AddStudyPage() {
   const router = useRouter()
@@ -53,11 +53,11 @@ export default function AddStudyPage() {
   return (
     <div className="relative flex justify-between mt-[2.75rem]">
       <div>
-        <AddProfile studyData={studyData} onUpdate={handleUpdate} />
+        <AddProfile projectData={studyData} onUpdate={handleUpdate} />
       </div>
       <div className="flex flex-col gap-7">
         <AddMember
-          studyMember={studyData.studyMember}
+          projectMember={studyData.studyMember}
           onUpdateMember={(newMembers) =>
             handleUpdate('studyMember', newMembers)
           }
