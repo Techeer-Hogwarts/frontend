@@ -1,20 +1,36 @@
 'use client'
 
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
   IoSearchOutline,
   IoCalendarOutline,
   IoPersonCircle,
 } from 'react-icons/io5'
+import { useRouter } from 'next/navigation'
+import { useAuthStore } from '@/store/authStore'
 
 export default function NevBar() {
   const [isSearchOpen, setIsSearchOpen] = useState(false)
+  const { isLoggedIn, checkAuth, logout } = useAuthStore()
+  const router = useRouter()
+
+  useEffect(() => {
+    checkAuth()
+  }, [checkAuth])
 
   const toggleSearch = () => {
     setIsSearchOpen(!isSearchOpen)
   }
 
+  const handleLogout = async () => {
+    try {
+      await logout()
+      router.push('/login')
+    } catch (error) {
+      router.push('/login')
+    }
+  }
   return (
     <div className="flex items-center w-[1200px] max-w-[1200px] h-[3.8125rem] justify-between border-b border-[#D7D7D7]">
       <div className="flex">
@@ -31,6 +47,9 @@ export default function NevBar() {
           <Link href="/project" className="hover:text-gray-700 cursor-pointer">
             프로젝트
           </Link>
+          <Link href="/profile" className="hover:text-gray-700 cursor-pointer">
+            프로필
+          </Link>
           <Link href="/blog" className="hover:text-gray-700 cursor-pointer">
             블로그
           </Link>
@@ -42,7 +61,7 @@ export default function NevBar() {
           </Link>
         </div>
       </div>
-      <div className="flex">
+      <div className="flex items-center">
         {/* 돋보기 및 기타 아이콘 */}
         <div className="flex items-center ">
           {/* 검색 영역 */}
@@ -68,13 +87,25 @@ export default function NevBar() {
           <IoCalendarOutline size={24} />
         </Link>
         {/* 마이페이지 아이콘 */}
-
         <Link href="/mypage" className="p-2">
           <IoPersonCircle size={24} />
         </Link>
-        <button type="button" className="hover:text-gray-800">
-          로그아웃
-        </button>
+        {isLoggedIn ? (
+          <button
+            type="button"
+            className="ml-4 text-gray-600 hover:text-gray-800"
+            onClick={handleLogout}
+          >
+            로그아웃
+          </button>
+        ) : (
+          <Link
+            href="/login"
+            className="ml-4 text-gray-600 hover:text-gray-800"
+          >
+            로그인
+          </Link>
+        )}
       </div>
     </div>
   )
