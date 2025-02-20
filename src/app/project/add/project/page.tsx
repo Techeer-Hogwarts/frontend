@@ -21,7 +21,8 @@ export default function AddProjectPage() {
     frontendNum: 0,
     backendNum: 0,
     devopsNum: 0,
-    // fullStackNum: 0,
+    uiuxNum: 0,
+    dataEngineerNum: 0,
     isRecruited: false,
     isFinished: true,
     recruitExplain: '',
@@ -29,11 +30,13 @@ export default function AddProjectPage() {
     notionLink: '',
     projectMember: [],
     teamStacks: [],
-    resultImages: [],
-    projectImage: '',
+    // 대표 이미지는 단일 파일(또는 null)
+    mainImageFile: null as File | null,
+    // 결과 이미지는 여러 개 가능 → File[]
+    resultImages: [] as File[],
   })
 
-  const handleUpdate = (key, value) => {
+  const handleUpdate = (key: string, value: any) => {
     setProjectData((prev) => ({ ...prev, [key]: value }))
   }
 
@@ -41,9 +44,10 @@ export default function AddProjectPage() {
     console.log(projectData)
 
     const response = await handleAddProject(projectData)
+    console.log(response)
     if (response) {
-      router.push(`/project/detail/project/${response.data.id}`)
-      localStorage.setItem('projectId', response.data.id)
+      router.push(`/project/detail/project/${response.id}`)
+      localStorage.setItem('projectId', response.id)
     } else {
       alert('등록에 실패하였습니다. 다시 시도해주세요.')
     }
@@ -71,12 +75,16 @@ export default function AddProjectPage() {
           frontendNum={projectData.frontendNum}
           backendNum={projectData.backendNum}
           devopsNum={projectData.devopsNum}
-          // fullStackNum={projectData.fullStackNum}
+          uiuxNum={projectData.uiuxNum}
+          dataEngineerNum={projectData.dataEngineerNum}
           recruitExplain={projectData.recruitExplain}
           onUpdate={handleUpdate}
         />
-        {/* 추후처리 */}
-        <AddStack />
+        <AddStack
+          onUpdateStacks={(teamStacks) =>
+            handleUpdate('teamStacks', teamStacks)
+          }
+        />
         <AddResults
           resultImages={projectData.resultImages || []}
           onUpdate={handleUpdate}

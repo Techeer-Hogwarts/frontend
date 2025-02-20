@@ -15,7 +15,7 @@ interface TagProps {
 interface Member {
   id: number
   name: string
-  role?: string[]
+  teamRole?: string[]
   leader?: string
   profileImage?: string | null
   isLeader?: boolean
@@ -138,7 +138,7 @@ export default function AddMember({
             <div>{member.name}</div>
             {projectType === 'project' && (
               <div className="flex flex-col gap-1">
-                {member.role.map((position) => (
+                {member.teamRole.map((position) => (
                   <Tag key={position} position={position} />
                 ))}
               </div>

@@ -23,16 +23,16 @@ export default function AddProfile({ projectData, onUpdate }) {
     }
   }, [])
 
-  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
     if (file) {
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        const imageUrl = reader.result as string
-        setImgSrc(imageUrl) // 미리보기
-        onUpdate('projectImage', imageUrl) // 부모 컴포넌트에 이미지 업데이트
-      }
-      reader.readAsDataURL(file)
+      // (A) 미리보기: URL.createObjectURL() 사용
+      const previewUrl = URL.createObjectURL(file)
+      setImgSrc(previewUrl)
+
+      // (B) projectData에 실제 File 객체 저장
+      //     -> handleAddProject()에서 formData.append('files', mainImageFile)
+      onUpdate('mainImageFile', file)
     }
   }
 
@@ -134,15 +134,26 @@ export default function AddProfile({ projectData, onUpdate }) {
 
       <div className="w-[15.875rem] mt-4">
         <p className="text-sm mb-1 text-gray">프로젝트 설명을 입력해주세요</p>
-
-        <textarea
-          name="studyExplain"
-          value={projectData.studyExplain}
-          onChange={handleInputChange}
-          maxLength={200}
-          className="w-full p-2 border border-gray rounded-lg focus:outline-none"
-          rows={7}
-        />
+        {projectType === 'study' && (
+          <textarea
+            name="studyExplain"
+            value={projectData.studyExplain}
+            onChange={handleInputChange}
+            maxLength={200}
+            className="w-full p-2 border border-gray rounded-lg focus:outline-none"
+            rows={7}
+          />
+        )}
+        {projectType === 'project' && (
+          <textarea
+            name="projectExplain"
+            value={projectData.projectExplain}
+            onChange={handleInputChange}
+            maxLength={200}
+            className="w-full p-2 border border-gray rounded-lg focus:outline-none"
+            rows={7}
+          />
+        )}
         <p className="text-right text-xs mt-1">
           {projectData?.studyExplain?.length}/200
         </p>

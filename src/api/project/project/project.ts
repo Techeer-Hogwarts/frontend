@@ -1,20 +1,36 @@
-// 프로젝트 공고 생성
-export const handleAddProject = async (data) => {
+// 프로젝트 공고 생성 (multipart/form-data)
+// handleAddProject.ts
+export const handleAddProject = async (data: any) => {
   try {
-    const response = await fetch(
-      'https://api.techeerzip.cloud/api/v1/projectTeams',
-      {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      },
-    )
+    const formData = new FormData()
+
+    // 1) 메인 이미지 (파일 1개)
+    if (data.mainImageFile) {
+      formData.append('files', data.mainImageFile)
+    }
+
+    // 2) 결과 이미지 (여러 개)
+    if (data.resultImages && Array.isArray(data.resultImages)) {
+      data.resultImages.forEach((file: File) => {
+        formData.append('files', file)
+      })
+    }
+
+    // 3) JSON 직렬화
+    const { mainImageFile, resultImages, ...rest } = data
+    formData.append('createProjectTeamRequest', JSON.stringify(rest))
+
+    // 4) 전송
+    const response = await fetch('/api/v1/projectTeams', {
+      method: 'POST',
+      credentials: 'include',
+      body: formData, // multipart/form-data
+    })
+
     if (!response.ok) {
       throw new Error(`POST 요청 실패: ${response.status}`)
     }
+
     const result = await response.json()
     return result
   } catch (error: any) {
@@ -26,16 +42,13 @@ export const handleAddProject = async (data) => {
 // 프로젝트 상세 조회
 export const getProjectDetail = async (projectTeamId) => {
   try {
-    const response = await fetch(
-      `https://api.techeerzip.cloud/api/v1/projectTeams/${projectTeamId}`,
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
+    const response = await fetch(`/api/v1/projectTeams/${projectTeamId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
       },
-    )
+      credentials: 'include',
+    })
     if (!response.ok) {
       throw new Error(`GET 요청 실패: ${response.status}`)
     }
@@ -51,7 +64,7 @@ export const getProjectDetail = async (projectTeamId) => {
 export const getProjectMember = async (projectTeamId) => {
   try {
     const response = await fetch(
-      `https://api.techeerzip.cloud/api/v1//projectTeams/${projectTeamId}/members`,
+      `/api/v1//projectTeams/${projectTeamId}/members`,
       {
         method: 'GET',
       },
@@ -71,7 +84,7 @@ export const getProjectMember = async (projectTeamId) => {
 export const getProjectApplicants = async (projectTeamId) => {
   try {
     const response = await fetch(
-      `https://api.techeerzip.cloud/api/v1/projectTeams/${projectTeamId}/applicants`,
+      `/api/v1/projectTeams/${projectTeamId}/applicants`,
       {
         method: 'GET',
         credentials: 'include',
@@ -94,14 +107,11 @@ export const getProjectApplicants = async (projectTeamId) => {
 // 프로젝트 지원자 수락
 export const acceptProjectApplicant = async (data) => {
   try {
-    const response = await fetch(
-      `https://api.techeerzip.cloud/api/v1/projectTeams/applicants/accept`,
-      {
-        method: 'PATCH',
-        credentials: 'include',
-        body: JSON.stringify(data),
-      },
-    )
+    const response = await fetch(`/api/v1/projectTeams/applicants/accept`, {
+      method: 'PATCH',
+      credentials: 'include',
+      body: JSON.stringify(data),
+    })
 
     if (!response.ok) {
       throw new Error(`PATCH 요청 실패: ${response.status}`)
@@ -119,14 +129,11 @@ export const acceptProjectApplicant = async (data) => {
 // 프로젝트 지원 거부
 export const denyProjectApplicant = async (data) => {
   try {
-    const response = await fetch(
-      `https://api.techeerzip.cloud/api/v1/projectTeams/applicants/reject`,
-      {
-        method: 'PATCH',
-        credentials: 'include',
-        body: JSON.stringify(data),
-      },
-    )
+    const response = await fetch(`/api/v1/projectTeams/applicants/reject`, {
+      method: 'PATCH',
+      credentials: 'include',
+      body: JSON.stringify(data),
+    })
 
     if (!response.ok) {
       throw new Error(`PATCH 요청 실패: ${response.status}`)
@@ -144,14 +151,11 @@ export const denyProjectApplicant = async (data) => {
 // 프로젝트 수정하기
 export const handleEditProject = async (data, projectId) => {
   try {
-    const response = await fetch(
-      `https://api.techeerzip.cloud/api/v1/projectTeams/${projectId}`,
-      {
-        method: 'PATCH',
-        credentials: 'include',
-        body: JSON.stringify(data),
-      },
-    )
+    const response = await fetch(`/api/v1/projectTeams/${projectId}`, {
+      method: 'PATCH',
+      credentials: 'include',
+      body: JSON.stringify(data),
+    })
 
     if (!response.ok) {
       throw new Error(`POST 요청 실패: ${response.status}`)
@@ -166,12 +170,11 @@ export const handleEditProject = async (data, projectId) => {
   }
 }
 
-
 //프로젝트 공고 마감
 export const handleCloseProject = async (projectTeamId) => {
   try {
     const response = await fetch(
-      `https://api.techeerzip.cloud/api/v1/projectTeams/close/${projectTeamId}`,
+      `/api/v1/projectTeams/close/${projectTeamId}`,
       {
         method: 'PATCH',
         credentials: 'include',
@@ -194,13 +197,10 @@ export const handleCloseProject = async (projectTeamId) => {
 //프로젝트 공고 삭제
 export const deleteProjectTeam = async (projectId) => {
   try {
-    const response = await fetch(
-      `https://api.techeerzip.cloud/api/v1/projectTeams/delete/${projectId}`,
-      {
-        method: 'PATCH',
-        credentials: 'include',
-      },
-    )
+    const response = await fetch(`/api/v1/projectTeams/delete/${projectId}`, {
+      method: 'PATCH',
+      credentials: 'include',
+    })
 
     if (!response.ok) {
       throw new Error(`PATCH 요청 실패: ${response.status}`)
@@ -215,18 +215,14 @@ export const deleteProjectTeam = async (projectId) => {
   }
 }
 
-
 // 프로젝트 지원하기
 export const handleApplyProject = async (data) => {
   try {
-    const response = await fetch(
-      `https://api.techeerzip.cloud/api/v1/projectTeams/apply`,
-      {
-        method: 'POST',
-        credentials: 'include',
-        body: JSON.stringify(data),
-      },
-    )
+    const response = await fetch(`/api/v1/projectTeams/apply`, {
+      method: 'POST',
+      credentials: 'include',
+      body: JSON.stringify(data),
+    })
 
     if (!response.ok) {
       throw new Error(`POST 요청 실패: ${response.status}`)
@@ -244,7 +240,7 @@ export const handleApplyProject = async (data) => {
 export const handleDenyProject = async (projectTeamId) => {
   try {
     const response = await fetch(
-      `https://api.techeerzip.cloud/api/v1/projectTeams/${projectTeamId}/cancel`,
+      `/api/v1/projectTeams/${projectTeamId}/cancel`,
       {
         method: 'PATCH',
         credentials: 'include',
@@ -264,12 +260,11 @@ export const handleDenyProject = async (projectTeamId) => {
   }
 }
 
-
 //프로젝트 지원자 보기
 export const getStudyApplicants = async (projectTeamId) => {
   try {
     const response = await fetch(
-      `https://api.techeerzip.cloud/api/v1/projectTeams/${projectTeamId}/applicants`,
+      `/api/v1/projectTeams/${projectTeamId}/applicants`,
       {
         method: 'GET',
         credentials: 'include',
@@ -292,14 +287,11 @@ export const getStudyApplicants = async (projectTeamId) => {
 // 프로젝트 지원자 수락
 export const acceptStudyApplicant = async (data) => {
   try {
-    const response = await fetch(
-      `https://api.techeerzip.cloud/api/v1/projectTeams/applicants/accept`,
-      {
-        method: 'PATCH',
-        credentials: 'include',
-        body: JSON.stringify(data),
-      },
-    )
+    const response = await fetch(`/api/v1/projectTeams/applicants/accept`, {
+      method: 'PATCH',
+      credentials: 'include',
+      body: JSON.stringify(data),
+    })
 
     if (!response.ok) {
       throw new Error(`PATCH 요청 실패: ${response.status}`)
@@ -317,14 +309,11 @@ export const acceptStudyApplicant = async (data) => {
 // 프로젝트 지원 거부
 export const denyStudyApplicant = async (data) => {
   try {
-    const response = await fetch(
-      `https://api.techeerzip.cloud/api/v1/projectTeams/applicants/reject`,
-      {
-        method: 'PATCH',
-        credentials: 'include',
-        body: JSON.stringify(data),
-      },
-    )
+    const response = await fetch(`/api/v1/projectTeams/applicants/reject`, {
+      method: 'PATCH',
+      credentials: 'include',
+      body: JSON.stringify(data),
+    })
 
     if (!response.ok) {
       throw new Error(`PATCH 요청 실패: ${response.status}`)

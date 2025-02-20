@@ -11,14 +11,23 @@ interface BoxProps {
   generation: string
   imageSrc: string
   onClose: () => void
+  isLeader: boolean
+  onUpdate: (isLeader: boolean) => void
 }
 
-const BigMemberBox = ({ name, generation, imageSrc, onClose }: BoxProps) => {
-  const [isLeader, setIsLeader] = useState(false)
+const BigMemberBox = ({
+  name,
+  generation,
+  imageSrc,
+  onClose,
+  isLeader,
+  onUpdate,
+}: BoxProps) => {
   const [selectedRoles, setSelectedRoles] = useState<string[]>([])
 
   const handleToggleLeader = () => {
-    setIsLeader((prev) => !prev)
+    const updatedLeaderState = !isLeader
+    onUpdate(updatedLeaderState)
   }
 
   const handleRoleClick = (role: string) => {
@@ -63,7 +72,7 @@ const BigMemberBox = ({ name, generation, imageSrc, onClose }: BoxProps) => {
 
         {/* 스택 역할 선택 (최대 2개) */}
         <div className="flex gap-1 mt-2">
-          {['Frontend', 'Backend', 'DevOps', 'Full-Stack'].map(
+          {['FRONTEND', 'BACKEND', 'DEVOPS', 'FULL_STACK', 'DATA_ENGINEER'].map(
             (role, index) => (
               <Btn
                 key={index}

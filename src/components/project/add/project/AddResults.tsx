@@ -4,11 +4,23 @@ import React, { useState, useEffect } from 'react'
 import { IoAddCircleOutline } from 'react-icons/io5'
 import ResultImgBox from '../ResultImgBox'
 
-export default function AddResults({ resultImages, onUpdate }) {
-  const [boxes, setBoxes] = useState<number[]>([0, 1]) // 박스 개수 관리
-  const [title, setTitle] = useState<string>('') // 상단 설명 문구 상태
+interface AddResultsProps {
+  // 부모(상위)에서 넘어오는 상태
+  // 예: projectData.resultImages를 "File[]" 형태로 관리한다고 가정
+  resultImages: File[]
+  onUpdate: (key: string, value: any) => void
+}
 
-  const [projectType, setProjectType] = useState<null | string>(null)
+export default function AddResults({
+  resultImages,
+  onUpdate,
+}: AddResultsProps) {
+  // (1) 박스 식별자 관리
+  const [boxes, setBoxes] = useState<number[]>([0, 1]) // 초기 2개 박스
+  // (2) 각 박스별 이미지 미리보기 URL
+  const [imagePreviews, setImagePreviews] = useState<string[]>([])
+
+  const [projectType, setProjectType] = useState<string | null>(null)
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -17,22 +29,44 @@ export default function AddResults({ resultImages, onUpdate }) {
     }
   }, [])
 
-  // 이미지 변경 핸들러
-  const handleImageChange = (index: number, image: string) => {
-    const updatedImages = [...resultImages]
-    updatedImages[index] = image
-    onUpdate('resultImages', updatedImages) // 부모 상태 업데이트
+  /**
+   * (3) 박스에서 파일이 선택되면,
+   *     - 상위로 File 객체를 전달하여 resultImages[index]에 저장
+   *     - 미리보기용 URL을 생성해 imagePreviews[index]에 저장
+   */
+  const handleFileSelect = (index: number, file: File) => {
+    // 3-1) 상위 상태에 File 객체 저장
+    const updatedFiles = [...resultImages]
+    updatedFiles[index] = file
+    onUpdate('resultImages', updatedFiles)
+
+    // 3-2) 미리보기 URL 생성
+    const previewUrl = URL.createObjectURL(file)
+    const updatedPreviews = [...imagePreviews]
+    updatedPreviews[index] = previewUrl
+    setImagePreviews(updatedPreviews)
   }
 
-  // 박스 추가 함수
+  // (4) 박스 추가 함수
   const handleAddBox = () => {
-    setBoxes([...boxes, boxes.length]) // 박스 개수를 증가시킴
+    setBoxes((prev) => [...prev, prev.length])
   }
 
-  // 박스 삭제 함수 (1개 이하로는 삭제 불가)
+  // (5) 박스 삭제 함수 (1개 이하로는 삭제 불가)
   const handleDeleteBox = (index: number) => {
     if (boxes.length > 1) {
-      setBoxes(boxes.filter((_, i) => i !== index)) // 해당 박스 삭제
+      // 박스 식별자 제거
+      setBoxes((prev) => prev.filter((_, i) => i !== index))
+
+      // resultImages에서도 해당 index의 File 제거
+      const updatedFiles = [...resultImages]
+      updatedFiles.splice(index, 1)
+      onUpdate('resultImages', updatedFiles)
+
+      // 미리보기 배열에서도 제거
+      const updatedPreviews = [...imagePreviews]
+      updatedPreviews.splice(index, 1)
+      setImagePreviews(updatedPreviews)
     }
   }
 
@@ -53,14 +87,16 @@ export default function AddResults({ resultImages, onUpdate }) {
         </button>
       </div>
 
-      {/* 박스 부분 */}
+      {/* (6) 박스 영역 */}
       <div className="grid grid-cols-2 gap-6">
         {boxes.map((boxId, index) => (
           <ResultImgBox
-            key={index}
+            key={boxId}
             id={boxId}
-            image={resultImages[index] || ''}
-            onImageChange={(image) => handleImageChange(index, image)}
+            // 현재 미리보기 URL
+            previewUrl={imagePreviews[index] || ''}
+            // 파일이 선택되면 handleFileSelect로 전달
+            onFileSelect={(file) => handleFileSelect(index, file)}
             onDelete={() => handleDeleteBox(index)}
           />
         ))}

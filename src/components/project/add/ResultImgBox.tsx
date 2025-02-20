@@ -6,21 +6,17 @@ import { FaRegImage } from 'react-icons/fa6'
 
 interface BoxProps {
   id: number
+  previewUrl: string // 미리보기 URL
+  onFileSelect: (file: File) => void
   onDelete: () => void
 }
 
-const ResultImgBox = ({ id, image, onImageChange, onDelete }: BoxProps) => {
-  // 이미지 업로드 핸들러
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+const ResultImgBox = ({ id, previewUrl, onFileSelect, onDelete }: BoxProps) => {
+  // 파일 선택 핸들러
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
     if (file) {
-      const reader = new FileReader()
-      reader.onload = (e) => {
-        if (e.target?.result) {
-          onImageChange(e.target.result.toString())
-        }
-      }
-      reader.readAsDataURL(file)
+      onFileSelect(file)
     }
   }
 
@@ -36,13 +32,13 @@ const ResultImgBox = ({ id, image, onImageChange, onDelete }: BoxProps) => {
 
       {/* 이미지 업로드 및 미리보기 */}
       <label className="relative w-full h-[223px] bg-gray-200 rounded-lg flex items-center justify-center cursor-pointer">
-        {image ? (
+        {previewUrl ? (
+          // Next.js 13+에서 layout="fill"은 deprecated → fill 속성 사용
           <Image
-            src={image}
+            src={previewUrl}
             alt="Uploaded image"
-            layout="fill"
-            objectFit="cover"
-            className="rounded-lg"
+            fill
+            className="rounded-lg object-cover"
           />
         ) : (
           <div className="flex flex-col w-[409px] h-[223px] rounded-md bg-lightgray text-[#A1A1A1] items-center justify-center gap-4">
@@ -55,7 +51,7 @@ const ResultImgBox = ({ id, image, onImageChange, onDelete }: BoxProps) => {
         <input
           type="file"
           accept="image/*"
-          onChange={handleImageUpload}
+          onChange={handleFileChange}
           className="absolute inset-0 opacity-0 cursor-pointer"
         />
       </label>

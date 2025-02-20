@@ -59,7 +59,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL
 export const handleAddStudy = async (data) => {
   try {
     const response = await fetch(
-      `https://api.techeerzip.cloud/api/v1/studyTeams`,
+      `/api/v1/studyTeams`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -159,14 +159,11 @@ export const getStudyMember = async (
 // 스터디 지원하기
 export const handleApplyStudy = async (data) => {
   try {
-    const response = await fetch(
-      `https://api.techeerzip.cloud/api/v1/studyTeams/apply`,
-      {
-        method: 'POST',
-        credentials: 'include',
-        body: JSON.stringify(data),
-      },
-    )
+    const response = await fetch(`/api/v1/studyTeams/apply`, {
+      method: 'POST',
+      credentials: 'include',
+      body: JSON.stringify(data),
+    })
 
     if (!response.ok) {
       throw new Error(`POST 요청 실패: ${response.status}`)

@@ -132,8 +132,7 @@ export default function Project() {
           ),
         )}
       </div>
-
-      <AddBtn />
+     <AddBtn />
     </div>
   )
 }

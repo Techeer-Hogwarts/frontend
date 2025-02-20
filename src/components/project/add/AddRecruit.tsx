@@ -10,7 +10,8 @@ interface AddRecruitProps {
   frontendNum?: number
   backendNum?: number
   devopsNum?: number
-  fullStackNum?: number
+  uiuxNum?: number
+  dataEngineerNum?: number
   recruitExplain: string
   onUpdate: (key: string, value: any) => void
 }
@@ -21,7 +22,8 @@ export default function AddRecruit({
   frontendNum,
   backendNum,
   devopsNum,
-  fullStackNum,
+  uiuxNum,
+  dataEngineerNum,
   recruitExplain,
   onUpdate,
 }: AddRecruitProps) {
@@ -108,7 +110,7 @@ export default function AddRecruit({
                 <RecruitInput
                   role="Frontend"
                   placeholder="1명"
-                  value={recruitNum || ''}
+                  value={frontendNum || ''}
                   onChange={(event) =>
                     handleRecruitNumChange('frontendNum', event)
                   }
@@ -116,7 +118,7 @@ export default function AddRecruit({
                 <RecruitInput
                   role="Backend"
                   placeholder="1명"
-                  value={recruitNum || ''}
+                  value={backendNum || ''}
                   onChange={(event) =>
                     handleRecruitNumChange('backendNum', event)
                   }
@@ -124,7 +126,7 @@ export default function AddRecruit({
                 <RecruitInput
                   role="DevOps"
                   placeholder="1명"
-                  value={recruitNum || ''}
+                  value={devopsNum || ''}
                   onChange={(event) =>
                     handleRecruitNumChange('devopsNum', event)
                   }
@@ -132,9 +134,15 @@ export default function AddRecruit({
                 <RecruitInput
                   role="Full Stack"
                   placeholder="1명"
-                  value={fullStackNum || ''}
+                  value={uiuxNum || ''}
+                  onChange={(event) => handleRecruitNumChange('uiuxNum', event)}
+                />
+                <RecruitInput
+                  role="Data Engineer"
+                  placeholder="1명"
+                  value={dataEngineerNum || ''}
                   onChange={(event) =>
-                    handleRecruitNumChange('fullStackNum', event)
+                    handleRecruitNumChange('dataEngineerNum', event)
                   }
                 />
               </>
@@ -145,7 +153,7 @@ export default function AddRecruit({
             value={recruitExplain || ''}
             onChange={handleRecruitExplainChange}
             maxLength={1000}
-            className="w-full h-[11.375rem] border border-gray rounded-xl p-4"
+            className="w-full h-[11.375rem] border border-gray rounded-xl p-4 focus:outline-none"
             placeholder={`• Of the techeer, By the techeer, For the techeer
           • 테커에서 사용할 수 있는 올인원 테커 포탈 서비스입니다(프로젝트, 이력서, 세션, 기술 블로그)
           • 다양한 기술을 시도해보고 싶은 분들 환영합니다

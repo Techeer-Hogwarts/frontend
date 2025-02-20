@@ -3,10 +3,24 @@
 import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import MemberBox from './BigMemberBox'
-import SmallMemberBox from './SmallMemberBox'
 import { useRouter } from 'next/navigation'
+import { useQuery } from '@tanstack/react-query'
+import { getAllUsers } from '@/api/project/common'
 
-const ProjectMemberModal = () => {
+interface Member {
+  id: number
+  name: string
+  generation: string
+  teamRole?: string[]
+  profileImage?: string | null
+  isLeader: boolean
+}
+
+interface MemberModalProps {
+  onClose: () => void
+  onSave: (selectedMembers: Member[]) => void
+}
+const ProjectMemberModal = ({ onClose, onSave }: MemberModalProps) => {
   const dropDownRef = useRef<HTMLInputElement>(null)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const [name, setName] = useState('')
@@ -16,19 +30,19 @@ const ProjectMemberModal = () => {
 
   const [projectType, setProjectType] = useState<null | string>(null)
 
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const storedProjectType = localStorage.getItem('projectType')
-      setProjectType(storedProjectType)
-    }
-  }, [])
+  const { data: allUsers } = useQuery({
+    queryKey: ['getAllUsers'],
+    queryFn: getAllUsers,
+  })
 
-  // 이름 검색
+  // 사람 선택
   const handleName = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setName(e.target.value)
+    const value = e.target.value
+    setName(value)
+    setIsDropdownOpen(true)
   }
 
-  // 바깥 클릭 시 드롭다운 접기
+  // 바깥 클릭 시 드롭다운 닫기
   useEffect(() => {
     const outSideClick = (e: MouseEvent) => {
       if (!dropDownRef.current?.contains(e.target as Node))
@@ -43,8 +57,11 @@ const ProjectMemberModal = () => {
 
   // 멤버 추가
   const handleAddMember = (member: Member) => {
-    if (!members.find((m) => m.name === member.name)) {
-      setMembers((prevMembers) => [...prevMembers, member])
+    if (!members.some((m) => m.id === member.id)) {
+      setMembers((prevMembers) => [
+        ...prevMembers,
+        { ...member, isLeader: false },
+      ])
     }
     setIsDropdownOpen(false)
   }
@@ -53,6 +70,15 @@ const ProjectMemberModal = () => {
   const handleRemoveMember = (name: string) => {
     setMembers((prevMembers) =>
       prevMembers.filter((member) => member.name !== name),
+    )
+  }
+
+  // 리더 업데이트 함수
+  const handleUpdateLeader = (id: number, isLeader: boolean) => {
+    setMembers((prevMembers) =>
+      prevMembers.map((member) =>
+        member.id === id ? { ...member, isLeader } : member,
+      ),
     )
   }
 
@@ -78,14 +104,14 @@ const ProjectMemberModal = () => {
           />
           {isDropdownOpen && (
             <div className="absolute w-[26.25rem] bg-white border border-gray mt-1 max-h-48 overflow-y-auto z-10">
-              {dropdownOptions?.map((member, index) => (
+              {allUsers?.map((member) => (
                 <div
-                  key={index}
+                  key={member.id}
                   className="flex items-center gap-2 p-2 cursor-pointer hover:bg-lightprimary"
                   onClick={() => handleAddMember(member)}
                 >
                   <Image
-                    src={member.imageSrc || '/default-profile.png'}
+                    src={member.profileImage || '/'}
                     alt="Profile"
                     width={24}
                     height={24}
@@ -105,25 +131,19 @@ const ProjectMemberModal = () => {
         <div className="flex-1 overflow-y-auto mb-6">
           <div className="flex flex-wrap overflow-x-hidden gap-2">
             {members.length > 0 ? (
-              members.map((member) =>
-                projectType === 'project' ? (
-                  <MemberBox
-                    key={member.name} //추후 member.id로 교체 예정
-                    name={member.name}
-                    generation={member.generation}
-                    imageSrc={member.imageSrc || '/default-profile.png'}
-                    onClose={() => handleRemoveMember(member.name)}
-                  />
-                ) : (
-                  <SmallMemberBox
-                    key={member.name} //추후 member.id로 교체 예정
-                    name={member.name}
-                    generation={member.generation}
-                    imageSrc={member.imageSrc || '/default-profile.png'}
-                    onClose={() => handleRemoveMember(member.name)}
-                  />
-                ),
-              )
+              members.map((member) => (
+                <MemberBox
+                  key={member.id}
+                  name={member.name}
+                  generation={member.generation}
+                  imageSrc={member.profileImage || '/default-profile.png'}
+                  isLeader={member.isLeader}
+                  onClose={() => handleRemoveMember(member.name)}
+                  onUpdate={(isLeader) =>
+                    handleUpdateLeader(member.id, isLeader)
+                  }
+                />
+              ))
             ) : (
               <p className="text-center text-gray-500 w-full">
                 아직 추가된 멤버가 없습니다.

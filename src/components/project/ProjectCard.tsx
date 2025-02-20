@@ -12,9 +12,7 @@ interface TeamBase {
 }
 
 interface ProjectTeam extends TeamBase {
-  id: number
   type: 'project'
-  category: string
   frontendNum: number
   backendNum: number
   devopsNum: number
@@ -24,7 +22,6 @@ interface ProjectTeam extends TeamBase {
   mainImages: string[]
   teamStacks: { stackName: string; isMain: boolean }[]
 }
-
 export default function ProjectCard({ team }: { team: ProjectTeam }) {
   // console.log(team)
   const handleClick = () => {
