@@ -45,26 +45,17 @@ export const useSessionsQuery = ({
         console.log('getBestSessions result:', data)
         return data ?? []
       }
+      // selectedPeriodsP와 selectedPeriodsB를 합쳐서 date로 전달
+      const date = [...selectedPeriodsP, ...selectedPeriodsB]
 
-      let date = ''
-      if (activeOption === '부트캠프') {
-        date = selectedPeriodsB[0] ?? ''
-      } else if (activeOption === '파트너스') {
-        date = selectedPeriodsP[0] ?? ''
-      }
-      // console.log('date:', date)
-      // console.log('포지션:', selectedPeriodsPo[0] ?? '')
-      // console.log('category:', category)
-      // console.log('limit:', limit)
-      // console.log('inputValue:', inputValue)
       const data = await getSessions(
         inputValue,
         category,
         limit,
         date,
-        selectedPeriodsPo[0] ?? '',
+        selectedPeriodsPo, // 포지션 문자열
       )
-      // console.log('getSessions result:', data)
+      console.log('getSessions result:', data)
       return data ?? []
     },
   })
