@@ -73,7 +73,9 @@ export default function BlogPost({
     fetchViews()
   }
   useEffect(() => {
-    setIsLike(likeList.some((bookmark: any) => bookmark.id === id))
+    if (Array.isArray(likeList)) {
+      setIsLike(likeList.some((bookmark: any) => bookmark.id === id))
+    }
   }, [likeList, id])
 
   return (

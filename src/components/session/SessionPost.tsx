@@ -32,7 +32,7 @@ export default function SessionPost({
   onLikeUpdate,
 }: SessionPostProps) {
   const router = useRouter()
-  const { fetchLikes, postLike } = useLike()
+  const { postLike } = useLike()
   const [isLike, setIsLike] = useState(false)
   const [showModal, setShowModal] = useState(false)
   const [likeCount, setLikeCount] = useState(initialLikeCount)
@@ -54,7 +54,9 @@ export default function SessionPost({
     }
   }
   useEffect(() => {
-    setIsLike(likeList.some((bookmark: any) => bookmark.id === id))
+    if (Array.isArray(likeList)) {
+      setIsLike(likeList.some((bookmark: any) => bookmark.id === id))
+    }
   }, [likeList, id])
   return (
     <div className="flex transition-transform transform hover:-translate-y-2">

@@ -95,25 +95,16 @@ export default function Page() {
       return []
     }
   }
-  useEffect(() => {
-    setBlog([])
-    setLimit(6)
-    setLikeList([])
-
-    const fetchData = async () => {
-      let newBlogs: BlogProps[] = []
-      if (activeOption === '금주의 블로그') {
-        newBlogs = await getBestBlog(6)
-      } else if (activeOption === 'TECHEER' || activeOption === 'SHARED') {
-        newBlogs = await getBlog(6, inputValue, activeOption)
-      }
-      const newLikeList: { id: string }[] = await checkLike()
-      syncLikeCount(newBlogs, newLikeList)
+  const fetchData = async () => {
+    let newBlogs: BlogProps[] = []
+    if (activeOption === '금주의 블로그') {
+      newBlogs = await getBestBlog(6)
+    } else if (activeOption === 'TECHEER' || activeOption === 'SHARED') {
+      newBlogs = await getBlog(6, inputValue, activeOption)
     }
-
-    fetchData()
-  }, [activeOption, inputValue])
-
+    const newLikeList: { id: string }[] = await checkLike()
+    syncLikeCount(newBlogs, newLikeList)
+  }
   const syncLikeCount = (blogs: BlogProps[], likes: { id: string }[]) => {
     const updatedBlogs = blogs.map((blog) => ({
       ...blog,
@@ -123,7 +114,12 @@ export default function Page() {
     }))
     setBlog(updatedBlogs)
   }
-
+  useEffect(() => {
+    setBlog([])
+    setLimit(6)
+    setLikeList([])
+    fetchData()
+  }, [activeOption, inputValue])
   useEffect(() => {
     if (!inView) return
     if (inView) {
