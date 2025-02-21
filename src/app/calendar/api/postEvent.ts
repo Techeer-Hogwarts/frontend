@@ -1,3 +1,5 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+
 export interface EventData {
     category: string
     title: string
@@ -6,22 +8,30 @@ export interface EventData {
     url: string
   }
   
-  export async function postEvent(eventData: EventData): Promise<void> {
-    try {
-      const response = await fetch('/api/v1/events', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(eventData),
-      })
-  
-      if (!response.ok) {
-        throw new Error(`이벤트 생성 실패: ${response.status}`)
-      }
+const postEvent = async (eventData: EventData): Promise<void> => {
+  const response = await fetch('/api/v1/events', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(eventData),
+  })
 
-    } catch (error) {
-      console.error('이벤트 생성 실패: ', error)
-      throw error
-    }
+  if (!response.ok) {
+    throw new Error(`이벤트 생성 실패: ${response.status}`)
   }
+}
+
+const usePostEvent = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: postEvent,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['events'] })
+    },
+    onError: (error) => {
+      console.error('이벤트 생성 실패:', error)
+    },
+  })
+}
+  
+export default usePostEvent

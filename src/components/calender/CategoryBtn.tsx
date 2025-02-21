@@ -1,18 +1,19 @@
 'use client'
 
-import { useState } from 'react'
-
 interface CategoryBtnProps {
   title: string
+  onClick: () => void;
+  isSelected: boolean
 }
 
-export default function CategoryBtn({ title }: CategoryBtnProps) {
-  const [isClicked, setIsClicked] = useState(false)
+export default function CategoryBtn({ title, onClick, isSelected }: CategoryBtnProps) {  
   return (
     <button
       type="button"
-      onClick={() => setIsClicked(!isClicked)}
-      className={`w-[138px] h-[34px] rounded-sm border text-sm ${isClicked ? 'text-primary border-primary ' : ' border-lightgray text-gray'}`}
+      onClick={onClick}
+      className={`w-[137px] h-[34px] rounded-sm border text-sm ${
+        isSelected ? 'text-primary border-primary' : 'border-lightgray text-gray'
+      }`}
     >
       {title}
     </button>
