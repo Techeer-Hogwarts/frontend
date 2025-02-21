@@ -6,32 +6,13 @@ import { useLike } from '@/app/blog/_lib/useLike'
 import { useTapBarStore } from '@/store/tapBarStore'
 import { useInView } from 'react-intersection-observer'
 import { useCallback, useEffect, useState } from 'react'
-
-interface User {
-  name: string
-}
-
-interface Author {
-  authorName: string
-  authorImage: string
-}
-
-interface BlogProps {
-  title: string
-  id: string
-  date: string
-  url: string
-  likeCount: number
-  thumbnail: string
-  user: User
-  author: Author
-}
-
+import { BlogProps } from '@/types/BlogProps'
+const tapBatOptions = ['금주의 블로그', 'TECHEER', 'SHARED']
 export default function Page() {
   const [blog, setBlog] = useState<BlogProps[]>([])
   const [likeList, setLikeList] = useState([])
   const [message, setMessage] = useState<string | null>(null)
-  const { activeOption } = useTapBarStore()
+  const { activeOption, setActiveOption } = useTapBarStore()
   const [inputValue, setInputValue] = useState('')
   const [limit, setLimit] = useState(6)
   const { fetchLikes } = useLike()
@@ -50,7 +31,7 @@ export default function Page() {
   const getBestBlog = useCallback(async (newLimit: number) => {
     try {
       const response = await fetch(
-        `https://api.techeerzip.cloud/api/v1/blogs/best?offset=0&limit=${newLimit}`,
+        `/api/v1/blogs/best?offset=0&limit=${newLimit}`,
         {
           method: 'GET',
         },
@@ -116,17 +97,16 @@ export default function Page() {
   }
   useEffect(() => {
     setBlog([])
+    setLimit(6)
     setLikeList([])
 
     const fetchData = async () => {
       let newBlogs: BlogProps[] = []
-
       if (activeOption === '금주의 블로그') {
         newBlogs = await getBestBlog(6)
       } else if (activeOption === 'TECHEER' || activeOption === 'SHARED') {
         newBlogs = await getBlog(6, inputValue, activeOption)
       }
-
       const newLikeList: { id: string }[] = await checkLike()
       syncLikeCount(newBlogs, newLikeList)
     }
@@ -146,13 +126,17 @@ export default function Page() {
 
   useEffect(() => {
     if (!inView) return
-    if (activeOption === '금주의 블로그') {
-      getBestBlog(limit + 6)
-    } else if (activeOption === 'TECHEER' || activeOption === 'SHARED') {
-      getBlog(limit + 6, inputValue, activeOption)
+    if (inView) {
+      if (activeOption === '금주의 블로그') {
+        getBestBlog(limit + 6)
+      } else if (activeOption === 'TECHEER' || activeOption === 'SHARED') {
+        getBlog(limit + 6, inputValue, activeOption)
+      }
     }
   }, [inView, activeOption])
-
+  useEffect(() => {
+    setActiveOption(tapBatOptions[0])
+  }, [])
   return (
     <div className="flex justify-center h-auto min-h-screen">
       <div className="flex flex-col">
@@ -166,7 +150,7 @@ export default function Page() {
           <p className="text-[1.25rem]">테커인들의 블로그를 확인해보세요.</p>
         </div>
         <TapBar
-          options={['금주의 블로그', 'TECHEER', 'SHARED']}
+          options={[tapBatOptions[0], tapBatOptions[1], tapBatOptions[2]]}
           placeholder="블로그 제목을 검색해보세요"
           onSearch={handleSearch}
         />

@@ -21,14 +21,14 @@ interface Session {
   videoUrl: string
   fileUrl: string
 }
-
+const tapBatOptions = ['금주의 세션', '전체보기', '부트캠프', '파트너스']
 export default function Page() {
   const [selectedPeriodsP, setSelectedPeriodsP] = useState<string[]>([])
   const [selectedPeriodsB, setSelectedPeriodsB] = useState<string[]>([])
   const [selectedPeriodsPo, setSelectedPeriodsPo] = useState<string[]>([])
   const [likeList, setLikeList] = useState([])
   const [message, setMessage] = useState<string | null>(null)
-  const { activeOption } = useTapBarStore()
+  const { activeOption, setActiveOption } = useTapBarStore()
   const [inputValue, setInputValue] = useState('')
   const [limit, setLimit] = useState(6)
   const { fetchLikes } = useLike()
@@ -115,6 +115,9 @@ export default function Page() {
       refetch()
     }
   }, [inView])
+  useEffect(() => {
+    setActiveOption(tapBatOptions[0])
+  }, [])
   return (
     <div className="flex justify-center h-auto min-h-screen">
       <div className="flex flex-col">
@@ -136,7 +139,12 @@ export default function Page() {
           }}
         >
           <TapBar
-            options={['금주의 세션', '전체보기', '부트캠프', '파트너스']}
+            options={[
+              tapBatOptions[0],
+              tapBatOptions[1],
+              tapBatOptions[2],
+              tapBatOptions[3],
+            ]}
             placeholder="세션 제목을 검색해보세요"
             onSearch={handleSearch}
           />
