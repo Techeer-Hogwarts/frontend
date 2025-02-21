@@ -134,6 +134,9 @@ export default function ProjectDetailpage() {
       } else if (modalType === 'close') {
         // 마감하기
         await handleCloseProject(projectId)
+        queryClient.invalidateQueries({
+          queryKey: ['getStudyApplicants', projectId],
+        })
         // 새로고침
         router.refresh()
       } else if (modalType === 'cancel') {
@@ -164,7 +167,7 @@ export default function ProjectDetailpage() {
       )}
       {isApplicantModalOpen && selectedApplicant && (
         <ApplicantModal
-          applicant={studyApplicants}
+          applicant={selectedApplicant}
           onClose={handleModalClose}
         />
       )}

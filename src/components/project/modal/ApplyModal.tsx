@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import { useQueryClient } from '@tanstack/react-query'
 import { handleApplyStudy } from '@/api/project/study/study'
 import { handleApplyProject } from '@/api/project/project/project'
+import { getPositionStyle } from '@/styles/positionStyles'
 
 export default function ApplyModal() {
   const [apply, setApply] = useState('')
@@ -67,9 +68,7 @@ export default function ApplyModal() {
         router.back()
       }
     } catch (error) {
-      alert(
-        '지원에 실패했습니다. 이미 지원을 취소한 프로젝트에는 재지원할 수 없습니다.',
-      )
+      alert('지원에 실패했습니다. 모집하지 않는 포지션입니다.')
     }
   }
 
@@ -98,11 +97,14 @@ export default function ApplyModal() {
                 'FullStack',
                 'DataEngineer',
               ].map((el) => {
+                const { bg, textColor } = getPositionStyle(el)
                 return (
                   <button
                     key={el}
-                    className={`px-2 h-[1.75rem] border border-lightprimary rounded-md ${
-                      position === el ? 'bg-lightprimary' : 'bg-white'
+                    className={`px-2 h-[1.75rem]  rounded-md ${
+                      position === el
+                        ? `bg-${bg} ${textColor} mx-[1px]`
+                        : 'bg-white border border-lightprimary'
                     } `}
                     onClick={() => {
                       setPosition(el)

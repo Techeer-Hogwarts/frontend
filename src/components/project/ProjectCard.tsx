@@ -86,12 +86,12 @@ export default function ProjectCard({ team }: { team: ProjectTeam }) {
                     </div>
                   )}
                   {team.backendNum > 0 && (
-                    <div className="bg-lightblue text-blue py-[0.1rem] px-[0.8rem] rounded-lg text-[13px]">
+                    <div className="bg-lightgreen text-green py-[0.1rem] px-[0.8rem] rounded-lg text-[13px]">
                       Backend : {team.backendNum}명
                     </div>
                   )}
                   {team.devopsNum > 0 && (
-                    <div className="bg-lightblue text-blue py-[0.1rem] px-[0.8rem] rounded-lg text-[13px]">
+                    <div className="bg-lightpink text-pink py-[0.1rem] px-[0.8rem] rounded-lg text-[13px]">
                       Devops : {team.devopsNum}명
                     </div>
                   )}

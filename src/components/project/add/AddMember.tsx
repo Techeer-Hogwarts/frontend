@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { IoClose } from 'react-icons/io5'
 import { RxQuestionMarkCircled } from 'react-icons/rx'
+import { getPositionStyle } from '@/styles/positionStyles'
 
 import MemberModal from '../modal/StudyModal'
 import ProjectMemberModal from '../modal/ProjectModal'
@@ -28,11 +29,14 @@ interface AddMemberProps {
 }
 
 function Tag({ position }: TagProps) {
+  const { bg, textColor } = getPositionStyle(position)
   // 화면에 표시할 문자열
   const displayPosition = position === 'DataEngineer' ? 'Data' : position
 
   return (
-    <div className="flex items-center justify-center text-pink w-[4.5rem] bg-lightprimary rounded-md">
+    <div
+      className={`flex items-center justify-center ${textColor} w-[4.5rem] bg-${bg} rounded-md`}
+    >
       {displayPosition}
     </div>
   )

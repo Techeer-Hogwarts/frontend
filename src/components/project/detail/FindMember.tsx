@@ -1,3 +1,5 @@
+import { getPositionStyle } from '@/styles/positionStyles'
+
 export default function FindMember({ projectDetail, projectType }) {
   return (
     <div>
@@ -35,8 +37,12 @@ interface BlueBoxProps {
 }
 
 const BlueBox = ({ role, num }: BlueBoxProps) => {
+  const { bg, textColor } = getPositionStyle(role)
+
   return (
-    <div className="px-3 h-[1.4955rem] rounded-md bg-lightblue text-blue flex items-center justify-center">
+    <div
+      className={`px-3 h-[1.4955rem] rounded-md bg-${bg} ${textColor} flex items-center justify-center`}
+    >
       {role}: {num}명
     </div>
   )

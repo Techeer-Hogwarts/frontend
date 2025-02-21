@@ -103,50 +103,6 @@ export const getProjectApplicants = async (projectTeamId) => {
   }
 }
 
-// 프로젝트 지원자 수락
-export const acceptProjectApplicant = async (data) => {
-  try {
-    const response = await fetch(`/api/v1/projectTeams/applicants/accept`, {
-      method: 'PATCH',
-      credentials: 'include',
-      body: JSON.stringify(data),
-    })
-
-    if (!response.ok) {
-      throw new Error(`PATCH 요청 실패: ${response.status}`)
-    }
-
-    const result = await response.json()
-    console.log('프로젝트 지원 수락 성공:', result)
-    return result
-  } catch (error: any) {
-    console.error('프로젝트 지원 수락 중 오류 발생:', error.message)
-    throw error
-  }
-}
-
-// 프로젝트 지원 거부
-export const denyProjectApplicant = async (data) => {
-  try {
-    const response = await fetch(`/api/v1/projectTeams/applicants/reject`, {
-      method: 'PATCH',
-      credentials: 'include',
-      body: JSON.stringify(data),
-    })
-
-    if (!response.ok) {
-      throw new Error(`PATCH 요청 실패: ${response.status}`)
-    }
-
-    const result = await response.json()
-    console.log('프로젝트 지원 거절 성공:', result)
-    return result
-  } catch (error: any) {
-    console.error('프로젝트 지원 거절 중 오류 발생:', error.message)
-    throw error
-  }
-}
-
 // 프로젝트 수정하기
 export const handleEditProject = async (data, projectId) => {
   try {
@@ -284,11 +240,12 @@ export const getStudyApplicants = async (projectTeamId) => {
 }
 
 // 프로젝트 지원자 수락
-export const acceptStudyApplicant = async (data) => {
+export const acceptProjectApplicant = async (data) => {
   try {
     const response = await fetch(`/api/v1/projectTeams/applicants/accept`, {
       method: 'PATCH',
       credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     })
 
@@ -306,11 +263,12 @@ export const acceptStudyApplicant = async (data) => {
 }
 
 // 프로젝트 지원 거부
-export const denyStudyApplicant = async (data) => {
+export const denyProjectApplicant = async (data) => {
   try {
     const response = await fetch(`/api/v1/projectTeams/applicants/reject`, {
       method: 'PATCH',
       credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     })
 
