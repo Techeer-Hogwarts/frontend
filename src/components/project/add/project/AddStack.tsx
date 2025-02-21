@@ -70,11 +70,7 @@ export default function AddStack({ onUpdateStacks }: AddStackProps) {
     { name: string; options: string[] }[]
   >([])
 
-  const {
-    data: allStacks,
-    isLoading,
-    isError,
-  } = useQuery({
+  const { data: allStacks } = useQuery({
     queryKey: ['getStacks'],
     queryFn: getStacks,
   })
@@ -183,7 +179,6 @@ export default function AddStack({ onUpdateStacks }: AddStackProps) {
           기술 스택을 입력해주세요<span className="text-primary">*</span>
         </div>
         <StackDropdown
-          title="스택 선택"
           categories={categories}
           selectedOptions={selectedOptions}
           setSelectedOptions={handleSelectFromDropdown}

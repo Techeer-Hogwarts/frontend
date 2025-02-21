@@ -8,19 +8,20 @@ interface Category {
 }
 
 interface StackDropdownProps {
-  title: string
+  placeholder?: string
   categories: Category[] // 드롭다운에 표시할 카테고리별 스택 목록
   selectedOptions: string[] // 현재 체크된(선택된) 스택들
   setSelectedOptions: (options: string[]) => void
 }
 
 const StackDropdown: React.FC<StackDropdownProps> = ({
-  title,
+  placeholder = '스택을 검색하세요',
   categories,
   selectedOptions,
   setSelectedOptions,
 }) => {
   const [isOpen, setIsOpen] = useState(false)
+  const [searchText, setSearchText] = useState('')
   const dropdownRef = useRef<HTMLDivElement>(null)
 
   // 드롭다운 열기/닫기
@@ -53,34 +54,41 @@ const StackDropdown: React.FC<StackDropdownProps> = ({
     }
   }, [])
 
-  return (
-    <div ref={dropdownRef} className="relative w-[16rem]">
-      {/* 드롭다운 버튼 */}
-      <button
-        onClick={toggleDropdown}
-        className="flex w-full px-4 py-2 text-left bg-white border border-gray rounded-full justify-between items-center"
-      >
-        <span className="text-sm text-gray">{title}</span>
-        <span className="text-[10px] text-gray">▼</span>
-      </button>
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchText(e.target.value)
+    setIsOpen(true) // 입력 시 드롭다운 열림
+  }
 
-      {isOpen && (
-        <div
-          className="absolute left-0 right-0 z-10 bg-white rounded-lg shadow-lg mt-1.5 max-h-60 overflow-y-auto"
-          style={{
-            maxHeight: '200px',
-            scrollbarWidth: 'thin',
-            scrollbarColor: 'rgba(0, 0, 0, 0.2) transparent',
-          }}
-        >
-          {categories.map((category, catIndex) => (
+  // 카테고리 렌더링 함수
+  const renderDropdown = () => {
+    return (
+      <div
+        className="absolute left-0 right-0 z-10 bg-white rounded-lg shadow-lg mt-1.5 max-h-60 overflow-y-auto"
+        style={{
+          maxHeight: '200px',
+          scrollbarWidth: 'thin',
+          scrollbarColor: 'rgba(0, 0, 0, 0.2) transparent',
+        }}
+      >
+        {categories.map((category, catIndex) => {
+          // 검색어가 없으면 전체 옵션 표시, 있으면 필터링
+          const filteredOptions = searchText
+            ? category.options.filter((opt) =>
+                opt.toLowerCase().includes(searchText.toLowerCase()),
+              )
+            : category.options
+
+          // 필터 후 표시할 게 없으면 건너뛰기
+          if (filteredOptions.length === 0) return null
+
+          return (
             <div key={catIndex} className="pb-2">
-              {/* 카테고리명 (예: FRONTEND, BACKEND, DEVOPS) */}
-              <div className="px-2.5 py-2 font-bold  bg-lightprimary">
+              {/* 카테고리명 */}
+              <div className="px-2.5 py-2 font-bold bg-lightprimary">
                 {category.name}
               </div>
 
-              {category.options.map((option, index) => (
+              {filteredOptions.map((option, index) => (
                 <div
                   key={option}
                   onClick={() => handleSelect(option)}
@@ -102,15 +110,33 @@ const StackDropdown: React.FC<StackDropdownProps> = ({
                     <span className="font-medium text-primary">✓</span>
                   )}
                   {/* 항목 사이 구분선 (마지막 항목에는 표시 안 함) */}
-                  {index !== category.options.length - 1 && (
+                  {index !== filteredOptions.length - 1 && (
                     <span className="absolute bottom-0 left-0 w-full h-[1px] bg-gray"></span>
                   )}
                 </div>
               ))}
             </div>
-          ))}
-        </div>
-      )}
+          )
+        })}
+      </div>
+    )
+  }
+
+  return (
+    <div ref={dropdownRef} className="relative w-[16rem]">
+      {/*  검색용 input */}
+      <input
+        type="text"
+        className="w-full px-4 py-2 text-sm text-gray bg-white border border-gray rounded-full focus:outline-none"
+        placeholder={placeholder}
+        value={searchText}
+        onChange={handleInputChange}
+        // 클릭 시 드롭다운 열기
+        onClick={() => setIsOpen(true)}
+      />
+
+      {/* 드롭다운 */}
+      {isOpen && renderDropdown()}
     </div>
   )
 }
