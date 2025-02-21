@@ -78,22 +78,32 @@ export default function Calendar({ selectedCategories }: CalendarProps) {
             isToday ? 'border-primary bg-lightgray/30' : ''
           }`}
         >
-
           {i}
           <div className="text-xs font-medium">
-            {dayEvents.map((event) => (
-              <CalendarEventCard
-                key={`${event.id}-${event.startDate}`}
-                title={event.title}
-                startDate={event.startDate}
-                endDate={event.endDate}
-                category={event.category}
-                url={event.url}
-                className="mt-3"
-              />
-            ))}
+            {dayEvents.map((event) => {
+              const start = dayjs(event.startDate)
+              const end = dayjs(event.endDate)
+              const isSameDate = start.isSame(end, 'day')
+
+              return (
+                <CalendarEventCard
+                  key={`${event.id}-${event.startDate}`}
+                  title={event.title}
+                  startDate={event.startDate}
+                  endDate={event.endDate}
+                  category={event.category}
+                  url={event.url}
+                  className="mt-3"
+                  displayDate={
+                    isSameDate
+                      ? start.format('MM.DD')
+                      : `${start.format('MM.DD')} - ${end.format('MM.DD')}`
+                  }
+                />
+              )
+            })}
           </div>
-        </div>,
+        </div>
       )
     }
 
