@@ -19,18 +19,16 @@ export default function AddPostModal() {
   const PostBlog = async () => {
     try {
       const blogUrl = encodeURIComponent(blogLink)
-      const response = await fetch(`/api/v1/blogs?url=${blogLink}`, {
+      const response = await fetch(`/api/v1/blogs?url=${blogUrl}`, {
         method: 'POST',
         credentials: 'include',
       })
-
       if (!response.ok) {
         throw new Error('블로그 데이터를 업로드하는 데 실패했습니다.')
       }
-
-      const result = await response.json()
-      console.log('블로그가 성공적으로 추가되었습니다:', result)
-      setBlogLink('') // 입력값 초기화
+      setBlogLink('')
+      alert('블로그 글을 추가하였습니다.')
+      window.location.href = '/blog'
     } catch (err) {
       console.error('블로그 데이터 업로드 중 오류 발생:', err)
     }
