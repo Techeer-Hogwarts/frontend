@@ -1,6 +1,7 @@
 import { getPositionStyle } from '@/styles/positionStyles'
 
 export default function FindMember({ projectDetail, projectType }) {
+  console.log('2', projectDetail)
   return (
     <div>
       <div className="text-[1.125rem] font-[600] mb-3">모집 정보</div>
@@ -17,11 +18,11 @@ export default function FindMember({ projectDetail, projectType }) {
         {projectType === 'project' && projectDetail.devopsNum > 0 && (
           <BlueBox role="DevOps" num={projectDetail.devopsNum} />
         )}
-        {projectType === 'project' && projectDetail.devopsNum > 0 && (
-          <BlueBox role="FullStack" num={projectDetail.devopsNum} />
+        {projectType === 'project' && projectDetail.fullStackNum > 0 && (
+          <BlueBox role="FullStack" num={projectDetail.fullStackNum} />
         )}
-        {projectType === 'project' && projectDetail.devopsNum > 0 && (
-          <BlueBox role="DataEngineer" num={projectDetail.devopsNum} />
+        {projectType === 'project' && projectDetail.dataEngineerNum > 0 && (
+          <BlueBox role="DataEngineer" num={projectDetail.dataEngineerNum} />
         )}
       </div>
       <div className="w-[52.5rem] p-[1.25rem] whitespace-pre-line rounded-2xl border border-gray">

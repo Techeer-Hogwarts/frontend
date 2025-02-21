@@ -70,6 +70,8 @@ export default function ProjectDetailpage() {
     enabled: projectId !== null,
   })
 
+  console.log(projectDetails)
+
   // (2) 프로젝트 지원자 (팀원만 조회 가능하게 프론트에서 처리해야함)
   const { data: studyApplicants } = useQuery({
     queryKey: ['getStudyApplicants', projectId],

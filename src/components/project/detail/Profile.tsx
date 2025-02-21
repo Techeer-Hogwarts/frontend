@@ -71,7 +71,7 @@ export default function Profile({ projectDetail }: ProfileProps) {
           width={254}
           height={254}
           alt="프로젝트 메인 이미지"
-          className="rounded-2xl"
+          className="rounded-2xl object-cover w-[254px] h-[254px]"
         />
       )}
 

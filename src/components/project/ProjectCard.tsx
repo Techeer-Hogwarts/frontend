@@ -34,6 +34,8 @@ export default function ProjectCard({ team }: { team: ProjectTeam }) {
     console.log(team)
   }
 
+  let count = 0
+
   return (
     <Link
       href={`/project/detail/project/${team.id}`}
@@ -52,26 +54,14 @@ export default function ProjectCard({ team }: { team: ProjectTeam }) {
             alt="프로젝트 메인 이미지"
             width={125}
             height={125}
-            className="rounded-lg"
+            className="rounded-lg object-cover w-[125px] h-[125px]"
           />
         </div>
 
-        <div className="h-[7rem] max-h-[7rem] min-h-[7rem] min-w-28 flex flex-col justify-start ">
-          <div className="mb-4 ">
-            {/* 프로젝트 제목 */}
-            <div className="max-w-28 truncate font-bold text-[1.01688rem] gap-[2.44rem]">
-              {team.name}
-            </div>
-
-            {team.frontendNum > 0 &&
-            team.backendNum > 0 &&
-            team.devopsNum > 0 ? (
-              <div className="h-5"></div>
-            ) : (
-              <p className="text-[0.75rem] max-w-28 max-h-8 truncate">
-                {team.projectExplain}
-              </p>
-            )}
+        <div className="min-w-28 flex flex-col justify-start ">
+          {/* 프로젝트 제목 */}
+          <div className="max-w-28 truncate font-bold text-[1.01688rem] mb-11">
+            {team.name}
           </div>
 
           <div className="flex max-h-14 min-h-14 h-14">
@@ -79,22 +69,47 @@ export default function ProjectCard({ team }: { team: ProjectTeam }) {
             {team.isRecruited ? (
               <>
                 {/* 인원모집 */}
-                <div className=" flex flex-col justify-end gap-2">
-                  {team.frontendNum > 0 && (
-                    <div className="bg-lightblue text-blue py-[0.1rem] px-[0.8rem] rounded-lg text-[13px]">
-                      Frontend : {team.frontendNum}명
-                    </div>
-                  )}
-                  {team.backendNum > 0 && (
-                    <div className="bg-lightgreen text-green py-[0.1rem] px-[0.8rem] rounded-lg text-[13px]">
-                      Backend : {team.backendNum}명
-                    </div>
-                  )}
-                  {team.devopsNum > 0 && (
-                    <div className="bg-lightpink text-pink py-[0.1rem] px-[0.8rem] rounded-lg text-[13px]">
-                      Devops : {team.devopsNum}명
-                    </div>
-                  )}
+                <div className="flex flex-col justify-end gap-2">
+                  {team.frontendNum > 0 &&
+                    count < 3 &&
+                    (count++,
+                    (
+                      <div className="bg-lightblue text-blue py-[0.1rem] px-[0.8rem] rounded-lg text-[13px]">
+                        Frontend : {team.frontendNum}명
+                      </div>
+                    ))}
+                  {team.backendNum > 0 &&
+                    count < 3 &&
+                    (count++,
+                    (
+                      <div className="bg-lightgreen text-green py-[0.1rem] px-[0.8rem] rounded-lg text-[13px]">
+                        Backend : {team.backendNum}명
+                      </div>
+                    ))}
+                  {team.devopsNum > 0 &&
+                    count < 3 &&
+                    (count++,
+                    (
+                      <div className="bg-lightpink text-pink py-[0.1rem] px-[0.8rem] rounded-lg text-[13px]">
+                        DevOps : {team.devopsNum}명
+                      </div>
+                    ))}
+                  {team.fullStackNum > 0 &&
+                    count < 3 &&
+                    (count++,
+                    (
+                      <div className="bg-lightyellow text-yellow py-[0.1rem] px-[0.8rem] rounded-lg text-[13px]">
+                        FullStack : {team.fullStackNum}명
+                      </div>
+                    ))}
+                  {team.dataEngineerNum > 0 &&
+                    count < 3 &&
+                    (count++,
+                    (
+                      <div className="bg-lightpurple text-purple py-[0.1rem] px-[0.8rem] rounded-lg text-[13px]">
+                        Data : {team.dataEngineerNum}명
+                      </div>
+                    ))}
                 </div>
               </>
             ) : (
