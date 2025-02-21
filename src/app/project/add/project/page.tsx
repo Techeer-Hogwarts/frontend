@@ -41,6 +41,17 @@ export default function AddProjectPage() {
   }
 
   const handleSubmit = async () => {
+    if (!projectData.name.trim()) {
+      alert('프로젝트 이름을 입력해주세요.')
+      return
+    }
+
+    // (B) 대표 이미지 체크
+    if (!projectData.mainImageFile) {
+      alert('대표 이미지를 업로드해주세요.')
+      return
+    }
+
     const dataToSend = { ...projectData }
 
     if (dataToSend.projectMember && Array.isArray(dataToSend.projectMember)) {

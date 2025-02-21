@@ -10,15 +10,16 @@ import { BiSolidPencil } from 'react-icons/bi'
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import { useQueryClient } from '@tanstack/react-query'
+import Lottie from 'react-lottie-player'
+import loading from '../../../../../../public/loading.json'
 
-import ApplyModal from '@/components/project/modal/ApplyModal'
-import ProjectMemberModal from '@/components/project/modal/ProjectModal'
 import {
   getProjectDetail,
   deleteProjectTeam,
   getStudyApplicants,
   handleCloseProject,
-  denyProjectApplicant,
+  handleDenyProject,
 } from '@/api/project/project/project'
 import { useQuery } from '@tanstack/react-query'
 import BaseModal from '@/components/project/modal/BaseModal'
@@ -39,15 +40,19 @@ export default function ProjectDetailpage() {
   }
 
   const router = useRouter()
+  const queryClient = useQueryClient()
+
   const [projectId, setProjectId] = useState<number | null>(null)
   const [projectType, setProjectType] = useState<string | null>(null)
 
   useEffect(() => {
     const storedId = localStorage.getItem('projectId')
     const storedProjectType = localStorage.getItem('projectType')
+
     if (storedId) {
       setProjectId(Number(storedId))
     }
+
     if (storedProjectType) {
       setProjectType(storedProjectType)
     }
@@ -65,11 +70,11 @@ export default function ProjectDetailpage() {
     enabled: projectId !== null,
   })
 
-  // (2) 프로젝트 지원자 (팀원만 조회 가능)
+  // (2) 프로젝트 지원자 (팀원만 조회 가능하게 프론트에서 처리해야함)
   const { data: studyApplicants } = useQuery({
     queryKey: ['getStudyApplicants', projectId],
     queryFn: () => getStudyApplicants(projectId),
-    enabled: projectId !== null, // 필요하다면 팀원 여부에 따라 enabled 제어
+    enabled: projectId !== null,
   })
 
   // 지원자 모달
@@ -99,10 +104,22 @@ export default function ProjectDetailpage() {
 
   // 로딩 중
   if (!projectDetails) {
-    return <div>Loading...</div>
+    return (
+      <div className="flex flex-col items-center justify-center h-[800px]">
+        <Lottie
+          animationData={loading}
+          loop={true}
+          play
+          style={{ width: 200, height: 200 }}
+        />
+      </div>
+    )
   }
 
   const { isRecruited } = projectDetails
+
+  // 현재 사용자가 이미 지원자인지 팒별
+  const isApplicant = studyApplicants?.some((app) => app.userId === user?.id)
 
   // 모달 확인 클릭
   const handleModalConfirm = async () => {
@@ -110,17 +127,24 @@ export default function ProjectDetailpage() {
 
     try {
       if (modalType === 'delete') {
+        // 삭제하기
         await deleteProjectTeam(projectId)
-      }
-      if (modalType === 'close') {
+        // 삭제 후 /project 페이지로 이동
+        router.push('/project')
+      } else if (modalType === 'close') {
+        // 마감하기
         await handleCloseProject(projectId)
+        // 새로고침
+        router.refresh()
+      } else if (modalType === 'cancel') {
+        // 지원 취소
+        await handleDenyProject(projectId)
+        queryClient.invalidateQueries({
+          queryKey: ['getStudyApplicants', projectId],
+        })
+        // 새로고침
+        router.refresh()
       }
-      if (modalType === 'cancel') {
-        await denyProjectApplicant(projectId)
-      }
-
-      // 새로고침
-      router.refresh()
     } catch (error) {
       console.error(error)
     } finally {
@@ -184,12 +208,8 @@ export default function ProjectDetailpage() {
 
       {/* 오른쪽 영역 */}
       <div className="flex flex-col gap-7">
-        {/* (B) 팀원 목록 (이미지 표시) */}
         <Member members={projectDetails?.projectMember} />
-
-        {/* (C) 스택 목록 (teamStacks) */}
         <Stack stacks={projectDetails?.teamStacks} />
-
         {isRecruited && (
           <FindMember
             projectDetail={projectDetails}
@@ -202,28 +222,35 @@ export default function ProjectDetailpage() {
           }
         />
 
-        {/* (D) 팀원이 아니고 isRecruited → 지원하기/취소하기 */}
+        {/* 
+          (A) 팀원이 아니고 isRecruited === true → 
+          - 이미 지원자(isApplicant === true)면 '지원 취소하기'만 
+          - 아니면 '지원하기'만
+        */}
         {!isTeamMember && isRecruited && (
           <>
-            <button
-              onClick={handleModal}
-              className="w-full h-[2.16044rem] border border-primary text-primary rounded-md hover:shadow-md"
-            >
-              지원하기
-            </button>
-            <button
-              onClick={() => {
-                setIsModalOpen(true)
-                setModalType('cancel')
-              }}
-              className="w-full h-[2.16044rem] border border-primary text-primary rounded-md hover:shadow-md"
-            >
-              지원 취소하기
-            </button>
+            {isApplicant ? (
+              <button
+                onClick={() => {
+                  setIsModalOpen(true)
+                  setModalType('cancel')
+                }}
+                className="w-full h-[2.16044rem] border border-primary text-primary rounded-md hover:shadow-md"
+              >
+                지원 취소하기
+              </button>
+            ) : (
+              <button
+                onClick={handleModal}
+                className="w-full h-[2.16044rem] border border-primary text-primary rounded-md hover:shadow-md"
+              >
+                지원하기
+              </button>
+            )}
           </>
         )}
 
-        {/* (E) 팀원이면서 isRecruited → 마감하기 */}
+        {/* 팀원이면서 isRecruited → 마감하기 */}
         {isTeamMember && isRecruited && (
           <button
             onClick={() => {

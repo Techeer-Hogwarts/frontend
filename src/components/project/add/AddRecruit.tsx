@@ -132,7 +132,7 @@ export default function AddRecruit({
                   }
                 />
                 <RecruitInput
-                  role="Full Stack"
+                  role="FullStack"
                   placeholder="1명"
                   value={fullStackNum || ''}
                   onChange={(event) =>
@@ -140,7 +140,7 @@ export default function AddRecruit({
                   }
                 />
                 <RecruitInput
-                  role="Data Engineer"
+                  role="DataEngineer"
                   placeholder="1명"
                   value={dataEngineerNum || ''}
                   onChange={(event) =>

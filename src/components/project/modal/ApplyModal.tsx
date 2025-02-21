@@ -3,8 +3,7 @@
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-
-// 이미 작성된 API
+import { useQueryClient } from '@tanstack/react-query'
 import { handleApplyStudy } from '@/api/project/study/study'
 import { handleApplyProject } from '@/api/project/project/project'
 
@@ -13,6 +12,7 @@ export default function ApplyModal() {
   const [position, setPosition] = useState('')
   const [projectType, setProjectType] = useState<null | string>(null)
   const router = useRouter()
+  const queryClient = useQueryClient()
 
   // 로컬 스토리지에서 projectId 가져오기
   const projectId = Number(localStorage.getItem('projectId'))
@@ -48,7 +48,7 @@ export default function ApplyModal() {
         // 원하는 후속 동작 (예: 페이지 이동, 모달 닫기)
         router.back()
 
-      // 2) 프로젝트 지원 로직
+        // 2) 프로젝트 지원 로직
       } else if (projectType === 'project') {
         if (!position) {
           alert('지원하고자 하는 포지션을 선택해주세요.')
@@ -61,12 +61,15 @@ export default function ApplyModal() {
         }
         const result = await handleApplyProject(data)
         console.log('프로젝트 지원 성공:', result)
-        // 원하는 후속 동작 (예: 페이지 이동, 모달 닫기)
+        queryClient.invalidateQueries({
+          queryKey: ['getStudyApplicants', projectId],
+        })
         router.back()
       }
     } catch (error) {
-      alert('지원에 실패했습니다. 다시 시도해주세요.')
-      console.error(error)
+      alert(
+        '지원에 실패했습니다. 이미 지원을 취소한 프로젝트에는 재지원할 수 없습니다.',
+      )
     }
   }
 
@@ -88,7 +91,13 @@ export default function ApplyModal() {
           <div className="mb-4">
             <p className="text-left mb-2">지원하고자하는 포지션을 선택주세요</p>
             <div className="w-full flex justify-between mb-[2.5rem] gap-2">
-              {['Frontend', 'Backend', 'DevOps', 'Full Stack', 'Data Engineer'].map((el) => {
+              {[
+                'Frontend',
+                'Backend',
+                'DevOps',
+                'FullStack',
+                'DataEngineer',
+              ].map((el) => {
                 return (
                   <button
                     key={el}

@@ -75,12 +75,16 @@ const BigMemberBox = ({
 
         {/* 리더 역할 토글 버튼 */}
         <div className="w-[56px] mt-2">
-          <Btn text="Leader" onClick={handleToggleLeader} isSelected={isLeader} />
+          <Btn
+            text="Leader"
+            onClick={handleToggleLeader}
+            isSelected={isLeader}
+          />
         </div>
 
         {/* 스택 역할 선택 (최대 1개) */}
         <div className="flex gap-1 mt-1">
-          {['Frontend', 'Backend', 'DevOps', 'Full Stack', 'Data Engineer'].map(
+          {['Frontend', 'Backend', 'DevOps', 'FullStack', 'DataEngineer'].map(
             (role, index) => (
               <Btn
                 key={index}

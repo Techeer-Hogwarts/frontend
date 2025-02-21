@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
+import { RxQuestionMarkCircled } from 'react-icons/rx'
 
 interface MemberProps {
   members: Array<{
@@ -36,7 +37,10 @@ export default function Member({ members }: MemberProps) {
   return (
     <div>
       <div className="text-[1.125rem] font-[600] mb-3">팀원</div>
-      <div className="flex flex-wrap gap-3 w-[52.5rem] min-w-[52.5rem] h-[10rem] p-[1.25rem] rounded-2xl border border-gray">
+      <div className="flex justify-start gap-1 text-xs items-center text-gray mb-1">
+        <RxQuestionMarkCircled /> Data: DataEngineer
+      </div>
+      <div className="grid grid-cols-9 gap-3 w-[52.5rem] min-w-[52.5rem] h-[10rem] px-[1.875rem] py-[1.5rem] rounded-2xl border border-gray">
         {/* 멤버카드 */}
         {members?.map((member, index) => (
           <div key={member.name}>
@@ -50,7 +54,7 @@ export default function Member({ members }: MemberProps) {
               />
               {member.isLeader && (
                 <div
-                  className={`absolute ${projectType === 'study' ? 'bottom-8' : 'bottom-11'} w-[4.75rem] h-[1.5rem] bg-black bg-opacity-40 flex items-center justify-center rounded-b-md`}
+                  className={`absolute ${projectType === 'study' ? 'bottom-8' : 'bottom-[45px]'} w-[4.75rem] h-[1.5rem] bg-black bg-opacity-40 flex items-center justify-center rounded-b-md`}
                 >
                   <span className="text-white text-sm font-semibold">
                     Leader
@@ -59,13 +63,14 @@ export default function Member({ members }: MemberProps) {
               )}
               <div>{member.name}</div>
               {projectType === 'project' && (
-                <div
-                  className={`px-1 h-[1.75rem] rounded-md bg-lightprimary text-pink text-[0.9375rem] text-center`}
-                >
-                  {member.teamRole}
+                <div className="w-[4.5rem] rounded-md bg-lightprimary text-pink text-center">
+                  {member.teamRole === 'DataEngineer'
+                    ? 'Data'
+                    : member.teamRole}
                 </div>
               )}
             </div>
+
             {/* 줄바꿈 시 구분선 추가 */}
             {(index + 1) % 9 === 0 && index + 1 !== members.length && (
               <div className="w-full border-b border-lightgray my-2"></div>

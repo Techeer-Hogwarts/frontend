@@ -55,7 +55,7 @@ export default function Login() {
           setIsLoggedIn(true)
           setMessage('로그인이 완료되었습니다.')
           setIsError(false)
-          router.push('/project')
+          router.push('/')
         } else {
           setIsError(true)
           setMessage('로그인 응답이 예상과 다릅니다.')

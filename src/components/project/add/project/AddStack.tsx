@@ -178,7 +178,7 @@ export default function AddStack({ onUpdateStacks }: AddStackProps) {
 
   return (
     <div>
-      <div className="flex items-center mb-4 gap-2 justify-between">
+      <div className="flex items-center mb-2 gap-2 justify-between">
         <div className="flex items-center font-medium text-gray">
           기술 스택을 입력해주세요<span className="text-primary">*</span>
         </div>

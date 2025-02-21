@@ -29,7 +29,7 @@ interface AddMemberProps {
 
 function Tag({ position }: TagProps) {
   // 화면에 표시할 문자열
-  const displayPosition = position === 'Data Engineer' ? 'Data' : position
+  const displayPosition = position === 'DataEngineer' ? 'Data' : position
 
   return (
     <div className="flex items-center justify-center text-pink w-[4.5rem] bg-lightprimary rounded-md">
@@ -103,11 +103,11 @@ export default function AddMember({
           <MemberModal onClose={handleCloseModal} onSave={handleSaveMembers} />
         ))}
 
-      <div className="font-medium text-gray mb-3">
+      <div className="font-medium text-gray mb-2">
         팀원을 입력해주세요<span className="text-primary">*</span>
       </div>
       <div className="flex justify-start gap-1 text-xs items-center text-gray mb-1">
-        <RxQuestionMarkCircled /> Data: Data Engineer
+        <RxQuestionMarkCircled /> Data: DataEngineer
       </div>
 
       {/* (A) Grid로 9개 컬럼 지정 → 9명 초과 시 자동으로 2행, 3행... */}

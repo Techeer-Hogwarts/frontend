@@ -16,10 +16,10 @@ export default function FindMember({ projectDetail, projectType }) {
           <BlueBox role="DevOps" num={projectDetail.devopsNum} />
         )}
         {projectType === 'project' && projectDetail.devopsNum > 0 && (
-          <BlueBox role="Full Stack" num={projectDetail.devopsNum} />
+          <BlueBox role="FullStack" num={projectDetail.devopsNum} />
         )}
         {projectType === 'project' && projectDetail.devopsNum > 0 && (
-          <BlueBox role="Data Engineer" num={projectDetail.devopsNum} />
+          <BlueBox role="DataEngineer" num={projectDetail.devopsNum} />
         )}
       </div>
       <div className="w-[52.5rem] p-[1.25rem] whitespace-pre-line rounded-2xl border border-gray">

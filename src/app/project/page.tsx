@@ -8,6 +8,8 @@ import TapBar from '@/components/common/TapBar'
 import Dropdown from '@/components/common/Dropdown'
 import AddBtn from '../../components/project/add/AddBtn'
 import { useQueries } from '@tanstack/react-query'
+import Lottie from 'react-lottie-player'
+import loading from '../../../public/loading.json'
 
 import { getAllTeams } from '@/api/project/common'
 import { getMyInfo } from '@/api/project/common'
@@ -79,6 +81,21 @@ export default function Project() {
     sessionStorage.setItem('searchQuery', query)
     setInputValue(query)
   }
+
+  // 로딩 중
+  if (!allTeams) {
+    return (
+      <div className="flex flex-col items-center justify-center h-[800px]">
+        <Lottie
+          animationData={loading}
+          loop={true}
+          play
+          style={{ width: 200, height: 200 }}
+        />
+      </div>
+    )
+  }
+
   return (
     <div className="max-w-[1200px] w-[1200px] mt-[3.56rem] items-center">
       <div className="flex justify-between mb-[2.84rem]">

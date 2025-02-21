@@ -240,15 +240,12 @@ export const handleApplyProject = async (data) => {
 }
 
 // 프로젝트 지원 취소하기
-export const handleDenyProject = async (projectTeamId) => {
+export const handleDenyProject = async (projectId) => {
   try {
-    const response = await fetch(
-      `/api/v1/projectTeams/${projectTeamId}/cancel`,
-      {
-        method: 'PATCH',
-        credentials: 'include',
-      },
-    )
+    const response = await fetch(`/api/v1/projectTeams/${projectId}/cancel`, {
+      method: 'PATCH',
+      credentials: 'include',
+    })
 
     if (!response.ok) {
       throw new Error(`PATCH 요청 실패: ${response.status}`)
