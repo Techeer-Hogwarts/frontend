@@ -37,7 +37,8 @@ export default function CalendarEventCard({ title, startDate, endDate, category,
   }
 
   return (
-    <div 
+    <div
+    role="button"
     className={`flex cursor-pointer ${className}`}
     onClick={handleClick}>
       <div className={`rounded-full w-[9px] h-[9px] mr-2 mt-1 ${getCategoryColor()}`} />

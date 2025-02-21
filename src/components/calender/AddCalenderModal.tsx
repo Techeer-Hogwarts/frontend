@@ -114,6 +114,7 @@ export default function AddCalenderModal({ handleBack }: AddCalenderModalProps) 
           <div className="flex relative gap-[2px]">
             <div className="relative mt-1">
             <div
+                role="button"
                 className="w-[207px] rounded-sm pl-2 text-sm outline-none h-[34px] border border-lightgray text-[#757575] flex items-center cursor-pointer"
                 onClick={() => {
                   setStartDateOpen(!startDateOpen)
@@ -138,6 +139,7 @@ export default function AddCalenderModal({ handleBack }: AddCalenderModalProps) 
             </div>
             <div className="relative mt-1">
               <div
+                role="button"
                 className="w-[207px] rounded-sm pl-2 text-sm outline-none h-[34px] text-[#757575] border border-lightgray flex items-center cursor-pointer"
                 onClick={() => {
                   setEndDateOpen(!endDateOpen)
