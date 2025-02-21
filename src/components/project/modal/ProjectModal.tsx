@@ -5,6 +5,7 @@ import Image from 'next/image'
 import BigMemberBox from './BigMemberBox'
 import { useQuery } from '@tanstack/react-query'
 import { getAllUsers } from '@/api/project/common'
+import { useAuthStore } from '@/store/authStore'
 
 interface Member {
   id: number
@@ -18,33 +19,80 @@ interface Member {
 interface MemberModalProps {
   onClose: () => void
   onSave: (selectedMembers: Member[]) => void
+  existingMembers?: { userId?: number; id?: number }[] // 상위에서 내려주는
 }
 
 export default function ProjectMemberModal({
   onClose,
   onSave,
+  existingMembers = [],
 }: MemberModalProps) {
   const dropDownRef = useRef<HTMLInputElement>(null)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const [name, setName] = useState('')
   const [members, setMembers] = useState<Member[]>([])
 
+  // (A) 현재 사용자
+  const { user } = useAuthStore()
+
+  // (B) 모든 사용자 목록
   const { data: allUsers } = useQuery({
     queryKey: ['getAllUsers'],
     queryFn: getAllUsers,
   })
 
-  // 입력 필드 onChange
-  const handleName = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setName(e.target.value)
-    setIsDropdownOpen(true)
-  }
+  // (C) 모달 열릴 때: 현재 사용자가 상위 컴포넌트에 없으면 자동 추가
+  useEffect(() => {
+    if (user) {
+      // 상위에서 이미 user를 추가했는지 확인
+      const alreadyExists = existingMembers.some(
+        (m) => m.userId === user.id || m.id === user.id,
+      )
+      if (!alreadyExists) {
+        // 모달 내부 members에도 없으면 추가
+        setMembers((prev) => {
+          const inModal = prev.some((mm) => mm.id === user.id)
+          if (!inModal) {
+            return [
+              ...prev,
+              {
+                id: user.id,
+                name: user.name,
+                year: user.year,
+                profileImage: user.profileImage,
+                isLeader: true, // 원하는 초기값
+                teamRole: '',
+              },
+            ]
+          }
+          return prev
+        })
+      }
+    }
+  }, [user, existingMembers])
 
-  // 바깥 클릭 시 드롭다운 닫기
+  // (D) 드롭다운 필터
+  const filteredUsers = allUsers?.filter((u) => {
+    // 1) 이미 모달 내부(members)에 추가된 유저는 제외
+    const inModal = members.some((m) => m.id === u.id)
+    if (inModal) return false
+
+    // 2) 이미 상위에 존재(existingMembers)하면 제외
+    const inExisting = existingMembers.some(
+      (em) => em.userId === u.id || em.id === u.id,
+    )
+    if (inExisting) return false
+
+    // 3) 이름 검색
+    return u.name.toLowerCase().includes(name.toLowerCase())
+  })
+
+  // 바깥 클릭 시 닫기
   useEffect(() => {
     const outSideClick = (e: MouseEvent) => {
-      if (!dropDownRef.current?.contains(e.target as Node))
+      if (!dropDownRef.current?.contains(e.target as Node)) {
         setIsDropdownOpen(false)
+      }
     }
     if (!isDropdownOpen) return
     document.addEventListener('click', outSideClick)
@@ -53,15 +101,10 @@ export default function ProjectMemberModal({
     }
   }, [isDropdownOpen])
 
-  // 드롭다운용 필터
-  const filteredUsers = allUsers?.filter((user) =>
-    user.name.toLowerCase().includes(name.toLowerCase()),
-  )
-
   // 멤버 추가
-  const handleAddMember = (member: Member) => {
-    if (!members.some((m) => m.id === member.id)) {
-      setMembers((prev) => [...prev, { ...member, isLeader: false }])
+  const handleAddMember = (user: Member) => {
+    if (!members.some((m) => m.id === user.id)) {
+      setMembers((prev) => [...prev, { ...user, isLeader: false }])
     }
     setIsDropdownOpen(false)
   }
@@ -71,7 +114,7 @@ export default function ProjectMemberModal({
     setMembers((prev) => prev.filter((m) => m.name !== memberName))
   }
 
-  // 리더 토글 & 팀 역할 업데이트
+  // 리더 & 역할 업데이트
   const handleUpdateMember = (
     id: number,
     newIsLeader: boolean,
@@ -84,7 +127,7 @@ export default function ProjectMemberModal({
     )
   }
 
-  // 저장 버튼
+  // 저장
   const handleSave = () => {
     onSave(members)
   }
@@ -103,11 +146,15 @@ export default function ProjectMemberModal({
             type="text"
             className="w-full h-[2rem] border border-gray rounded-sm px-2 focus:outline-none"
             value={name}
-            onChange={handleName}
+            onChange={(e) => {
+              setName(e.target.value)
+              setIsDropdownOpen(true)
+            }}
             onClick={() => setIsDropdownOpen((prev) => !prev)}
             ref={dropDownRef}
           />
 
+          {/* 드롭다운 */}
           {isDropdownOpen && filteredUsers && filteredUsers.length > 0 && (
             <div
               className="absolute w-[32.375rem] bg-white border border-gray mt-1 max-h-48 overflow-y-auto z-10 rounded-sm"
@@ -116,22 +163,22 @@ export default function ProjectMemberModal({
                 scrollbarColor: 'rgba(0, 0, 0, 0.2) transparent',
               }}
             >
-              {filteredUsers.map((user) => (
+              {filteredUsers.map((u) => (
                 <div
-                  key={user.id}
+                  key={u.id}
                   className="flex items-center gap-2 p-2 cursor-pointer hover:bg-lightprimary"
-                  onClick={() => handleAddMember(user)}
+                  onClick={() => handleAddMember(u)}
                 >
                   <Image
-                    src={user.profileImage || '/default-profile.png'}
+                    src={u.profileImage || '/default-profile.png'}
                     alt="Profile"
                     width={24}
                     height={24}
                     className="w-[24px] h-[24px] rounded-md bg-lightpink"
                   />
                   <div className="flex gap-3 items-center">
-                    <p>{user.name}</p>
-                    <p className="text-gray text-xs">{user.year}기</p>
+                    <p>{u.name}</p>
+                    <p className="text-gray text-xs">{u.year}기</p>
                   </div>
                 </div>
               ))}
@@ -140,13 +187,7 @@ export default function ProjectMemberModal({
         </div>
 
         {/* 멤버 목록 */}
-        <div
-          className="flex-1 overflow-y-auto mb-6"
-          style={{
-            scrollbarWidth: 'thin',
-            scrollbarColor: 'rgba(0, 0, 0, 0.2) transparent',
-          }}
-        >
+        <div className="flex-1 overflow-y-auto mb-6">
           <div className="flex flex-col gap-2">
             {members.length > 0 ? (
               members.map((member) => (

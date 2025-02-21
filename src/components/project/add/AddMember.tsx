@@ -9,6 +9,9 @@ import { getPositionStyle } from '@/styles/positionStyles'
 import MemberModal from '../modal/StudyModal'
 import ProjectMemberModal from '../modal/ProjectModal'
 
+// 예: 전역 store로부터 현재 사용자 user를 가져온다고 가정
+import { useAuthStore } from '@/store/authStore'
+
 interface TagProps {
   position: string
 }
@@ -30,7 +33,6 @@ interface AddMemberProps {
 
 function Tag({ position }: TagProps) {
   const { bg, textColor } = getPositionStyle(position)
-  // 화면에 표시할 문자열
   const displayPosition = position === 'DataEngineer' ? 'Data' : position
 
   return (
@@ -49,6 +51,8 @@ export default function AddMember({
   const [projectType, setProjectType] = useState<null | string>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
 
+  const { user } = useAuthStore() // 현재 사용자 정보
+
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const storedProjectType = localStorage.getItem('projectType')
@@ -66,9 +70,8 @@ export default function AddMember({
     setIsModalOpen(false)
   }
 
-  // 모달에서 "저장하기" 눌렀을 때 → 부모로 members 전달
+  // (A) 모달에서 "저장하기" 눌렀을 때 → 부모로 members 전달
   const handleSaveMembers = (selectedMembers: Member[]) => {
-    // 중복 제거 로직
     const merged = [
       ...projectMember,
       ...selectedMembers
@@ -84,14 +87,13 @@ export default function AddMember({
           name: member.name,
         })),
     ]
-
     onUpdateMember && onUpdateMember(merged as Member[])
     setIsModalOpen(false)
   }
 
-  // 멤버 삭제 함수
-  const handleDelete = (id: number) => {
-    const filtered = projectMember.filter((member) => member.id !== id)
+  // (B) 멤버 삭제
+  const handleDelete = (userId: number) => {
+    const filtered = projectMember.filter((member) => member.userId !== userId)
     onUpdateMember && onUpdateMember(filtered)
   }
 
@@ -102,6 +104,7 @@ export default function AddMember({
           <ProjectMemberModal
             onClose={handleCloseModal}
             onSave={handleSaveMembers}
+            existingMembers={projectMember}
           />
         ) : (
           <MemberModal onClose={handleCloseModal} onSave={handleSaveMembers} />
@@ -114,16 +117,14 @@ export default function AddMember({
         <RxQuestionMarkCircled /> Data: DataEngineer
       </div>
 
-      {/* (A) Grid로 9개 컬럼 지정 → 9명 초과 시 자동으로 2행, 3행... */}
       <div className="grid grid-cols-9 items-start gap-3 w-[52.5rem] px-[1.875rem] py-[1.5rem] rounded-2xl border border-gray">
         {projectMember.map((member) => (
           <div
             key={member.userId}
             className="relative flex flex-col items-center"
           >
-            {/* X 버튼 */}
             <button
-              onClick={() => handleDelete(member.id!)}
+              onClick={() => handleDelete(member.userId!)}
               className="w-[0.8rem] h-[0.8rem] absolute top-[-5px] right-[-5px] bg-primary text-white rounded-full flex items-center justify-center"
             >
               <IoClose />

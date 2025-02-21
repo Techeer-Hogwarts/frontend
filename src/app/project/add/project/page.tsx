@@ -41,6 +41,7 @@ export default function AddProjectPage() {
   }
 
   const handleSubmit = async () => {
+    console.log(projectData)
     if (!projectData.name.trim()) {
       alert('프로젝트 이름을 입력해주세요.')
       return
