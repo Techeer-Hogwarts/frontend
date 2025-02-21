@@ -53,7 +53,12 @@ export default function NavBar() {
   }, [checkAuth])
 
   const toggleSearch = () => {
-    setIsSearchOpen(!isSearchOpen)
+    if (isSearchOpen) {
+      setIsSearchOpen(false)
+      setQuery('')
+    } else {
+      setIsSearchOpen(true)
+    }
   }
 
   useEffect(() => {
@@ -61,8 +66,6 @@ export default function NavBar() {
     if (debouncedQuery) {
       const fetchBasicResults = async () => {
         const data = await getBasicSearchResults(debouncedQuery)
-        // console.log('data:', data) // 데이터 확인
-        // console.log('현재검색결과:', basicResults)
         setBasicResults(data.results)
       }
       fetchBasicResults()
@@ -72,10 +75,8 @@ export default function NavBar() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (query) {
-      // /api/v2/search/final 요청
       const data = await getFinalSearchResults(query)
       setFinalResults(data)
-      // 결과를 페이지에 전달하는 방식으로 리디렉션
       router.push(`/search/final?query=${query}`)
     }
   }
@@ -87,6 +88,7 @@ export default function NavBar() {
           searchRef.current &&
           !searchRef.current.contains(event.target as Node)
         ) {
+          setQuery('')
           setIsSearchOpen(false) // 자동완성 창 닫기
         }
       }, 0)
@@ -153,7 +155,7 @@ export default function NavBar() {
         {/* 돋보기 및 기타 아이콘 */}
         <div className="flex items-center">
           {/* 검색 영역 */}
-          <div className="p-2">
+          <div className="p-2 relative">
             <form onSubmit={handleSubmit} className="flex items-center">
               <button
                 type="button"
@@ -173,17 +175,21 @@ export default function NavBar() {
               </button>
             </form>
             {/* 자동완성 결과 출력 */}
-            {debouncedQuery && basicResults.length > 0 && (
-              <ul className="absolute bg-white border border-gray rounded-lg mt-1 w-[18rem] max-h-[17rem] overflow-y-auto z-10">
-                {basicResults.map((result, index) => (
-                  <li
-                    key={index}
-                    className="p-2 hover:bg-lightgray cursor-pointer"
-                    onClick={() => handleSelectResult(result.title)} // 클릭 시 자동 입력 & 검색 실행
-                  >
-                    {result.title}
-                  </li>
-                ))}
+            {debouncedQuery && (
+              <ul className="absolute bg-white border border-black rounded-lg mt-1 w-[314px] max-h-[17rem] overflow-y-auto z-10">
+                {basicResults && basicResults.length > 0 ? (
+                  basicResults.map((result, index) => (
+                    <li
+                      key={index}
+                      className="p-1 hover:bg-lightgray cursor-pointer"
+                      onClick={() => handleSelectResult(result.title)} // 클릭 시 자동 입력 & 검색 실행
+                    >
+                      {result.title}
+                    </li>
+                  ))
+                ) : (
+                  <li className="p-2 text-darkgray">검색 결과 없음</li>
+                )}
               </ul>
             )}
           </div>
