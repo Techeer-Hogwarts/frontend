@@ -14,6 +14,7 @@ export interface BlogPostProps {
   likeCount: number
   image: string
   likeList: string[]
+  // authorImage: string
   onDelete: (id: string) => void
 }
 
@@ -26,6 +27,7 @@ export default function BlogPost({
   url,
   image,
   onDelete,
+  // authorImage,
   likeList,
 }: BlogPostProps) {
   const [showModal, setShowModal] = useState(false)
@@ -49,6 +51,7 @@ export default function BlogPost({
       console.error('블로그 조회수 업데이트 중 오류 발생:', err)
     }
   }
+  const formattedDate = date.split('T')[0]
   const clickLike = async () => {
     setIsLike(!isLike)
     try {
@@ -107,10 +110,14 @@ export default function BlogPost({
               </div>
             )}
           </div>
-          <p className="ml-5 text-sm text-black/30">{date}</p>
+          <p className="ml-5 text-sm text-black/30">{formattedDate}</p>
           <div className="flex justify-between mt-3 ml-5">
             <div className="flex items-center">
-              <div className="w-4 h-4 mr-1 rounded-full bg-zinc-400" />
+              {/* <img
+                src={authorImage}
+                alt="img"
+                className="w-5 h-5 mr-1 rounded-full"
+              /> */}
               <span className="font-semibold text-black text-md">{name}</span>
             </div>
             <div className="flex mr-2">

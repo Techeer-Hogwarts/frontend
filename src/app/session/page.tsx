@@ -11,6 +11,10 @@ import { useInView } from 'react-intersection-observer'
 import SessionPost from '@/components/session/SessionPost'
 import { useSessionsQuery } from './_lib/useSessionsQuery'
 
+interface User {
+  name: string
+  profileImage: string
+}
 interface Session {
   id: string
   title: string
@@ -20,6 +24,7 @@ interface Session {
   thumbnail: string
   videoUrl: string
   fileUrl: string
+  user: User
 }
 const tapBatOptions = ['금주의 세션', '전체보기', '부트캠프', '파트너스']
 export default function Page() {
@@ -273,6 +278,7 @@ export default function Page() {
               date={data.date}
               presenter={data.presenter}
               fileUrl={data.fileUrl}
+              userImage={data.user.profileImage}
               showMessage={showMessage}
               likeList={likeList}
               onLikeUpdate={handleLikeUpdate}

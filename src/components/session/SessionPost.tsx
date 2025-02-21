@@ -17,6 +17,7 @@ export interface SessionPostProps {
   likeList: string[]
   showMessage: () => void
   onLikeUpdate?: (id: string, newLikeCount: number) => void
+  userImage: string
 }
 
 export default function SessionPost({
@@ -30,6 +31,7 @@ export default function SessionPost({
   showMessage,
   likeList,
   onLikeUpdate,
+  userImage,
 }: SessionPostProps) {
   const router = useRouter()
   const { postLike } = useLike()
@@ -73,6 +75,9 @@ export default function SessionPost({
             width={379}
             height={199}
             className="w-[379px] h-[199px] z-1"
+            onError={(e: any) => {
+              e.target.src = '/images/session/thumbnail.png' // 대체 이미지 경로
+            }}
           />
         </button>
         <div className="rounded-b-lg w-[379px] min-h-[100px] h-auto py-2  bg-white shadow-[0px_5px_8px_#bfbfbf]">
@@ -101,7 +106,14 @@ export default function SessionPost({
           <p className="ml-5 text-sm text-black/30">{date}</p>
           <div className="flex justify-between mt-3 ml-5">
             <div className="flex items-center">
-              <div className="w-4 h-4 mr-1 rounded-full bg-zinc-400" />
+              <img
+                src={userImage}
+                alt="img"
+                className="w-5 h-5 mr-1 rounded-full"
+                onError={(e: any) => {
+                  e.target.src = '/images/session/thumbnail.png' // 대체 이미지 경로
+                }}
+              />
               <span className="font-semibold text-black text-md">
                 {presenter}
               </span>
