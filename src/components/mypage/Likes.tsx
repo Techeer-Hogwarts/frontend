@@ -111,6 +111,7 @@ export default function Likes() {
                     presenter={like.presenter}
                     fileUrl={like.fileUrl}
                     showMessage={like}
+                    userImage={like.user.profileImage}
                     likeList={likeList}
                     onLikeUpdate={like}
                   />

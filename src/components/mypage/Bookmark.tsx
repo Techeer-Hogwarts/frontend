@@ -119,6 +119,7 @@ export default function Bookmark() {
                     presenter={bookmark.presenter}
                     fileUrl={bookmark.fileUrl}
                     showMessage={bookmark}
+                    userImage={bookmark.user.profileImage}
                     likeList={likeList}
                     onLikeUpdate={bookmark}
                   />
