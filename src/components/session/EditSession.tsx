@@ -24,17 +24,14 @@ const updateSession = async (data: {
   id: string
   payload: SessionFormData
 }) => {
-  const response = await fetch(
-    `https://api.techeerzip.cloud/api/v1/sessions/${data.id}`,
-    {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-      body: JSON.stringify(data.payload),
+  const response = await fetch(`/api/v1/sessions/${data.id}`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
     },
-  )
+    credentials: 'include',
+    body: JSON.stringify(data.payload),
+  })
 
   if (response.status === 403) {
     throw new Error('본인이 작성한 게시물만 수정할 수 있습니다.')
@@ -171,13 +168,13 @@ export default function EditSession() {
   }
 
   return (
-    <div className="w-screen h-screen flex items-center justify-center bg-black/50 fixed inset-0">
+    <div className="fixed inset-0 flex items-center justify-center w-screen h-screen bg-black/50">
       <div className="w-[486px] min-h-[750px] h-auto flex flex-col items-center bg-white rounded-lg">
         <div>
-          <p className="text-2xl text-center mt-6 mb-3 font-semibold">
+          <p className="mt-6 mb-3 text-2xl font-semibold text-center">
             세션 영상 수정
           </p>
-          <div className="mt-2 relative">
+          <div className="relative mt-2">
             <img
               src={
                 thumbnailError
@@ -191,7 +188,7 @@ export default function EditSession() {
           </div>
         </div>
 
-        <div className="flex flex-col relative mx-8 mt-4">
+        <div className="relative flex flex-col mx-8 mt-4">
           <ModalInputField
             title="세션 제목을 입력해주세요"
             placeholder="세션 제목"
@@ -216,7 +213,7 @@ export default function EditSession() {
             />
           </div>
 
-          <div className="flex justify-between mt-1 mb-2 items-start">
+          <div className="flex items-start justify-between mt-1 mb-2">
             <span>
               기간을 입력해주세요 <span className="text-primary">*</span>
             </span>
