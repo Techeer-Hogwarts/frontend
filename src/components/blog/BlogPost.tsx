@@ -103,6 +103,9 @@ export default function BlogPost({
               height={24}
               className="absolute top-0 right-0"
               onClick={clickModal}
+              onError={(e: any) => {
+                e.target.src = '/images/session/thumbnail.png' // 대체 이미지 경로
+              }}
             />
             {showModal && (
               <div className="absolute top-[-5%] right-0 z-10">

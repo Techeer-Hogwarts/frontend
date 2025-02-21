@@ -70,7 +70,7 @@ export default function SessionPost({
         >
           <Image
             src={thumbnail}
-            alt="testIMG"
+            alt="img"
             unoptimized
             width={379}
             height={199}
