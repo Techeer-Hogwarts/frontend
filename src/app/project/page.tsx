@@ -21,15 +21,21 @@ interface TeamBase {
   createdAt: string
 }
 
+interface MainImage {
+  id: number
+  isDeleted: boolean
+  imageUrl: string
+}
+
 interface ProjectTeam extends TeamBase {
   type: 'project'
   frontendNum: number
   backendNum: number
   devopsNum: number
-  uiuxNum: number
+  fullStackNum: number
   dataEngineerNum: number
   projectExplain: string
-  mainImages: string[]
+  mainImages?: MainImage[]
   teamStacks: { stackName: string; isMain: boolean }[]
 }
 
@@ -132,7 +138,7 @@ export default function Project() {
           ),
         )}
       </div>
-     <AddBtn />
+      <AddBtn />
     </div>
   )
 }

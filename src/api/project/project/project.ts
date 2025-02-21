@@ -221,6 +221,9 @@ export const handleApplyProject = async (data) => {
     const response = await fetch(`/api/v1/projectTeams/apply`, {
       method: 'POST',
       credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
       body: JSON.stringify(data),
     })
 
@@ -236,6 +239,7 @@ export const handleApplyProject = async (data) => {
     throw error
   }
 }
+
 // 프로젝트 지원 취소하기
 export const handleDenyProject = async (projectTeamId) => {
   try {
@@ -326,4 +330,17 @@ export const denyStudyApplicant = async (data) => {
     console.error('프로젝트 지원 거절 중 오류 발생:', error.message)
     throw error
   }
+}
+
+//스택 조회
+export async function getStacks() {
+  const response = await fetch('/api/v1/stacks', {
+    method: 'GET',
+    credentials: 'include',
+  })
+  if (!response.ok) {
+    throw new Error(`스택 조회 실패: ${response.status}`)
+  }
+  const data = await response.json()
+  return data
 }

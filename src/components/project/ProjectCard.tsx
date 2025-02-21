@@ -16,17 +16,22 @@ interface ProjectTeam extends TeamBase {
   frontendNum: number
   backendNum: number
   devopsNum: number
-  uiuxNum: number
+  fullStackNum: number
   dataEngineerNum: number
   projectExplain: string
-  mainImages: string[]
+  mainImages?: string[]
   teamStacks: { stackName: string; isMain: boolean }[]
 }
 export default function ProjectCard({ team }: { team: ProjectTeam }) {
-  // console.log(team)
+  const mainImageUrl =
+    team.mainImages && team.mainImages.length > 0
+      ? team.mainImages[0] // 첫 번째 요소가 곧 URL
+      : '/images/project/example.png'
+
   const handleClick = () => {
     localStorage.setItem('projectType', 'project')
     localStorage.setItem('projectId', team.id.toString())
+    console.log(team)
   }
 
   return (
@@ -43,11 +48,11 @@ export default function ProjectCard({ team }: { team: ProjectTeam }) {
         {/* 이미지 */}
         <div className="w-[7.8125rem] h-[7.8125rem] min-w-[7.8125rem] rounded-2xl">
           <Image
-            src="/images/project/example.png"
-            alt="프로젝트 이미지"
+            src={mainImageUrl}
+            alt="프로젝트 메인 이미지"
             width={125}
             height={125}
-            className="rounded-lg border bg-pink-300"
+            className="rounded-lg"
           />
         </div>
 
@@ -93,7 +98,7 @@ export default function ProjectCard({ team }: { team: ProjectTeam }) {
                 </div>
               </>
             ) : (
-              <div className="flex gap-1">
+              <div className="flex flex-wrap gap-1 h-14 overflow-hidden items-start">
                 {team.teamStacks.map(
                   (stack) =>
                     stack.isMain && (

@@ -10,7 +10,7 @@ interface AddRecruitProps {
   frontendNum?: number
   backendNum?: number
   devopsNum?: number
-  uiuxNum?: number
+  fullStackNum?: number
   dataEngineerNum?: number
   recruitExplain: string
   onUpdate: (key: string, value: any) => void
@@ -22,7 +22,7 @@ export default function AddRecruit({
   frontendNum,
   backendNum,
   devopsNum,
-  uiuxNum,
+  fullStackNum,
   dataEngineerNum,
   recruitExplain,
   onUpdate,
@@ -134,8 +134,10 @@ export default function AddRecruit({
                 <RecruitInput
                   role="Full Stack"
                   placeholder="1명"
-                  value={uiuxNum || ''}
-                  onChange={(event) => handleRecruitNumChange('uiuxNum', event)}
+                  value={fullStackNum || ''}
+                  onChange={(event) =>
+                    handleRecruitNumChange('fullStackNum', event)
+                  }
                 />
                 <RecruitInput
                   role="Data Engineer"

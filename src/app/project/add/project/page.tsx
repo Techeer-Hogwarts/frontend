@@ -21,7 +21,7 @@ export default function AddProjectPage() {
     frontendNum: 0,
     backendNum: 0,
     devopsNum: 0,
-    uiuxNum: 0,
+    fullStackNum: 0,
     dataEngineerNum: 0,
     isRecruited: false,
     isFinished: true,
@@ -75,7 +75,7 @@ export default function AddProjectPage() {
           frontendNum={projectData.frontendNum}
           backendNum={projectData.backendNum}
           devopsNum={projectData.devopsNum}
-          uiuxNum={projectData.uiuxNum}
+          fullStackNum={projectData.fullStackNum}
           dataEngineerNum={projectData.dataEngineerNum}
           recruitExplain={projectData.recruitExplain}
           onUpdate={handleUpdate}

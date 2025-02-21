@@ -4,7 +4,12 @@ import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 
 interface MemberProps {
-  members: Array<{ name: string; isLeader: boolean; teamRole: string }>
+  members: Array<{
+    name: string
+    isLeader: boolean
+    teamRole: string
+    profileImage: string
+  }>
 }
 
 export default function Member({ members }: MemberProps) {
@@ -17,21 +22,32 @@ export default function Member({ members }: MemberProps) {
     }
   }, [])
 
+  if (!members || members.length === 0) {
+    return (
+      <div>
+        <div className="text-[1.125rem] font-[600] mb-3">팀원</div>
+        <div className="flex items-center justify-center w-[52.5rem] min-w-[52.5rem] h-[10rem] p-[1.25rem] rounded-2xl border border-gray text-center ">
+          <p className="text-sm text-gray">현재 팀원이 없습니다.</p>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div>
       <div className="text-[1.125rem] font-[600] mb-3">팀원</div>
-      <div className="flex flex-wrap gap-3 w-[52.5rem] min-w-[52.5rem] p-[1.25rem] rounded-2xl border border-gray">
+      <div className="flex flex-wrap gap-3 w-[52.5rem] min-w-[52.5rem] h-[10rem] p-[1.25rem] rounded-2xl border border-gray">
         {/* 멤버카드 */}
         {members?.map((member, index) => (
           <div key={member.name}>
             <div className="relative w-[4.75rem] h-[7.4375rem] flex flex-col items-center justify-center">
               <Image
-                src="/profile.png"
+                src={member.profileImage}
                 width={76}
                 height={76}
-                alt="Picture"
-                className="border rounded-md bg-lightpink"
-              ></Image>
+                alt="Profile"
+                className="border rounded-md bg-lightpink object-cover w-[76px] h-[76px]"
+              />
               {member.isLeader && (
                 <div
                   className={`absolute ${projectType === 'study' ? 'bottom-8' : 'bottom-11'} w-[4.75rem] h-[1.5rem] bg-black bg-opacity-40 flex items-center justify-center rounded-b-md`}
@@ -44,7 +60,7 @@ export default function Member({ members }: MemberProps) {
               <div>{member.name}</div>
               {projectType === 'project' && (
                 <div
-                  className={`w-[5.875rem] h-[1.75rem] rounded-md bg-lightprimary text-pink text-[0.9375rem] text-center`}
+                  className={`px-2 h-[1.75rem] rounded-md bg-lightprimary text-pink text-[0.9375rem] text-center`}
                 >
                   {member.teamRole}
                 </div>

@@ -9,19 +9,22 @@ const nextConfig = {
         port: '',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'techeerzip-bucket.s3.ap-southeast-2.amazonaws.com',
+        port: '',
+        pathname: '/**',
+      },
     ],
   },
+
   reactStrictMode: true,
 
   // experimental: {
   //   appDir: true,
   // },
   images: {
-    domains: ['example.com', 'avatars.slack-edge.com'], // 허용할 외부 도메인 추가
-  },
-
-  images: {
-    domains: ['example.com', 'avatars.slack-edge.com'], // 허용할 외부 도메인 추가
+    domains: ['example.com', 'avatars.slack-edge.com','techeerzip-bucket.s3.ap-southeast-2.amazonaws.com'], // 허용할 외부 도메인 추가
   },
 
   async rewrites() {
