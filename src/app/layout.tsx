@@ -1,6 +1,6 @@
 import '../styles/globals.css'
 import localFont from 'next/font/local'
-import NevBar from '@/components/common/NevBar'
+import NavBar from '@/components/common/NavBar'
 import Footer from '@/components/common/Footer'
 import Providers from '@/utils/provider'
 
@@ -29,7 +29,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${pretendard.variable}`}>
       <body className={pretendard.className}>
-        <NevBar />
+        <NavBar />
         <Providers>{children}</Providers>
         <Footer />
       </body>

@@ -4,7 +4,22 @@ import Link from 'next/link'
 //더미값
 const projectId = 23
 
-export default function Card() {
+interface ProjectProps {
+  project: {
+    id: string
+    name: string
+    title: string
+    projectExplain: string
+    teamStacks: string[]
+  }
+}
+
+export default function Card({ project }: ProjectProps) {
+  const truncatedTitle =
+    project.title.length > 12
+      ? project.title.slice(0, 12) + '...'
+      : project.title
+
   return (
     <Link
       href={`/project/detail/study/${projectId}`}
@@ -28,20 +43,20 @@ export default function Card() {
         <div className="">
           {/* 프로젝트 제목 */}
           <h2 className="font-bold text-[1.01688rem] gap-[2.44rem]">
-            토크타카
+            {truncatedTitle}
           </h2>
 
           {/* 프로젝트 설명 */}
           <p className="text-[0.75rem] mb-[2.44rem]">
-            아이들의 &quot;오늘 하루 있었던 일&quot;을 주제로 캐릭터와...
+            {project.projectExplain}
           </p>
 
           {/* 스택 카드 */}
-          <div className="mt-4 flex  justify-end gap-2">
-            {['Next.js', 'Spring'].map((stack) => (
+          <div className="mt-4 grid grid-cols-2 grid-rows-2 gap-2">
+            {project.teamStacks.slice(0, 4).map((stack, index) => (
               <div
-                key={stack}
-                className="bg-lightprimary text-pink py-[0.19rem] px-[0.5rem] rounded-lg text-sm"
+                key={index}
+                className="bg-lightprimary text-pink py-[0.19rem] px-[0.5rem] rounded-lg text-sm text-center"
               >
                 {stack}
               </div>

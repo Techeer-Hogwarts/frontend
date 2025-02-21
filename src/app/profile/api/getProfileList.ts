@@ -1,3 +1,5 @@
+import { ProfileQueryParams } from '@/types/queryParams'
+
 export async function getProfileList({
   position = [],
   year = [],
@@ -5,14 +7,7 @@ export async function getProfileList({
   grade = [],
   offset = 0,
   limit = 10,
-}: {
-  position?: string[]
-  year?: string[]
-  university?: string[]
-  grade?: string[]
-  offset?: number
-  limit?: number
-}) {
+}: ProfileQueryParams) {
   try {
     // URLSearchParams에 배열 데이터를 추가하는 함수
     const params = new URLSearchParams()
@@ -27,20 +22,17 @@ export async function getProfileList({
     params.append('offset', offset.toString())
     params.append('limit', limit.toString())
 
-    const url = `/api/v1/users/profiles?${params.toString()}`
-
-    console.log('API 요청 URL:', url)
-
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
+    const response = await fetch(
+      `/api/v1/users/profiles?${params.toString()}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
       },
-    })
-    const jsonResponse = await response.json()
-    const dataWithWrapper = { data: jsonResponse }
-    console.log('테스트:', dataWithWrapper)
-    console.log('API 응답 데이터:', jsonResponse)
+    )
+    const result = await response.json()
+    const dataWithWrapper = { data: result } // Back에서 data 필드 없시 바로 반환하기 때문에
 
     if (!response.ok) {
       throw new Error(

@@ -3,7 +3,7 @@ import { FaChevronRight } from 'react-icons/fa6'
 
 export default function Settings() {
   return (
-    <div className="flex flex-col w-[600px] items-center justify-start mt-10 ml-10">
+    <div className="flex flex-col w-[856px] items-center justify-start mt-10 px-[128px]">
       <Link href="/changepassword" className="flex w-full py-6 justify-between">
         비밀번호 변경
         <FaChevronRight className="text-gray" />

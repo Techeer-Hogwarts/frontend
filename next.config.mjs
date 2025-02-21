@@ -1,19 +1,31 @@
 import { withSentryConfig } from '@sentry/nextjs'
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: false,
-  experimental: {
-    appDir: true,
-  },
   images: {
-    domains: ['example.com', 'avatars.slack-edge.com'], // 허용할 외부 도메인 추가
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'avatars.slack-edge.com',
+        port: '',
+        pathname: '/**',
+      },
+    ],
+  },
+  reactStrictMode: true,
+
+  images: {
+    domains: ['example.com', 'avatars.slack-edge.com', 'images.velog.io'], // 허용할 외부 도메인 추가
   },
 
   async rewrites() {
     return [
       {
-        source: '/:api/v1/:path*',
+        source: '/api/v1/:path*',
         destination: 'https://api.techeerzip.cloud/api/v1/:path*',
+      },
+      {
+        source: '/api/v2/:path*',
+        destination: 'https://api.techeerzip.cloud/api/v2/:path*',
       },
     ]
   },

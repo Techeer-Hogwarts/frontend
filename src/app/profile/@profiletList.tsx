@@ -6,12 +6,16 @@ import { ProfileQueryParams } from '@/types/queryParams'
 
 interface Profile {
   id: number
-  // userId: number
-  name: string
-  mainPosition: string
   profileImage: string
+  name: string
   school: string
   grade: string
+  mainPosition: string
+  year: number
+  stack: string[]
+  projectTeams: {
+    mainImage: string
+  }
 }
 
 export default function ProfileList({
@@ -31,10 +35,6 @@ export default function ProfileList({
     limit,
   })
 
-  console.log('isLoading:', isLoading)
-  console.log('isError:', isError)
-  console.log('profiles:', data, Array.isArray(data), data?.length)
-
   if (isLoading) {
     const skeletons = Array.from({ length: 8 }).map((_, i) => ({
       id: `skeleton-${i}`,
@@ -47,15 +47,14 @@ export default function ProfileList({
       </div>
     )
   }
-  console.log('API 응답 데이터:', data)
 
   if (isError || !data || !Array.isArray(data) || data.length === 0) {
     console.error('데이터 로드 실패 또는 빈 배열:', data)
     return (
       <div className="flex justify-center">
         <EmptyLottie
-          text="검색한 데이터가 없습니다."
-          link="다시 검색해주세요"
+          text="프로필 데이터가 없습니다."
+          link="다시 조회해주세요"
         />
       </div>
     ) // 오류 발생 시 표시할 문구
@@ -67,12 +66,14 @@ export default function ProfileList({
         <ProfileCard
           key={profile.id}
           id={profile.id}
-          userId={profile.id}
           name={profile.name}
           mainPosition={profile.mainPosition}
           profileImage={profile.profileImage}
           school={profile.school}
-          class={profile.grade}
+          grade={profile.grade}
+          year={profile.year}
+          stack={profile.stack}
+          mainImage={profile.projectTeams.mainImage}
         />
       ))}
     </div>

@@ -1,7 +1,7 @@
 import AddCalenderModal from '@/components/calender/AddCalenderModal'
 import Calendar from '@/components/calender/Calendar'
 import FilterBtn from '@/components/calender/FilterBtn'
-import SearchBar from '@/components/common/SearchBar'
+import SearchBar from '@/components/common/Search'
 
 export default function page() {
   return (

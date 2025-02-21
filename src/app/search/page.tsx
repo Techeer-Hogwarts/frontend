@@ -1,10 +1,35 @@
+'use client'
+
 import CategoryTab from '@/components/search/CategoryTab'
 import ProjectSection from '@/components/search/ProjectSection'
 import BlogSection from '@/components/search/BlogSection'
 import ResumeSection from '@/components/search/ResumeSection'
 import SessionSection from '@/components/search/SessionSection'
+import { useEffect, useState } from 'react'
+import { getSearchList } from './api/getSearchList'
+import { useRouter } from 'next/router'
+import { usePathname, useSearchParams } from 'next/navigation'
 
-const Search = () => {
+export default function Search() {
+  const router = useRouter()
+  const { query, results } = router.query
+  const parsedResults = results ? JSON.parse(results as string) : []
+
+  // useEffect(() => {
+  //   if (query) {
+  //     const fetchData = async () => {
+  //       try {
+  //         const data = await getSearchList(query)
+  //         setResults(data)
+  //         console.log('검색 결과:', data)
+  //       } catch (error) {
+  //         console.error('Error fetching search results:', error)
+  //       }
+  //     }
+  //     fetchData()
+  //   }
+  // }, [query])
+
   return (
     <div className="py-10">
       {/* 검색 결과 헤더 */}
@@ -24,14 +49,35 @@ const Search = () => {
             ?.scrollIntoView({ behavior: 'smooth' })
         }}
       />
-
+      {results && (
+        <div>
+          {/* 결과를 출력하는 부분 */}
+          <h2>검색 결과</h2>
+          {query && <p>검색어: {query}</p>}
+          <ul>
+            {parsedResults.length > 0 ? (
+              parsedResults.map(
+                (
+                  result: { title: string; description: string },
+                  index: number,
+                ) => (
+                  <li key={index}>
+                    <h3>{result.title}</h3>
+                    <p>{result.description}</p>
+                  </li>
+                ),
+              )
+            ) : (
+              <p>결과가 없습니다.</p>
+            )}
+          </ul>
+        </div>
+      )}
       {/* 각 섹션 */}
       <ProjectSection />
       <BlogSection />
-      <ResumeSection />
+      {/* <ResumeSection /> */}
       <SessionSection />
     </div>
   )
 }
-
-export default Search
