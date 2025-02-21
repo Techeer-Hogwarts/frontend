@@ -41,10 +41,17 @@ export default function AddProjectPage() {
   }
 
   const handleSubmit = async () => {
-    console.log(projectData)
+    const dataToSend = { ...projectData }
 
-    const response = await handleAddProject(projectData)
-    console.log(response)
+    if (dataToSend.projectMember && Array.isArray(dataToSend.projectMember)) {
+      dataToSend.projectMember = dataToSend.projectMember.map((member) => {
+        const { profileImage, name, ...rest } = member
+        return rest
+      })
+    }
+
+    // (C) 수정된 데이터(dataToSend)를 전송
+    const response = await handleAddProject(dataToSend)
     if (response) {
       router.push(`/project/detail/project/${response.id}`)
       localStorage.setItem('projectId', response.id)

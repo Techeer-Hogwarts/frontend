@@ -5,7 +5,7 @@ import Image from 'next/image'
 import { IoChevronDownSharp, IoChevronUpSharp } from 'react-icons/io5'
 interface Applicant {
   id: number
-  userName: string
+  name: string
   isLeader: boolean
   teamRole: string
   summary: string
@@ -92,7 +92,7 @@ export default function Applicants({
           applicants?.map((applicant) => (
             <Box
               key={applicant.id}
-              name={applicant.userName} // <-- userName 필드
+              name={applicant.name} // <-- userName 필드
               year={applicant.year}
               position={applicant.teamRole || '미지정'}
               profileImage={applicant.profileImage}

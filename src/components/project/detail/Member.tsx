@@ -60,7 +60,7 @@ export default function Member({ members }: MemberProps) {
               <div>{member.name}</div>
               {projectType === 'project' && (
                 <div
-                  className={`px-2 h-[1.75rem] rounded-md bg-lightprimary text-pink text-[0.9375rem] text-center`}
+                  className={`px-1 h-[1.75rem] rounded-md bg-lightprimary text-pink text-[0.9375rem] text-center`}
                 >
                   {member.teamRole}
                 </div>

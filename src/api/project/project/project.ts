@@ -96,7 +96,6 @@ export const getProjectApplicants = async (projectTeamId) => {
     }
 
     const result = await response.json()
-    console.log('프로젝트 신청자 목록 조회 성공:', result)
     return result
   } catch (error: any) {
     console.error('프로젝트 신청자 목록 조회 중 오류 발생:', error.message)
@@ -280,7 +279,6 @@ export const getStudyApplicants = async (projectTeamId) => {
     }
 
     const result = await response.json()
-    console.log('프로젝트 신청자 목록 조회 성공:', result)
     return result
   } catch (error: any) {
     console.error('프로젝트 신청자 목록 조회 중 오류 발생:', error.message)

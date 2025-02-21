@@ -2,43 +2,41 @@
 
 import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
-import MemberBox from './BigMemberBox'
-import { useRouter } from 'next/navigation'
+import BigMemberBox from './BigMemberBox'
 import { useQuery } from '@tanstack/react-query'
 import { getAllUsers } from '@/api/project/common'
 
 interface Member {
   id: number
   name: string
-  generation: string
-  teamRole?: string[]
+  year: number
   profileImage?: string | null
   isLeader: boolean
+  teamRole?: string
 }
 
 interface MemberModalProps {
   onClose: () => void
   onSave: (selectedMembers: Member[]) => void
 }
-const ProjectMemberModal = ({ onClose, onSave }: MemberModalProps) => {
+
+export default function ProjectMemberModal({
+  onClose,
+  onSave,
+}: MemberModalProps) {
   const dropDownRef = useRef<HTMLInputElement>(null)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const [name, setName] = useState('')
-  const router = useRouter()
   const [members, setMembers] = useState<Member[]>([])
-  const [dropdownOptions, setDropdownOptions] = useState<Member[]>()
-
-  const [projectType, setProjectType] = useState<null | string>(null)
 
   const { data: allUsers } = useQuery({
     queryKey: ['getAllUsers'],
     queryFn: getAllUsers,
   })
 
-  // 사람 선택
+  // 입력 필드 onChange
   const handleName = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value
-    setName(value)
+    setName(e.target.value)
     setIsDropdownOpen(true)
   }
 
@@ -55,71 +53,85 @@ const ProjectMemberModal = ({ onClose, onSave }: MemberModalProps) => {
     }
   }, [isDropdownOpen])
 
+  // 드롭다운용 필터
+  const filteredUsers = allUsers?.filter((user) =>
+    user.name.toLowerCase().includes(name.toLowerCase()),
+  )
+
   // 멤버 추가
   const handleAddMember = (member: Member) => {
     if (!members.some((m) => m.id === member.id)) {
-      setMembers((prevMembers) => [
-        ...prevMembers,
-        { ...member, isLeader: false },
-      ])
+      setMembers((prev) => [...prev, { ...member, isLeader: false }])
     }
     setIsDropdownOpen(false)
   }
 
   // 멤버 삭제
-  const handleRemoveMember = (name: string) => {
-    setMembers((prevMembers) =>
-      prevMembers.filter((member) => member.name !== name),
-    )
+  const handleRemoveMember = (memberName: string) => {
+    setMembers((prev) => prev.filter((m) => m.name !== memberName))
   }
 
-  // 리더 업데이트 함수
-  const handleUpdateLeader = (id: number, isLeader: boolean) => {
-    setMembers((prevMembers) =>
-      prevMembers.map((member) =>
-        member.id === id ? { ...member, isLeader } : member,
+  // 리더 토글 & 팀 역할 업데이트
+  const handleUpdateMember = (
+    id: number,
+    newIsLeader: boolean,
+    newRole: string,
+  ) => {
+    setMembers((prev) =>
+      prev.map((m) =>
+        m.id === id ? { ...m, isLeader: newIsLeader, teamRole: newRole } : m,
       ),
     )
   }
 
+  // 저장 버튼
+  const handleSave = () => {
+    onSave(members)
+  }
+
   return (
     <div className="z-50 fixed inset-0 flex justify-center items-center bg-black bg-opacity-70 text-center">
-      <div className="flex flex-col p-8 w-[30.375rem] h-[39.375rem] bg-white border rounded-xl">
+      <div className="flex flex-col p-7 w-[36rem] h-[39.375rem] bg-white border rounded-xl">
         <p className="w-full text-[1.375rem] text-center mb-4">
           프로젝트 팀원 추가
         </p>
 
-        {/* 이름 입력 필드 (고정) */}
-        <div className="mb-4">
-          <p className="text-left mb-2">이름을 입력해주세요</p>
+        {/* 이름 입력 */}
+        <div className="mb-6">
+          <p className="text-left mb-3">이름을 입력해주세요</p>
           <input
             type="text"
-            className="w-full h-[2rem] border border-gray rounded-sm"
+            className="w-full h-[2rem] border border-gray rounded-sm px-2 focus:outline-none"
             value={name}
             onChange={handleName}
-            onClick={() => {
-              setIsDropdownOpen((prev) => !prev)
-            }}
+            onClick={() => setIsDropdownOpen((prev) => !prev)}
             ref={dropDownRef}
           />
-          {isDropdownOpen && (
-            <div className="absolute w-[26.25rem] bg-white border border-gray mt-1 max-h-48 overflow-y-auto z-10">
-              {allUsers?.map((member) => (
+
+          {isDropdownOpen && filteredUsers && filteredUsers.length > 0 && (
+            <div
+              className="absolute w-[32.375rem] bg-white border border-gray mt-1 max-h-48 overflow-y-auto z-10 rounded-sm"
+              style={{
+                scrollbarWidth: 'thin',
+                scrollbarColor: 'rgba(0, 0, 0, 0.2) transparent',
+              }}
+            >
+              {filteredUsers.map((user) => (
                 <div
-                  key={member.id}
+                  key={user.id}
                   className="flex items-center gap-2 p-2 cursor-pointer hover:bg-lightprimary"
-                  onClick={() => handleAddMember(member)}
+                  onClick={() => handleAddMember(user)}
                 >
                   <Image
-                    src={member.profileImage || '/'}
+                    src={user.profileImage || '/default-profile.png'}
                     alt="Profile"
                     width={24}
                     height={24}
                     className="w-[24px] h-[24px] rounded-md bg-lightpink"
                   />
                   <div className="flex gap-3 items-center">
-                    <p>{member.name}</p>
-                    <p className="text-gray text-xs">{member.generation}</p>
+                    <p>{user.name}</p>
+                    <p className="text-gray text-xs">{user.year}기</p>
                   </div>
                 </div>
               ))}
@@ -127,52 +139,58 @@ const ProjectMemberModal = ({ onClose, onSave }: MemberModalProps) => {
           )}
         </div>
 
-        {/* 멤버 리스트 영역 (스크롤 가능) */}
-        <div className="flex-1 overflow-y-auto mb-6">
-          <div className="flex flex-wrap overflow-x-hidden gap-2">
+        {/* 멤버 목록 */}
+        <div
+          className="flex-1 overflow-y-auto mb-6"
+          style={{
+            scrollbarWidth: 'thin',
+            scrollbarColor: 'rgba(0, 0, 0, 0.2) transparent',
+          }}
+        >
+          <div className="flex flex-col gap-2">
             {members.length > 0 ? (
               members.map((member) => (
-                <MemberBox
+                <BigMemberBox
                   key={member.id}
                   name={member.name}
-                  generation={member.generation}
+                  year={member.year}
                   imageSrc={member.profileImage || '/default-profile.png'}
                   isLeader={member.isLeader}
+                  teamRole={member.teamRole}
                   onClose={() => handleRemoveMember(member.name)}
-                  onUpdate={(isLeader) =>
-                    handleUpdateLeader(member.id, isLeader)
+                  onUpdate={(newIsLeader, newRole) =>
+                    handleUpdateMember(member.id, newIsLeader, newRole)
                   }
                 />
               ))
             ) : (
-              <p className="text-center text-gray-500 w-full">
+              <p className="text-center text-gray w-full">
                 아직 추가된 멤버가 없습니다.
               </p>
             )}
           </div>
         </div>
 
-        {/* 하단 고정 버튼 영역 */}
-        <div className="flex gap-4">
+        {/* 하단 버튼 */}
+        <div className="flex gap-4 mt-auto pt-4">
           <button
             type="button"
-            onClick={() => router.back()}
-            className="w-[200px] rounded-md text-sm h-[34px] bg-white text-gray border border-lightgray"
+            onClick={onClose}
+            className="w-full rounded-md text-sm h-[34px] bg-white text-gray border border-lightgray"
           >
             취소
           </button>
           <button
-            type="button"
-            className={`w-[200px] rounded-md text-sm h-[34px] ${
+            type="submit"
+            className={`w-full rounded-md text-sm h-[34px] ${
               members.length > 0 ? 'bg-primary text-white' : 'bg-lightgray'
             }`}
+            onClick={handleSave}
           >
-            등록
+            저장하기
           </button>
         </div>
       </div>
     </div>
   )
 }
-
-export default ProjectMemberModal

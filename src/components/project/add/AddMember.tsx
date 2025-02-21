@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { IoClose } from 'react-icons/io5'
-import { useRouter } from 'next/navigation'
+import { RxQuestionMarkCircled } from 'react-icons/rx'
 
 import MemberModal from '../modal/StudyModal'
 import ProjectMemberModal from '../modal/ProjectModal'
@@ -15,7 +15,7 @@ interface TagProps {
 interface Member {
   id: number
   name: string
-  teamRole?: string[]
+  teamRole?: string
   leader?: string
   profileImage?: string | null
   isLeader?: boolean
@@ -28,9 +28,12 @@ interface AddMemberProps {
 }
 
 function Tag({ position }: TagProps) {
+  // 화면에 표시할 문자열
+  const displayPosition = position === 'Data Engineer' ? 'Data' : position
+
   return (
-    <div className="flex items-center justify-center text-pink w-[4.75rem] h-[1.125rem] bg-lightprimary">
-      {position}
+    <div className="flex items-center justify-center text-pink w-[4.5rem] bg-lightprimary rounded-md">
+      {displayPosition}
     </div>
   )
 }
@@ -61,6 +64,7 @@ export default function AddMember({
 
   // 모달에서 "저장하기" 눌렀을 때 → 부모로 members 전달
   const handleSaveMembers = (selectedMembers: Member[]) => {
+    // 중복 제거 로직
     const merged = [
       ...projectMember,
       ...selectedMembers
@@ -71,64 +75,64 @@ export default function AddMember({
         .map((member) => ({
           userId: member.id,
           isLeader: member.isLeader,
-          // profileImage: member.profileImage,
+          profileImage: member.profileImage,
+          teamRole: member.teamRole,
+          name: member.name,
         })),
     ]
-    onUpdateMember(merged as Member[])
 
-    // 모달 닫기
+    onUpdateMember && onUpdateMember(merged as Member[])
     setIsModalOpen(false)
   }
 
   // 멤버 삭제 함수
   const handleDelete = (id: number) => {
     const filtered = projectMember.filter((member) => member.id !== id)
-    onUpdateMember(filtered)
+    onUpdateMember && onUpdateMember(filtered)
   }
 
   return (
     <div>
-      <div className="flex items-center">
-        {/* 모달 */}
-        {isModalOpen &&
-          (projectType === 'project' ? (
-            <ProjectMemberModal
-              onClose={handleCloseModal}
-              onSave={handleSaveMembers}
-            />
-          ) : (
-            <MemberModal
-              onClose={handleCloseModal}
-              onSave={handleSaveMembers}
-            />
-          ))}
-        <div className="font-medium text-gray mb-3">
-          팀원을 입력해주세요<span className="text-primary">*</span>
-        </div>
+      {isModalOpen &&
+        (projectType === 'project' ? (
+          <ProjectMemberModal
+            onClose={handleCloseModal}
+            onSave={handleSaveMembers}
+          />
+        ) : (
+          <MemberModal onClose={handleCloseModal} onSave={handleSaveMembers} />
+        ))}
+
+      <div className="font-medium text-gray mb-3">
+        팀원을 입력해주세요<span className="text-primary">*</span>
       </div>
-      <div className="flex items-start pt-[1.5rem] pb-[1.5rem] gap-3 w-[52.5rem]  px-[1.25rem] rounded-2xl border border-gray">
-        {/* 멤버카드 */}
+      <div className="flex justify-start gap-1 text-xs items-center text-gray mb-1">
+        <RxQuestionMarkCircled /> Data: Data Engineer
+      </div>
+
+      {/* (A) Grid로 9개 컬럼 지정 → 9명 초과 시 자동으로 2행, 3행... */}
+      <div className="grid grid-cols-9 items-start gap-3 w-[52.5rem] px-[1.875rem] py-[1.5rem] rounded-2xl border border-gray">
         {projectMember.map((member) => (
           <div
-            key={member.name}
-            className="relative w-[4.75rem]  flex flex-col items-center"
+            key={member.userId}
+            className="relative flex flex-col items-center"
           >
             {/* X 버튼 */}
             <button
-              onClick={() => handleDelete(member.id)}
-              className="w-[0.8rem] h-[0.8rem]  absolute top-[-5px] right-[-5px] bg-primary text-white rounded-full flex items-center justify-center"
+              onClick={() => handleDelete(member.id!)}
+              className="w-[0.8rem] h-[0.8rem] absolute top-[-5px] right-[-5px] bg-primary text-white rounded-full flex items-center justify-center"
             >
               <IoClose />
             </button>
 
             <Image
-              src={member.profileImage}
+              src={member.profileImage || '/default-profile.png'}
               width={76}
               height={76}
               alt="Picture"
-              className="border rounded-md bg-lightpink"
+              className="border rounded-md bg-lightpink w-[76px] h-[76px] object-cover"
             />
-            {/* 리더 표시 */}
+
             {member.isLeader && (
               <div className="absolute top-[3.2rem] left-0 w-full h-[1.5rem] bg-black bg-opacity-40 flex items-center justify-center rounded-b-md">
                 <span className="text-white text-sm font-semibold">Leader</span>
@@ -136,11 +140,9 @@ export default function AddMember({
             )}
 
             <div>{member.name}</div>
-            {projectType === 'project' && (
+            {projectType === 'project' && member.teamRole && (
               <div className="flex flex-col gap-1">
-                {member.teamRole.map((position) => (
-                  <Tag key={position} position={position} />
-                ))}
+                <Tag position={member.teamRole} />
               </div>
             )}
           </div>

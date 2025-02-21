@@ -14,7 +14,7 @@ interface ProjectTeam extends TeamBase {
   frontendNum: number
   backendNum: number
   devopsNum: number
-  uiuxNum: number
+  fullStackNum: number
   dataEngineerNum: number
   projectExplain: string
   mainImages: string[]
@@ -109,7 +109,7 @@ export const getAllUsers = async () => {
     }
 
     const result = await response.json()
-    return result.data
+    return result
     console.log(result)
   } catch (error: any) {
     console.error('사용자 목록 가져오기 중 오류 발생:', error.message)
@@ -120,7 +120,7 @@ export const getAllUsers = async () => {
 //사용자 정보 가져오기
 export const getMyInfo = async (): Promise<UserProfile> => {
   try {
-    const response = await fetch(`https://api.techeerzip.cloud/api/v1/users`, {
+    const response = await fetch(`/api/v1/users`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
