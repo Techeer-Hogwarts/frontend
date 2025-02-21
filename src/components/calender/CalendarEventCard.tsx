@@ -5,8 +5,8 @@ export interface CalendarEventCardProps {
   userId?: number
   category: string
   title: string
-  startDate: string
-  endDate: string
+  startDate?: string
+  endDate?: string
   url: string
   displayDate?: string
   className?: string
@@ -17,7 +17,7 @@ export interface CalendarEventCardProps {
   }
 }
 
-export default function CalendarEventCard({ title, startDate, endDate, category, url, className=""}: CalendarEventCardProps) {
+export default function CalendarEventCard({ title, category, displayDate, url, className=""}: CalendarEventCardProps) {
   
   const getCategoryColor = () => {
     switch (category) {
@@ -37,18 +37,15 @@ export default function CalendarEventCard({ title, startDate, endDate, category,
   }
 
   return (
-    <div
-    role="button"
+    <button
+    type="button"
     className={`flex cursor-pointer ${className}`}
     onClick={handleClick}>
-      <div className={`rounded-full w-[9px] h-[9px] mr-2 mt-1 ${getCategoryColor()}`} />
-      <div className="flex flex-col">
+      <div className={`rounded-full w-[9px] h-[9px] mr-[6px] mt-1 ${getCategoryColor()}`} />
+      <div className="flex flex-col text-left">
         <span className="text-[12px] text-black w-[95px] truncate">{title}</span>
-        <span className="text-[10px] text-[#969696]">
-          {`${String(new Date(startDate).getMonth() + 1).padStart(2, '0')}.${String(new Date(startDate).getDate()).padStart(2, '0')} - 
-          ${String(new Date(endDate).getMonth() + 1).padStart(2, '0')}.${String(new Date(endDate).getDate()).padStart(2, '0')}`}
-        </span>
+        <span className="text-[10px] text-[#969696]">{displayDate}</span>
       </div>
-    </div>
+    </button>
   )
 }

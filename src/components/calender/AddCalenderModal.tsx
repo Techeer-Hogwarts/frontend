@@ -113,8 +113,8 @@ export default function AddCalenderModal({ handleBack }: AddCalenderModalProps) 
           </p>
           <div className="flex relative gap-[2px]">
             <div className="relative mt-1">
-            <div
-                role="button"
+            <button
+                type="button"
                 className="w-[207px] rounded-sm pl-2 text-sm outline-none h-[34px] border border-lightgray text-[#757575] flex items-center cursor-pointer"
                 onClick={() => {
                   setStartDateOpen(!startDateOpen)
@@ -123,7 +123,7 @@ export default function AddCalenderModal({ handleBack }: AddCalenderModalProps) 
               >
                 {formData.startDate ? formData.startDate.toLocaleDateString() : '시작 날짜 선택'}
                 <MdOutlineCalendarMonth className="ml-auto mr-1 w-6 h-6 text-lightgray" />
-              </div>
+              </button>
               {startDateOpen && (
                 <div className="absolute z-10 mt-1">
                   <DatePicker
@@ -138,8 +138,8 @@ export default function AddCalenderModal({ handleBack }: AddCalenderModalProps) 
               )}
             </div>
             <div className="relative mt-1">
-              <div
-                role="button"
+              <button
+                type="button"
                 className="w-[207px] rounded-sm pl-2 text-sm outline-none h-[34px] text-[#757575] border border-lightgray flex items-center cursor-pointer"
                 onClick={() => {
                   setEndDateOpen(!endDateOpen)
@@ -148,7 +148,7 @@ export default function AddCalenderModal({ handleBack }: AddCalenderModalProps) 
               >
                 {formData.endDate ? formData.endDate.toLocaleDateString() : '종료 날짜 선택'}
                 <MdOutlineCalendarMonth className="ml-auto mr-1 w-6 h-6 text-lightgray" />
-              </div>
+              </button>
               {endDateOpen && (
                 <div className="absolute z-10 mt-1">
                   <DatePicker
