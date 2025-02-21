@@ -28,6 +28,7 @@ export const Default: Story = {
     image: '/images/default-thumbnail.png',
     onDelete: onDelete,
     likeList: likeList,
+    authorImage: 'https://miro.medium.com/v2/0*3PiUZ2c3GwLKvnya',
   },
 }
 
@@ -43,5 +44,6 @@ export const LongTitle: Story = {
     image: '/images/default-thumbnail.png',
     onDelete: onDelete,
     likeList: likeList,
+    authorImage: 'https://miro.medium.com/v2/0*3PiUZ2c3GwLKvnya',
   },
 }

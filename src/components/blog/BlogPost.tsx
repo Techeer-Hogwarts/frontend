@@ -14,7 +14,7 @@ export interface BlogPostProps {
   likeCount: number
   image: string
   likeList: string[]
-  // authorImage: string
+  authorImage: string
   onDelete: (id: string) => void
 }
 
@@ -27,7 +27,7 @@ export default function BlogPost({
   url,
   image,
   onDelete,
-  // authorImage,
+  authorImage,
   likeList,
 }: BlogPostProps) {
   const [showModal, setShowModal] = useState(false)
@@ -91,6 +91,9 @@ export default function BlogPost({
             width={379}
             height={199}
             className="w-[379px] h-[199px] z-1"
+            onError={(e: any) => {
+              e.target.src = '/images/session/thumbnail.png' // 대체 이미지 경로
+            }}
           />
         </button>
         <div className="rounded-b-lg w-[379px] min-h-[100px] h-auto py-2  bg-white shadow-[0px_5px_8px_#bfbfbf]">
@@ -103,9 +106,6 @@ export default function BlogPost({
               height={24}
               className="absolute top-0 right-0"
               onClick={clickModal}
-              onError={(e: any) => {
-                e.target.src = '/images/session/thumbnail.png' // 대체 이미지 경로
-              }}
             />
             {showModal && (
               <div className="absolute top-[-5%] right-0 z-10">
@@ -116,11 +116,11 @@ export default function BlogPost({
           <p className="ml-5 text-sm text-black/30">{formattedDate}</p>
           <div className="flex justify-between mt-3 ml-5">
             <div className="flex items-center">
-              {/* <img
+              <img
                 src={authorImage}
                 alt="img"
                 className="w-5 h-5 mr-1 rounded-full"
-              /> */}
+              />
               <span className="font-semibold text-black text-md">{name}</span>
             </div>
             <div className="flex mr-2">

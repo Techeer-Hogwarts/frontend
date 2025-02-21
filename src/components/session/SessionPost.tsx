@@ -106,14 +106,6 @@ export default function SessionPost({
           <p className="ml-5 text-sm text-black/30">{date}</p>
           <div className="flex justify-between mt-3 ml-5">
             <div className="flex items-center">
-              <img
-                src={userImage}
-                alt="img"
-                className="w-5 h-5 mr-1 rounded-full"
-                onError={(e: any) => {
-                  e.target.src = '/images/session/thumbnail.png' // 대체 이미지 경로
-                }}
-              />
               <span className="font-semibold text-black text-md">
                 {presenter}
               </span>

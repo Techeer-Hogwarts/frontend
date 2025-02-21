@@ -161,6 +161,7 @@ export default function Page() {
               likeCount={blog.likeCount}
               name={blog.author.authorName}
               image={blog.thumbnail}
+              authorImage={blog.author.authorImage}
               onDelete={handleDeleteSession}
               likeList={likeList}
             />

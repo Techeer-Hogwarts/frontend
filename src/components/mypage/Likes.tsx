@@ -94,6 +94,7 @@ export default function Likes() {
                     url={like.url}
                     likeCount={like.likeCount}
                     name={like.author?.authorName || ''}
+                    authorImage={like.author?.authorImage}
                     image={like.thumbnail}
                     onDelete={like}
                     likeList={likeList}
