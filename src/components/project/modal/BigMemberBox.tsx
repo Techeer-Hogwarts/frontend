@@ -1,32 +1,53 @@
 'use client'
 
-import Btn from './Btn'
-
 import { useState } from 'react'
 import Image from 'next/image'
 import { IoClose } from 'react-icons/io5'
+import Btn from './Btn'
 
 interface BoxProps {
   name: string
-  generation: string
+  year: number
   imageSrc: string
   onClose: () => void
+  isLeader: boolean
+  teamRole?: string
+  onUpdate: (isLeader: boolean, role: string) => void
 }
 
-const BigMemberBox = ({ name, generation, imageSrc, onClose }: BoxProps) => {
-  const [isLeader, setIsLeader] = useState(false)
-  const [selectedRoles, setSelectedRoles] = useState<string[]>([])
+const BigMemberBox = ({
+  name,
+  year,
+  imageSrc,
+  onClose,
+  isLeader,
+  teamRole = '',
+  onUpdate,
+}: BoxProps) => {
+  // 단일 문자열로 역할 관리 (초기값: teamRole)
+  const [selectedRole, setSelectedRole] = useState<string>(teamRole)
 
+  // 리더 토글
   const handleToggleLeader = () => {
-    setIsLeader((prev) => !prev)
+    const newIsLeader = !isLeader
+    // (A) onUpdate에 role도 함께 전달
+    onUpdate(newIsLeader, selectedRole)
   }
 
+  // 역할 클릭: 이미 선택된 역할을 누르면 해제, 아니면 교체
   const handleRoleClick = (role: string) => {
-    if (selectedRoles.includes(role)) {
-      setSelectedRoles(selectedRoles.filter((r) => r !== role))
-    } else if (selectedRoles.length < 2) {
-      setSelectedRoles([...selectedRoles, role])
+    let newRole = ''
+    if (selectedRole === role) {
+      // 이미 같은 역할이면 해제
+      newRole = ''
+      setSelectedRole('')
+    } else {
+      // 새 역할로 교체
+      newRole = role
+      setSelectedRole(role)
     }
+    // (B) onUpdate에 isLeader + newRole 전달
+    onUpdate(isLeader, newRole)
   }
 
   return (
@@ -34,7 +55,7 @@ const BigMemberBox = ({ name, generation, imageSrc, onClose }: BoxProps) => {
       {/* 닫기 버튼 */}
       <button
         onClick={onClose}
-        className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+        className="absolute top-2 right-2 text-gray hover:text-darkgray"
       >
         <IoClose size={12} />
       </button>
@@ -44,16 +65,16 @@ const BigMemberBox = ({ name, generation, imageSrc, onClose }: BoxProps) => {
         alt="Profile Image"
         width={76}
         height={76}
-        className="w-[76px] h-[76px] bg-lightpink rounded-md"
+        className="w-[76px] h-[76px] bg-lightpink rounded-md object-cover"
       />
       <div className="flex flex-col">
         <div className="flex items-center gap-1">
           <p>{name}</p>
-          <p className="text-gray text-xs">{generation}</p>
+          <p className="text-gray text-xs">{year}기</p>
         </div>
 
         {/* 리더 역할 토글 버튼 */}
-        <div className="mt-2">
+        <div className="w-[56px] mt-2">
           <Btn
             text="Leader"
             onClick={handleToggleLeader}
@@ -61,15 +82,15 @@ const BigMemberBox = ({ name, generation, imageSrc, onClose }: BoxProps) => {
           />
         </div>
 
-        {/* 스택 역할 선택 (최대 2개) */}
-        <div className="flex gap-1 mt-2">
-          {['Frontend', 'Backend', 'DevOps', 'Full-Stack'].map(
+        {/* 스택 역할 선택 (최대 1개) */}
+        <div className="flex gap-1 mt-1">
+          {['Frontend', 'Backend', 'DevOps', 'FullStack', 'DataEngineer'].map(
             (role, index) => (
               <Btn
                 key={index}
                 text={role}
                 onClick={() => handleRoleClick(role)}
-                isSelected={selectedRoles.includes(role)}
+                isSelected={selectedRole === role}
               />
             ),
           )}

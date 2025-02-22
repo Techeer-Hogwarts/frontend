@@ -24,7 +24,8 @@ interface Experience {
 interface Team {
   id: number
   name: string
-  resultImages: string[]
+  resultImages?: string[]
+  mainImage?: string
 }
 
 interface ProfileData {

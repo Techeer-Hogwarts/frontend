@@ -1,9 +1,9 @@
 'use client'
 
 import TapBtn from './TapBtn'
-import SearchBar from './Search'
-import { useTapBarStore } from '@/store/tapBarStore'
 import { useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import { useTapBarStore } from '@/store/tapBarStore'
 
 interface TapBarProps {
   readonly options: string[]
@@ -12,11 +12,16 @@ interface TapBarProps {
 
 export default function TapBar({ options, onSelect }: TapBarProps) {
   const { activeOption, setActiveOption } = useTapBarStore()
+  const router = useRouter()
   useEffect(() => {
     if (!activeOption && options.length > 0) {
       setActiveOption(options[0])
     }
-  })
+    // console.log('sssss', router)
+    return () => {
+      setActiveOption(options[0]) // 페이지 이동 시 상태 초기화
+    }
+  }, [])
 
   return (
     <div>
@@ -27,7 +32,7 @@ export default function TapBar({ options, onSelect }: TapBarProps) {
               isActive={activeOption === option}
               onClick={() => {
                 setActiveOption(option)
-                onSelect(option) // 카테고리 변경 시 부모 컴포넌트로 전달
+                onSelect(option)
               }}
             >
               {option}
@@ -37,13 +42,7 @@ export default function TapBar({ options, onSelect }: TapBarProps) {
             )}
           </div>
         ))}
-
-        <div className="ml-auto">
-          {/* <SearchBar placeholder={placeholder} onSearch={onSearch} /> */}
-        </div>
       </div>
-
-      {/* <div className="w-auto h-[1px] mt-5 bg-gray" /> */}
     </div>
   )
 }

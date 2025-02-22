@@ -21,7 +21,8 @@ export default function AddProjectPage() {
     frontendNum: 0,
     backendNum: 0,
     devopsNum: 0,
-    // fullStackNum: 0,
+    fullStackNum: 0,
+    dataEngineerNum: 0,
     isRecruited: false,
     isFinished: true,
     recruitExplain: '',
@@ -29,21 +30,54 @@ export default function AddProjectPage() {
     notionLink: '',
     projectMember: [],
     teamStacks: [],
-    resultImages: [],
-    projectImage: '',
+    // 대표 이미지는 단일 파일(또는 null)
+    mainImageFile: null as File | null,
+    // 결과 이미지는 여러 개 가능 → File[]
+    resultImages: [] as File[],
   })
 
-  const handleUpdate = (key, value) => {
+  const handleUpdate = (key: string, value: any) => {
+    console.log('[Parent] handleUpdate =>', key, value) // 여기 찍어보기
+
     setProjectData((prev) => ({ ...prev, [key]: value }))
   }
 
   const handleSubmit = async () => {
-    console.log(projectData)
+    // 1) 프로젝트 이름 확인
+    if (!projectData.name.trim()) {
+      alert('프로젝트 이름을 입력해주세요.')
+      return
+    }
 
-    const response = await handleAddProject(projectData)
+    // 2) 메인 이미지 체크
+    if (!projectData.mainImageFile) {
+      alert('대표 이미지를 업로드해주세요.')
+      return
+    }
+
+    // 3) 리더(팀장) 체크
+    const hasLeader = projectData.projectMember.some((m) => m.isLeader)
+    if (!hasLeader) {
+      alert('리더를 한 명 이상 지정해주세요!')
+      return
+    }
+
+    const dataToSend = { ...projectData }
+
+    if (dataToSend.projectMember && Array.isArray(dataToSend.projectMember)) {
+      dataToSend.projectMember = dataToSend.projectMember.map((member) => {
+        const { profileImage, name, id, email, ...rest } = member
+        return rest
+      })
+    }
+
+    console.log('전송할 데이터:', dataToSend)
+
+    // (C) 수정된 데이터(dataToSend)를 전송
+    const response = await handleAddProject(dataToSend)
     if (response) {
-      router.push(`/project/detail/project/${response.data.id}`)
-      localStorage.setItem('projectId', response.data.id)
+      router.push(`/project/detail/project/${response.id}`)
+      localStorage.setItem('projectId', response.id)
     } else {
       alert('등록에 실패하였습니다. 다시 시도해주세요.')
     }
@@ -71,15 +105,19 @@ export default function AddProjectPage() {
           frontendNum={projectData.frontendNum}
           backendNum={projectData.backendNum}
           devopsNum={projectData.devopsNum}
-          // fullStackNum={projectData.fullStackNum}
+          fullStackNum={projectData.fullStackNum}
+          dataEngineerNum={projectData.dataEngineerNum}
           recruitExplain={projectData.recruitExplain}
           onUpdate={handleUpdate}
         />
-        {/* 추후처리 */}
-        <AddStack />
+        <AddStack
+          onUpdateStacks={(teamStacks) =>
+            handleUpdate('teamStacks', teamStacks)
+          }
+        />
         <AddResults
-          resultImages={projectData.resultImages || []}
-          onUpdate={handleUpdate}
+          newResultImages={projectData.resultImages} // File[] (새로 업로드할)
+          onUpdateResultImages={(files) => handleUpdate('resultImages', files)}
         />
         <button
           type="button"

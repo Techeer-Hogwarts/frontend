@@ -7,7 +7,7 @@ import { useTapBarStore } from '@/store/tapBarStore'
 import { useInView } from 'react-intersection-observer'
 import { useCallback, useEffect, useState } from 'react'
 import { BlogProps } from '@/types/BlogProps'
-const tapBatOptions = ['금주의 블로그', 'TECHEER', 'SHARED']
+const tapBarOptions = ['금주의 블로그', 'TECHEER', 'SHARED']
 export default function Page() {
   const [blog, setBlog] = useState<BlogProps[]>([])
   const [likeList, setLikeList] = useState([])
@@ -138,9 +138,6 @@ export default function Page() {
       }
     }
   }, [inView, activeOption])
-  useEffect(() => {
-    setActiveOption(tapBatOptions[0])
-  }, [])
   return (
     <div className="flex justify-center h-auto min-h-screen">
       <div className="flex flex-col">
@@ -153,11 +150,8 @@ export default function Page() {
           <p className="text-[2.5rem] font-bold">블로그</p>
           <p className="text-[1.25rem]">테커인들의 블로그를 확인해보세요.</p>
         </div>
-        <TapBar
-          options={['금주의 블로그', 'TECHEER', 'SHARED']}
-          // placeholder="블로그 제목을 검색해보세요"
-          onSelect={handleCategoryChange}
-        />
+        <TapBar options={category} onSelect={handleCategoryChange} />
+        <div className="flex w-full h-[1px] mt-5 bg-gray" />
         <div className="flex-col grid grid-cols-3 gap-8 mt-8">
           {blog.map((blog, index) => (
             <BlogPost

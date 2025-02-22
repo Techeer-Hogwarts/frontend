@@ -1,139 +1,122 @@
-import React, { useState, useEffect, useRef } from 'react'
-import { IoAddCircleOutline } from 'react-icons/io5'
-import ExistingResultImgBox from './ResultImgBox'
+import React, { useState, useEffect } from 'react'
+import ExistingResultImgBox from '../ExistingResultImgBox'
 import ResultImgBox from '../ResultImgBox'
+import { IoAddCircleOutline } from 'react-icons/io5'
 
+interface ExistingImage {
+  id: number
+  imageUrl: string
+}
 type ImageItem =
-  | { type: 'existing'; url: string }
-  | { type: 'new'; file: File | null; previewUrl: string }
+  | { type: 'existing'; id: number; url: string }
+  | { type: 'new'; file: File; previewUrl: string }
 
 interface AddResultsProps {
-  existingUrls?: string[] // 서버에 있는 이미지 URL들
-  resultImages: File[] | any // 새로 업로드할 이미지 파일들
-  onUpdate: (key: string, value: any) => void
+  existingResultImages?: ExistingImage[] // 기존 이미지 목록
+  newResultImages: File[] // 새로 업로드할 이미지 목록
+  onUpdateResultImages: (files: File[]) => void
+  onDeleteOldResultImage?: (id: number) => void
 }
 
 export default function AddResults({
-  existingUrls = [],
-  resultImages,
-  onUpdate,
-}: any) {
-  const [projectType, setProjectType] = useState<string | null>(null)
-
-  // (A) 파일 → 미리보기 URL 매핑을 위한 ref
-  const filePreviewMap = useRef<Map<File, string>>(new Map())
-
-  // (B) 최종 표시할 이미지 아이템 배열
+  existingResultImages = [],
+  newResultImages,
+  onUpdateResultImages,
+  onDeleteOldResultImage,
+}: AddResultsProps) {
   const [imageItems, setImageItems] = useState<ImageItem[]>([])
+  const [didInit, setDidInit] = useState(false)
 
+  // (A) 처음 마운트 시점에만 existing + new 합쳐서 imageItems 초기화
   useEffect(() => {
-    // 1) projectType 로컬스토리지에서 읽어오기
-    const storedProjectType = localStorage.getItem('projectType')
-    setProjectType(storedProjectType)
+    if (didInit) return
+    setDidInit(true)
 
-    // 2) 기존 이미지 아이템 생성
-    const oldItems = existingUrls.map((url) => ({
-      type: 'existing' as const,
-      url,
+    const oldItems: ImageItem[] = existingResultImages.map((img) => ({
+      type: 'existing',
+      id: img.id,
+      url: img.imageUrl,
     }))
 
-    // 3) 새 파일 아이템 생성 (타입 체크 포함)
-    const newItems = resultImages.map((file) => {
-      if (file instanceof File) {
-        let preview = filePreviewMap.current.get(file)
-        if (!preview) {
-          preview = URL.createObjectURL(file)
-          filePreviewMap.current.set(file, preview)
-        }
-        return {
-          type: 'new' as const,
-          file,
-          previewUrl: preview,
-        }
-      } else {
-        // File이 아닌 경우 빈 값 반환
-        return {
-          type: 'new' as const,
-          file: null,
-          previewUrl: '',
-        }
-      }
-    })
+    const newItems: ImageItem[] = newResultImages.map((file) => ({
+      type: 'new',
+      file,
+      previewUrl: URL.createObjectURL(file),
+    }))
 
-    // 4) 기존 이미지와 새 파일을 합쳐서 초기 이미지 아이템 배열 생성
     const combined = [...oldItems, ...newItems]
 
-    // 5) 기존 이미지와 새 이미지가 모두 없을 경우, 기본 박스 2개 생성
+    // 혹시 하나도 없으면 초기 박스 2개
     if (combined.length === 0) {
       combined.push(
-        { type: 'new', file: null, previewUrl: '' },
-        { type: 'new', file: null, previewUrl: '' },
+        { type: 'new', file: null as any, previewUrl: '' },
+        { type: 'new', file: null as any, previewUrl: '' },
       )
     }
-
     setImageItems(combined)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []) // 초기 1회 실행
+  }, [didInit, existingResultImages, newResultImages])
 
-  // (C) 새로운 이미지 박스 추가
+  // (C) 이미지 추가 버튼
   const handleAddBox = () => {
     setImageItems((prev) => [
       ...prev,
-      { type: 'new', file: null, previewUrl: '' },
+      { type: 'new', file: null as any, previewUrl: '' },
     ])
   }
 
-  // (D) 파일 선택 시 해당 박스 업데이트 및 미리보기 URL 생성 (타입 체크 포함)
+  // (D) 파일 업로드
   const handleFileSelect = (index: number, file: File) => {
-    if (!(file instanceof File)) {
-      console.error('유효하지 않은 파일입니다.')
-      return
-    }
-
-    let preview = filePreviewMap.current.get(file)
-    if (!preview) {
-      preview = URL.createObjectURL(file)
-      filePreviewMap.current.set(file, preview)
-    }
-
-    const updated = [...imageItems]
-    updated[index] = {
-      type: 'new',
-      file,
-      previewUrl: preview,
-    }
-    setImageItems(updated)
-
-    // 새로 업로드할 파일만 상위 컴포넌트에 전달
-    const newFiles = updated
-      .filter((item) => item.type === 'new' && item.file)
-      .map((item) => (item as { file: File }).file)
-    onUpdate('resultImages', newFiles)
+    setImageItems((prev) => {
+      const copy = [...prev]
+      copy[index] = {
+        type: 'new',
+        file,
+        previewUrl: URL.createObjectURL(file),
+      }
+      return copy
+    })
+    // 새 File[]로 재구성
+    const newFiles = rebuildNewFiles(index, file)
+    onUpdateResultImages(newFiles)
   }
 
-  // (E) 이미지 삭제
-  const handleDelete = (index: number) => {
-    const updated = [...imageItems]
-    const removed = updated.splice(index, 1)[0]
-    setImageItems(updated)
+  function rebuildNewFiles(changedIndex: number, changedFile: File) {
+    // imageItems의 복사본을 만들어서 new 타입만 추출
+    const copy = imageItems.map((item, idx) => {
+      if (idx === changedIndex) {
+        return {
+          type: 'new',
+          file: changedFile,
+          previewUrl: URL.createObjectURL(changedFile),
+        }
+      }
+      return item
+    })
 
-    // 삭제된 항목이 새 파일일 경우, resultImages 업데이트
-    if (removed.type === 'new' && removed.file) {
-      const newFiles = updated
-        .filter((item) => item.type === 'new' && item.file)
-        .map((item) => (item as { file: File }).file)
-      onUpdate('resultImages', newFiles)
+    return copy
+      .filter((item) => item.type === 'new' && item.file)
+      .map((item) => (item as { file: File }).file)
+  }
+
+  // (E) 삭제
+  const handleDelete = (index: number) => {
+    const item = imageItems[index]
+    if (item.type === 'existing') {
+      // 기존 이미지 → 상위 콜백 (deleteResultImages에 id 추가)
+      onDeleteOldResultImage(item.id)
+    } else {
+      // 새 이미지 → newResultImages에서 제거
+      const newFiles = newResultImages.filter((_, i) => i !== index)
+      onUpdateResultImages(newFiles)
     }
+    // 로컬 state에서도 제거
+    setImageItems((prev) => prev.filter((_, i) => i !== index))
   }
 
   return (
     <div>
       <div className="flex justify-between items-center mb-3 mt-[3.19rem]">
-        <div className="font-medium text-gray">
-          {projectType === 'project'
-            ? '결과물(혹은 피그마 디자인)을 올려주세요'
-            : '활동 사진을 올려주세요'}
-        </div>
+        <div className="font-medium text-gray">결과물/디자인을 올려주세요</div>
         <button
           onClick={handleAddBox}
           className="flex items-center gap-2 text-primary font-medium"
@@ -144,22 +127,26 @@ export default function AddResults({
       </div>
 
       <div className="grid grid-cols-2 gap-6">
-        {imageItems.map((item, idx) =>
-          item.type === 'existing' ? (
-            <ExistingResultImgBox
-              key={`old-${idx}`}
-              imageUrl={item.url}
-              onDelete={() => handleDelete(idx)}
-            />
-          ) : (
-            <ResultImgBox
-              key={`new-${idx}`}
-              previewUrl={item.previewUrl}
-              onFileSelect={(file) => handleFileSelect(idx, file)}
-              onDelete={() => handleDelete(idx)}
-            />
-          ),
-        )}
+        {imageItems.map((item, idx) => {
+          if (item.type === 'existing') {
+            return (
+              <ExistingResultImgBox
+                key={`old-${idx}`}
+                imageUrl={item.url}
+                onDelete={() => handleDelete(idx)}
+              />
+            )
+          } else {
+            return (
+              <ResultImgBox
+                key={`new-${idx}`}
+                previewUrl={item.previewUrl}
+                onFileSelect={(file) => handleFileSelect(idx, file)}
+                onDelete={() => handleDelete(idx)}
+              />
+            )
+          }
+        })}
       </div>
     </div>
   )

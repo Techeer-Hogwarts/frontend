@@ -26,7 +26,7 @@ export default function NevBar() {
   const handleLogout = async () => {
     try {
       await logout()
-      router.push('/login')
+      router.push('/')
     } catch (error) {
       router.push('/login')
     }

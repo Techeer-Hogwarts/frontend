@@ -10,7 +10,8 @@ import Link from 'next/link'
 interface Team {
   id: number
   name: string
-  resultImages: string[]
+  resultImages?: string[]
+  mainImage?: string
 }
 
 interface CarouselProps {
@@ -58,7 +59,7 @@ function ImageOrIcon({ src, alt }: { src?: string; alt: string }) {
       alt={alt}
       width={64}
       height={64}
-      className="rounded"
+      className="rounded object-cover w-[64px] h-[64px]"
       unoptimized
       onError={() => setImgError(true)}
     />
@@ -66,6 +67,7 @@ function ImageOrIcon({ src, alt }: { src?: string; alt: string }) {
 }
 
 const Carousel: React.FC<CarouselProps> = ({ teams, routePrefix }) => {
+  console.log('Carousel:', teams)
   const settings = {
     dots: false,
     infinite: teams.length > 10,
@@ -86,7 +88,7 @@ const Carousel: React.FC<CarouselProps> = ({ teams, routePrefix }) => {
             href={`${routePrefix}/${team.id}`}
             className="relative group cursor-pointer"
           >
-            <ImageOrIcon src={team.resultImages?.[0]} alt={team.name} />
+            <ImageOrIcon src={team.mainImage} alt={team.name} />
             <div className="absolute w-[64px] h-[64px] top-0 bg-black bg-opacity-60 text-white text-xs flex items-center justify-center text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded">
               {team.name}
             </div>
@@ -98,6 +100,7 @@ const Carousel: React.FC<CarouselProps> = ({ teams, routePrefix }) => {
 
   // 10개 초과 시 캐러셀(slick)로 표시
   return (
+    // @ts-ignore
     <Slider
       {...settings}
       className="flex relative h-[140px] px-10 w-[890px] gap-3 overflow-x-auto items-center justify-start border border-lightgray rounded-lg"
@@ -108,7 +111,7 @@ const Carousel: React.FC<CarouselProps> = ({ teams, routePrefix }) => {
             href={`${routePrefix}/${team.id}`}
             className="relative group cursor-pointer"
           >
-            <ImageOrIcon src={team.resultImages?.[0]} alt={team.name} />
+            <ImageOrIcon src={team.mainImage} alt={team.name} />
             <div className="absolute w-[64px] h-[64px] top-0 bg-black bg-opacity-60 text-white text-xs flex items-center justify-center text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded">
               {team.name}
             </div>

@@ -9,7 +9,7 @@ import { useTapBarStore } from '@/store/tapBarStore'
 import { useInView } from 'react-intersection-observer'
 import { useBookmark } from '@/app/blog/_lib/useBookmark'
 import Skeleton from './Skeleton'
-const tapBatOptions = ['세션영상', '블로그', '이력서']
+const tapBarOptions = ['세션영상', '블로그', '이력서']
 export default function Bookmark() {
   const { fetchLikes } = useLike()
   const [limit, setLimit] = useState(6)
@@ -68,10 +68,6 @@ export default function Bookmark() {
   }, [limit])
 
   useEffect(() => {
-    setActiveOption(tapBatOptions[0])
-  }, [setActiveOption])
-
-  useEffect(() => {
     if (!inView) return
     if (inView) {
       setLimit(limit + 6)
@@ -82,11 +78,8 @@ export default function Bookmark() {
   return (
     <div className="ml-10">
       <div className="w-[800px]">
-        <TapBar
-          options={[tapBatOptions[0], tapBatOptions[1]]}
-          // placeholder="제목 혹은 이름을 검색해보세요"
-          onSelect={handleSearch}
-        />
+        <TapBar options={tapBarOptions} onSelect={handleSearch} />
+        <div className="flex w-full h-[1px] mt-5 bg-gray" />
       </div>
       <div className="grid grid-cols-2 gap-8 mt-5">
         {isLoading
