@@ -27,7 +27,7 @@ interface Session {
   fileUrl: string
   user: User
 }
-const tapBatOptions = ['금주의 세션', '전체보기', '부트캠프', '파트너스']
+const tapBarOptions = ['금주의 세션', '전체보기', '부트캠프', '파트너스']
 export default function Page() {
   const [selectedPeriodsP, setSelectedPeriodsP] = useState<string[]>([])
   const [selectedPeriodsB, setSelectedPeriodsB] = useState<string[]>([])
@@ -56,11 +56,12 @@ export default function Page() {
     setAuthModalOpen,
   })
 
-  // const handleSearch = (query: string) => {
-  //   sessionStorage.setItem('searchQuery', query)
-  //   setInputValue(query)
-  // }
-
+  // 카테고리 변경 처리 함수
+  const handleCategoryChange = () => {
+    // 카테고리가 변경되면 해당 카테고리에 맞는 블로그 데이터를 가져옵니다.
+    setLimit(3) // 페이지네이션 초기화
+    refetch()
+  }
   const showMessage = () => {
     setMessage('세션영상이 삭제되었습니다.')
     setTimeout(() => setMessage(null), 2000)
@@ -123,9 +124,9 @@ export default function Page() {
       refetch()
     }
   }, [inView])
-  useEffect(() => {
-    setActiveOption(tapBatOptions[0])
-  }, [])
+  // useEffect(() => {
+  //   setActiveOption(tapBatOptions[0])
+  // }, [])
   return (
     <div className="flex justify-center h-auto min-h-screen">
       <div className="flex flex-col">
@@ -150,12 +151,9 @@ export default function Page() {
             setSelectedPeriodsB([])
           }}
         >
-          {/* <TapBar
-            options={['금주의 세션', '전체보기', '부트캠프', '파트너스']}
-            onSearch={handleSearch}
-          /> */}
+          <TapBar options={tapBarOptions} onSelect={handleCategoryChange} />
         </div>
-        <div className="flex w-full h-[1px] mt-5 bg-gray"></div>
+        <div className="flex w-full h-[1px] mt-5 bg-gray" />
         <div className="flex justify-start my-6 gap-3">
           {activeOption === '부트캠프' && (
             <>
