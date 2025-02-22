@@ -11,8 +11,8 @@ const ProjectMemberModal = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const [name, setName] = useState('')
   const router = useRouter()
-  const [members, setMembers] = useState<Member[]>([])
-  const [dropdownOptions, setDropdownOptions] = useState<Member[]>()
+  const [members, setMembers] = useState<any[]>([])
+  const [dropdownOptions, setDropdownOptions] = useState<any[]>()
 
   const [projectType, setProjectType] = useState<null | string>(null)
 
@@ -42,7 +42,7 @@ const ProjectMemberModal = () => {
   }, [isDropdownOpen])
 
   // 멤버 추가
-  const handleAddMember = (member: Member) => {
+  const handleAddMember = (member: any) => {
     if (!members.find((m) => m.name === member.name)) {
       setMembers((prevMembers) => [...prevMembers, member])
     }

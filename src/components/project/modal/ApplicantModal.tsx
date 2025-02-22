@@ -6,7 +6,7 @@ import {
   acceptStudyApplicant,
   denyStudyApplicant,
 } from '@/api/project/study/study'
-import { useQueryClient } from "@tanstack/react-query"
+import { useQueryClient } from '@tanstack/react-query'
 
 interface User {
   name: string
@@ -25,6 +25,9 @@ interface Applicant {
   summary: string
   status: string
   user: User
+  profileImage: string
+  name: string
+  teamRole: string
 }
 
 interface ApplicantModalProps {
@@ -42,7 +45,6 @@ export default function ApplicantModal({
   console.log(applicant)
 
   const queryClient = useQueryClient()
-
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -77,7 +79,6 @@ export default function ApplicantModal({
       queryClient.invalidateQueries({
         queryKey: ['getStudyApplicants', projectId],
       })
-
     } catch (error) {
       console.error(error)
       alert('오류가 발생했습니다.')

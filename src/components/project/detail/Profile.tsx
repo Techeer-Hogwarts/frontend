@@ -20,7 +20,7 @@ interface ProfileProps {
   }
 }
 
-export default function Profile({ projectDetail }: ProfileProps) {
+export default function Profile({ projectDetail }: any) {
   const projectType = localStorage.getItem('projectType')
 
   return (

@@ -12,7 +12,7 @@ interface MemberProps {
   }>
 }
 
-export default function Member({ members }: MemberProps) {
+export default function Member({ members }: any) {
   const [projectType, setProjectType] = useState<null | string>(null)
 
   useEffect(() => {

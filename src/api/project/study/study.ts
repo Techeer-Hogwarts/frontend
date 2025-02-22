@@ -29,6 +29,7 @@ interface StudyDetail {
   studyMember: StudyMember[]
   likeCount: number
   viewCount: number
+  githubLink: string
 }
 
 type GetStudyDetailResponse = StudyDetail
@@ -215,7 +216,6 @@ export const deleteStudyTeam = async (projectId) => {
     const response = await fetch(`/api/v1/studyTeams/delete/${projectId}`, {
       method: 'PATCH',
       credentials: 'include',
-      
     })
 
     if (!response.ok) {
@@ -256,7 +256,6 @@ export const getStudyApplicants = async (studyTeamId) => {
 
 // 스터디 지원자 수락
 export const acceptStudyApplicant = async (data) => {
-
   try {
     const response = await fetch(`/api/v1/studyTeams/applicants/accept`, {
       method: 'PATCH',

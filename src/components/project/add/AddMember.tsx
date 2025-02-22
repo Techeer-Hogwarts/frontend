@@ -96,8 +96,8 @@ export default function AddMember({
         {isModalOpen &&
           (projectType === 'project' ? (
             <ProjectMemberModal
-              onClose={handleCloseModal}
-              onSave={handleSaveMembers}
+              // onClose={handleCloseModal}
+              // onSave={handleSaveMembers}
             />
           ) : (
             <MemberModal

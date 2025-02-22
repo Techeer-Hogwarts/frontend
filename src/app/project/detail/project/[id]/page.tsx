@@ -93,7 +93,7 @@ export default function ProjectDetailpage() {
 
       <div className="flex flex-col gap-7">
         <Member members={projectDetails?.projectMember} />
-        <Stack stacks={projectDetails?.teamStacks} />
+        {/* <Stack stacks={projectDetails?.teamStacks} /> */}
         {projectDetails?.isRecruited && (
           <FindMember
             projectDetail={projectDetails}

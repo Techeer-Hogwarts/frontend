@@ -17,6 +17,7 @@ interface Member {
 }
 
 interface MemberModalProps {
+  existingMembers: any
   onClose: () => void
   onSave: (selectedMembers: Member[]) => void
 }
@@ -56,7 +57,7 @@ const MemberModal = ({
       )
       if (!alreadyExists) {
         // 모달 내부 members에도 없으면 추가
-        setMembers((prev) => {
+        setMembers((prev: any) => {
           const inModal = prev.some((mm) => mm.id === user.id)
           if (!inModal) {
             return [

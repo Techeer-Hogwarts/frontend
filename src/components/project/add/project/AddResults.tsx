@@ -9,7 +9,7 @@ type ImageItem =
 
 interface AddResultsProps {
   existingUrls?: string[] // 서버에 있는 이미지 URL들
-  resultImages: File[] // 새로 업로드할 이미지 파일들
+  resultImages: File[] | any // 새로 업로드할 이미지 파일들
   onUpdate: (key: string, value: any) => void
 }
 
@@ -17,7 +17,7 @@ export default function AddResults({
   existingUrls = [],
   resultImages,
   onUpdate,
-}: AddResultsProps) {
+}: any) {
   const [projectType, setProjectType] = useState<string | null>(null)
 
   // (A) 파일 → 미리보기 URL 매핑을 위한 ref

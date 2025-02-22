@@ -25,7 +25,7 @@ interface ProjectTeam extends TeamBase {
   teamStacks: { stackName: string; isMain: boolean }[]
 }
 
-export default function ProjectCard({ team }: { team: ProjectTeam }) {
+export default function ProjectCard({ team }: any) {
   // console.log(team)
   const handleClick = () => {
     localStorage.setItem('projectType', 'project')
