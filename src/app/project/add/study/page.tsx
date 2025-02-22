@@ -74,10 +74,10 @@ export default function AddStudyPage() {
           recruitExplain={studyData.recruitExplain}
           onUpdate={handleUpdate}
         />
-        <AddResults
+        {/* <AddResults
           resultImages={studyData.resultImages || []}
           onUpdate={handleUpdate}
-        />
+        /> */}
 
         <button
           type="button"
