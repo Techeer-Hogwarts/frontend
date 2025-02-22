@@ -2,7 +2,7 @@ import Image from 'next/image'
 
 export default function Fourth() {
   return (
-    <div className="flex justify-between h-[540px] p-10 bg-lightgray">
+    <div className="flex justify-between h-[540px] p-10 ">
       {/* 왼쪽 슬라이더 */}
       <div className="flex">
         <Image

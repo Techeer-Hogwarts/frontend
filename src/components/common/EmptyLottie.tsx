@@ -3,10 +3,10 @@ import lottie from '../../../public/lottie.json'
 
 interface LottieProps {
   text: string
-  link: string
+  text2: string
 }
 
-export default function EmptyLottie({ text, link }: Readonly<LottieProps>) {
+export default function EmptyLottie({ text, text2 }: Readonly<LottieProps>) {
   return (
     <div className="flex flex-col justify-center items-center w-[32rem] h-[25rem]">
       <Lottie loop animationData={lottie} play style={{ margin: '20px' }} />
@@ -16,7 +16,7 @@ export default function EmptyLottie({ text, link }: Readonly<LottieProps>) {
       </span>
       <span className="text-[#FF7816] text-[1rem] font-medium">
         {/* 전체 활동 보러가기 */}
-        {link}
+        {text2}
       </span>
     </div>
   )

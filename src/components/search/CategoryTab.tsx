@@ -13,7 +13,7 @@ const CategoryTab: React.FC<CategoryTabProps> = ({ onScrollToSection }) => {
   ]
 
   return (
-    <div className="flex items-center border-4 border-lightgray h-16 py-4">
+    <div className="flex items-center border-4 border-lightgray h-12 py-4">
       {categories.map((category) => (
         <a
           key={category.id}
@@ -25,8 +25,8 @@ const CategoryTab: React.FC<CategoryTabProps> = ({ onScrollToSection }) => {
             src="/images/arrow-outline.svg"
             alt="arrow"
             className="w-6"
-            width={20}
-            height={20}
+            width={14}
+            height={14}
           />
           {/* 가로 세로 수정바람 */}
         </a>

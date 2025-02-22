@@ -1,45 +1,58 @@
 import Section from './Section'
 import CardItem from './CardItem'
+import { useState } from 'react'
 
-const sessionItems = [
-  {
-    id: '1',
-    title: '백엔드 기초',
-    date: '2024년 가을',
-    category: 'Backend',
-    author: '주영준',
-    authorImage: '/profile.png',
-    thumbnail: '/images/session/thumbnail.png',
-  },
-  {
-    id: '2',
-    title: '데이터베이스 설계',
-    date: '2024년 여름',
-    category: 'Database',
-    author: '김미영',
-    authorImage: '/profile.png',
-    thumbnail: '/images/session/thumbnail.png',
-  },
-  {
-    id: '3',
-    title: 'DevOps 기초',
-    date: '2024년 겨울',
-    category: 'DevOps',
-    author: '박명수',
-    authorImage: '/profile.png',
-    thumbnail: '/images/session/thumbnail.png',
-  },
-  // 더 많은 항목을 추가할 수 있습니다.
-]
+type SessionProps = {
+  id: string
+  userId: string
+  thumbnail: string
+  title: string
+  presenter: string
+  date: string
+  category: string
+  user: {
+    name: string
+    profileImage: string
+  }
+}
 
-const SessionSection = () => {
+const SessionSection: React.FC<{ session: SessionProps[] }> = ({ session }) => {
+  const [showAll, setShowAll] = useState(false)
+
+  // 처음에는 8개만 보여주고, 더보기 클릭 시 전체 데이터 보여주기
+  const visibleSessions = showAll ? session : session.slice(0, 8)
+
   return (
     <Section id="session" title="세션">
-      <div className="grid grid-cols-4 gap-[3rem]">
-        {sessionItems.map((item) => (
-          <CardItem key={item.id} {...item} />
-        ))}
-      </div>
+      {visibleSessions.length > 0 ? (
+        <div className="grid grid-cols-4 gap-[3rem]">
+          {visibleSessions.map((item) => (
+            <CardItem
+              key={item.id}
+              title={item.title}
+              date={item.date}
+              category="" // category 값을 고정하거나 다른 값으로 설정
+              author={item.presenter} // author는 userName으로 설정
+              authorImage={item.thumbnail} // authorImage는 userProfileImage로 설정
+              thumbnail={item.thumbnail}
+            />
+          ))}
+        </div>
+      ) : (
+        <p className="text-center text-darkgray">검색 결과가 없습니다</p>
+      )}
+      {/* 더보기 버튼 표시 */}
+      {!showAll && session.length > 8 && (
+        <div className="flex flex-col items-center mt-10">
+          <button
+            onClick={() => setShowAll(true)}
+            className="px-6 py-2 text-primary text-sm border border-primary rounded-full hover:bg-primary hover:text-white transition-colors"
+          >
+            더보기 +
+          </button>
+        </div>
+      )}
+      <div className="w-[62.5rem] h-[1px] mt-10 bg-lightgray"></div>
     </Section>
   )
 }
