@@ -152,7 +152,7 @@ export default function AddCalenderModal({ handleBack, mode, eventId }: AddCalen
                 <div className="absolute z-10 mt-1">
                   <DatePicker
                     selected={formData.startDate}
-                    onChange={(date) => {
+                    onChange={(date: Date) => {
                       setFormData({ ...formData, startDate: date })
                       setStartDateOpen(false)
                     }}
