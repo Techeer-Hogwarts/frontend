@@ -7,6 +7,7 @@ import Other from '@/components/resume/OtherResume'
 import { fetchResumeById } from '@/app/resume/api/getResume'
 import EmptyLottie from '@/components/common/EmptyLottie'
 import { useParams } from 'next/navigation'
+import Skeleton from '@/components/resume/Skeleton'
 
 interface ResumeData {
   id: number
@@ -16,20 +17,19 @@ interface ResumeData {
   category: string
   position: string
   likeCount: number
-  year: string
   user: {
     id: number
     name: string
     profileImage: string
     year: number
     mainPosition: string
-    school: string
-    grade: string
-    email: string
-    githubUrl: string
-    mediumUrl: string
-    velogUrl: string
-    tistoryUrl: string
+    // school: string
+    // grade: string
+    // email: string
+    // githubUrl: string
+    // mediumUrl: string
+    // velogUrl: string
+    // tistoryUrl: string
   }
 }
 
@@ -39,6 +39,8 @@ export default function Detail({ params }: { params: { resumeId: string } }) {
   const [error, setError] = useState<string | null>(null)
   const [showOther, setShowOther] = useState(false) // Other 컴포넌트 표시 여부 상태 추가
   const [profileData, setProfileData] = useState<any>(null)
+
+  const [isLoading, setIsLoading] = useState<boolean>(true)
 
   // 다른 사람 이력서 보기를 클릭했을 때 Other 컴포넌트 표시 토글
   const handleToggleOther = () => {
@@ -52,21 +54,31 @@ export default function Detail({ params }: { params: { resumeId: string } }) {
         console.log('Fetched resume data:', data)
         setResume(data)
         setProfileData(data.user)
-        console.log('detail 페이지 조회 성공')
+        setIsLoading(false)
+        console.log('detail 페이지 조회 성공', data)
       } catch (err: any) {
         setError(err.message)
+        setIsLoading(false)
       }
     }
 
     loadResume()
   }, [resumeId])
 
+  if (isLoading) {
+    return (
+      <div className="flex justify-center">
+        <Skeleton />
+      </div>
+    )
+  }
+
   if (error || profileData?.length === 0 || !resume) {
     return (
       <div className="flex justify-center">
         <EmptyLottie
           text="이력서를 조회하는데 실패했습니다."
-          link="다시 조회해주세요"
+          text2="다시 조회해주세요"
         />
       </div>
     ) // 오류 발생 시 표시할 문구

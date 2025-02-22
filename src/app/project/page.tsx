@@ -11,10 +11,13 @@ export default function Project() {
   const [selectedPeriods, setSelectedPeriods] = useState<string[]>(['0'])
   const [inputValue, setInputValue] = useState('')
 
-  const handleSearch = (query: string) => {
-    sessionStorage.setItem('searchQuery', query)
-    setInputValue(query)
-  }
+  // const handleSearch = (query: string) => {
+  //   sessionStorage.setItem('searchQuery', query)
+  //   setInputValue(query)
+  // }
+
+  const handleCategoryChange = () => {}
+
   return (
     <div className=" max-w-[1200px] w-[1200px] mt-[3.56rem] items-center">
       <div className="flex justify-between mb-[2.84rem] ">
@@ -42,9 +45,10 @@ export default function Project() {
       {/* 탭바 */}
       <TapBar
         options={['전체보기', '모집 중']}
-        placeholder="프로젝트 명 혹은 이름으로 검색해보세요"
-        onSearch={handleSearch}
+        onSelect={handleCategoryChange}
       />
+      <div className="flex w-full h-[1px] mt-5 bg-gray"></div>
+
       <div className="flex justify-start mt-5 gap-3 mb-[2.31rem]">
         <Dropdown
           title="구분"
@@ -66,9 +70,9 @@ export default function Project() {
         />
       </div>
       <div className="flex gap-[1rem] flex-wrap ">
-        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16].map((el) => (
+        {/* {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16].map((el) => (
           <Card key={el} />
-        ))}
+        ))} */}
       </div>
       <AddBtn />
     </div>

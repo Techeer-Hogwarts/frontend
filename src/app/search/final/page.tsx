@@ -105,7 +105,7 @@ export default function Search() {
         <>
           <EmptyLottie
             text="검색한 데이터가 없습니다."
-            link="다시 검색해주세요"
+            text2="다시 검색해주세요"
           />
         </>
       )}

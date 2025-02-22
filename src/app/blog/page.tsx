@@ -33,10 +33,23 @@ export default function Page() {
   const [limit, setLimit] = useState(3)
   const [ref, inView] = useInView()
 
-  const handleSearch = (query: string) => {
-    sessionStorage.setItem('searchQuery', query)
-    setInputValue(query)
+  const category = ['금주의 블로그', 'TECHEER', 'SHARED']
+
+  // 카테고리 변경 처리 함수
+  const handleCategoryChange = (selectedCategory: string) => {
+    // 카테고리가 변경되면 해당 카테고리에 맞는 블로그 데이터를 가져옵니다.
+    setLimit(3) // 페이지네이션 초기화
+    if (selectedCategory === '금주의 블로그') {
+      getBestBlog(3)
+    } else {
+      getBlog(3, inputValue, selectedCategory)
+    }
   }
+
+  // const handleSearch = (query: string) => {
+  //   sessionStorage.setItem('searchQuery', query)
+  //   setInputValue(query)
+  // }
   const handleDeleteSession = (id: string) => {
     setBlog((prevblogs) => prevblogs.filter((blog) => blog.id !== id))
     setMessage('블로그 글이 삭제되었습니다.')
@@ -62,7 +75,6 @@ export default function Page() {
     } catch (err) {
       console.error('블로그 데이터 업로드 중 오류 발생:', err)
     }
-
   }, [])
   const getBlog = useCallback(
     async (newLimit: number, query: string, category: string) => {
@@ -126,11 +138,13 @@ export default function Page() {
           <p className="text-[2.5rem] font-bold">블로그</p>
           <p className="text-[1.25rem]">테커인들의 블로그를 확인해보세요.</p>
         </div>
-        <TapBar
+        {/* <TapBar
           options={['금주의 블로그', 'TECHEER', 'SHARED']}
           placeholder="블로그 제목을 검색해보세요"
           onSearch={handleSearch}
-        />
+        /> */}
+        <TapBar options={category} onSelect={handleCategoryChange} />
+        <div className="flex w-full h-[1px] mt-5 bg-gray"></div>
         <div className="flex-col grid grid-cols-3 gap-8 mt-8">
           {blog.map((blog, index) => (
             <BlogPost

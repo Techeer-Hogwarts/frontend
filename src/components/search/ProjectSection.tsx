@@ -4,20 +4,21 @@ import CardItem from './CardItem'
 import { useState } from 'react'
 
 type ProjectProps = {
+  type: string
   id: string
+  isDeleted: boolean
+  isRecruited: boolean
+  isFinished: boolean
   name: string
+  frontendNum: number
+  backendNum: number
+  devopsNum: number
+  fullStackNum: number
+  dataEngineerNum: number
   title: string
   projectExplain: string
+  mainImage: string[]
   teamStacks: string[]
-  // userId: string
-  // thumbnail: string
-  // presenter: string
-  // date: string
-  // category: string
-  // user: {
-  //   name: string
-  //   profileImage: string
-  // }
 }
 
 const ProjectSection: React.FC<{ project: ProjectProps[] }> = ({ project }) => {

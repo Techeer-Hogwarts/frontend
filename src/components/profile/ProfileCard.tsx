@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
+import PositionTag from '../common/PositionTag'
 
 interface ProfileProps {
   id: number
@@ -37,26 +38,22 @@ export default function ProfileCard({
           </div>
 
           <div className="flex items-start gap-[0.58rem] px-[0.64rem] pt-[0.64rem] pb-[0.4rem]">
-            <Image
-              src={profileImage}
-              alt="profile"
-              width={92}
-              height={92}
-              className="w-[5.75rem] h-[5.75rem] bg-lightgray rounded-md"
-            />
+            {profileImage && (
+              <Image
+                src={profileImage}
+                alt="profile"
+                width={92}
+                height={92}
+                className="w-[5.75rem] h-[5.75rem] bg-lightgray rounded-md object-cover"
+              />
+            )}
             <div className="flex flex-col">
               {/* <p className="text-[1.01688rem] font-normal">{mainPosition}</p> */}
-              <div className="flex justify-between">
+              <div className="flex justify-between items-center gap-2">
                 <p className="text-[1.1185rem] font-medium">{name}</p>
-                <p className="flex items-center text-[1rem] font-normal text-darkgray">
-                  &nbsp; &nbsp;{mainPosition}
-                </p>
+                <PositionTag position={mainPosition} />
               </div>
               <div className="flex items-center">
-                {/* <p className="text-[1.1185rem] font-medium">{name}</p> */}
-                {/* <p className="text-[1rem] font-normal text-darkgray">
-                  {mainPosition}
-                </p> */}
                 <p className="text-[0.8135rem] text-darkgray">
                   {/* &nbsp;|&nbsp; */}
                   {school.length > 10
@@ -79,16 +76,19 @@ export default function ProfileCard({
           </div>
           <hr className=" w-[15.45rem] ml-[0.72rem] mb-[0.32rem] border-lightgray " />
           <div className="flex gap-2 px-[0.64rem]">
-            {/* {profiles.map((profile, index) => ( */}
-            <Image
-              // key={`${profile}-${index}`}
-              // src={profile.profileImage}
-              src={mainImage}
-              alt="Project"
-              width={45}
-              height={45}
-              className="w-[2.813rem] h-[2.813rem] bg-lightgray rounded-md object-cover"
-            />
+            {mainImage ? (
+              <Image
+                src={mainImage}
+                alt="Project"
+                width={45}
+                height={45}
+                className="w-[2.813rem] h-[2.813rem] bg-lightgray rounded-md object-cover"
+              />
+            ) : (
+              <p className="flex justify-center items-center text-gray text-[0.7rem] mt-[0.938rem] ml-[4.688rem]">
+                프로젝트를 등록하세요.
+              </p>
+            )}
           </div>
         </div>
       </Link>

@@ -8,7 +8,7 @@ export const handleLikeClick = async (
 ) => {
   // 좋아요 상태 업데이트
   setLikes((prevLikes) => {
-    const prevState = prevLikes[resumeId]
+    const prevState = prevLikes[resumeId] || { count: 0, isLiked: false }
     const updatedLikeCount = prevState.isLiked
       ? prevState.count - 1
       : prevState.count + 1

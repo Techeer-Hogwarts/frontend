@@ -7,17 +7,10 @@ import { useEffect } from 'react'
 
 interface TapBarProps {
   readonly options: string[]
-  // readonly placeholder: string
-  // onSearch: (query: string) => void
-  onSelect: (category: string) => void //
+  onSelect: (category: string) => void
 }
 
-export default function TapBar({
-  options,
-  // placeholder,
-  // onSearch,
-  onSelect,
-}: TapBarProps) {
+export default function TapBar({ options, onSelect }: TapBarProps) {
   const { activeOption, setActiveOption } = useTapBarStore()
   useEffect(() => {
     if (!activeOption && options.length > 0) {
@@ -50,7 +43,7 @@ export default function TapBar({
         </div>
       </div>
 
-      <div className="w-auto h-[1px] mt-5 bg-gray" />
+      {/* <div className="w-auto h-[1px] mt-5 bg-gray" /> */}
     </div>
   )
 }

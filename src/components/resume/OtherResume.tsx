@@ -58,7 +58,7 @@ export default function OtherResume({ id, offset, limit }: OtherResumeProps) {
   }
 
   return (
-    <div className="flex flex-col w-[14.5rem] h-auto rounded-xl shadow-md">
+    <div className="flex flex-col w-[14.5rem] h-auto rounded-xl shadow-md bg-lightprimary">
       {otherData.map((user) => {
         const resumeTitle = user.title.split('-').slice(-1).join(' ')
         const truncatedTitle =

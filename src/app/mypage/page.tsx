@@ -50,6 +50,7 @@ interface Team {
 }
 
 interface ProfileData {
+  id: number
   profileImage: string
   name: string
   email: string

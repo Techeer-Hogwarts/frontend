@@ -9,11 +9,10 @@ import {
 } from 'react-icons/io5'
 import { useRouter } from 'next/navigation'
 import { useAuthStore } from '@/store/authStore'
-import { getSearchList } from '@/app/search/api/getSearchList'
 import {
   getBasicSearchResults,
   getFinalSearchResults,
-} from '../search/api/getSerachResults'
+} from '../search/api/getSearch'
 
 // Debounce 함수
 const useDebounce = (value: string, delay: number) => {
@@ -33,7 +32,9 @@ const useDebounce = (value: string, delay: number) => {
 }
 
 interface BasicResult {
+  id: number
   title: string
+  index: string
 }
 
 export default function NavBar() {
@@ -44,9 +45,21 @@ export default function NavBar() {
   const { isLoggedIn, checkAuth, logout } = useAuthStore()
   const router = useRouter()
 
-  const debouncedQuery = useDebounce(query, 100) // 500ms 뒤에 쿼리값을 반영
+  const debouncedQuery = useDebounce(query, 100)
 
   const searchRef = useRef<HTMLDivElement>(null)
+
+  // index 값을 한글 이름으로 매핑하는 객체
+  const indexMap: Record<string, string> = {
+    user: '프로필',
+    blog: '블로그',
+    study: '스터디',
+    project: '프로젝트',
+    resume: '이력서',
+    event: '이벤트',
+    session: '세션',
+    profile: '프로필',
+  }
 
   useEffect(() => {
     checkAuth()
@@ -56,6 +69,7 @@ export default function NavBar() {
     if (isSearchOpen) {
       setIsSearchOpen(false)
       setQuery('')
+      setBasicResults([])
     } else {
       setIsSearchOpen(true)
     }
@@ -74,6 +88,12 @@ export default function NavBar() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+
+    // 자동완성창 닫기 및 검색어 초기화
+    setIsSearchOpen(false)
+    setQuery('')
+    setBasicResults([])
+
     if (query) {
       const data = await getFinalSearchResults(query)
       setFinalResults(data)
@@ -83,29 +103,33 @@ export default function NavBar() {
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      setTimeout(() => {
-        if (
-          searchRef.current &&
-          !searchRef.current.contains(event.target as Node)
-        ) {
-          setQuery('')
-          setIsSearchOpen(false) // 자동완성 창 닫기
-        }
-      }, 0)
+      if (
+        searchRef.current &&
+        !searchRef.current.contains(event.target as Node)
+      ) {
+        setQuery('')
+        setIsSearchOpen(false) // 자동완성 창 닫기
+      }
     }
 
-    document.addEventListener('mousedown', handleClickOutside)
+    document.addEventListener('mouseup', handleClickOutside)
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
+      document.removeEventListener('mouseup', handleClickOutside)
     }
   }, [])
 
-  const handleSelectResult = async (selectedTitle: string) => {
+  const handleSelectResult = async (
+    selectedTitle: string,
+    section: string,
+    id: number,
+  ) => {
     setQuery(selectedTitle)
     setTimeout(() => setIsSearchOpen(false), 0) // 검색 결과 클릭 시 자동완성 창 닫기
     await handleSubmit(new Event('submit') as unknown as React.FormEvent) // 강제 제출 실행
 
     setQuery('') //자동 완성창 초기화
+    // 검색 결과 항목 ID를 포함한 URL로 이동
+    router.push(`/${section}/${id}`) // 예시: /resume/8
   }
 
   const handleLogout = async () => {
@@ -134,21 +158,15 @@ export default function NavBar() {
 
         {/* 메뉴 */}
         <div className="flex items-center gap-[1.62rem]">
-          <Link href="/project" className="hover:text-gray-700 cursor-pointer">
-            프로젝트
-          </Link>
-          <Link href="/profile" className="hover:text-gray-700 cursor-pointer">
-            프로필
-          </Link>
-          <Link href="/blog" className="hover:text-gray-700 cursor-pointer">
-            블로그
-          </Link>
-          <Link href="/resume" className="hover:text-gray-700 cursor-pointer">
-            이력서
-          </Link>
-          <Link href="/session" className="hover:text-gray-700 cursor-pointer">
-            세션
-          </Link>
+          {['project', 'profile', 'blog', 'resume', 'session'].map((item) => (
+            <Link
+              key={item}
+              href={`/${item}`}
+              className="hover:text-primary cursor-pointer"
+            >
+              {indexMap[item]}
+            </Link>
+          ))}
         </div>
       </div>
       <div className="flex items-center">
@@ -176,17 +194,42 @@ export default function NavBar() {
             </form>
             {/* 자동완성 결과 출력 */}
             {debouncedQuery && (
-              <ul className="absolute bg-white border border-black rounded-lg mt-1 w-[314px] max-h-[17rem] overflow-y-auto z-10">
+              <ul className="absolute bg-white border border-gray rounded-lg mt-1 w-[314px] max-h-[17rem] overflow-y-auto z-10">
                 {basicResults && basicResults.length > 0 ? (
-                  basicResults.map((result, index) => (
-                    <li
-                      key={index}
-                      className="p-1 hover:bg-lightgray cursor-pointer"
-                      onClick={() => handleSelectResult(result.title)} // 클릭 시 자동 입력 & 검색 실행
-                    >
-                      {result.title}
-                    </li>
-                  ))
+                  basicResults.map((result, index) => {
+                    const truncatedTitle =
+                      result.title.length > 16
+                        ? result.title.slice(0, 16) + '...'
+                        : result.title
+                    return (
+                      <div
+                        key={result.id}
+                        className="flex items-center pl-4 hover:bg-lightprimary"
+                      >
+                        <IoSearchOutline
+                          className="w-3"
+                          onClick={toggleSearch}
+                        />
+                        <li
+                          key={index}
+                          className="p-1 cursor-pointer font-light"
+                          onClick={() =>
+                            handleSelectResult(
+                              result.title.split('-').slice(-1).join(' '),
+                              result.index,
+                              result.id,
+                            )
+                          }
+                        >
+                          <span className="text-gray text-sm">
+                            {indexMap[result.index] || result.index}
+                            &nbsp; | &nbsp;
+                          </span>
+                          {truncatedTitle}
+                        </li>
+                      </div>
+                    )
+                  })
                 ) : (
                   <li className="p-2 text-darkgray">검색 결과 없음</li>
                 )}

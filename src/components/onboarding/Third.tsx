@@ -18,7 +18,7 @@ export default function Third() {
       <Image
         width={300}
         height={300}
-        src="/nametag.png"
+        src="/nametag.svg"
         className="object-contain"
         alt="nametag"
       ></Image>

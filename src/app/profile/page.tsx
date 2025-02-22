@@ -58,7 +58,7 @@ export default function Page() {
     '호서대학교',
   ]
   //기수 탭
-  const category = ['전체', '이력서', '포트폴리오', 'ICT', 'OTHER']
+  // const category = ['전체', '이력서', '포트폴리오', 'ICT', 'OTHER']
 
   const handleRemoveFilter = (filter: string | number, type: string) => {
     if (type === 'position') {
@@ -84,11 +84,11 @@ export default function Page() {
               모든 테커인들의 프로필 정보를 확인해보세요.
             </p>
             {/** 검색창 */}
-            <SearchBar
+            {/* <SearchBar
               placeholder="이름 또는 키워드로 검색해보세요"
               index="profile"
               onSearchResult={setSearchResults}
-            />
+            /> */}
           </div>
         </div>
         <div className="flex justify-start mt-5 gap-3">

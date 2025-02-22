@@ -54,7 +54,7 @@ export default function ProfileList({
       <div className="flex justify-center">
         <EmptyLottie
           text="프로필 데이터가 없습니다."
-          link="다시 조회해주세요"
+          text2="다시 조회해주세요"
         />
       </div>
     ) // 오류 발생 시 표시할 문구

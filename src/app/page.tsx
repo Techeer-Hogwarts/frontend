@@ -25,7 +25,7 @@ export default function Onboarding() {
       <div className="flex flex-col">
         {/* 테커 소개 */}
         <Techeer />
-        <div className="w-full h-96 bg-gradient-to-b from-black via-gray-800 to-white"></div>
+        <div className="w-full h-96 bg-gradient-to-b from-black to-white"></div>
         {/* 첫번째 */}
         <First />
         {/* 두번째 */}

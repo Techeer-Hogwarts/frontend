@@ -45,10 +45,10 @@ export default function Page() {
     selectedPeriodsPo,
   })
 
-  const handleSearch = (query: string) => {
-    sessionStorage.setItem('searchQuery', query)
-    setInputValue(query)
-  }
+  // const handleSearch = (query: string) => {
+  //   sessionStorage.setItem('searchQuery', query)
+  //   setInputValue(query)
+  // }
 
   const showMessage = () => {
     setMessage('세션영상이 삭제되었습니다.')
@@ -118,12 +118,12 @@ export default function Page() {
             setSelectedPeriodsB([])
           }}
         >
-          <TapBar
+          {/* <TapBar
             options={['금주의 세션', '전체보기', '부트캠프', '파트너스']}
-            placeholder="세션 제목을 검색해보세요"
             onSearch={handleSearch}
-          />
+          /> */}
         </div>
+        <div className="flex w-full h-[1px] mt-5 bg-gray"></div>
         <div className="flex justify-start my-6 gap-3">
           {activeOption === '부트캠프' && (
             <>

@@ -24,7 +24,7 @@ export default function Second() {
     return () => clearInterval(interval) // 컴포넌트 언마운트 시 정리
   }, [])
   return (
-    <div className="flex justify-between h-[540px] p-10 bg-lightgray">
+    <div className="flex justify-between h-[540px] p-10">
       {/* 왼쪽 슬라이더 */}
       <div className="flex">
         <div className="relative w-52 h-45 overflow-hidden">
@@ -83,14 +83,15 @@ export default function Second() {
       {/* 문구 */}
       <div className="flex flex-col">
         <span className="text-primary font-extrabold text-[35px] text-end">
-          이력서
+          프로젝트 & 스터디
         </span>
-        <span className="font-bold text-[60px]">모든 이력서를 한 곳에</span>
+        <span className="font-bold text-[60px] text-end">
+          완성도 높은 프로젝트를 통해
+          <br />
+          함께 경험하고 성장
+        </span>
         <span className="text-[20px] text-end">
-          좋은 이력서는 무엇인지 항상 고민되지 않나요? <br />
-          <span className="">
-            나의 이력서도 공유하며 좋은 이력서가 무엇일지 찾아나가 봐요.
-          </span>
+          단순한 기능 구현이 아닌 심도 있는 공부를 통해 스펙 쌓기
         </span>
       </div>
     </div>

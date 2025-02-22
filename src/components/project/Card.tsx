@@ -6,19 +6,29 @@ const projectId = 23
 
 interface ProjectProps {
   project: {
+    type: string
     id: string
+    isDeleted: boolean
+    isRecruited: boolean
+    isFinished: boolean
     name: string
+    frontendNum: number
+    backendNum: number
+    devopsNum: number
+    fullStackNum: number
+    dataEngineerNum: number
     title: string
     projectExplain: string
+    mainImage: string[]
     teamStacks: string[]
   }
 }
 
 export default function Card({ project }: ProjectProps) {
-  const truncatedTitle =
-    project.title.length > 12
-      ? project.title.slice(0, 12) + '...'
-      : project.title
+  const truncatedName =
+    project?.name?.length > 12
+      ? project.name.slice(0, 12) + '...'
+      : project?.name || 'Unnamed Project'
 
   return (
     <Link
@@ -43,17 +53,17 @@ export default function Card({ project }: ProjectProps) {
         <div className="">
           {/* 프로젝트 제목 */}
           <h2 className="font-bold text-[1.01688rem] gap-[2.44rem]">
-            {truncatedTitle}
+            {truncatedName}
           </h2>
 
           {/* 프로젝트 설명 */}
           <p className="text-[0.75rem] mb-[2.44rem]">
-            {project.projectExplain}
+            {project?.projectExplain || 'No description available'}
           </p>
 
           {/* 스택 카드 */}
           <div className="mt-4 grid grid-cols-2 grid-rows-2 gap-2">
-            {project.teamStacks.slice(0, 4).map((stack, index) => (
+            {project?.teamStacks?.slice(0, 4).map((stack, index) => (
               <div
                 key={index}
                 className="bg-lightprimary text-pink py-[0.19rem] px-[0.5rem] rounded-lg text-sm text-center"
@@ -69,8 +79,7 @@ export default function Card({ project }: ProjectProps) {
       <div className="w-[17.3rem] h-[9.6rem] py-[3.25rem] px-[3rem] rounded-[0.63rem] absolute left-1 bottom-1  bg-black bg-opacity-75 flex items-center justify-center text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
         <div className="text-white">
           <p className="mt-2 text-sm">
-            아이들의 &quot;오늘 하루 있었던 일&quot;을 주제로 캐릭터와
-            음성채팅으로 대화를 나누며 하루를 돌아보고 기록해주는 서비스
+            {project?.projectExplain || 'No description available'}
           </p>
         </div>
       </div>

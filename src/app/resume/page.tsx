@@ -40,15 +40,15 @@ export default function Resume() {
     setSelectedCategory(category)
   }
 
-  // 검색어 저장 및 이력서 목록 업데이트
-  const handleSearch = (query: string) => {
-    setSearchResults(query)
-    sessionStorage.setItem('searchQuery', query)
-  }
+  // // 검색어 저장 및 이력서 목록 업데이트
+  // const handleSearch = (query: string) => {
+  //   setSearchResults(query)
+  //   sessionStorage.setItem('searchQuery', query)
+  // }
 
   // 마이페이지로 이동
-  const openMyPage = (id: string) => {
-    router.push(`/mypage/${id}`)
+  const openMyPage = () => {
+    router.push(`/mypage`)
   }
 
   return (
@@ -63,24 +63,25 @@ export default function Resume() {
         </div>
         <div
           className="flex justify-center items-center w-[13rem] h-[3rem] border-2 border-transparent shadow-md rounded-xl"
-          // onClick={openMyPage}
+          onClick={openMyPage}
         >
-          <span className="text-[1.1rem] font-medium">
+          <span className="text-[1.1rem] font-medium cursor-pointer">
             나의 이력서 수정하기
           </span>
           <Star />
         </div>
       </div>
-      <div className="flex justify-between">
-        {/** 기수 탭 */}
-        <TapBar options={category} onSelect={handleCategoryChange} />
-        {/** 검색창 */}
-
-        <SearchBar
-          placeholder="이름 또는 키워드로 검색해보세요"
-          index="resume"
-          onSearchResult={setSearchResults}
-        />
+      <div className="flex flex-col">
+        <div className="flex justify-between">
+          {/** 기수 탭 */}
+          <TapBar options={category} onSelect={handleCategoryChange} />
+          {/** 검색창 */}
+          {/* <SearchBar
+            index="resume"
+            // onSearchResult={setSearchResults}
+          /> */}
+        </div>
+        <div className="flex w-full h-[1px] mt-5 bg-gray"></div>
       </div>
       <div className="flex justify-between">
         <div className="flex gap-3">

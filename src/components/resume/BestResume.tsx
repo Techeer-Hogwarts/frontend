@@ -42,10 +42,11 @@ export default function BestResume({ offset, limit }: ResumeFolderProps) {
   }, [offset, limit])
 
   const handleResumeClick = (id: number) => {
-    router.push(`/detail/${id}`)
+    router.push(`/resume/${id}`)
   }
 
   const toggleDropdown = () => setIsOpen(!isOpen)
+
   return (
     <div ref={dropdownRef} className="relative w-[12rem]">
       <button
@@ -59,15 +60,17 @@ export default function BestResume({ offset, limit }: ResumeFolderProps) {
         <div className="flex flex-col absolute left-0 right-0 z-10 bg-white rounded-lg shadow-lg mt-1.5 max-h-[17rem] overflow-y-auto">
           {Array.isArray(resumes) &&
             resumes.map((resume) => {
+              const resumeTitle = resume.title.split('-').pop() || resume.title
               const truncatedTitle =
-                resume.title.length > 14
-                  ? resume.title.slice(0, 14) + '...'
-                  : resume.title
+                resumeTitle.length > 16
+                  ? resumeTitle.slice(0, 16) + '...'
+                  : resumeTitle // 길이 초과시 자르기
+
               return (
                 <button
                   key={resume.id}
                   onClick={() => handleResumeClick(resume.id)}
-                  className="flex justify-center my-2 gap-1"
+                  className="flex justify-center items-center w-full py-2 gap-1 hover:bg-lightprimary "
                 >
                   <Image
                     src="/file.png"
@@ -80,7 +83,7 @@ export default function BestResume({ offset, limit }: ResumeFolderProps) {
                       objectFit: 'contain',
                     }}
                   />
-                  <div className="flex flex-col gap-1">
+                  <div className="flex flex-col gap-1 w-[8.2rem]">
                     <span className="text-[1rem] text-left">
                       {truncatedTitle}
                     </span>

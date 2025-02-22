@@ -1,5 +1,3 @@
-import { useRouter } from 'next/navigation'
-
 interface SectionProps {
   id: string
   title: string
