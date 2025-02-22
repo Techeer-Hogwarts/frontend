@@ -85,7 +85,7 @@ export default function Calendar({ selectedCategories }: CalendarProps) {
         <div key={i} className="w-[138px] min-h-[183px] border-t-2">
         <button
           type="button"
-          className={`w-full h-full text-2xl font-bold p-2 cursor-pointer hover:bg-lightgray/50 flex flex-col items-start ${
+          className={`w-full h-full text-2xl font-bold p-3 cursor-pointer hover:bg-lightgray/50 flex flex-col items-start ${
             isToday ? 'border-primary bg-lightgray/30' : ''
           }`}
           onClick={() => handleDayClick(currentDay)}
