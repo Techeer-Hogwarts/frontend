@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import MemberBox from './BigMemberBox'
-import SmallMemberBox from './SmallMemberBox'
+import SmallMemberBox from './study/SmallMemberBox'
 import { useRouter } from 'next/navigation'
 
 const ProjectMemberModal = () => {
