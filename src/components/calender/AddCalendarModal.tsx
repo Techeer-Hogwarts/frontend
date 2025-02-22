@@ -157,6 +157,7 @@ export default function AddCalenderModal({ handleBack, mode, eventId }: AddCalen
                       setStartDateOpen(false)
                     }}
                     inline
+                    selectsMultiple={false}
                   />
                 </div>
               )}
