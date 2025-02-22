@@ -82,9 +82,10 @@ export default function Calendar({ selectedCategories }: CalendarProps) {
       const isToday = today.date() === i && today.month() + 1 === currentMonth // 시스템 날짜 == 캘린더 날짜
       
       daysArray.push(
-        <div
-          key={i}
-          className={`w-[138px] text-2xl font-bold min-h-[183px] border-t-2 p-2 cursor-pointer hover:bg-lightgray/50 ${
+        <div key={i} className="w-[138px] min-h-[183px] border-t-2">
+        <button
+          type="button"
+          className={`w-full h-full text-2xl font-bold p-2 cursor-pointer hover:bg-lightgray/50 flex flex-col items-start ${
             isToday ? 'border-primary bg-lightgray/30' : ''
           }`}
           onClick={() => handleDayClick(currentDay)}
@@ -114,7 +115,8 @@ export default function Calendar({ selectedCategories }: CalendarProps) {
               )
             })}
           </div>
-        </div>
+        </button>
+      </div>
       )
     }
 
