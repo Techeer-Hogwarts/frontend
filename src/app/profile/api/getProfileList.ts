@@ -1,37 +1,38 @@
+import { ProfileQueryParams } from '@/types/queryParams'
+
 export async function getProfileList({
-  position,
-  year,
-  university,
-  grade,
+  position = [],
+  year = [],
+  university = [],
+  grade = [],
   offset = 0,
   limit = 10,
-}: {
-  position?: string
-  year?: number
-  university?: string
-  grade?: string
-  offset?: number
-  limit?: number
-}) {
+}: ProfileQueryParams) {
   try {
-    // 조건이 있는 값들만 포함한 객체 생성
-    const params = {
-      ...(position && { position }),
-      ...(year && { year: year.toString() }),
-      ...(university && { university }),
-      ...(grade && { grade }),
-      offset: offset.toString(),
-      limit: limit.toString(),
-    }
+    // URLSearchParams에 배열 데이터를 추가하는 함수
+    const params = new URLSearchParams()
 
-    const url = `/api/v1/users/profiles?${new URLSearchParams(params).toString()}`
+    if (position.length > 0)
+      position.forEach((p) => params.append('position', p))
+    if (year.length > 0) year.forEach((y) => params.append('year', y))
+    if (university.length > 0)
+      university.forEach((u) => params.append('university', u))
+    if (grade.length > 0) grade.forEach((g) => params.append('grade', g))
 
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
+    params.append('offset', offset.toString())
+    params.append('limit', limit.toString())
+
+    const response = await fetch(
+      `/api/v1/users/profiles?${params.toString()}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
       },
-    })
+    )
+    const result = await response.json()
+    const dataWithWrapper = { data: result } // Back에서 data 필드 없시 바로 반환하기 때문에
 
     if (!response.ok) {
       throw new Error(
@@ -39,7 +40,7 @@ export async function getProfileList({
       )
     }
 
-    return (await response.json())?.data || []
+    return dataWithWrapper?.data || []
   } catch (error) {
     console.error('프로필 목록 조회 실패:', error)
     throw error

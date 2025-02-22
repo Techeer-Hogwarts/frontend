@@ -6,11 +6,11 @@ import { fetchUserResumes } from '@/app/resume/api/getUserResume'
 import { useRouter } from 'next/navigation'
 
 interface Resume {
-  id: number // 고유 식별자 추가
-  name: string
+  id: number
+  createdAt: number
+  title: string
   position: string
-  career: string
-  category: string
+  year: number
 }
 
 interface OtherResumeProps {
@@ -28,13 +28,20 @@ export default function OtherResume({ id, offset, limit }: OtherResumeProps) {
       try {
         const userResumes = await fetchUserResumes(id, offset, limit)
 
-        // 필요한 데이터 구조로 변환
-        const formattedData: Resume[] = userResumes.map((resume: any) => ({
+        // userResumes.data로 접근하여 데이터를 배열로 처리
+        if (!Array.isArray(userResumes.data)) {
+          console.error('Expected an array, but received:', userResumes.data)
+          return
+        }
+        console.log('User resumes data:', userResumes.data)
+
+        // 필요한 데이터 구조로 변환\
+        const formattedData: Resume[] = userResumes.data.map((resume: any) => ({
           id: resume.id,
-          name: resume.user.name,
+          createdAt: resume.createdAt,
+          title: resume.title,
           position: resume.user.mainPosition,
-          career: resume.user.isIntern ? '경력' : '신입',
-          category: resume.category,
+          year: resume.user.year,
         }))
 
         setOtherData(formattedData)
@@ -47,36 +54,55 @@ export default function OtherResume({ id, offset, limit }: OtherResumeProps) {
   }, [])
 
   const handleResumeClick = (id: number) => {
-    router.push(`/detail/${id}`)
+    router.push(`/resume/${id}`)
   }
+
   return (
-    <div className="flex flex-col w-[14.5rem] h-auto rounded-xl shadow-md">
-      {otherData.map((user) => (
-        <button
-          key={user.id}
-          onClick={() => handleResumeClick(user.id)}
-          className="flex justify-center my-3 gap-2"
-          role="button"
-          tabIndex={0}
-        >
-          <Image
-            src="/file.png"
-            width={30}
-            height={30}
-            alt="file"
-            style={{ width: '40px', height: '40px', objectFit: 'contain' }}
-          />
-          <div className="flex flex-col gap-1">
-            <div className="flex gap-5">
-              <span className="font-medium text-[1rem]">{user.name}</span>
+    <div className="flex flex-col w-[14.5rem] h-auto rounded-xl shadow-md bg-lightprimary">
+      {otherData.map((user) => {
+        const resumeTitle = user.title.split('-').slice(-1).join(' ')
+        const truncatedTitle =
+          resumeTitle.length > 8 ? resumeTitle.slice(0, 8) + '...' : resumeTitle
+
+        const formattedDate = new Date(user.createdAt).toLocaleDateString(
+          'ko-KR',
+          {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+          },
+        )
+        return (
+          <button
+            key={user.id}
+            onClick={() => handleResumeClick(user.id)}
+            className="flex justify-left items-center my-3 ml-3 gap-2"
+            role="button"
+            tabIndex={0}
+          >
+            <Image
+              src="/file.png"
+              width={30}
+              height={30}
+              alt="file"
+              style={{ width: '40px', height: '40px', objectFit: 'contain' }}
+            />
+            {/* <div className="flex flex-col gap-1"> */}
+            <div className="flex flex-col items-start gap-1">
+              <span className="font-medium text-[1rem]">{truncatedTitle}</span>
+              {/* <span className="font-medium text-[0.8rem] text-primary">
+              {user.year}기
+            </span> */}
+              <div className="flex justify-between gap-2">
+                <PositionTag position={user.position} />
+                <span className="font-light text-[0.8rem]">
+                  {formattedDate}
+                </span>
+              </div>
             </div>
-            <div className="flex gap-1">
-              <PositionTag position={user.position} />
-              <CareerTag career={user.career} />
-            </div>
-          </div>
-        </button>
-      ))}
+          </button>
+        )
+      })}
     </div>
   )
 }

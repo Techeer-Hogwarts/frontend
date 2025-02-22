@@ -77,13 +77,15 @@ export default function Bookmark() {
       setLimit(limit + 6)
     }
   }, [inView])
+
+  const handleCategoryChange = () => {}
   return (
     <div className="ml-10">
       <div className="w-[800px]">
         <TapBar
           options={[tapBatOptions[0], tapBatOptions[1]]}
-          placeholder="제목 혹은 이름을 검색해보세요"
-          onSearch={handleSearch}
+          // placeholder="제목 혹은 이름을 검색해보세요"
+          onSelect={handleSearch}
         />
       </div>
       <div className="grid grid-cols-2 gap-8 mt-5">

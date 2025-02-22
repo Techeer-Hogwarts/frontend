@@ -1,46 +1,58 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import ResumeFolder from '@/components/resume/ResumeFolder'
 import Star from '../../../public/star.svg'
 import Dropdown from '@/components/common/Dropdown'
 import { useState } from 'react'
 import TapBar from '@/components/common/TapBar'
 import BestResume from '@/components/resume/BestResume'
+import FilterBtn from '@/components/session/FilterBtn'
+import ResumeList from './@resumeList'
+import SearchBar from '@/components/common/SearchBar'
 
 export default function Resume() {
   const router = useRouter() // Resume 페이지에서 useRouter 사용
-  const [inputValue, setInputValue] = useState('')
 
-  const handleSearch = (query: string) => {
-    sessionStorage.setItem('searchQuery', query)
-    setInputValue(query)
-  }
-  const handleFolderClick = () => {
-    router.push('/detail') // Resume 페이지에서 라우팅 처리
-  }
+  // 검색어 상태 추가
+  const [searchResults, setSearchResults] = useState<any>(null)
 
-  const openModal = () => {
-    router.push('/resume?modal=true') // 모달 경로로 라우팅
-  }
   // 드롭다운 선택된 옵션 상태 관리
-
-  const [selectedPosition, setSelectedPosition] = useState<string | undefined>(
-    undefined,
-  )
-  const [selectedYear, setSelectedYear] = useState<number | undefined>(
-    undefined,
-  )
+  const [selectedPosition, setSelectedPosition] = useState<string[]>([])
+  const [selectedYear, setSelectedYear] = useState<string[]>([])
+  const [selectedCategory, setSelectedCategory] = useState('전체')
 
   // 드롭다운 항목 리스트
-  const positionOptions = ['Frontend', 'Backend', 'DataEngineer', 'FullStack']
-  const yearOptions = ['8기', '7기', '6기', '5기', '4기', '3기', '2기', '1기']
+  const positionOptions = ['FRONTEND', 'BACKEND', 'DEVOPS', 'FULL_STACK']
+  const yearOptions = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
+  const category = ['전체', '이력서', '포트폴리오', 'ICT', 'OTHER']
 
-  //기수 탭
-  const options = ['전체', '이력서', '포트폴리오', 'OTHER']
+  //필터 제거
+  const handleRemoveFilter = (filter: string | number, type: string) => {
+    if (type === 'position') {
+      setSelectedPosition(selectedPosition.filter((item) => item !== filter))
+    } else if (type === 'year') {
+      setSelectedYear(selectedYear.filter((item) => item !== filter))
+    }
+  }
+
+  // 카테고리 변경
+  const handleCategoryChange = (category: string) => {
+    setSelectedCategory(category)
+  }
+
+  // // 검색어 저장 및 이력서 목록 업데이트
+  // const handleSearch = (query: string) => {
+  //   setSearchResults(query)
+  //   sessionStorage.setItem('searchQuery', query)
+  // }
+
+  // 마이페이지로 이동
+  const openMyPage = () => {
+    router.push(`/mypage`)
+  }
 
   return (
-    <div className="flex flex-col max-w-[1200px] w-[1200px] mt-[3.56rem] gap-6">
+    <div className="flex flex-col max-w-[75rem] w-[75rem] mt-[3.56rem] gap-6">
       {/** 배너 */}
       <div className="flex justify-between gap-10 mb-[2.84rem]">
         <div className="flex flex-col">
@@ -51,54 +63,69 @@ export default function Resume() {
         </div>
         <div
           className="flex justify-center items-center w-[13rem] h-[3rem] border-2 border-transparent shadow-md rounded-xl"
-          onClick={openModal}
+          onClick={openMyPage}
         >
-          <span className="text-[1.1rem] font-medium">
+          <span className="text-[1.1rem] font-medium cursor-pointer">
             나의 이력서 수정하기
           </span>
           <Star />
         </div>
       </div>
-      {/** 기수 탭 */}
-      <TapBar
-        options={options}
-        placeholder="프로젝트 명 혹은 이름으로 검색해보세요"
-        onSearch={handleSearch}
-      />
+      <div className="flex flex-col">
+        <div className="flex justify-between">
+          {/** 기수 탭 */}
+          <TapBar options={category} onSelect={handleCategoryChange} />
+          {/** 검색창 */}
+          {/* <SearchBar
+            index="resume"
+            // onSearchResult={setSearchResults}
+          /> */}
+        </div>
+        <div className="flex w-full h-[1px] mt-5 bg-gray"></div>
+      </div>
       <div className="flex justify-between">
         <div className="flex gap-3">
           {/** 드롭다운 */}
           <Dropdown
             title="포지션"
             options={positionOptions}
-            selectedOptions={selectedPosition ? [selectedPosition] : []}
-            setSelectedOptions={(selected) =>
-              setSelectedPosition(selected[0] || undefined)
-            }
+            selectedOptions={selectedPosition}
+            setSelectedOptions={setSelectedPosition}
           />
           <Dropdown
             title="기수"
-            options={yearOptions.map(String)}
-            selectedOptions={selectedYear ? [String(selectedYear)] : []}
-            setSelectedOptions={(selected) =>
-              setSelectedYear(
-                selected.length > 0 ? parseInt(selected[0]) : undefined,
-              )
-            }
+            options={yearOptions} // Dropdown 컴포넌트에서 문자열로 처리
+            selectedOptions={selectedYear.map(String)} // 숫자를 문자열로 변환
+            setSelectedOptions={setSelectedYear}
           />
         </div>
         {/** 인기 이력서 조회 */}
         <BestResume offset={0} limit={10} />
       </div>
-      {/** 이력서 폴더 */}
-      <div>
-        <ResumeFolder
-          position={selectedPosition}
-          year={selectedYear}
-          offset={0}
-          limit={10}
-        />
+      <div className="bg-filterbg flex items-center w-[75rem] h-[4.375rem] px-4 gap-4 my-3">
+        {selectedPosition.map((item) => (
+          <FilterBtn
+            key={item}
+            title={item}
+            onClick={() => {
+              handleRemoveFilter(item, 'position')
+            }}
+          />
+        ))}
+        {selectedYear.map((item) => (
+          <FilterBtn
+            key={item}
+            title={item.toString()}
+            onClick={() => handleRemoveFilter(item, 'year')}
+          />
+        ))}
       </div>
+      {/** 이력서 폴더 */}
+      <ResumeList
+        position={selectedPosition}
+        year={selectedYear}
+        category={selectedCategory}
+      />
     </div>
   )
 }

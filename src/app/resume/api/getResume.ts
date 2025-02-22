@@ -14,9 +14,9 @@ export const fetchResumeById = async (resumeId: number): Promise<any> => {
     }
 
     const result = await response.json()
-    console.log(result.data)
-    // API 응답 구조에 따라 `data` 반환
-    return result.data
+    const dataWithWrapper = { data: result }
+
+    return dataWithWrapper.data
   } catch (error: any) {
     console.error('이력서 단일 조회 실패:', error.message)
     throw error

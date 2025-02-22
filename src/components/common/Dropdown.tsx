@@ -55,7 +55,7 @@ const Dropdown: React.FC<DropdownProps> = ({
         <span className="text-xs">▼</span>
       </button>
       {isOpen && (
-        <ul className="absolute left-0 right-0 z-10 bg-white rounded-lg shadow-lg mt-1.5">
+        <ul className="absolute left-0 right-0 z-10 bg-white rounded-lg shadow-lg mt-1.5 max-h-[17rem] overflow-y-auto">
           {options.map((option, index) => (
             <li
               key={option}

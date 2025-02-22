@@ -20,7 +20,6 @@ export default function Page({ params }: { params: { userId: string } }) {
 
   useEffect(() => {
     if (userId) {
-      console.log('userId 값 확인:', userId)
       fetchUserProfile(Number(userId))
         .then((data) => {
           setProfileData(data)
