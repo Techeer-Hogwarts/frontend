@@ -2,10 +2,6 @@
 
 import Image from 'next/image'
 
-type AddCalendarBtnProps = {
-  onClick: () => void
-}
-
 export default function AddCalendarBtn({ onClick }: AddCalendarBtnProps) {
   return (
     <button
