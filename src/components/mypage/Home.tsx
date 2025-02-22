@@ -5,7 +5,7 @@ import Carousel from './Carousel'
 interface Team {
   id: number
   name: string
-  mainImage: string
+  resultImages: string[]
 }
 
 interface Experience {
@@ -64,7 +64,10 @@ export default function Home({
             <span className="text-sm text-gray">프로젝트가 없습니다.</span>
           </div>
         ) : (
-          <Carousel teams={projectTeams} routePrefix="/project/detail/project" />
+          <Carousel
+            teams={projectTeams}
+            routePrefix="/project/detail/project"
+          />
         )}
       </div>
 

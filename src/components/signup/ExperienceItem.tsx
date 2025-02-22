@@ -1,71 +1,82 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import ExperienceBtn from '../common/ExperienceBtn'
 
+export interface Experience {
+  experienceId?: number
+  companyName: string
+  position: string
+  startDate: string
+  endDate: string | null
+  category?: string
+  isFinished?: boolean
+}
+
 export interface ExperienceItemProps {
-  index: number
-  data: any
+  data: Experience
   onDelete?: () => void
-  onChange: (data: any) => void
+  onChange: (updated: Experience) => void
   experienceType: '인턴' | '정규직'
   btnPadding: string
 }
 
-const ExperienceItem: React.FC<ExperienceItemProps> = ({
-  btnPadding,
-  index,
+export default function ExperienceItem({
   data,
   onDelete,
   onChange,
   experienceType,
-}) => {
-  // ISO 형식 날짜 문자열을 "YYYY-MM-DD" 형식으로 변환하는 함수
-  const convertDate = (rawDate: string): string => {
+  btnPadding,
+}: ExperienceItemProps) {
+  // 날짜 문자열을 "YYYY-MM-DD"로 맞춰주는 헬퍼 함수
+  const convertDate = (rawDate: string | null): string => {
     if (!rawDate) return ''
-    const date = new Date(rawDate)
-    if (isNaN(date.getTime())) return ''
-    return date.toISOString().substring(0, 10)
+    const d = new Date(rawDate)
+    if (Number.isNaN(d.getTime())) return ''
+    return d.toISOString().substring(0, 10)
   }
 
-  // 공통 키 사용: 모든 경험 항목은 동일한 필드로 관리합니다.
-  const [companyName, setCompanyName] = useState(data.companyName || '')
-  const [startDate, setStartDate] = useState(() =>
-    convertDate(data.startDate || ''),
-  )
-  const [endDate, setEndDate] = useState(() => convertDate(data.endDate || ''))
-  // endDate가 없으면 현재 재직중으로 간주
-  const [isCurrentJob, setIsCurrentJob] = useState(
-    data.endDate === null || data.endDate === '' ? true : false,
-  )
-  // 단일 포지션 사용
-  const [position, setPosition] = useState(data.position || '')
+  const handleCompanyNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onChange({
+      ...data,
+      companyName: e.target.value,
+    })
+  }
 
-  const positions = [
-    'FRONTEND',
-    'BACKEND',
-    'DEVOPS',
-    'FULL_STACK',
-    'DATA_ENGINEER',
-  ]
+  const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onChange({
+      ...data,
+      startDate: e.target.value,
+    })
+  }
+
+  const handleEndDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onChange({
+      ...data,
+      endDate: e.target.value,
+    })
+  }
+
+  // 재직중 체크박스 토글
+  const handleIsFinishedToggle = () => {
+    const newIsFinished = !data.isFinished
+    // 만약 새로 토글 후 재직중(false)이 되면 endDate=null 처리
+    const newEndDate = newIsFinished ? data.endDate : null
+
+    onChange({
+      ...data,
+      isFinished: newIsFinished,
+      endDate: newEndDate,
+    })
+  }
 
   const handlePositionClick = (pos: string) => {
-    setPosition(pos)
+    onChange({
+      ...data,
+      position: pos,
+    })
   }
-
-  // 상태 변경 시 부모에 업데이트된 데이터를 전달합니다.
-  useEffect(() => {
-    const updatedData = {
-      companyName,
-      startDate,
-      endDate: isCurrentJob ? '' : endDate,
-      position,
-      category: experienceType, // "인턴" 또는 "정규직"
-      isCurrentJob,
-    }
-    onChange(updatedData)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [companyName, startDate, endDate, isCurrentJob, position, experienceType])
+  const isWorking = !data.isFinished
 
   return (
     <div className="relative p-4 bg-filterbg rounded-md mt-4">
@@ -76,57 +87,68 @@ const ExperienceItem: React.FC<ExperienceItemProps> = ({
       >
         ×
       </button>
+
       <div className="flex flex-col space-y-2">
+        {/* 회사명 */}
         <input
           type="text"
-          value={companyName}
-          onChange={(e) => setCompanyName(e.target.value)}
+          value={data.companyName}
+          onChange={handleCompanyNameChange}
           placeholder="회사명을 입력해주세요"
-          className="w-3/5 h-9 px-4 py-2 border border-gray rounded-md focus:outline-none focus:border-primary"
+          className="w-3/5 h-9 px-4 border border-gray rounded-md focus:outline-none focus:border-primary"
         />
+
+        {/* 날짜 입력 (시작일/종료일) */}
         <div className="flex justify-between items-center text-sm mt-2">
+          {/* 시작일 */}
           <input
             type="date"
-            value={startDate}
-            onChange={(e) => setStartDate(convertDate(e.target.value))}
-            className="w-[48%] h-9 px-4 py-2 border border-gray rounded-md focus:outline-none focus:border-primary"
+            value={convertDate(data.startDate)}
+            onChange={handleStartDateChange}
+            className="w-[48%] h-9 px-4 border border-gray rounded-md focus:outline-none focus:border-primary"
           />
-          {isCurrentJob ? (
-            <div className="w-[48%] h-9 px-4 py-2 border border-gray rounded-md bg-gray-100 flex items-center justify-center text-gray-400">
+
+          {/* 종료일 or "현재 재직중" */}
+          {isWorking ? (
+            <div className="w-[48%] h-9 px-4 border border-gray rounded-md bg-gray-100 flex items-center justify-center text-gray-400">
               현재 재직중
             </div>
           ) : (
             <input
               type="date"
-              value={endDate}
-              onChange={(e) => setEndDate(convertDate(e.target.value))}
-              className="w-[48%] h-9 px-4 py-2 border border-gray rounded-md focus:outline-none focus:border-primary"
+              value={convertDate(data.endDate)}
+              onChange={handleEndDateChange}
+              className="w-[48%] h-9 px-4 border border-gray rounded-md focus:outline-none focus:border-primary"
             />
           )}
         </div>
+
+        {/* 재직중 체크박스 */}
         <div className="flex items-center mt-2">
           <input
             type="checkbox"
-            checked={isCurrentJob}
-            onChange={() => setIsCurrentJob(!isCurrentJob)}
+            checked={isWorking}
+            onChange={handleIsFinishedToggle}
             className="w-4 h-4 mr-2 border border-gray rounded"
           />
           <label className="text-xs text-gray">재직중</label>
         </div>
+
+        {/* 포지션 버튼들 */}
         <div className="flex justify-between text-pink text-[10px] mt-2">
-          {positions.map((pos, idx) => (
-            <ExperienceBtn
-              key={idx}
-              position={pos}
-              handlePositionClick={handlePositionClick}
-              btnPadding={btnPadding}
-              selectedPosition={[position]}
-            />
-          ))}
+          {['FRONTEND', 'BACKEND', 'DEVOPS', 'FULL_STACK', 'DATA_ENGINEER'].map(
+            (pos) => (
+              <ExperienceBtn
+                key={pos}
+                position={pos}
+                handlePositionClick={handlePositionClick}
+                btnPadding={btnPadding}
+                selectedPosition={[data.position]}
+              />
+            ),
+          )}
         </div>
       </div>
     </div>
   )
 }
-
-export default ExperienceItem
