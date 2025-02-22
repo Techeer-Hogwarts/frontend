@@ -21,10 +21,11 @@ interface Experience {
   isFinished: boolean
 }
 
-interface Teams {
+interface Team {
   id: number
   name: string
-  resultImages: string[]
+  resultImages?: string[]
+  mainImage?: string
 }
 
 interface ProfileData {
@@ -41,8 +42,8 @@ interface ProfileData {
   velogUrl: string
   tistoryUrl: string
   isLft: boolean
-  projectTeams?: Teams[]
-  studyTeams?: Teams[]
+  projectTeams?: Team[]
+  studyTeams?: Team[]
   experiences?: Experience[]
 }
 

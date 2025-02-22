@@ -10,7 +10,8 @@ import Link from 'next/link'
 interface Team {
   id: number
   name: string
-  mainImage: string
+  resultImages?: string[]
+  mainImage?: string
 }
 
 interface CarouselProps {

@@ -6,7 +6,8 @@ import Carousel from './Carousel'
 interface Team {
   id: number
   name: string
-  mainImage: string
+  resultImages?: string[]
+  mainImage?: string
 }
 
 interface Experience {
