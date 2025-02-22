@@ -6,7 +6,7 @@ export async function getProfileList({
   university = [],
   grade = [],
   offset = 0,
-  limit = 10,
+  limit: limit,
 }: ProfileQueryParams) {
   try {
     // URLSearchParams에 배열 데이터를 추가하는 함수
