@@ -1,7 +1,6 @@
 'use client'
 
 import { useParams, useRouter } from 'next/navigation'
-import ReactPlayer from 'react-player'
 import { getSingleSession } from '@/app/session/_lib/getSingleSession'
 import { useEffect, useState } from 'react'
 
@@ -11,7 +10,7 @@ export default function ShowVideo() {
   const params = useParams()
   const sessionId = params.id as string
   const onClickBack = () => {
-    router.back()
+    router.push('/session')
   }
   useEffect(() => {
     const fetchSignleSession = async (sessionId: string) => {

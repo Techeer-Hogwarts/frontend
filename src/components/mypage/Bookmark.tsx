@@ -81,20 +81,56 @@ export default function Bookmark() {
   const handleCategoryChange = () => {}
   return (
     <div className="ml-10">
-      <TapBar
-        options={['이력서', '부트캠프', '파트너스']}
-        // placeholder="세션 제목 혹은 이름을 검색해보세요"
-        onSelect={handleSearch}
-      />
-      <div className="mt-5 grid grid-cols-2 gap-8">
-        {/* {BookmarkProps.map((Bookmark) => (
-          <BlogPost
-            key={Bookmark.id}
-            title={Bookmark.title}
-            date={Bookmark.date}
-            name={Bookmark.name}
-          />
-        ))} */}
+      <div className="w-[800px]">
+        <TapBar
+          options={[tapBatOptions[0], tapBatOptions[1]]}
+          // placeholder="제목 혹은 이름을 검색해보세요"
+          onSelect={handleSearch}
+        />
+      </div>
+      <div className="grid grid-cols-2 gap-8 mt-5">
+        {isLoading
+          ? Array.from({ length: 4 }).map((_, index) => (
+              <Skeleton key={index} />
+            ))
+          : bookmarks.map((bookmark: any) => {
+              if (activeOption === '블로그') {
+                return (
+                  <BlogPost
+                    key={bookmark.id}
+                    title={bookmark.title}
+                    id={bookmark.id}
+                    date={bookmark.date}
+                    url={bookmark.url}
+                    likeCount={bookmark.likeCount}
+                    name={bookmark.author?.authorName || ''}
+                    image={bookmark.thumbnail}
+                    authorImage={bookmark.author?.authorImage}
+                    onDelete={bookmark}
+                    likeList={likeList}
+                  />
+                )
+              } else if (activeOption === '세션영상') {
+                return (
+                  <SessionPost
+                    key={bookmark.id}
+                    likeCount={bookmark.likeCount}
+                    id={bookmark.id}
+                    thumbnail={bookmark.thumbnail}
+                    title={bookmark.title}
+                    date={bookmark.date}
+                    presenter={bookmark.presenter}
+                    fileUrl={bookmark.fileUrl}
+                    showMessage={bookmark}
+                    userImage={bookmark.user.profileImage}
+                    likeList={likeList}
+                    onLikeUpdate={bookmark}
+                  />
+                )
+              }
+              return null
+            })}
+        <div ref={ref} />
       </div>
     </div>
   )
