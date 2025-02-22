@@ -2,41 +2,27 @@
 import TapBar from '@/components/common/TapBar'
 import AddBtn from '@/components/common/AddBtn'
 import BlogPost from '@/components/blog/BlogPost'
+import { useLike } from '@/app/blog/_lib/useLike'
 import { useTapBarStore } from '@/store/tapBarStore'
 import { useInView } from 'react-intersection-observer'
 import { useCallback, useEffect, useState } from 'react'
-
-interface User {
-  name: string
-}
-
-interface Author {
-  authorName: string
-  authorImage: string
-}
-
-interface BlogProps {
-  title: string
-  id: string
-  date: string
-  url: string
-  likeCount: number
-  user: User
-  author: Author
-}
-
+import { BlogProps } from '@/types/BlogProps'
+const tapBatOptions = ['금주의 블로그', 'TECHEER', 'SHARED']
 export default function Page() {
   const [blog, setBlog] = useState<BlogProps[]>([])
+  const [likeList, setLikeList] = useState([])
   const [message, setMessage] = useState<string | null>(null)
-  const { activeOption } = useTapBarStore()
+  const { activeOption, setActiveOption } = useTapBarStore()
   const [inputValue, setInputValue] = useState('')
-  const [limit, setLimit] = useState(3)
+  const [limit, setLimit] = useState(6)
+  const { fetchLikes } = useLike()
   const [ref, inView] = useInView()
 
   const handleSearch = (query: string) => {
     sessionStorage.setItem('searchQuery', query)
     setInputValue(query)
   }
+
   const handleDeleteSession = (id: string) => {
     setBlog((prevblogs) => prevblogs.filter((blog) => blog.id !== id))
     setMessage('블로그 글이 삭제되었습니다.')
@@ -45,12 +31,11 @@ export default function Page() {
   const getBestBlog = useCallback(async (newLimit: number) => {
     try {
       const response = await fetch(
-        `https://api.techeerzip.cloud/api/v1/blogs/best?offset=0&limit=${newLimit}`,
+        `/api/v1/blogs/best?offset=0&limit=${newLimit}`,
         {
           method: 'GET',
         },
       )
-
       if (!response.ok) {
         throw new Error('세션 데이터를 업로드하는 데 실패했습니다.')
       }
@@ -58,11 +43,11 @@ export default function Page() {
       const result = await response.json()
       setBlog(result) // 상태 업데이트
       setLimit(newLimit)
-      console.log('블로그api가 성공적으로 통신되었습니다:', result.data)
+      return result
     } catch (err) {
       console.error('블로그 데이터 업로드 중 오류 발생:', err)
+      return []
     }
-
   }, [])
   const getBlog = useCallback(
     async (newLimit: number, query: string, category: string) => {
@@ -83,42 +68,76 @@ export default function Page() {
       const url = `${baseUrl}?${queryString}`
 
       try {
-        const response = await fetch(url)
+        const response = await fetch(url, {
+          method: 'GET',
+        })
         if (!response.ok) {
           throw new Error('Network response was not ok')
         }
-        const data = await response.json()
-        setBlog(data || [])
+        const result = await response.json()
+        setBlog(result)
+        setLimit(newLimit) // limit 상태 업데이트 추가
+        return result
       } catch (err) {
         console.error('블로그 데이터 로딩 중 오류 발생:', err)
+        return []
       }
     },
     [],
   )
-
-  useEffect(() => {
-    if (activeOption == '금주의 블로그') {
-      getBestBlog(3)
-    } else if (activeOption == 'TECHEER' || activeOption == 'SHARED') {
-      getBlog(3, inputValue, activeOption)
+  const checkLike = async () => {
+    try {
+      const data = await fetchLikes('BLOG', 0, 50)
+      setLikeList(data)
+      return data
+    } catch (err) {
+      console.error(err)
+      return []
     }
-  }, [activeOption, inputValue])
-
-  useEffect(() => {
-    if (!inView) return // inView가 false면 실행 x
+  }
+  const fetchData = async () => {
+    let newBlogs: BlogProps[] = []
     if (activeOption === '금주의 블로그') {
-      getBestBlog(limit + 3)
-      return
-    } else if (activeOption == 'Techeer' || activeOption == 'Shared') {
-      getBlog(limit + 3, inputValue, activeOption)
+      newBlogs = await getBestBlog(6)
+    } else if (activeOption === 'TECHEER' || activeOption === 'SHARED') {
+      newBlogs = await getBlog(6, inputValue, activeOption)
+    }
+    const newLikeList: { id: string }[] = await checkLike()
+    syncLikeCount(newBlogs, newLikeList)
+  }
+  const syncLikeCount = (blogs: BlogProps[], likes: { id: string }[]) => {
+    const updatedBlogs = blogs.map((blog) => ({
+      ...blog,
+      likeCount: likes.some((like) => like.id === blog.id)
+        ? blog.likeCount + 1
+        : blog.likeCount,
+    }))
+    setBlog(updatedBlogs)
+  }
+  useEffect(() => {
+    setBlog([])
+    setLimit(6)
+    setLikeList([])
+    fetchData()
+  }, [activeOption, inputValue])
+  useEffect(() => {
+    if (!inView) return
+    if (inView) {
+      if (activeOption === '금주의 블로그') {
+        getBestBlog(limit + 6)
+      } else if (activeOption === 'TECHEER' || activeOption === 'SHARED') {
+        getBlog(limit + 6, inputValue, activeOption)
+      }
     }
   }, [inView, activeOption])
-
+  useEffect(() => {
+    setActiveOption(tapBatOptions[0])
+  }, [])
   return (
     <div className="flex justify-center h-auto min-h-screen">
       <div className="flex flex-col">
         {message && (
-          <div className="bg-red-500/80 z-50 rounded-md fixed text-white text-center bottom-5 left-1/2 transform -translate-x-1/2 px-4 py-2">
+          <div className="fixed z-50 px-4 py-2 text-center text-white transform -translate-x-1/2 rounded-md bg-red-500/80 bottom-5 left-1/2">
             {message}
           </div>
         )}
@@ -127,11 +146,11 @@ export default function Page() {
           <p className="text-[1.25rem]">테커인들의 블로그를 확인해보세요.</p>
         </div>
         <TapBar
-          options={['금주의 블로그', 'TECHEER', 'SHARED']}
+          options={[tapBatOptions[0], tapBatOptions[1], tapBatOptions[2]]}
           placeholder="블로그 제목을 검색해보세요"
           onSearch={handleSearch}
         />
-        <div className="flex-col grid grid-cols-3 gap-8 mt-8">
+        <div className="grid flex-col grid-cols-3 gap-8 mt-8">
           {blog.map((blog, index) => (
             <BlogPost
               key={index}
@@ -141,8 +160,10 @@ export default function Page() {
               url={blog.url}
               likeCount={blog.likeCount}
               name={blog.author.authorName}
-              image={blog.author.authorImage}
+              image={blog.thumbnail}
+              authorImage={blog.author.authorImage}
               onDelete={handleDeleteSession}
+              likeList={likeList}
             />
           ))}
           <div ref={ref} />
