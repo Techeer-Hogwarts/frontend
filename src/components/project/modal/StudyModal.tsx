@@ -6,6 +6,7 @@ import SmallMemberBox from './SmallMemberBox'
 import { useRouter } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
 import { getAllUsers } from '@/api/project/common'
+import { useAuthStore } from '@/store/authStore'
 
 interface Member {
   id: number
@@ -20,16 +21,25 @@ interface MemberModalProps {
   onSave: (selectedMembers: Member[]) => void
 }
 
-const MemberModal = ({ onClose, onSave }: MemberModalProps) => {
+const MemberModal = ({
+  existingMembers,
+  onClose,
+  onSave,
+}: MemberModalProps) => {
   const dropDownRef = useRef<HTMLInputElement>(null)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const [name, setName] = useState('')
   const [members, setMembers] = useState<Member[]>([])
+  const userId = localStorage.getItem('userId')
 
+  //모든 사용자 목록
   const { data: allUsers } = useQuery({
     queryKey: ['getAllUsers'],
     queryFn: getAllUsers,
   })
+
+  // 현재 사용자
+  const { user } = useAuthStore()
 
   // 사람 선택
   const handleName = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -37,6 +47,51 @@ const MemberModal = ({ onClose, onSave }: MemberModalProps) => {
     setName(value)
     setIsDropdownOpen(true)
   }
+
+  //컴포넌트에 입력자 자동 추가
+  useEffect(() => {
+    if (user) {
+      const alreadyExists = existingMembers.some(
+        (m) => m.userId === user.id || m.id === user.id,
+      )
+      if (!alreadyExists) {
+        // 모달 내부 members에도 없으면 추가
+        setMembers((prev) => {
+          const inModal = prev.some((mm) => mm.id === user.id)
+          if (!inModal) {
+            return [
+              ...prev,
+              {
+                id: user.id,
+                name: user.name,
+                year: user.year,
+                profileImage: user.profileImage,
+                isLeader: true, // 원하는 초기값
+                teamRole: '',
+              },
+            ]
+          }
+          return prev
+        })
+      }
+    }
+  }, [user, existingMembers])
+
+  // 드롭다운 필터
+  const filteredUsers = allUsers?.filter((u) => {
+    // 1) 이미 모달 내부(members)에 추가된 유저는 제외
+    const inModal = members.some((m) => m.id === u.id)
+    if (inModal) return false
+
+    // 2) 이미 상위에 존재(existingMembers)하면 제외
+    const inExisting = existingMembers.some(
+      (em) => em.userId === u.id || em.id === u.id,
+    )
+    if (inExisting) return false
+
+    // 3) 이름 검색
+    return u.name.toLowerCase().includes(name.toLowerCase())
+  })
 
   // 바깥 클릭 시 드롭다운 닫기
   useEffect(() => {

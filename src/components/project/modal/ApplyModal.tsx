@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 
 import { handleApplyStudy } from '@/api/project/study/study'
+import { useQueryClient } from '@tanstack/react-query'
 
 const ApplyModal = () => {
   const [apply, setApply] = useState('')
@@ -13,6 +14,8 @@ const ApplyModal = () => {
   const router = useRouter()
 
   const projectId = Number(localStorage.getItem('projectId'))
+
+  const queryClient = useQueryClient()
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -27,16 +30,18 @@ const ApplyModal = () => {
 
   const handleSave = async () => {
     if (projectType === 'study') {
-      if (apply) {
+      if (projectId && apply) {
         const data = {
-          studyTeamId: 9,
-          summary: '스터디에 참여하고 싶습니다!',
+          studyTeamId: Number(projectId),
+          summary: apply,
         }
-        try {
-          const result = await handleApplyStudy(data)
-        } catch (error) {
-          alert('스터디 지원에 실패했습니다. 다시 시도해주세요.')
-        }
+        const result = await handleApplyStudy(data)
+        queryClient.invalidateQueries({
+          queryKey: ['getStudyApplicants', projectId],
+        })
+        router.back()
+
+        return result
       } else {
         alert('지원 동기를 입력해주세요.')
       }
@@ -82,7 +87,7 @@ const ApplyModal = () => {
         <div className="mb-4">
           <p className="text-left mb-2">지원동기를 입력해주세요</p>
           <textarea
-            className="w-full h-[9.3125rem] border border-gray rounded-sm"
+            className="w-full h-[9.3125rem] border border-gray rounded-sm p-2"
             value={apply}
             onChange={handleApply}
           />

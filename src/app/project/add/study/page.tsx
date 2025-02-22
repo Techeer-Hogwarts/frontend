@@ -28,7 +28,7 @@ export default function AddStudyPage() {
     recruitNum: 0,
     recruitExplain: '',
     studyMember: [],
-    resultImages: '',
+    resultImages: [],
   })
 
   const handleUpdate = (key, value) => {
@@ -36,15 +36,23 @@ export default function AddStudyPage() {
   }
 
   const handleSubmit = async () => {
-    console.log(studyData)
+    const formData = new FormData()
+
     try {
-      const response = await handleAddStudy(studyData)
-      if (response.status === 200) {
-        router.push(`/project/detail/study/${response.data.id}`)
-        localStorage.setItem('projectId', response.data.id)
-      } else {
-        alert('등록에 실패하였습니다. 다시 시도해주세요.')
-      }
+      const { resultImages, ...studyWithoutImages } = studyData
+      formData.append(
+        'createStudyTeamRequest',
+        JSON.stringify(studyWithoutImages),
+      )
+
+      resultImages.forEach((file) => {
+        formData.append('files', file)
+      })
+
+      const response = await handleAddStudy(formData)
+
+      router.push(`/project/detail/study/${response.id}`)
+      localStorage.setItem('projectId', response.id)
     } catch (error) {
       alert('서버 요청 중 오류가 발생했습니다.')
     }

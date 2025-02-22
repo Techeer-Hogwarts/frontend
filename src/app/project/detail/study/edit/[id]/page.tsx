@@ -52,6 +52,7 @@ export default function AddStudyPage() {
     recruitExplain: string
     studyMember: StudyMember[]
     resultImages: string[]
+    deleteImages: string[]
   }
 
   const [studyData, setStudyData] = useState<StudyDataType | null>(null)
@@ -72,6 +73,7 @@ export default function AddStudyPage() {
         studyMember: studyDetails.studyMember || [],
         resultImages:
           studyDetails.resultImages.map((img) => img.imageUrl) || [],
+        deleteImages: [],
       })
     }
   }, [studyDetails])
@@ -81,10 +83,11 @@ export default function AddStudyPage() {
   }
 
   const handleSubmit = async () => {
-    console.log(studyData)
     const response = await handleEditStudy(studyData, projectId)
-    // router.push(`/project/detail/study/${response.data.id}`)
-    // localStorage.setItem('projectId', response.data.id)
+    console.log(response)
+
+    router.push(`/project/detail/study/${response.id}`)
+    localStorage.setItem('projectId', response.id)
   }
 
   return (
@@ -114,7 +117,9 @@ export default function AddStudyPage() {
               onUpdate={handleUpdate}
             />
             <AddResults
+              existingUrls={studyData.resultImages || []}
               resultImages={studyData.resultImages || []}
+              deleteImages={studyData.deleteImages || []}
               onUpdate={handleUpdate}
             />
 

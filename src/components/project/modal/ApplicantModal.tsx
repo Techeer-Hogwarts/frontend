@@ -6,17 +6,30 @@ import {
   acceptStudyApplicant,
   denyStudyApplicant,
 } from '@/api/project/study/study'
+import { useQueryClient } from "@tanstack/react-query"
+
+interface User {
+  name: string
+  email: string
+  profileImage: string
+}
+
+interface Applicant {
+  id: number
+  createdAt: string
+  updatedAt: string
+  isDeleted: boolean
+  isLeader: boolean
+  studyTeamId: number
+  userId: number
+  summary: string
+  status: string
+  user: User
+}
 
 interface ApplicantModalProps {
   onClose: () => void
-  applicant: {
-    id: number
-    name: string
-    generation: string
-    image: string
-    motivation: string
-    appliedPosition: string
-  }
+  applicant: Applicant
 }
 
 export default function ApplicantModal({
@@ -27,6 +40,9 @@ export default function ApplicantModal({
   const [approve, setApprove] = useState(true)
   const projectId = Number(localStorage.getItem('projectId'))
   console.log(applicant)
+
+  const queryClient = useQueryClient()
+
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -42,12 +58,12 @@ export default function ApplicantModal({
       if (projectType === 'study') {
         data = {
           studyTeamId: projectId,
-          applicantId: applicant.id,
+          applicantId: applicant.userId,
         }
       } else {
         data = {
           projectTeamId: projectId,
-          applicantId: applicant.id,
+          applicantId: applicant.userId,
         }
       }
 
@@ -55,6 +71,13 @@ export default function ApplicantModal({
 
       // alert(`${applicant.name}님의 지원이 승인되었습니다.`)
       onClose()
+      queryClient.invalidateQueries({
+        queryKey: ['getStudyDetails', projectId],
+      })
+      queryClient.invalidateQueries({
+        queryKey: ['getStudyApplicants', projectId],
+      })
+
     } catch (error) {
       console.error(error)
       alert('오류가 발생했습니다.')
@@ -66,10 +89,13 @@ export default function ApplicantModal({
     try {
       const data = {
         studyTeamId: projectId,
-        applicantId: applicant.id,
+        applicantId: applicant.userId,
       }
       await denyStudyApplicant(data)
       onClose()
+      queryClient.invalidateQueries({
+        queryKey: ['getStudyDetails', projectId],
+      })
     } catch (error) {
       console.error(error)
       alert('오류가 발생했습니다.')
@@ -94,7 +120,7 @@ export default function ApplicantModal({
         </p>
         <div className="flex justify-center mb-1">
           <Image
-            src=""
+            src={applicant.profileImage}
             width={100}
             height={100}
             alt="img"
@@ -102,7 +128,7 @@ export default function ApplicantModal({
           />
         </div>
         <div className="flex items-center justify-center gap-2 mb-3">
-          <p className="text-lg font-bold">{applicant.user.name}</p>
+          <p className="text-lg font-bold">{applicant.name}</p>
 
           {/* 추후 수정 예정 */}
           <span className="text-gray-500 text-sm">| 8기</span>
@@ -150,7 +176,7 @@ export default function ApplicantModal({
         {/* 지원 동기 */}
         <div className="mb-4">
           <p className="text-left mb-2 font-medium">
-            {applicant?.user?.name}의 지원동기
+            {applicant.name}의 지원동기
           </p>
           <div className="w-full p-1 h-[9.3125rem] border border-lightgray rounded-sm text-start">
             {applicant?.summary}

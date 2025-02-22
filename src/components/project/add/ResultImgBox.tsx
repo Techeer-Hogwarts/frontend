@@ -5,22 +5,19 @@ import { IoClose } from 'react-icons/io5'
 import { FaRegImage } from 'react-icons/fa6'
 
 interface BoxProps {
-  id: number
+  previewUrl: string
+  onFileSelect: (file: File) => void
   onDelete: () => void
 }
 
-const ResultImgBox = ({ id, image, onImageChange, onDelete }: BoxProps) => {
-  // 이미지 업로드 핸들러
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+const ResultImgBox = ({ previewUrl, onFileSelect, onDelete }: BoxProps) => {
+  console.log(previewUrl);
+  
+  // 파일 선택 시 파일 객체를 받아 상위 컴포넌트에 전달하는 핸들러
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
     if (file) {
-      const reader = new FileReader()
-      reader.onload = (e) => {
-        if (e.target?.result) {
-          onImageChange(e.target.result.toString())
-        }
-      }
-      reader.readAsDataURL(file)
+      onFileSelect(file)
     }
   }
 
@@ -34,18 +31,18 @@ const ResultImgBox = ({ id, image, onImageChange, onDelete }: BoxProps) => {
         <IoClose size={16} />
       </button>
 
-      {/* 이미지 업로드 및 미리보기 */}
+      {/* 이미지 업로드 및 미리보기 영역 */}
       <label className="relative w-full h-[223px] bg-gray-200 rounded-lg flex items-center justify-center cursor-pointer">
-        {image ? (
+        {previewUrl ? (
           <Image
-            src={image}
+            src={previewUrl}
             alt="Uploaded image"
-            layout="fill"
-            objectFit="cover"
+            fill
+            style={{ objectFit: 'cover' }}
             className="rounded-lg"
           />
         ) : (
-          <div className="flex flex-col w-[409px] h-[223px] rounded-md bg-lightgray text-[#A1A1A1] items-center justify-center gap-4">
+          <div className="flex flex-col w-full h-full rounded-md bg-lightgray text-[#A1A1A1] items-center justify-center gap-4">
             <FaRegImage size={30} />
             <span className="text-gray-500">
               눌러서 이미지를 업로드해주세요
@@ -55,7 +52,7 @@ const ResultImgBox = ({ id, image, onImageChange, onDelete }: BoxProps) => {
         <input
           type="file"
           accept="image/*"
-          onChange={handleImageUpload}
+          onChange={handleFileChange}
           className="absolute inset-0 opacity-0 cursor-pointer"
         />
       </label>

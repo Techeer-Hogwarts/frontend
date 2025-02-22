@@ -99,6 +99,9 @@ export const acceptProjectApplicant = async (data) => {
       {
         method: 'PATCH',
         credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify(data),
       },
     )
@@ -124,6 +127,9 @@ export const denyProjectApplicant = async (data) => {
       {
         method: 'PATCH',
         credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify(data),
       },
     )

@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation'
 
 import MemberModal from '../modal/StudyModal'
 import ProjectMemberModal from '../modal/ProjectModal'
+import { getStudyMember } from '@/api/project/study/study'
 
 interface TagProps {
   position: string
@@ -41,6 +42,7 @@ export default function AddMember({
 }: AddMemberProps) {
   const [projectType, setProjectType] = useState<null | string>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  console.log('projectMember', projectMember)
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -71,7 +73,7 @@ export default function AddMember({
         .map((member) => ({
           userId: member.id,
           isLeader: member.isLeader,
-          // profileImage: member.profileImage,
+          profileImage: member.profileImage,
         })),
     ]
     onUpdateMember(merged as Member[])
@@ -82,7 +84,8 @@ export default function AddMember({
 
   // 멤버 삭제 함수
   const handleDelete = (id: number) => {
-    const filtered = projectMember.filter((member) => member.id !== id)
+    const filtered = projectMember.filter((member) => member.userId !== id)
+
     onUpdateMember(filtered)
   }
 
@@ -98,6 +101,7 @@ export default function AddMember({
             />
           ) : (
             <MemberModal
+              existingMembers={projectMember}
               onClose={handleCloseModal}
               onSave={handleSaveMembers}
             />
@@ -115,7 +119,7 @@ export default function AddMember({
           >
             {/* X 버튼 */}
             <button
-              onClick={() => handleDelete(member.id)}
+              onClick={() => handleDelete(member.userId)}
               className="w-[0.8rem] h-[0.8rem]  absolute top-[-5px] right-[-5px] bg-primary text-white rounded-full flex items-center justify-center"
             >
               <IoClose />

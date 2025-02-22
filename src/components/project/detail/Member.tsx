@@ -4,7 +4,12 @@ import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 
 interface MemberProps {
-  members: Array<{ name: string; isLeader: boolean; teamRole: string }>
+  members: Array<{
+    name: string
+    isLeader: boolean
+    teamRole: string
+    profileImage: string
+  }>
 }
 
 export default function Member({ members }: MemberProps) {
@@ -26,22 +31,22 @@ export default function Member({ members }: MemberProps) {
           <div key={member.name}>
             <div className="relative w-[4.75rem] h-[7.4375rem] flex flex-col items-center justify-center">
               <Image
-                src="/profile.png"
+                src={member.profileImage}
                 width={76}
                 height={76}
                 alt="Picture"
-                className="border rounded-md bg-lightpink"
+                className="mas-w-[4.75rem] max-h-[4.75rem] border rounded-md bg-lightpink"
               ></Image>
               {member.isLeader && (
                 <div
-                  className={`absolute ${projectType === 'study' ? 'bottom-8' : 'bottom-11'} w-[4.75rem] h-[1.5rem] bg-black bg-opacity-40 flex items-center justify-center rounded-b-md`}
+                  className={`absolute ${projectType === 'study' ? 'bottom-9' : 'bottom-11'} w-[4.75rem] h-[1.5rem] bg-black bg-opacity-40 flex items-center justify-center rounded-b-md`}
                 >
                   <span className="text-white text-sm font-semibold">
                     Leader
                   </span>
                 </div>
               )}
-              <div>{member.name}</div>
+              <div className="mt-2">{member.name}</div>
               {projectType === 'project' && (
                 <div
                   className={`w-[5.875rem] h-[1.75rem] rounded-md bg-lightprimary text-pink text-[0.9375rem] text-center`}
