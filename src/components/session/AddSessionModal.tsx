@@ -76,23 +76,20 @@ export default function AddSessionModal({
         fileUrl: formData.fileUrl,
       }
 
-      const response = await fetch(
-        'https://api.techeerzip.cloud/api/v1/sessions',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          credentials: 'include',
-          body: JSON.stringify(payload),
+      const response = await fetch('/api/v1/sessions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-      )
+        credentials: 'include',
+        body: JSON.stringify(payload),
+      })
       if (!response.ok) {
         throw new Error('세션 데이터를 업로드하는 데 실패했습니다.')
       }
       const result = await response.json()
       console.log('세션이 성공적으로 추가되었습니다:', result)
-      router.replace('/session')
+      window.location.href = '/session'
       onClose()
     } catch (err) {
       console.error('세션 데이터 업로드 중 오류 발생:', err)
@@ -100,13 +97,13 @@ export default function AddSessionModal({
   }
 
   return (
-    <div className="w-screen h-screen flex items-center justify-center bg-black/50 fixed inset-0">
+    <div className="fixed inset-0 flex items-center justify-center w-screen h-screen bg-black/50">
       <div className="w-[486px] min-h-[750px] h-auto flex flex-col items-center bg-white rounded-lg">
         <div>
-          <p className="text-2xl text-center mt-6 mb-3 font-semibold">
+          <p className="mt-6 mb-3 text-2xl font-semibold text-center">
             세션 영상 등록
           </p>
-          <div className="mt-2 relative ">
+          <div className="relative mt-2 ">
             <img
               src={debouncedThumbnail}
               alt="PDF First Page Preview"
@@ -117,7 +114,7 @@ export default function AddSessionModal({
             />
           </div>
         </div>
-        <div className="flex flex-col relative mx-8 mt-4">
+        <div className="relative flex flex-col mx-8 mt-4">
           <ModalInputField
             title="세션 제목을 입력해주세요"
             placeholder="세션 제목"
@@ -141,7 +138,7 @@ export default function AddSessionModal({
               handleInputChange={handleInputChange}
             />
           </div>
-          <div className="flex justify-between mt-1 mb-2 items-start">
+          <div className="flex items-start justify-between mt-1 mb-2">
             <span>
               기간을 입력해주세요 <span className="text-primary">*</span>
             </span>
