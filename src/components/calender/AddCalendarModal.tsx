@@ -11,12 +11,6 @@ import usePostEvent from '@/app/calendar/api/postEvent'
 import usePatchEvent from '@/app/calendar/api/patchEvent'
 import useGetEvent from '@/app/calendar/api/getEvent'
 
-type AddCalenderModalProps = {
-  handleBack: () => void
-  mode: 'create' | 'edit'
-  eventId?: number
-}
-
 export default function AddCalenderModal({ handleBack, mode, eventId }: AddCalenderModalProps) {
   const [formData, setFormData] = useState({
     category: '',
