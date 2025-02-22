@@ -5,7 +5,6 @@ import CategoryBtn from './CategoryBtn'
 import { useEffect, useState } from 'react'
 import SessionDropdown from './SessionDropdown'
 import ModalInputField from '../common/ModalInputField'
-import { useRouter } from 'next/navigation'
 
 interface ModalProps {
   position: string
@@ -29,7 +28,6 @@ export default function AddSessionModal({
     fileUrl: '',
   })
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
-  const router = useRouter()
   const [debouncedThumbnail, setDebouncedThumbnail] = useState(
     formData.thumbnail,
   )
@@ -175,6 +173,7 @@ export default function AddSessionModal({
                   '2023년 여름',
                   '2023년 겨울',
                   '2024년 여름',
+                  '2024년 겨울',
                 ]}
                 options={[
                   'SUMMER_2022',
@@ -182,6 +181,7 @@ export default function AddSessionModal({
                   'SUMMER_2023',
                   'WINTER_2023',
                   'SUMMER_2024',
+                  'WINTER_2024',
                 ]}
                 onSelect={handleDropdownChange}
               />
