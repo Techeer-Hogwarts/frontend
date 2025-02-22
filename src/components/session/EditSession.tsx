@@ -91,6 +91,7 @@ export default function EditSession() {
   const sessionId = params.id as string
   const [debouncedThumbnail, setDebouncedThumbnail] = useState('')
   const [thumbnailError, setThumbnailError] = useState(false)
+  const [userId, setUserId] = useState(false)
   const [formData, setFormData] = useState<SessionFormData>(initialFormData)
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
 
@@ -123,12 +124,36 @@ export default function EditSession() {
   }
 
   const fetchSignleSession = async () => {
+    getUser()
     try {
       const singleVideo = await getSingleSession(sessionId)
       setFormData(singleVideo)
+      if (singleVideo.id !== userId) {
+        window.location.href = '/session'
+        alert('본인이 작성한 게시물만 수정할 수 있습니다.')
+        return
+      }
       setSelectedCategory(singleVideo.category)
     } catch (err) {
       console.error('세션 데이터 가져오기 실패:', err)
+    }
+  }
+  const getUser = async () => {
+    try {
+      const response = await fetch('/api/v1/users', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+      })
+      if (!response.ok) {
+        throw new Error(`${response.status}`)
+      }
+      const data = await response.json()
+      setUserId(data.id)
+    } catch (err) {
+      console.error('Error fetching user:', err)
     }
   }
 
