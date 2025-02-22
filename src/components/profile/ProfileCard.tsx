@@ -63,14 +63,15 @@ export default function ProfileCard({
                 </p>
               </div>
               <div className="flex flex-wrap gap-1 w-full h-[1.3rem]">
-                {stack.map((skill, index) => (
-                  <div
-                    key={`${skill}-${index}`}
-                    className="bg-lightprimary text-pink px-[0.4rem] rounded-[0.3rem] text-[0.75rem]"
-                  >
-                    {skill}
-                  </div>
-                ))}
+                {stack?.length > 0 &&
+                  stack.map((skill, index) => (
+                    <div
+                      key={`${skill}-${index}`}
+                      className="bg-lightprimary text-pink px-[0.4rem] rounded-[0.3rem] text-[0.75rem]"
+                    >
+                      {skill}
+                    </div>
+                  ))}
               </div>
             </div>
           </div>

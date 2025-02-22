@@ -26,7 +26,11 @@ export default function ProfileList({
   offset,
   limit,
 }: ProfileQueryParams = {}) {
-  const { data, isLoading, isError } = useGetProfileQuery({
+  const {
+    data = [],
+    isLoading,
+    isError,
+  } = useGetProfileQuery({
     position,
     year,
     university,
@@ -72,8 +76,8 @@ export default function ProfileList({
           school={profile.school}
           grade={profile.grade}
           year={profile.year}
-          stack={profile.stack}
-          mainImage={profile.projectTeams.mainImage}
+          stack={profile.stack ?? []}
+          mainImage={profile.projectTeams?.mainImage ?? ''}
         />
       ))}
     </div>

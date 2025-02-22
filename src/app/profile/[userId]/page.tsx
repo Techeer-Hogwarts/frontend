@@ -45,7 +45,9 @@ export default function Page({ params }: { params: { userId: string } }) {
       {/** 우측 컨텐츠 영역 */}
       {activeTab === 'home' && <Home />}
       {activeTab === 'profile' && <Profile profile={profileData} />}
-      {activeTab === 'resume' && <Resume />}
+      {activeTab === 'resume' && (
+        <Resume userId={Number(userId)} offset={0} limit={10} />
+      )}
     </div>
   )
 }
