@@ -16,6 +16,7 @@ type Story = StoryObj<typeof meta>
 const onDelete = (id: string) => {
   console.log(`Deleted post with id: ${id}`)
 }
+const likeList = ['테스트']
 export const Default: Story = {
   args: {
     title: '동계 부트캠프 회고록',
@@ -26,6 +27,8 @@ export const Default: Story = {
     url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
     image: '/images/default-thumbnail.png',
     onDelete: onDelete,
+    likeList: likeList,
+    authorImage: 'https://miro.medium.com/v2/0*3PiUZ2c3GwLKvnya',
   },
 }
 
@@ -40,5 +43,7 @@ export const LongTitle: Story = {
     url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
     image: '/images/default-thumbnail.png',
     onDelete: onDelete,
+    likeList: likeList,
+    authorImage: 'https://miro.medium.com/v2/0*3PiUZ2c3GwLKvnya',
   },
 }
