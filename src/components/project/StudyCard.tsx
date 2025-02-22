@@ -36,17 +36,17 @@ export default function StudyCard({ team }: { team: Team }) {
           {team.name}
         </div>
 
-        <div className="h-[7.8125rem] flex flex-col justify-start ">
+        <div className="h-[7.8125rem] w-[112px] flex flex-col justify-start ">
           {/* 프로젝트 제목 */}
           <h2 className="max-w-28 truncate font-bold text-[1.01688rem] gap-[2.44rem]">
             {team.name}
           </h2>
-          <p className="text-[0.75rem] max-w-28 max-h-8 text-ellipsis line-clamp-2 ">
+          <p className="text-[0.75rem] max-w-28 max-h-8 truncate ">
             {team.studyExplain}
           </p>
 
           {team.isRecruited && (
-            <div className="bg-lightblue mt-9 py-[0.19rem] px-[0.8rem]  text-blue rounded-lg text-[13px] text-center">
+            <div className="bg-lightblue mt-14 py-[0.19rem] px-[0.8rem]  text-blue rounded-lg text-[13px] text-center">
               모집인원 : {team.recruitNum} 명
             </div>
           )}

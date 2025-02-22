@@ -4,6 +4,7 @@ import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import BlogMenu from './BlogMenu'
 import { useLike } from '@/app/blog/_lib/useLike'
+import BookmarkModal from '../common/BookmarkModal'
 
 export interface BlogPostProps {
   readonly title: string
@@ -34,6 +35,8 @@ export default function BlogPost({
   const [isLike, setIsLike] = useState(false)
   const { fetchLikes, postLike } = useLike()
   const [likeCount, setLikeCount] = useState(initialLikeCount)
+  const [modalOpen, setModalOpen] = useState(false)
+  const [modalMessage, setModalMessage] = useState('')
   const clickModal = () => {
     setShowModal(!showModal)
   }
@@ -82,7 +85,12 @@ export default function BlogPost({
   }, [likeList, id])
 
   return (
-    <div className="flex">
+    <div>
+      <BookmarkModal
+        isOpen={modalOpen}
+        message={modalMessage}
+        onClose={() => setModalOpen(false)}
+      />
       <div className="flex flex-col w-[379px] relative ">
         <button onClick={handleClickUrl}>
           <img
@@ -109,7 +117,12 @@ export default function BlogPost({
             />
             {showModal && (
               <div className="absolute top-[-5%] right-0 z-10">
-                <BlogMenu id={id} onDelete={onDelete} />
+                <BlogMenu
+                  id={id}
+                  onDelete={onDelete}
+                  setModalOpen={setModalOpen}
+                  setModalMessage={setModalMessage}
+                />
               </div>
             )}
           </div>
@@ -120,6 +133,9 @@ export default function BlogPost({
                 src={authorImage}
                 alt="img"
                 className="w-5 h-5 mr-1 rounded-full"
+                onError={(e: any) => {
+                  e.target.src = '/images/session/thumbnail.png' // 대체 이미지 경로
+                }}
               />
               <span className="font-semibold text-black text-md">{name}</span>
             </div>

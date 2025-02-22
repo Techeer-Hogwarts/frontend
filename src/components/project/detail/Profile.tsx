@@ -28,6 +28,7 @@ interface ProfileProps {
   }
 }
 
+<<<<<<< HEAD
 export default function Profile({ projectDetail }: ProfileProps) {
   const [projectType, setProjectType] = useState<string | null>(null)
 
@@ -42,6 +43,10 @@ export default function Profile({ projectDetail }: ProfileProps) {
   const mainImageUrl = projectDetail?.mainImages?.[0]?.imageUrl
     ? projectDetail.mainImages[0].imageUrl
     : '/images/project/example.png'
+=======
+export default function Profile({ projectDetail }: any) {
+  const projectType = localStorage.getItem('projectType')
+>>>>>>> main
 
   return (
     <div

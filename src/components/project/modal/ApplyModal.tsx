@@ -5,8 +5,12 @@ import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { useQueryClient } from '@tanstack/react-query'
 import { handleApplyStudy } from '@/api/project/study/study'
+<<<<<<< HEAD
 import { handleApplyProject } from '@/api/project/project/project'
 import { getPositionStyle } from '@/styles/positionStyles'
+=======
+import { useQueryClient } from '@tanstack/react-query'
+>>>>>>> main
 
 export default function ApplyModal() {
   const [apply, setApply] = useState('')
@@ -17,6 +21,8 @@ export default function ApplyModal() {
 
   // 로컬 스토리지에서 projectId 가져오기
   const projectId = Number(localStorage.getItem('projectId'))
+
+  const queryClient = useQueryClient()
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -32,8 +38,25 @@ export default function ApplyModal() {
 
   // 저장(지원) 버튼 클릭
   const handleSave = async () => {
+<<<<<<< HEAD
     try {
       if (!apply) {
+=======
+    if (projectType === 'study') {
+      if (projectId && apply) {
+        const data = {
+          studyTeamId: Number(projectId),
+          summary: apply,
+        }
+        const result = await handleApplyStudy(data)
+        queryClient.invalidateQueries({
+          queryKey: ['getStudyApplicants', projectId],
+        })
+        router.back()
+
+        return result
+      } else {
+>>>>>>> main
         alert('지원 동기를 입력해주세요.')
         return
       }
@@ -122,7 +145,11 @@ export default function ApplyModal() {
         <div className="mb-4">
           <p className="text-left mb-2">지원동기를 입력해주세요</p>
           <textarea
+<<<<<<< HEAD
             className="w-full h-[9.3125rem] border border-gray rounded-sm p-2 focus:outline-none"
+=======
+            className="w-full h-[9.3125rem] border border-gray rounded-sm p-2"
+>>>>>>> main
             value={apply}
             onChange={handleApply}
           />

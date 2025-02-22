@@ -4,12 +4,17 @@ import Image from 'next/image'
 import { IoClose } from 'react-icons/io5'
 import { FaRegImage } from 'react-icons/fa6'
 
+<<<<<<< HEAD
 interface ResultImgBoxProps {
+=======
+interface BoxProps {
+>>>>>>> main
   previewUrl: string
   onFileSelect: (file: File) => void
   onDelete: () => void
 }
 
+<<<<<<< HEAD
 export default function ResultImgBox({
   previewUrl,
   onFileSelect,
@@ -17,6 +22,14 @@ export default function ResultImgBox({
 }: ResultImgBoxProps) {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
+=======
+const ResultImgBox = ({ previewUrl, onFileSelect, onDelete }: BoxProps) => {
+  console.log(previewUrl);
+  
+  // 파일 선택 시 파일 객체를 받아 상위 컴포넌트에 전달하는 핸들러
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+>>>>>>> main
     if (file) {
       onFileSelect(file)
     }
@@ -31,16 +44,25 @@ export default function ResultImgBox({
         <IoClose size={16} />
       </button>
 
+<<<<<<< HEAD
+=======
+      {/* 이미지 업로드 및 미리보기 영역 */}
+>>>>>>> main
       <label className="relative w-full h-[223px] bg-gray-200 rounded-lg flex items-center justify-center cursor-pointer">
         {previewUrl ? (
           <Image
             src={previewUrl}
             alt="Uploaded image"
             fill
+<<<<<<< HEAD
             className="rounded-lg object-cover"
+=======
+            style={{ objectFit: 'cover' }}
+            className="rounded-lg"
+>>>>>>> main
           />
         ) : (
-          <div className="flex flex-col w-[409px] h-[223px] rounded-md bg-lightgray text-[#A1A1A1] items-center justify-center gap-4">
+          <div className="flex flex-col w-full h-full rounded-md bg-lightgray text-[#A1A1A1] items-center justify-center gap-4">
             <FaRegImage size={30} />
             <span className="text-gray-500">
               눌러서 이미지를 업로드해주세요

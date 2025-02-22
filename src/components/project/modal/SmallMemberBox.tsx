@@ -22,7 +22,7 @@ const SmallMemberBox = ({
   onClose,
   isLeader,
   onUpdate,
-}: BoxProps) => {
+}: any) => {
   const [selectedRoles, setSelectedRoles] = useState<string[]>([])
 
   const handleToggleLeader = () => {

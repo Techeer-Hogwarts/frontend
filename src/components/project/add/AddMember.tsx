@@ -7,6 +7,7 @@ import { RxQuestionMarkCircled } from 'react-icons/rx'
 import { getPositionStyle } from '@/styles/positionStyles'
 import MemberModal from '../modal/StudyModal'
 import ProjectMemberModal from '../modal/ProjectModal'
+import { getStudyMember } from '@/api/project/study/study'
 
 interface TagProps {
   position: string
@@ -52,6 +53,7 @@ export default function AddMember({
 }: AddMemberProps) {
   const [projectType, setProjectType] = useState<null | string>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  console.log('projectMember', projectMember)
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -74,7 +76,24 @@ export default function AddMember({
    *       onRestoreMember(그 멤버 PK)로 복원
    */
   const handleSaveMembers = (selectedMembers: Member[]) => {
+<<<<<<< HEAD
     const merged = [...projectMember]
+=======
+    const merged = [
+      ...projectMember,
+      ...selectedMembers
+        .filter(
+          (newMember) =>
+            !projectMember.some((member) => member.userId === newMember.id),
+        )
+        .map((member) => ({
+          userId: member.id,
+          isLeader: member.isLeader,
+          profileImage: member.profileImage,
+        })),
+    ]
+    onUpdateMember(merged as Member[])
+>>>>>>> main
 
     selectedMembers.forEach((newMember) => {
       // 이미 있는지 확인 (id 기준)
@@ -100,6 +119,7 @@ export default function AddMember({
     setIsModalOpen(false)
   }
 
+<<<<<<< HEAD
   /**
    * (D) 멤버 삭제
    *     - state에서 제거 + onDeleteMember(멤버 PK)
@@ -111,10 +131,18 @@ export default function AddMember({
     onUpdateMember?.(filtered)
     // tempDeleted에 추가
     onDeleteMember?.(member.id, member.userId || 0)
+=======
+  // 멤버 삭제 함수
+  const handleDelete = (id: number) => {
+    const filtered = projectMember.filter((member) => member.userId !== id)
+
+    onUpdateMember(filtered)
+>>>>>>> main
   }
 
   return (
     <div>
+<<<<<<< HEAD
       {/* (E) 모달 */}
       {isModalOpen &&
         (projectType === 'project' ? (
@@ -129,6 +157,26 @@ export default function AddMember({
 
       <div className="font-medium text-gray mb-2">
         팀원을 입력해주세요<span className="text-primary">*</span>
+=======
+      <div className="flex items-center">
+        {/* 모달 */}
+        {isModalOpen &&
+          (projectType === 'project' ? (
+            <ProjectMemberModal
+              // onClose={handleCloseModal}
+              // onSave={handleSaveMembers}
+            />
+          ) : (
+            <MemberModal
+              existingMembers={projectMember}
+              onClose={handleCloseModal}
+              onSave={handleSaveMembers}
+            />
+          ))}
+        <div className="font-medium text-gray mb-3">
+          팀원을 입력해주세요<span className="text-primary">*</span>
+        </div>
+>>>>>>> main
       </div>
       <div className="flex justify-start gap-1 text-xs items-center text-gray mb-1">
         <RxQuestionMarkCircled /> Data: DataEngineer
@@ -138,8 +186,13 @@ export default function AddMember({
         {projectMember.map((member) => (
           <div key={member.id} className="relative flex flex-col items-center">
             <button
+<<<<<<< HEAD
               onClick={() => handleDelete(member)}
               className="w-[0.8rem] h-[0.8rem] absolute top-[-5px] right-[-5px] bg-primary text-white rounded-full flex items-center justify-center"
+=======
+              onClick={() => handleDelete(member.userId)}
+              className="w-[0.8rem] h-[0.8rem]  absolute top-[-5px] right-[-5px] bg-primary text-white rounded-full flex items-center justify-center"
+>>>>>>> main
             >
               <IoClose />
             </button>
