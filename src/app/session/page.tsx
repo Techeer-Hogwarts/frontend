@@ -10,6 +10,7 @@ import FilterBtn from '@/components/session/FilterBtn'
 import { useInView } from 'react-intersection-observer'
 import SessionPost from '@/components/session/SessionPost'
 import { useSessionsQuery } from './_lib/useSessionsQuery'
+import AuthModal from '@/components/common/AuthModal'
 
 interface User {
   name: string
@@ -39,11 +40,12 @@ export default function Page() {
   const { fetchLikes } = useLike()
   const [allSessions, setAllSessions] = useState<Session[]>([])
   const [ref, inView] = useInView({ triggerOnce: false, threshold: 0.5 })
-
+  const [authModalOpen, setAuthModalOpen] = useState(false)
   const {
     data: newSessions,
     isLoading,
     refetch,
+    error,
   } = useSessionsQuery({
     activeOption: activeOption || '',
     inputValue,
@@ -51,6 +53,7 @@ export default function Page() {
     selectedPeriodsP,
     selectedPeriodsB,
     selectedPeriodsPo,
+    setAuthModalOpen,
   })
 
   const handleSearch = (query: string) => {
@@ -126,6 +129,10 @@ export default function Page() {
   return (
     <div className="flex justify-center h-auto min-h-screen">
       <div className="flex flex-col">
+        <AuthModal
+          isOpen={authModalOpen}
+          onClose={() => setAuthModalOpen(false)}
+        />
         {message && (
           <div className="fixed z-50 px-4 py-2 text-center text-white transform -translate-x-1/2 rounded-md bg-red-500/80 bottom-5 left-1/2">
             {message}

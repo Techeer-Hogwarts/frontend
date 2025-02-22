@@ -18,7 +18,10 @@ export const getSessions = async (
   date.forEach((d) => searchParams.append('date', d))
   position.forEach((p) => searchParams.append('position', p))
   const url = `${baseUrl}?${searchParams.toString()}`
-  const response = await fetch(url)
+  const response = await fetch(url, {
+    method: 'GET',
+    credentials: 'include',
+  })
   if (!response.ok) {
     throw new Error('세션 데이터를 가져오는 데 실패했습니다.')
   }

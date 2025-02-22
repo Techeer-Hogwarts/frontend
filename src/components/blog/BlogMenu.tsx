@@ -48,10 +48,10 @@ export default function BlogMenu({ id, onDelete }: blogMenuProps) {
       const data = await fetchBookmarks('BLOG', 0, 50)
       if (data.find((bookmark: any) => bookmark.id === id)) {
         addCancelBookmark(id, 'BLOG', false)
-        alert('북마크 취소')
+        alert('북마크 취소하였습니다.')
       } else {
         addCancelBookmark(id, 'BLOG', true)
-        alert('북마크 추가')
+        alert('북마크 추가하였습니다.')
       }
       // console.log(data)
     } catch (err) {

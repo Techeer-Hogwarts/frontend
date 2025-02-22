@@ -9,6 +9,7 @@ interface UseSessionsQueryParams {
   selectedPeriodsP: string[]
   selectedPeriodsB: string[]
   selectedPeriodsPo: string[]
+  setAuthModalOpen: (open: boolean) => void
 }
 
 export const useSessionsQuery = ({
@@ -18,6 +19,7 @@ export const useSessionsQuery = ({
   selectedPeriodsP,
   selectedPeriodsB,
   selectedPeriodsPo,
+  setAuthModalOpen,
 }: UseSessionsQueryParams) => {
   const category =
     activeOption === '부트캠프'
@@ -41,13 +43,11 @@ export const useSessionsQuery = ({
     ],
     queryFn: async () => {
       if (activeOption === '금주의 세션') {
-        const data = await getBestSessions(limit)
-        console.log('getBestSessions result:', data)
+        const data = await getBestSessions(limit, setAuthModalOpen)
+        // console.log('getBestSessions result:', data)
         return data ?? []
       }
-      // selectedPeriodsP와 selectedPeriodsB를 합쳐서 date로 전달
       const date = [...selectedPeriodsP, ...selectedPeriodsB]
-
       const data = await getSessions(
         inputValue,
         category,
