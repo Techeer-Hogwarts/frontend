@@ -1,12 +1,12 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 export interface EventData {
-    category: string
-    title: string
-    startDate: string
-    endDate: string
-    url: string
-  }
+  category: string
+  title: string
+  startDate: string
+  endDate: string
+  url: string
+}
   
 const postEvent = async (eventData: EventData): Promise<void> => {
   const response = await fetch('/api/v1/events', {

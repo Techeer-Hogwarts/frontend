@@ -1,6 +1,6 @@
 'use client'
 import AddCalendarBtn from '@/components/calender/AddCalendarBtn'
-import AddCalenderModal from '@/components/calender/AddCalenderModal'
+import AddCalenderModal from '@/components/calender/AddCalendarModal'
 import Calendar from '@/components/calender/Calendar'
 import FilterBtn from '@/components/calender/FilterBtn'
 import { CATEGORIES } from '@/constants/category'
@@ -46,7 +46,7 @@ export default function Page() {
         {/* <SearchBar placeholder="일정을 검색해보세요." /> */}
       </div>
       <Calendar selectedCategories={selectedCategories} />
-      {showModal && <AddCalenderModal handleBack={handleCloseModal} />}
+      {showModal && <AddCalenderModal handleBack={handleCloseModal} mode='create' />}
     </div>
   )
 }
