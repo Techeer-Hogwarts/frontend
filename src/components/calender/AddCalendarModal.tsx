@@ -11,7 +11,11 @@ import usePostEvent from '@/app/calendar/api/postEvent'
 import usePatchEvent from '@/app/calendar/api/patchEvent'
 import useGetEvent from '@/app/calendar/api/getEvent'
 
-export default function AddCalenderModal({ handleBack, mode, eventId }: AddCalenderModalProps) {
+export default function AddCalenderModal({
+  handleBack,
+  mode,
+  eventId,
+}: AddCalenderModalProps) {
   const [formData, setFormData] = useState({
     category: '',
     title: '',
@@ -54,7 +58,13 @@ export default function AddCalenderModal({ handleBack, mode, eventId }: AddCalen
   }
 
   const handleSubmit = async () => {
-    if (!formData.category || !formData.title || !formData.startDate || !formData.endDate || !formData.url) {
+    if (
+      !formData.category ||
+      !formData.title ||
+      !formData.startDate ||
+      !formData.endDate ||
+      !formData.url
+    ) {
       return
     }
 
@@ -74,14 +84,17 @@ export default function AddCalenderModal({ handleBack, mode, eventId }: AddCalen
         },
       })
     } else if (mode === 'edit' && eventId) {
-      editEvent({ eventId, eventData: formattedData }, {
-        onSuccess: () => {
-          handleBack()
+      editEvent(
+        { eventId, eventData: formattedData },
+        {
+          onSuccess: () => {
+            handleBack()
+          },
+          onError: (error) => {
+            console.error('이벤트 수정 실패:', error)
+          },
         },
-        onError: (error) => {
-          console.error('이벤트 수정 실패:', error)
-        },
-      })
+      )
     }
   }
 
@@ -106,7 +119,11 @@ export default function AddCalenderModal({ handleBack, mode, eventId }: AddCalen
           <div className="flex mt-1 gap-[3px]">
             {['행사', '컨퍼런스', '취업공고'].map((category) => {
               const mappedCategory =
-                category === '행사' ? 'TECHEER' : category === '컨퍼런스' ? 'CONFERENCE' : 'JOBINFO'
+                category === '행사'
+                  ? 'TECHEER'
+                  : category === '컨퍼런스'
+                    ? 'CONFERENCE'
+                    : 'JOBINFO'
 
               return (
                 <CategoryBtn
@@ -137,7 +154,7 @@ export default function AddCalenderModal({ handleBack, mode, eventId }: AddCalen
           </p>
           <div className="flex relative gap-[2px]">
             <div className="relative mt-1">
-            <button
+              <button
                 type="button"
                 className="w-[207px] rounded-sm pl-2 text-sm outline-none h-[34px] border border-lightgray text-[#757575] flex items-center cursor-pointer"
                 onClick={() => {
@@ -145,19 +162,20 @@ export default function AddCalenderModal({ handleBack, mode, eventId }: AddCalen
                   setEndDateOpen(false)
                 }}
               >
-                {formData.startDate ? formData.startDate.toLocaleDateString() : '시작 날짜 선택'}
+                {formData.startDate
+                  ? formData.startDate.toLocaleDateString()
+                  : '시작 날짜 선택'}
                 <MdOutlineCalendarMonth className="ml-auto mr-1 w-6 h-6 text-lightgray" />
               </button>
               {startDateOpen && (
                 <div className="absolute z-10 mt-1">
                   <DatePicker
                     selected={formData.startDate}
-                    onChange={(date: Date) => {
+                    onChange={(date: any) => {
                       setFormData({ ...formData, startDate: date })
                       setStartDateOpen(false)
                     }}
                     inline
-                    selectsMultiple={false}
                   />
                 </div>
               )}
@@ -171,14 +189,16 @@ export default function AddCalenderModal({ handleBack, mode, eventId }: AddCalen
                   setStartDateOpen(false)
                 }}
               >
-                {formData.endDate ? formData.endDate.toLocaleDateString() : '종료 날짜 선택'}
+                {formData.endDate
+                  ? formData.endDate.toLocaleDateString()
+                  : '종료 날짜 선택'}
                 <MdOutlineCalendarMonth className="ml-auto mr-1 w-6 h-6 text-lightgray" />
               </button>
               {endDateOpen && (
                 <div className="absolute z-10 mt-1">
                   <DatePicker
                     selected={formData.endDate}
-                    onChange={(date) => {
+                    onChange={(date:any) => {
                       setFormData({ ...formData, endDate: date })
                       setEndDateOpen(false)
                     }}
@@ -218,7 +238,7 @@ export default function AddCalenderModal({ handleBack, mode, eventId }: AddCalen
             onClick={handleSubmit}
             className="w-[200px] rounded-md text-sm h-[34px] bg-primary text-white"
           >
-            {mode === 'create'? '등록' : '수정'}
+            {mode === 'create' ? '등록' : '수정'}
           </button>
         </div>
       </div>
