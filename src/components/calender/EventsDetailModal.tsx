@@ -4,23 +4,22 @@ import Image from 'next/image'
 import CalendarEventCard, { CalendarEventCardProps } from './CalendarEventCard'
 import { useState } from 'react'
 import AddCalendarModal from './AddCalendarModal'
+import EventDeleteModal from './EventDeleteModal'
 
 interface EventsDetailModalProps {
   date: string
   events: CalendarEventCardProps[]
   onClose: () => void
-  onEdit: (eventId: number) => void
-//   onDelete: (eventId: number) => void
 }
 
 export default function EventsDetailModal({
   date,
   events,
   onClose,
-  onEdit,
-//   onDelete,
 }: EventsDetailModalProps) {
   const [editEventId, setEditEventId] = useState<number | null>(null)
+  const [deleteEventId, setDeleteEventId] = useState<number | null>(null)
+
 
   const handleEdit = (eventId: number) => {
     setEditEventId(eventId)
@@ -28,6 +27,14 @@ export default function EventsDetailModal({
 
   const handleCloseEdit = () => {
     setEditEventId(null)
+  }
+
+  const handleDelete = (eventId: number) => {
+    setDeleteEventId(eventId)
+  }
+
+  const handleCloseDelete = () => {
+    setDeleteEventId(null)
   }
 
   return (
@@ -47,6 +54,7 @@ export default function EventsDetailModal({
                 {...event}
                 mode="modal"
                 onEdit={() => handleEdit(event.id!)}
+                onDelete={() => handleDelete(event.id!)}
               />
             ))
           ) : (
@@ -60,6 +68,13 @@ export default function EventsDetailModal({
             handleBack={handleCloseEdit}
             mode="edit"
             eventId={editEventId}
+          />
+        )}
+        {deleteEventId && (
+          <EventDeleteModal
+            eventId={deleteEventId}
+            title={events.find((event) => event.id === deleteEventId)?.title ?? ''}
+            onClose={handleCloseDelete}
           />
         )}
       </div>

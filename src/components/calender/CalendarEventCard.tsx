@@ -19,6 +19,7 @@ export interface CalendarEventCardProps {
   }
   mode?: 'calendar' | 'modal'
   onEdit?: () => void
+  onDelete?: () => void
 }
 
 export default function CalendarEventCard({
@@ -29,6 +30,7 @@ export default function CalendarEventCard({
   className = "",
   mode = 'calendar',
   onEdit,
+  onDelete
 }: CalendarEventCardProps) {
   
   const getCategoryColor = () => {
@@ -73,7 +75,7 @@ export default function CalendarEventCard({
           <button onClick={onEdit}>
             <Image src="/pencil.svg" alt="edit" width={15} height={15} />
           </button>
-          <button onClick={onEdit}>
+          <button onClick={onDelete}>
             <Image src="/trashbin.svg" alt="delete" width={13} height={15} />
           </button>
         </div>

@@ -84,7 +84,7 @@ export default function Calendar({ selectedCategories }: CalendarProps) {
       daysArray.push(
         <div
           key={i}
-          className={`w-[138px] text-2xl font-bold h-[183px] border-t-2 p-2 cursor-pointer hover:bg-lightgray/50 ${
+          className={`w-[138px] text-2xl font-bold min-h-[183px] border-t-2 p-2 cursor-pointer hover:bg-lightgray/50 ${
             isToday ? 'border-primary bg-lightgray/30' : ''
           }`}
           onClick={() => handleDayClick(currentDay)}
@@ -167,7 +167,6 @@ export default function Calendar({ selectedCategories }: CalendarProps) {
           date={dayjs(selectedDate).format('MM.DD')}
           events={eventsForSelectedDate}
           onClose={handleCloseModal}
-          onEdit={(eventId) => alert(`수정: 이벤트 ID ${eventId}`)}
         />
       )}
     </div>
