@@ -8,7 +8,7 @@ import { BiSolidPencil } from 'react-icons/bi'
 interface AddProfileProps {
   projectData: {
     name: string
-    mainImageFile: File | null
+    mainImageFile?: File | null
     [key: string]: any
   }
   onUpdate: (key: string, value: any) => void
