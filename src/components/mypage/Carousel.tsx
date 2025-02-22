@@ -100,6 +100,7 @@ const Carousel: React.FC<CarouselProps> = ({ teams, routePrefix }) => {
 
   // 10개 초과 시 캐러셀(slick)로 표시
   return (
+    // @ts-ignore
     <Slider
       {...settings}
       className="flex relative h-[140px] px-10 w-[890px] gap-3 overflow-x-auto items-center justify-start border border-lightgray rounded-lg"
