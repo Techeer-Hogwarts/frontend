@@ -8,7 +8,7 @@ import { useTapBarStore } from '@/store/tapBarStore'
 import { useInView } from 'react-intersection-observer'
 import BlogPost from '../blog/BlogPost'
 import Skeleton from './Skeleton'
-const tapBatOptions = ['세션영상', '블로그', '이력서']
+const tapBarOptions = ['세션영상', '블로그', '이력서']
 
 export default function Likes() {
   const { fetchLikes } = useLike()
@@ -59,23 +59,21 @@ export default function Likes() {
   }, [limit])
 
   useEffect(() => {
-    setActiveOption(tapBatOptions[0])
-  }, [setActiveOption])
-
-  useEffect(() => {
     if (!inView) return
     if (inView) {
       setLimit(limit + 6)
     }
   }, [inView])
+  const handleCategoryChange = () => {
+    // 카테고리가 변경되면 해당 카테고리에 맞는 블로그 데이터를 가져옵니다.
+    setLimit(3) // 페이지네이션 초기화
+    checkLike()
+  }
   return (
     <div className="ml-10">
       <div className="w-[800px]">
-        <TapBar
-          options={[tapBatOptions[0], tapBatOptions[1], tapBatOptions[2]]}
-          // placeholder="제목 혹은 이름을 검색해보세요"
-          onSelect={handleSearch}
-        />
+        <TapBar options={tapBarOptions} onSelect={handleCategoryChange} />
+        <div className="flex w-full h-[1px] mt-5 bg-gray" />
       </div>
 
       <div className="grid grid-cols-2 gap-8 mt-5">
