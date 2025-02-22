@@ -9,7 +9,6 @@ import {
   acceptStudyApplicant,
   denyStudyApplicant,
 } from '@/api/project/study/study'
-<<<<<<< HEAD
 import {
   acceptProjectApplicant,
   denyProjectApplicant,
@@ -25,30 +24,6 @@ interface Applicant {
   status: string
   profileImage: string
   year: number
-=======
-import { useQueryClient } from '@tanstack/react-query'
-
-interface User {
-  name: string
-  email: string
-  profileImage: string
-}
-
-interface Applicant {
-  id: number
-  createdAt: string
-  updatedAt: string
-  isDeleted: boolean
-  isLeader: boolean
-  studyTeamId: number
-  userId: number
-  summary: string
-  status: string
-  user: User
-  profileImage: string
-  name: string
-  teamRole: string
->>>>>>> main
 }
 
 interface ApplicantModalProps {
@@ -60,8 +35,6 @@ export default function ApplicantModal({
   onClose,
   applicant,
 }: ApplicantModalProps) {
-  const queryClient = useQueryClient()
-
   const [projectType, setProjectType] = useState<null | string>(null)
   const [approve, setApprove] = useState(true)
   const projectId = Number(localStorage.getItem('projectId'))
@@ -78,7 +51,6 @@ export default function ApplicantModal({
   // 승인 버튼 핸들러
   const handleApprove = async () => {
     try {
-<<<<<<< HEAD
       if (projectType === 'project') {
         // 프로젝트 지원자 승인
         await acceptProjectApplicant({
@@ -91,18 +63,6 @@ export default function ApplicantModal({
           studyTeamId: projectId,
           applicantId: applicant.userId,
         })
-=======
-      if (projectType === 'study') {
-        data = {
-          studyTeamId: projectId,
-          applicantId: applicant.userId,
-        }
-      } else {
-        data = {
-          projectTeamId: projectId,
-          applicantId: applicant.userId,
-        }
->>>>>>> main
       }
 
       queryClient.invalidateQueries({
@@ -125,7 +85,6 @@ export default function ApplicantModal({
   // 거절 버튼 핸들러
   const handleReject = async () => {
     try {
-<<<<<<< HEAD
       if (projectType === 'project') {
         // 프로젝트 지원자 거절
         await denyProjectApplicant({
@@ -138,11 +97,6 @@ export default function ApplicantModal({
           studyTeamId: projectId,
           applicantId: applicant.userId,
         })
-=======
-      const data = {
-        studyTeamId: projectId,
-        applicantId: applicant.userId,
->>>>>>> main
       }
 
       queryClient.invalidateQueries({
@@ -177,11 +131,7 @@ export default function ApplicantModal({
         </p>
         <div className="flex justify-center mb-1">
           <Image
-<<<<<<< HEAD
             src={applicant.profileImage || '/default-profile.png'}
-=======
-            src={applicant.profileImage}
->>>>>>> main
             width={100}
             height={100}
             alt="img"

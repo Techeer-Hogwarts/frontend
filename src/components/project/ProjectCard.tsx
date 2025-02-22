@@ -22,18 +22,12 @@ interface ProjectTeam extends TeamBase {
   mainImages?: string[]
   teamStacks: { stackName: string; isMain: boolean }[]
 }
-<<<<<<< HEAD
 export default function ProjectCard({ team }: { team: ProjectTeam }) {
   const mainImageUrl =
     team.mainImages && team.mainImages.length > 0
       ? team.mainImages[0] // 첫 번째 요소가 곧 URL
       : '/images/project/example.png'
 
-=======
-
-export default function ProjectCard({ team }: any) {
-  // console.log(team)
->>>>>>> main
   const handleClick = () => {
     localStorage.setItem('projectType', 'project')
     localStorage.setItem('projectId', team.id.toString())

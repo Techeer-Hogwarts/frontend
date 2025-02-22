@@ -30,13 +30,7 @@ export default function ProjectMemberModal({
   const dropDownRef = useRef<HTMLInputElement>(null)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const [name, setName] = useState('')
-<<<<<<< HEAD
   const [members, setMembers] = useState<Member[]>([])
-=======
-  const router = useRouter()
-  const [members, setMembers] = useState<any[]>([])
-  const [dropdownOptions, setDropdownOptions] = useState<any[]>()
->>>>>>> main
 
   // (A) 현재 사용자
   const { user } = useAuthStore()
@@ -108,15 +102,9 @@ export default function ProjectMemberModal({
   }, [isDropdownOpen])
 
   // 멤버 추가
-<<<<<<< HEAD
   const handleAddMember = (user: Member) => {
     if (!members.some((m) => m.id === user.id)) {
       setMembers((prev) => [...prev, { ...user, isLeader: false }])
-=======
-  const handleAddMember = (member: any) => {
-    if (!members.find((m) => m.name === member.name)) {
-      setMembers((prevMembers) => [...prevMembers, member])
->>>>>>> main
     }
     setIsDropdownOpen(false)
   }

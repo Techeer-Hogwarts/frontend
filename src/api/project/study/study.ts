@@ -59,23 +59,11 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL
 // 스터디 추가하기
 export const handleAddStudy = async (data) => {
   try {
-<<<<<<< HEAD
-    const response = await fetch(
-      `/api/v1/studyTeams`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify(data),
-      },
-    )
-=======
     const response = await fetch(`/api/v1/studyTeams`, {
       method: 'POST',
       credentials: 'include',
       body: data,
     })
->>>>>>> main
 
     if (response.ok) {
       const result = await response.json()
@@ -164,12 +152,9 @@ export const handleApplyStudy = async (data) => {
     const response = await fetch(`/api/v1/studyTeams/apply`, {
       method: 'POST',
       credentials: 'include',
-<<<<<<< HEAD
-=======
       headers: {
         'Content-Type': 'application/json',
       },
->>>>>>> main
       body: JSON.stringify(data),
     })
 

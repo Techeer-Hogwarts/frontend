@@ -110,10 +110,6 @@ export const getAllUsers = async () => {
 
     const result = await response.json()
     return result
-<<<<<<< HEAD
-    console.log(result)
-=======
->>>>>>> main
   } catch (error: any) {
     console.error('사용자 목록 가져오기 중 오류 발생:', error.message)
     throw error

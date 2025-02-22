@@ -3,16 +3,11 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import { IoChevronDownSharp, IoChevronUpSharp } from 'react-icons/io5'
-<<<<<<< HEAD
 import { getPositionStyle } from '@/styles/positionStyles'
 
 interface Applicant {
   id: number
   userId: number
-=======
-interface Applicant {
-  id: number
->>>>>>> main
   name: string
   isLeader: boolean
   teamRole: string
@@ -46,11 +41,7 @@ function Box({
   return (
     <div
       onClick={onClick}
-<<<<<<< HEAD
       className="flex items-center justify-between w-[19rem] h-[2.75rem] p-2 bg-gray-100 hover:bg-[#F5F5F5] cursor-pointer"
-=======
-      className="flex items-center justify-between w-[19rem] h-[2.75rem] p-2 bg-gray-100 hover:bg-[#F5F5F5]"
->>>>>>> main
     >
       <div className="flex items-center">
         <Image
@@ -58,11 +49,7 @@ function Box({
           width={36}
           height={36}
           alt="Picture"
-<<<<<<< HEAD
           className="border rounded-lg mr-[0.75rem] w-[36px] h-[36px] object-cover"
-=======
-          className="border rounded-lg mr-[0.75rem]"
->>>>>>> main
         />
         <div className="flex items-center gap-1">
           <p className="font-semibold">{name}</p>
@@ -76,11 +63,7 @@ function Box({
   )
 }
 
-export default function Applicants({
-  projectType,
-  applicants,
-  onOpen,
-}: any) {
+export default function Applicants({ projectType, applicants, onOpen }: any) {
   const [isOpen, setIsOpen] = useState(false)
 
   const toggleDropdown = () => {
