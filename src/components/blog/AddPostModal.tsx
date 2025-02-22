@@ -41,13 +41,19 @@ export default function AddPostModal() {
           <p className="text-2xl text-center mt-7 mb-1 font-semibold">
             글 추가
           </p>
-          <Image src="/folder.png" alt="folder" width={100} height={100} />
+          <Image
+            src="/images/blog/folder.png"
+            alt="folder"
+            width={100}
+            height={100}
+          />
         </div>
         <div className="relative mx-9 mt-4">
           <ModalInputField
             title="블로그 링크를 입력해주세요"
             placeholder="www.TecheerBlog.com"
             name="title"
+            essential="*"
             value={blogLink}
             handleInputChange={handleInputChange}
           />

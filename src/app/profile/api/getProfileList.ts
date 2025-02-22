@@ -29,6 +29,7 @@ export async function getProfileList({
         headers: {
           'Content-Type': 'application/json',
         },
+        // credentials: 'include',
       },
     )
     const result = await response.json()

@@ -6,6 +6,7 @@ export async function fetchUserProfile(userId: number) {
       headers: {
         'Content-Type': 'application/json',
       },
+      credentials: 'include',
     })
 
     if (!response.ok) {

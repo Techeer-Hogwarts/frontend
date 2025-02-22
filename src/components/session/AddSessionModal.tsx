@@ -5,7 +5,6 @@ import CategoryBtn from './CategoryBtn'
 import { useEffect, useState } from 'react'
 import SessionDropdown from './SessionDropdown'
 import ModalInputField from '../common/ModalInputField'
-import { useRouter } from 'next/navigation'
 
 interface ModalProps {
   position: string
@@ -29,7 +28,6 @@ export default function AddSessionModal({
     fileUrl: '',
   })
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
-  const router = useRouter()
   const [debouncedThumbnail, setDebouncedThumbnail] = useState(
     formData.thumbnail,
   )
@@ -119,6 +117,7 @@ export default function AddSessionModal({
             title="세션 제목을 입력해주세요"
             placeholder="세션 제목"
             name="title"
+            essential="*"
             value={formData.title}
             handleInputChange={handleInputChange}
           />
@@ -126,6 +125,7 @@ export default function AddSessionModal({
             title="발표자를 입력해주세요"
             placeholder="발표자"
             name="presenter"
+            essential="*"
             value={formData.presenter}
             handleInputChange={handleInputChange}
           />
@@ -134,6 +134,7 @@ export default function AddSessionModal({
               title="썸네일을 입력해주세요"
               placeholder="썸네일"
               name="thumbnail"
+              essential="*"
               value={formData.thumbnail}
               handleInputChange={handleInputChange}
             />
@@ -175,6 +176,7 @@ export default function AddSessionModal({
                   '2023년 여름',
                   '2023년 겨울',
                   '2024년 여름',
+                  '2024년 겨울',
                 ]}
                 options={[
                   'SUMMER_2022',
@@ -182,6 +184,7 @@ export default function AddSessionModal({
                   'SUMMER_2023',
                   'WINTER_2023',
                   'SUMMER_2024',
+                  'WINTER_2024',
                 ]}
                 onSelect={handleDropdownChange}
               />
@@ -216,6 +219,7 @@ export default function AddSessionModal({
             title="영상 링크를 첨부해 주세요"
             placeholder="www.세션 제목.com"
             name="videoUrl"
+            essential=""
             value={formData.videoUrl}
             handleInputChange={handleInputChange}
           />
@@ -223,6 +227,7 @@ export default function AddSessionModal({
             title="발표 자료 링크를 첨부해주세요"
             placeholder="www.발표 자료 링크.com"
             name="fileUrl"
+            essential=""
             value={formData.fileUrl}
             handleInputChange={handleInputChange}
           />
