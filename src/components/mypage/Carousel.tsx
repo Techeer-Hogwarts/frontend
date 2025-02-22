@@ -19,6 +19,7 @@ interface CarouselProps {
   routePrefix: string
 }
 
+
 // 캐러셀에 사용하는 화살표
 function NextArrow(props: any) {
   const { onClick } = props
