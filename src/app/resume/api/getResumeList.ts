@@ -1,27 +1,43 @@
-export async function fetchResumes(
-  position?: string,
-  year?: number,
-  offset: number = 0,
-  limit: number = 10,
-) {
+import { ResumeQueryParams } from '@/types/queryParams'
+
+export async function getResumeList({
+  position = [],
+  year = [],
+  category = '',
+  offset = 0,
+  limit = 10,
+}: ResumeQueryParams) {
   try {
     // URLSearchParams를 사용하여 동적으로 쿼리 문자열 생성
-    const queryParams = new URLSearchParams()
+    const params = new URLSearchParams()
 
-    if (position) queryParams.set('position', position)
-    if (year) queryParams.set('year', year.toString())
-    queryParams.set('offset', offset.toString())
-    queryParams.set('limit', limit.toString())
+    if (position.length > 0)
+      position.forEach((p) => params.append('position', p))
+    if (year.length > 0) year.forEach((y) => params.append('year', y))
+    // 카테고리 변환 (한글 -> 영어)
+    const categoryMap: { [key: string]: string } = {
+      전체: '',
+      이력서: 'RESUME',
+      포트폴리오: 'PORTFOLIO',
+      ICT: 'ICT',
+      OTHER: 'OTHER',
+    }
 
-    // URL 문자열 생성
-    const url = `/api/v1/resumes?${queryParams.toString()}`
+    const mappedCategory = categoryMap[category]
+    params.append('category', mappedCategory)
 
-    const response = await fetch(url, {
+    params.append('offset', offset.toString())
+    params.append('limit', limit.toString())
+
+    const response = await fetch(`/api/v1/resumes?${params.toString()}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
       },
     })
+
+    const result = await response.json()
+    const dataWithWrapper = { data: result } // Back에서 data 필드 없이 바로 반환하기 때문에
 
     if (!response.ok) {
       throw new Error(
@@ -29,10 +45,7 @@ export async function fetchResumes(
       )
     }
 
-    const data = await response.json()
-
-    console.log('이력서 목록 조회 성공:', data)
-    return data?.data || []
+    return dataWithWrapper?.data || []
   } catch (error) {
     console.error('이력서 목록 조회 실패:', error)
     throw error // 에러를 호출한 함수에 다시 전달

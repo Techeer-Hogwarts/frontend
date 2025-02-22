@@ -3,10 +3,10 @@ import { getProfileList } from '../api/getProfileList'
 import { ProfileQueryParams } from '@/types/queryParams'
 
 export function useGetProfileQuery({
-  position = '',
-  year,
-  university = '',
-  grade = '',
+  position = [],
+  year = [],
+  university = [],
+  grade = [],
   offset,
   limit,
 }: ProfileQueryParams) {

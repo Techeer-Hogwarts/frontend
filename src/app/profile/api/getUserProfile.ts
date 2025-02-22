@@ -6,6 +6,7 @@ export async function fetchUserProfile(userId: number) {
       headers: {
         'Content-Type': 'application/json',
       },
+      credentials: 'include',
     })
 
     if (!response.ok) {
@@ -15,8 +16,10 @@ export async function fetchUserProfile(userId: number) {
     }
 
     const data = await response.json()
-    console.log('유저 프로필 조회 성공:', data)
-    return data?.data || []
+    const dataWithWrapper = { data: data } // Back에서 data 필드 없시 바로 반환하기 때문에
+
+    console.log('유저 프로필 조회 성공:', dataWithWrapper)
+    return dataWithWrapper?.data || []
   } catch (error) {
     console.error('유저 프로필 조회 실패:', error)
     throw error

@@ -29,12 +29,12 @@ export default function Resume() {
         {modal && <AddResume setModal={setModal} />}
       </div>
       <Link href="/detail">
-        <ResumeFolder
+        {/* <ResumeFolder
           position={selectedPosition}
           year={selectedYear}
           offset={0}
           limit={10}
-        />
+        /> */}
       </Link>
     </div>
   )

@@ -5,7 +5,7 @@ import Image from 'next/image'
 import { IoClose } from 'react-icons/io5'
 import { RxQuestionMarkCircled } from 'react-icons/rx'
 import { getPositionStyle } from '@/styles/positionStyles'
-import MemberModal from '../modal/StudyModal'
+import MemberModal from '../modal/study/StudyModal'
 import ProjectMemberModal from '../modal/ProjectModal'
 import { getStudyMember } from '@/api/project/study/study'
 

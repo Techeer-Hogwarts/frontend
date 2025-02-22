@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 
-import RecruitInput from '../RecruitInput'
+import RecruitInput from '../modal/RecruitInput'
 
 interface AddRecruitProps {
   isRecruited: boolean

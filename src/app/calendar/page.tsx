@@ -9,7 +9,7 @@ import { useState } from 'react'
 export default function Page() {
   const [showModal, setShowModal] = useState<boolean>(false)
   const [selectedCategories, setSelectedCategories] = useState<string[]>(
-    CATEGORIES.map((category) => category.value)
+    CATEGORIES.map((category) => category.value),
   )
   const handleOpenModal = () => setShowModal(true)
   const handleCloseModal = () => setShowModal(false)
@@ -18,7 +18,9 @@ export default function Page() {
     setSelectedCategories((prev) => {
       if (prev.includes(category)) {
         const newCategories = prev.filter((cat) => cat !== category)
-        return newCategories.length === 0 ? CATEGORIES.map((cat) => cat.value) : newCategories
+        return newCategories.length === 0
+          ? CATEGORIES.map((cat) => cat.value)
+          : newCategories
       } else {
         return [...prev, category]
       }
@@ -46,7 +48,9 @@ export default function Page() {
         {/* <SearchBar placeholder="일정을 검색해보세요." /> */}
       </div>
       <Calendar selectedCategories={selectedCategories} />
-      {showModal && <AddCalenderModal handleBack={handleCloseModal} mode='create' />}
+      {showModal && (
+        <AddCalenderModal handleBack={handleCloseModal} mode="create" />
+      )}
     </div>
   )
 }

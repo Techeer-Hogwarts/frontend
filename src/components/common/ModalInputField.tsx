@@ -3,6 +3,7 @@ interface ModalInputFieldProps {
   readonly placeholder: string
   readonly name: string
   readonly value: string
+  essential: string
   readonly handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void
 }
 
@@ -12,11 +13,13 @@ export default function ModalInputField({
   name,
   value,
   handleInputChange,
+  essential,
 }: ModalInputFieldProps) {
   return (
     <div>
       <p>
-        {title} <span className="text-primary">*</span>
+        {title}
+        <span className="text-primary">{essential}</span>
       </p>
       <input
         type="text"

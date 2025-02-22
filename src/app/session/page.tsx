@@ -56,10 +56,10 @@ export default function Page() {
     setAuthModalOpen,
   })
 
-  const handleSearch = (query: string) => {
-    sessionStorage.setItem('searchQuery', query)
-    setInputValue(query)
-  }
+  // const handleSearch = (query: string) => {
+  //   sessionStorage.setItem('searchQuery', query)
+  //   setInputValue(query)
+  // }
 
   const showMessage = () => {
     setMessage('세션영상이 삭제되었습니다.')
@@ -150,18 +150,13 @@ export default function Page() {
             setSelectedPeriodsB([])
           }}
         >
-          <TapBar
-            options={[
-              tapBatOptions[0],
-              tapBatOptions[1],
-              tapBatOptions[2],
-              tapBatOptions[3],
-            ]}
-            placeholder="세션 제목을 검색해보세요"
+          {/* <TapBar
+            options={['금주의 세션', '전체보기', '부트캠프', '파트너스']}
             onSearch={handleSearch}
-          />
+          /> */}
         </div>
-        <div className="flex justify-start gap-3 my-6">
+        <div className="flex w-full h-[1px] mt-5 bg-gray"></div>
+        <div className="flex justify-start my-6 gap-3">
           {activeOption === '부트캠프' && (
             <>
               <Dropdown

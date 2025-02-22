@@ -3,13 +3,13 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 
-import AddMember from '@/components/project/add/AddMember'
-import AddProfile from '@/components/project/add/AddProfile'
-import AddResults from '@/components/project/add/project/AddResults'
+import AddMember from "@/components/project/add/study/AddMember"
+import AddProfile from "@/components/project/add/study/AddProfile"
+import AddResults from "@/components/project/add/study/AddResults"
 import NecessaryQuestions from '@/components/project/add/NecessaryQuestions'
 import AddGoal from '@/components/project/add/study/AddGoal'
 import AddPlan from '@/components/project/add/study/AddPlan'
-import AddRecruit from '@/components/project/add/AddRecruit'
+import AddRecruit from "@/components/project/add/study/AddRecruit"
 
 import { handleAddStudy } from '@/api/project/study/study'
 

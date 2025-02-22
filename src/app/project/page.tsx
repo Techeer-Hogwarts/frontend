@@ -113,8 +113,8 @@ export default function Project() {
       {/* 탭바 */}
       <TapBar
         options={['전체보기', '모집 중']}
-        placeholder="프로젝트 명 혹은 이름으로 검색해보세요"
-        onSearch={handleSearch}
+        // placeholder="프로젝트 명 혹은 이름으로 검색해보세요"
+        onSelect={handleSearch}
       />
       <div className="flex justify-start mt-5 gap-3 mb-[2.31rem]">
         <Dropdown

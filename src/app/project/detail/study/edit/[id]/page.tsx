@@ -1,8 +1,24 @@
+'use client'
+
+import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { useQuery } from '@tanstack/react-query'
+
+import AddMember from '@/components/project/add/study/AddMember'
+import AddProfile from '@/components/project/add/study/AddProfile'
+import AddResults from '@/components/project/add/study/AddResults'
+import NecessaryQuestions from '@/components/project/add/NecessaryQuestions'
+import AddGoal from '@/components/project/add/study/AddGoal'
+import AddPlan from '@/components/project/add/study/AddPlan'
+import AddRecruit from '@/components/project/add/study/AddRecruit'
+
+import {
+  getStudyDetail,
+  getStudyMember,
+  handleEditStudy,
+} from '@/api/project/study/study'
+
 export default function AddStudyPage() {
-<<<<<<< HEAD
-  return <div>Study Detail Page</div>;
-}
-=======
   const router = useRouter()
 
   const projectId = Number(localStorage.getItem('projectId'))
@@ -100,12 +116,12 @@ export default function AddStudyPage() {
               recruitExplain={studyData.recruitExplain}
               onUpdate={handleUpdate}
             />
-            <AddResults
+            {/* <AddResults
               existingUrls={studyData.resultImages || []}
               resultImages={studyData.resultImages || []}
               deleteImages={studyData.deleteImages || []}
               onUpdate={handleUpdate}
-            />
+            /> */}
 
             <button
               type="button"
@@ -120,4 +136,3 @@ export default function AddStudyPage() {
     </div>
   )
 }
->>>>>>> main

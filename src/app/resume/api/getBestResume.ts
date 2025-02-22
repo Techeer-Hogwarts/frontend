@@ -18,8 +18,10 @@ export const fetchBestResumes = async (
     }
 
     const result = await response.json()
-    console.log('인기 이력서 조회 성공', result.data)
-    return result.data
+    const dataWithWrapper = { data: result } // Back에서 data 필드 없시 바로 반환하기 때문에
+
+    // console.log('인기 이력서 조회 성공', dataWithWrapper)
+    return dataWithWrapper
   } catch (error: any) {
     console.error('Error fetching best resumes:', error.message)
     throw error

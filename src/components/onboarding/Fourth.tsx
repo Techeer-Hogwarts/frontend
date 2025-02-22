@@ -2,7 +2,7 @@ import Image from 'next/image'
 
 export default function Fourth() {
   return (
-    <div className="flex justify-between h-[540px] p-10 bg-lightgray">
+    <div className="flex justify-between h-[540px] p-10 ">
       {/* 왼쪽 슬라이더 */}
       <div className="flex">
         <Image
@@ -22,7 +22,7 @@ export default function Fourth() {
           테커의 지식 공유 공간
         </span>
         <span className="text-[20px] text-end">
-          공부하며 알게된 내용을 글로 정리해서 더 많은 사람들과 공유할 수
+          공부하며 알게 된 내용을 글로 정리해서 더 많은 사람들과 공유할 수
           있어요.
         </span>
       </div>

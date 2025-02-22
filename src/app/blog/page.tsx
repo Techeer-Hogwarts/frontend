@@ -18,9 +18,17 @@ export default function Page() {
   const { fetchLikes } = useLike()
   const [ref, inView] = useInView()
 
-  const handleSearch = (query: string) => {
-    sessionStorage.setItem('searchQuery', query)
-    setInputValue(query)
+  const category = ['금주의 블로그', 'TECHEER', 'SHARED']
+
+  // 카테고리 변경 처리 함수
+  const handleCategoryChange = (selectedCategory: string) => {
+    // 카테고리가 변경되면 해당 카테고리에 맞는 블로그 데이터를 가져옵니다.
+    setLimit(3) // 페이지네이션 초기화
+    if (selectedCategory === '금주의 블로그') {
+      getBestBlog(3)
+    } else {
+      getBlog(3, inputValue, selectedCategory)
+    }
   }
 
   const handleDeleteSession = (id: string) => {
@@ -146,11 +154,11 @@ export default function Page() {
           <p className="text-[1.25rem]">테커인들의 블로그를 확인해보세요.</p>
         </div>
         <TapBar
-          options={[tapBatOptions[0], tapBatOptions[1], tapBatOptions[2]]}
-          placeholder="블로그 제목을 검색해보세요"
-          onSearch={handleSearch}
+          options={['금주의 블로그', 'TECHEER', 'SHARED']}
+          // placeholder="블로그 제목을 검색해보세요"
+          onSelect={handleCategoryChange}
         />
-        <div className="grid flex-col grid-cols-3 gap-8 mt-8">
+        <div className="flex-col grid grid-cols-3 gap-8 mt-8">
           {blog.map((blog, index) => (
             <BlogPost
               key={index}

@@ -5,15 +5,15 @@ export default function StudyDetailPage() {
 =======
 'use client'
 
-import Profile from '@/components/project/detail/Profile'
-import Member from '@/components/project/detail/Member'
-import FindMember from '@/components/project/detail/FindMember'
-import StudyGoal from '@/components/project/detail/StudyGoal'
-import StudyPlan from '@/components/project/detail/StudyPlan'
-import Results from '@/components/project/detail/Results'
-import BaseModal from '@/components/project/modal/BaseModal'
-import Applicants from '@/components/project/detail/Applicants'
-import ApplicantModal from '@/components/project/modal/ApplicantModal'
+import Profile from "@/components/project/detail/study/Profile"
+import Member from "@/components/project/detail/study/Member"
+import FindMember from "@/components/project/detail/study/FindMember"
+import StudyGoal from '@/components/project/detail/study/StudyGoal'
+import StudyPlan from '@/components/project/detail/study/StudyPlan'
+import Results from "@/components/project/detail/study/Results"
+import BaseModal from "@/components/project/modal/BaseModal"
+import Applicants from "@/components/project/detail/study/Applicants"
+import ApplicantModal from "@/components/project/modal/study/ApplicantModal"
 
 import { BiSolidPencil } from 'react-icons/bi'
 import Link from 'next/link'

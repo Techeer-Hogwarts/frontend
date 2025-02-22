@@ -7,6 +7,7 @@ import CareerTag from '@/components/common/CareerTag'
 import SkeletonProfileBox from './SkeletonProfileBox'
 
 interface ProfileData {
+  id: number
   profileImage: string
   name: string
   email: string
@@ -36,7 +37,6 @@ interface ProfileBoxProps {
   loading: boolean
   error: string
 }
-
 export default function ProfileBox({
   profile,
   loading,
@@ -51,6 +51,11 @@ export default function ProfileBox({
   if (!profile) {
     return <SkeletonProfileBox />
   }
+
+  const truncatedSchool =
+    profile.school.length > 12
+      ? profile.school.slice(0, 12) + '...'
+      : profile.school
 
   return (
     <div className="flex w-[19rem] h-[23rem]">
@@ -72,7 +77,8 @@ export default function ProfileBox({
 
           {/* 이름/아이콘*/}
           <div className="flex flex-row justify-between mt-1">
-            <div className="text-xl">{profile.name}</div>
+            <div className="text-xl font-medium">{profile.name}</div>
+
             <div className="flex flex-row gap-2 items-center">
               {profile.githubUrl && (
                 <a
@@ -114,13 +120,11 @@ export default function ProfileBox({
           </div>
 
           {/* 이메일 */}
-          <div className="flex text-[0.7rem] text-gray-600">
-            {profile.email}
-          </div>
+          <div className="flex text-[0.75rem] text-gray">{profile.email}</div>
 
           {/* 소속 정보 */}
-          <div className="flex flex-row justify-between gap-2 mt-1 text-[0.8rem] text-gray">
-            <div className="max-w-16 truncate">{profile.school}</div>
+          <div className="flex flex-row justify-between gap-1 mt-1 font-medium text-[0.8rem]">
+            <div className="">{truncatedSchool}</div>
             <span className="h-[1.25rem] border-r border-gray" />
             <div>{profile.grade}</div>
             <span className="h-[1.25rem] border-r border-gray" />

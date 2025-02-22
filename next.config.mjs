@@ -20,15 +20,13 @@ const nextConfig = {
 
   reactStrictMode: true,
 
-  // experimental: {
-  //   appDir: true,
-  // },
   images: {
     domains: [
       'example.com',
       'avatars.slack-edge.com',
       'techeerzip-bucket.s3.ap-southeast-2.amazonaws.com',
-    ],
+      'images.velog.io',
+    ], // 허용할 외부 도메인 추가
   },
 
   async rewrites() {
@@ -36,6 +34,10 @@ const nextConfig = {
       {
         source: '/api/v1/:path*',
         destination: 'https://api.techeerzip.cloud/api/v1/:path*',
+      },
+      {
+        source: '/api/v2/:path*',
+        destination: 'https://api.techeerzip.cloud/api/v2/:path*',
       },
     ]
   },
