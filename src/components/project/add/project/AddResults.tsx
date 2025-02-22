@@ -1,83 +1,122 @@
-'use client'
-
 import React, { useState, useEffect } from 'react'
-import { IoAddCircleOutline } from 'react-icons/io5'
+import ExistingResultImgBox from '../ExistingResultImgBox'
 import ResultImgBox from '../ResultImgBox'
+import { IoAddCircleOutline } from 'react-icons/io5'
+
+interface ExistingImage {
+  id: number
+  imageUrl: string
+}
+type ImageItem =
+  | { type: 'existing'; id: number; url: string }
+  | { type: 'new'; file: File; previewUrl: string }
 
 interface AddResultsProps {
-  // 부모(상위)에서 넘어오는 상태
-  // 예: projectData.resultImages를 "File[]" 형태로 관리한다고 가정
-  resultImages: File[]
-  onUpdate: (key: string, value: any) => void
+  existingResultImages?: ExistingImage[] // 기존 이미지 목록
+  newResultImages: File[] // 새로 업로드할 이미지 목록
+  onUpdateResultImages: (files: File[]) => void
+  onDeleteOldResultImage?: (id: number) => void
 }
 
 export default function AddResults({
-  resultImages,
-  onUpdate,
+  existingResultImages = [],
+  newResultImages,
+  onUpdateResultImages,
+  onDeleteOldResultImage,
 }: AddResultsProps) {
-  // (1) 박스 식별자 관리
-  const [boxes, setBoxes] = useState<number[]>([0, 1]) // 초기 2개 박스
-  // (2) 각 박스별 이미지 미리보기 URL
-  const [imagePreviews, setImagePreviews] = useState<string[]>([])
+  const [imageItems, setImageItems] = useState<ImageItem[]>([])
+  const [didInit, setDidInit] = useState(false)
 
-  const [projectType, setProjectType] = useState<string | null>(null)
-
+  // (A) 처음 마운트 시점에만 existing + new 합쳐서 imageItems 초기화
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const storedProjectType = localStorage.getItem('projectType')
-      setProjectType(storedProjectType)
+    if (didInit) return
+    setDidInit(true)
+
+    const oldItems: ImageItem[] = existingResultImages.map((img) => ({
+      type: 'existing',
+      id: img.id,
+      url: img.imageUrl,
+    }))
+
+    const newItems: ImageItem[] = newResultImages.map((file) => ({
+      type: 'new',
+      file,
+      previewUrl: URL.createObjectURL(file),
+    }))
+
+    const combined = [...oldItems, ...newItems]
+
+    // 혹시 하나도 없으면 초기 박스 2개
+    if (combined.length === 0) {
+      combined.push(
+        { type: 'new', file: null as any, previewUrl: '' },
+        { type: 'new', file: null as any, previewUrl: '' },
+      )
     }
-  }, [])
+    setImageItems(combined)
+  }, [didInit, existingResultImages, newResultImages])
 
-  /**
-   * (3) 박스에서 파일이 선택되면,
-   *     - 상위로 File 객체를 전달하여 resultImages[index]에 저장
-   *     - 미리보기용 URL을 생성해 imagePreviews[index]에 저장
-   */
-  const handleFileSelect = (index: number, file: File) => {
-    // 3-1) 상위 상태에 File 객체 저장
-    const updatedFiles = [...resultImages]
-    updatedFiles[index] = file
-    onUpdate('resultImages', updatedFiles)
-
-    // 3-2) 미리보기 URL 생성
-    const previewUrl = URL.createObjectURL(file)
-    const updatedPreviews = [...imagePreviews]
-    updatedPreviews[index] = previewUrl
-    setImagePreviews(updatedPreviews)
-  }
-
-  // (4) 박스 추가 함수
+  // (C) 이미지 추가 버튼
   const handleAddBox = () => {
-    setBoxes((prev) => [...prev, prev.length])
+    setImageItems((prev) => [
+      ...prev,
+      { type: 'new', file: null as any, previewUrl: '' },
+    ])
   }
 
-  // (5) 박스 삭제 함수 (1개 이하로는 삭제 불가)
-  const handleDeleteBox = (index: number) => {
-    if (boxes.length > 1) {
-      // 박스 식별자 제거
-      setBoxes((prev) => prev.filter((_, i) => i !== index))
+  // (D) 파일 업로드
+  const handleFileSelect = (index: number, file: File) => {
+    setImageItems((prev) => {
+      const copy = [...prev]
+      copy[index] = {
+        type: 'new',
+        file,
+        previewUrl: URL.createObjectURL(file),
+      }
+      return copy
+    })
+    // 새 File[]로 재구성
+    const newFiles = rebuildNewFiles(index, file)
+    onUpdateResultImages(newFiles)
+  }
 
-      // resultImages에서도 해당 index의 File 제거
-      const updatedFiles = [...resultImages]
-      updatedFiles.splice(index, 1)
-      onUpdate('resultImages', updatedFiles)
+  function rebuildNewFiles(changedIndex: number, changedFile: File) {
+    // imageItems의 복사본을 만들어서 new 타입만 추출
+    const copy = imageItems.map((item, idx) => {
+      if (idx === changedIndex) {
+        return {
+          type: 'new',
+          file: changedFile,
+          previewUrl: URL.createObjectURL(changedFile),
+        }
+      }
+      return item
+    })
 
-      // 미리보기 배열에서도 제거
-      const updatedPreviews = [...imagePreviews]
-      updatedPreviews.splice(index, 1)
-      setImagePreviews(updatedPreviews)
+    return copy
+      .filter((item) => item.type === 'new' && item.file)
+      .map((item) => (item as { file: File }).file)
+  }
+
+  // (E) 삭제
+  const handleDelete = (index: number) => {
+    const item = imageItems[index]
+    if (item.type === 'existing') {
+      // 기존 이미지 → 상위 콜백 (deleteResultImages에 id 추가)
+      onDeleteOldResultImage(item.id)
+    } else {
+      // 새 이미지 → newResultImages에서 제거
+      const newFiles = newResultImages.filter((_, i) => i !== index)
+      onUpdateResultImages(newFiles)
     }
+    // 로컬 state에서도 제거
+    setImageItems((prev) => prev.filter((_, i) => i !== index))
   }
 
   return (
     <div>
       <div className="flex justify-between items-center mb-3 mt-[3.19rem]">
-        <div className="flex items-center justify-center text-center font-medium text-gray">
-          {projectType === 'project'
-            ? '결과물(혹은 피그마 디자인)을 올려주세요'
-            : '활동 사진을 올려주세요(줌 화면, 책 사진, 인강 사진 등 스터디에 대한 증거 사진)'}
-        </div>
+        <div className="font-medium text-gray">결과물/디자인을 올려주세요</div>
         <button
           onClick={handleAddBox}
           className="flex items-center gap-2 text-primary font-medium"
@@ -87,19 +126,27 @@ export default function AddResults({
         </button>
       </div>
 
-      {/* (6) 박스 영역 */}
       <div className="grid grid-cols-2 gap-6">
-        {boxes.map((boxId, index) => (
-          <ResultImgBox
-            key={boxId}
-            id={boxId}
-            // 현재 미리보기 URL
-            previewUrl={imagePreviews[index] || ''}
-            // 파일이 선택되면 handleFileSelect로 전달
-            onFileSelect={(file) => handleFileSelect(index, file)}
-            onDelete={() => handleDeleteBox(index)}
-          />
-        ))}
+        {imageItems.map((item, idx) => {
+          if (item.type === 'existing') {
+            return (
+              <ExistingResultImgBox
+                key={`old-${idx}`}
+                imageUrl={item.url}
+                onDelete={() => handleDelete(idx)}
+              />
+            )
+          } else {
+            return (
+              <ResultImgBox
+                key={`new-${idx}`}
+                previewUrl={item.previewUrl}
+                onFileSelect={(file) => handleFileSelect(idx, file)}
+                onDelete={() => handleDelete(idx)}
+              />
+            )
+          }
+        })}
       </div>
     </div>
   )

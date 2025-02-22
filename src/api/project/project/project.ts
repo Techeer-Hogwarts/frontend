@@ -6,7 +6,7 @@ export const handleAddProject = async (data: any) => {
 
     // 1) 메인 이미지 (파일 1개)
     if (data.mainImageFile) {
-      formData.append('files', data.mainImageFile)
+      formData.append('files', data.mainImageFile) // 첫 번째 파일
     }
 
     // 2) 결과 이미지 (여러 개)
@@ -104,23 +104,41 @@ export const getProjectApplicants = async (projectTeamId) => {
 }
 
 // 프로젝트 수정하기
-export const handleEditProject = async (data, projectId) => {
+export const handleEditProject = async (projectId: number, data: any) => {
   try {
+    const formData = new FormData()
+
+    // 1) 메인 이미지 (파일 1개) - 새로 업로드된 경우만
+    if (data.mainImageFile) {
+      formData.append('mainImages', data.mainImageFile)
+    }
+
+    // 2) 결과 이미지 (여러 개) - 새로 업로드된 것만
+    if (data.resultImages && Array.isArray(data.resultImages)) {
+      data.resultImages.forEach((file: File) => {
+        formData.append('resultImages', file)
+      })
+    }
+
+    // 3) JSON 직렬화
+    const { mainImageFile, resultImages, ...rest } = data
+    formData.append('updateProjectTeamRequest', JSON.stringify(rest))
+
+    // 4) PATCH 전송
     const response = await fetch(`/api/v1/projectTeams/${projectId}`, {
       method: 'PATCH',
       credentials: 'include',
-      body: JSON.stringify(data),
+      body: formData, // multipart/form-data
     })
 
     if (!response.ok) {
-      throw new Error(`POST 요청 실패: ${response.status}`)
+      throw new Error(`PATCH 요청 실패: ${response.status}`)
     }
 
     const result = await response.json()
-    console.log('POST 요청 성공:', result)
     return result
   } catch (error: any) {
-    console.error('POST 요청 중 오류 발생:', error.message)
+    console.error('PATCH 요청 중 오류 발생:', error.message)
     throw error
   }
 }

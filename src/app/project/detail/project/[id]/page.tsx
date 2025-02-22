@@ -11,8 +11,7 @@ import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useQueryClient } from '@tanstack/react-query'
-import Lottie from 'react-lottie-player'
-import loading from '../../../../../../public/loading.json'
+import Loading from '@/components/common/Loading'
 
 import {
   getProjectDetail,
@@ -70,8 +69,6 @@ export default function ProjectDetailpage() {
     enabled: projectId !== null,
   })
 
-  console.log(projectDetails)
-
   // (2) 프로젝트 지원자 (팀원만 조회 가능하게 프론트에서 처리해야함)
   const { data: studyApplicants } = useQuery({
     queryKey: ['getStudyApplicants', projectId],
@@ -106,16 +103,7 @@ export default function ProjectDetailpage() {
 
   // 로딩 중
   if (!projectDetails) {
-    return (
-      <div className="flex flex-col items-center justify-center h-[800px]">
-        <Lottie
-          animationData={loading}
-          loop={true}
-          play
-          style={{ width: 200, height: 200 }}
-        />
-      </div>
-    )
+    return <Loading />
   }
 
   const { isRecruited } = projectDetails
@@ -157,6 +145,16 @@ export default function ProjectDetailpage() {
     }
   }
 
+  const handleEdit = async () => {
+    // 1) 편집 페이지로 넘어가기 전에 최신 데이터 보장
+    // await queryClient.invalidateQueries({
+    //   queryKey: ['getProjectDetails', projectId],
+    // })
+
+    // 2) 편집 페이지로 이동
+    router.push(`/project/detail/project/edit/${projectId}`)
+  }
+
   return (
     <div className="relative flex justify-between mt-[2.75rem]">
       {isModalOpen && (
@@ -177,13 +175,13 @@ export default function ProjectDetailpage() {
       {/* (A) 팀원이라면 편집/삭제 */}
       {isTeamMember && (
         <div className="flex items-center justify-center absolute top-[-1rem] right-0 gap-2">
-          <Link
-            href={`/project/detail/project/edit/${projectId}`}
+          <button
+            onClick={handleEdit}
             className="flex justify-center items-center gap-2 text-primary font-semibold border border-primary rounded-xl w-[8.375rem] h-[2.125rem]"
           >
             <BiSolidPencil size={14} color="#FE9142" />
             편집하기
-          </Link>
+          </button>
           <button
             onClick={() => {
               setIsModalOpen(true)

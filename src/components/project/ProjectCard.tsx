@@ -58,13 +58,13 @@ export default function ProjectCard({ team }: { team: ProjectTeam }) {
           />
         </div>
 
-        <div className="min-w-28 flex flex-col justify-start ">
+        <div className="min-w-28 flex flex-col justify-between h-[125px]">
           {/* 프로젝트 제목 */}
-          <div className="max-w-28 truncate font-bold text-[1.01688rem] mb-11">
+          <div className="max-w-28 truncate font-bold text-[1.01688rem]">
             {team.name}
           </div>
 
-          <div className="flex max-h-14 min-h-14 h-14">
+          <div className="flex">
             {/* 모집 여부에 따른 조건부 렌더링 */}
             {team.isRecruited ? (
               <>
@@ -74,7 +74,7 @@ export default function ProjectCard({ team }: { team: ProjectTeam }) {
                     count < 3 &&
                     (count++,
                     (
-                      <div className="bg-lightblue text-blue py-[0.1rem] px-[0.8rem] rounded-lg text-[13px]">
+                      <div className="bg-lightblue text-blue py-[0.1rem] w-[7rem] rounded-lg text-[13px] text-center">
                         Frontend : {team.frontendNum}명
                       </div>
                     ))}
@@ -82,7 +82,7 @@ export default function ProjectCard({ team }: { team: ProjectTeam }) {
                     count < 3 &&
                     (count++,
                     (
-                      <div className="bg-lightgreen text-green py-[0.1rem] px-[0.8rem] rounded-lg text-[13px]">
+                      <div className="bg-lightgreen text-green py-[0.1rem] w-[7rem] rounded-lg text-[13px] text-center">
                         Backend : {team.backendNum}명
                       </div>
                     ))}
@@ -90,7 +90,7 @@ export default function ProjectCard({ team }: { team: ProjectTeam }) {
                     count < 3 &&
                     (count++,
                     (
-                      <div className="bg-lightpink text-pink py-[0.1rem] px-[0.8rem] rounded-lg text-[13px]">
+                      <div className="bg-lightpink text-pink py-[0.1rem] w-[7rem] rounded-lg text-[13px] text-center">
                         DevOps : {team.devopsNum}명
                       </div>
                     ))}
@@ -98,7 +98,7 @@ export default function ProjectCard({ team }: { team: ProjectTeam }) {
                     count < 3 &&
                     (count++,
                     (
-                      <div className="bg-lightyellow text-yellow py-[0.1rem] px-[0.8rem] rounded-lg text-[13px]">
+                      <div className="bg-lightyellow text-yellow py-[0.1rem] w-[7rem] rounded-lg text-[13px] text-center">
                         FullStack : {team.fullStackNum}명
                       </div>
                     ))}
@@ -106,20 +106,20 @@ export default function ProjectCard({ team }: { team: ProjectTeam }) {
                     count < 3 &&
                     (count++,
                     (
-                      <div className="bg-lightpurple text-purple py-[0.1rem] px-[0.8rem] rounded-lg text-[13px]">
+                      <div className="bg-lightpurple text-purple py-[0.1rem] w-[7rem] rounded-lg text-[13px] text-center">
                         Data : {team.dataEngineerNum}명
                       </div>
                     ))}
                 </div>
               </>
             ) : (
-              <div className="flex flex-wrap gap-1 h-14 overflow-hidden items-start">
+              <div className="flex flex-col gap-1 h-[6.25rem] items-start justify-end">
                 {team.teamStacks.map(
                   (stack) =>
                     stack.isMain && (
                       <div
                         key={stack.stackName}
-                        className="bg-lightprimary text-pink max-h-[1.4181rem] px-[0.3rem] rounded-md text-[13px]"
+                        className="bg-lightprimary text-pink py-[0.1rem] px-[0.3rem] rounded-md text-[13px] truncate max-w-[7rem]"
                       >
                         {stack.stackName}
                       </div>

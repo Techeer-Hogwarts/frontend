@@ -1,7 +1,6 @@
 import { getPositionStyle } from '@/styles/positionStyles'
 
 export default function FindMember({ projectDetail, projectType }) {
-  console.log('2', projectDetail)
   return (
     <div>
       <div className="text-[1.125rem] font-[600] mb-3">모집 정보</div>

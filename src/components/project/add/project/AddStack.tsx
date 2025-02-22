@@ -46,7 +46,7 @@ function StackCategory({ title, stack, onDeleteStack }: StackCategoryProps) {
           <Box
             key={tech}
             text={tech}
-            isMain={idx === 0} // 첫 번째 스택이면 메인
+            isMain={idx === 0}
             onDelete={() => onDeleteStack(tech)}
           />
         ))}
@@ -55,26 +55,47 @@ function StackCategory({ title, stack, onDeleteStack }: StackCategoryProps) {
   )
 }
 
-interface AddStackProps {
-  onUpdateStacks: (teamStacks: { stack: string; isMain: boolean }[]) => void
+interface TeamStackItem {
+  stack: string
+  isMain: boolean
 }
 
-export default function AddStack({ onUpdateStacks }: AddStackProps) {
-  const [backendStack, setBackendStack] = useState<string[]>([])
+interface AddStackProps {
+  /** 수정 시 이미 서버에 저장된 teamStacks */
+  initialTeamStacks?: TeamStackItem[]
+  /** 최종 스택이 바뀔 때마다 부모로 콜백 */
+  onUpdateStacks: (teamStacks: TeamStackItem[]) => void
+}
+
+export default function AddStack({
+  initialTeamStacks = [],
+  onUpdateStacks,
+}: AddStackProps) {
   const [frontendStack, setFrontendStack] = useState<string[]>([])
+  const [backendStack, setBackendStack] = useState<string[]>([])
   const [devopsStack, setDevopsStack] = useState<string[]>([])
   const [otherStack, setOtherStack] = useState<string[]>([])
 
+  // 드롭다운에서 선택된 전체 스택 이름들
   const [selectedOptions, setSelectedOptions] = useState<string[]>([])
+
+  // 서버에서 받아온 "스택 목록"을 카테고리별로 분류해서 저장
   const [categories, setCategories] = useState<
     { name: string; options: string[] }[]
   >([])
 
+  // **초기화 여부** (한 번만 초기화하려고 사용)
+  const [didInitialize, setDidInitialize] = useState(false)
+
+  // 1) 서버에서 스택 목록 받아오기
   const { data: allStacks } = useQuery({
     queryKey: ['getStacks'],
     queryFn: getStacks,
   })
 
+  console.log('initialTeamStacks:', initialTeamStacks)
+
+  // 2) allStacks를 카테고리별로 분류
   useEffect(() => {
     if (!allStacks) return
     const catMap: Record<string, string[]> = {
@@ -89,16 +110,15 @@ export default function AddStack({ onUpdateStacks }: AddStackProps) {
       }
     })
 
-    const result = [
+    setCategories([
       { name: 'FRONTEND', options: catMap.FRONTEND },
       { name: 'BACKEND', options: catMap.BACKEND },
       { name: 'DEVOPS', options: catMap.DEVOPS },
       { name: 'OTHER', options: catMap.OTHER },
-    ]
-    setCategories(result)
+    ])
   }, [allStacks])
 
-  // 스택->카테고리 매핑
+  // 3) 스택이름 -> 카테고리 매핑용
   const stackCategoryMap: Record<string, string> = {}
   if (allStacks) {
     allStacks.forEach((s: { name: string; category: string }) => {
@@ -106,52 +126,100 @@ export default function AddStack({ onUpdateStacks }: AddStackProps) {
     })
   }
 
+  // 4) **처음 로드** + `initialTeamStacks`가 0보다 크면 → 초기값 세팅
+  useEffect(() => {
+    // (A) 이미 초기화(didInitialize) 했다면 종료
+    if (didInitialize) return
+    // (B) allStacks 로딩 안됐으면 종료
+    if (!allStacks) return
+    // (C) initialTeamStacks가 1개 이상인 경우만 초기화
+    if (initialTeamStacks.length === 0) return
+
+    // ...이제 초기화 로직
+    const frontArr: string[] = []
+    const backArr: string[] = []
+    const devopsArr: string[] = []
+    const otherArr: string[] = []
+    const selectedArr: string[] = []
+
+    initialTeamStacks.forEach(({ stack }) => {
+      const cat = stackCategoryMap[stack]
+      if (cat === 'FRONTEND') {
+        frontArr.push(stack)
+      } else if (cat === 'BACKEND') {
+        backArr.push(stack)
+      } else if (cat === 'DEVOPS') {
+        devopsArr.push(stack)
+      } else {
+        // OTHER
+        otherArr.push(stack)
+      }
+      selectedArr.push(stack)
+    })
+
+    // setState
+    setFrontendStack(frontArr)
+    setBackendStack(backArr)
+    setDevopsStack(devopsArr)
+    setOtherStack(otherArr)
+    setSelectedOptions(selectedArr)
+
+    // 이제 "한 번 초기화함"
+    setDidInitialize(true)
+  }, [didInitialize, allStacks, initialTeamStacks, stackCategoryMap])
+
+  // 5) 드롭다운 체크/해제
   const handleSelectFromDropdown = (newSelected: string[]) => {
     const added = newSelected.filter((item) => !selectedOptions.includes(item))
     const removed = selectedOptions.filter(
       (item) => !newSelected.includes(item),
     )
 
+    // 추가된 스택들
     added.forEach((name) => {
       const cat = stackCategoryMap[name]
       if (cat === 'FRONTEND') setFrontendStack((prev) => [...prev, name])
       else if (cat === 'BACKEND') setBackendStack((prev) => [...prev, name])
       else if (cat === 'DEVOPS') setDevopsStack((prev) => [...prev, name])
-      else if (cat === 'OTHER') setOtherStack((prev) => [...prev, name])
+      else setOtherStack((prev) => [...prev, name])
     })
 
+    // 제거된 스택들
     removed.forEach((name) => {
       const cat = stackCategoryMap[name]
-      if (cat === 'FRONTEND')
+      if (cat === 'FRONTEND') {
         setFrontendStack((prev) => prev.filter((x) => x !== name))
-      else if (cat === 'BACKEND')
+      } else if (cat === 'BACKEND') {
         setBackendStack((prev) => prev.filter((x) => x !== name))
-      else if (cat === 'DEVOPS')
+      } else if (cat === 'DEVOPS') {
         setDevopsStack((prev) => prev.filter((x) => x !== name))
-      else if (cat === 'OTHER')
+      } else {
         setOtherStack((prev) => prev.filter((x) => x !== name))
+      }
     })
 
     setSelectedOptions(newSelected)
   }
 
+  // 6) X 버튼으로 제거
   const handleRemoveStack = (category: string, stackName: string) => {
-    if (category === 'Backend') {
-      setBackendStack((prev) => prev.filter((item) => item !== stackName))
-    } else if (category === 'Frontend') {
+    if (category === 'Frontend') {
       setFrontendStack((prev) => prev.filter((item) => item !== stackName))
+    } else if (category === 'Backend') {
+      setBackendStack((prev) => prev.filter((item) => item !== stackName))
     } else if (category === 'DevOps') {
       setDevopsStack((prev) => prev.filter((item) => item !== stackName))
-    } else if (category === 'Other') {
+    } else {
       setOtherStack((prev) => prev.filter((item) => item !== stackName))
     }
+    // 드롭다운 선택 해제
     setSelectedOptions((prev) => prev.filter((item) => item !== stackName))
   }
 
-  // teamStacks 생성
+  // 7) teamStacks 구성 (메인 스택은 카테고리별 첫 번째)
   function buildTeamStacks() {
     const result: { stack: string; isMain: boolean }[] = []
-    // 각 카테고리 첫 번째 요소만 isMain
+
     frontendStack.forEach((s, idx) => {
       result.push({ stack: s, isMain: idx === 0 })
     })
@@ -167,7 +235,9 @@ export default function AddStack({ onUpdateStacks }: AddStackProps) {
     return result
   }
 
+  // 8) state가 변할 때마다 부모에 알림
   useEffect(() => {
+    // didInitialize가 true든 false든, 매번 최신화
     const newTeamStacks = buildTeamStacks()
     onUpdateStacks(newTeamStacks)
   }, [frontendStack, backendStack, devopsStack, otherStack])

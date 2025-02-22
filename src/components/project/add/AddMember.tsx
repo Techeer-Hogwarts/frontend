@@ -5,36 +5,36 @@ import Image from 'next/image'
 import { IoClose } from 'react-icons/io5'
 import { RxQuestionMarkCircled } from 'react-icons/rx'
 import { getPositionStyle } from '@/styles/positionStyles'
-
 import MemberModal from '../modal/StudyModal'
 import ProjectMemberModal from '../modal/ProjectModal'
-
-// 예: 전역 store로부터 현재 사용자 user를 가져온다고 가정
-import { useAuthStore } from '@/store/authStore'
 
 interface TagProps {
   position: string
 }
 
 interface Member {
-  id: number
+  id?: number // 프로젝트-멤버 테이블 PK
+  userId?: number // 사용자 PK
   name: string
   teamRole?: string
-  leader?: string
-  profileImage?: string | null
   isLeader?: boolean
-  userId?: number
+  profileImage?: string
+  email?: string
 }
 
 interface AddMemberProps {
   projectMember: Member[]
   onUpdateMember?: (newMembers: Member[]) => void
+  /** 삭제 시: (memberId, userId) → 상위 tempDeleted 배열에 추가 */
+  onDeleteMember?: (memberId: number, userId: number) => void
+
+  /** 다시 추가 시: (memberId, userId) → 상위 tempDeleted 배열에서 제거 */
+  onRestoreMember?: (memberId: number, userId: number) => void
 }
 
 function Tag({ position }: TagProps) {
   const { bg, textColor } = getPositionStyle(position)
   const displayPosition = position === 'DataEngineer' ? 'Data' : position
-
   return (
     <div
       className={`flex items-center justify-center ${textColor} w-[4.5rem] bg-${bg} rounded-md`}
@@ -47,58 +47,75 @@ function Tag({ position }: TagProps) {
 export default function AddMember({
   projectMember,
   onUpdateMember,
+  onDeleteMember,
+  onRestoreMember,
 }: AddMemberProps) {
   const [projectType, setProjectType] = useState<null | string>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
 
-  const { user } = useAuthStore() // 현재 사용자 정보
-
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const storedProjectType = localStorage.getItem('projectType')
-      setProjectType(storedProjectType)
+      setProjectType(localStorage.getItem('projectType'))
     }
   }, [])
 
-  // 모달 열기
+  /** (A) 모달 열기 */
   const handleAddMember = () => {
     setIsModalOpen(true)
   }
-
-  // 모달 닫기
+  /** (B) 모달 닫기 */
   const handleCloseModal = () => {
     setIsModalOpen(false)
   }
 
-  // (A) 모달에서 "저장하기" 눌렀을 때 → 부모로 members 전달
+  /**
+   * (C) 모달에서 새 멤버 선택 후 "저장"
+   *     - 만약 deleteMembers에 들어있는 멤버가 다시 추가된다면,
+   *       onRestoreMember(그 멤버 PK)로 복원
+   */
   const handleSaveMembers = (selectedMembers: Member[]) => {
-    const merged = [
-      ...projectMember,
-      ...selectedMembers
-        .filter(
-          (newMember) =>
-            !projectMember.some((member) => member.userId === newMember.id),
-        )
-        .map((member) => ({
-          userId: member.id,
-          isLeader: member.isLeader,
-          profileImage: member.profileImage,
-          teamRole: member.teamRole,
-          name: member.name,
-        })),
-    ]
-    onUpdateMember && onUpdateMember(merged as Member[])
+    const merged = [...projectMember]
+
+    selectedMembers.forEach((newMember) => {
+      // 이미 있는지 확인 (id 기준)
+      const exist = merged.find((m) => m.id === newMember.id)
+      if (!exist) {
+        // 새로 추가
+        merged.push({
+          userId: newMember.id,
+          name: newMember.name,
+          teamRole: newMember.teamRole,
+          isLeader: newMember.isLeader,
+          profileImage: newMember.profileImage,
+          email: newMember.email,
+          id: newMember.id, // 백엔드가 멤버 PK로 사용하는 경우
+        })
+
+        // (A-1) tempDeleted에서 제거
+        onRestoreMember?.(newMember.id!, newMember.id!)
+      }
+    })
+
+    onUpdateMember?.(merged)
     setIsModalOpen(false)
   }
 
-  // (B) 멤버 삭제
-  const handleDelete = (userId: number) => {
-    const filtered = projectMember.filter((member) => member.userId !== userId)
-    onUpdateMember && onUpdateMember(filtered)
+  /**
+   * (D) 멤버 삭제
+   *     - state에서 제거 + onDeleteMember(멤버 PK)
+   */
+  const handleDelete = (member: Member) => {
+    if (!member.id) return
+    // state에서 제거
+    const filtered = projectMember.filter((m) => m.id !== member.id)
+    onUpdateMember?.(filtered)
+    // tempDeleted에 추가
+    onDeleteMember?.(member.id, member.userId || 0)
   }
 
   return (
     <div>
+      {/* (E) 모달 */}
       {isModalOpen &&
         (projectType === 'project' ? (
           <ProjectMemberModal
@@ -119,12 +136,9 @@ export default function AddMember({
 
       <div className="grid grid-cols-9 items-start gap-3 w-[52.5rem] px-[1.875rem] py-[1.5rem] rounded-2xl border border-gray">
         {projectMember.map((member) => (
-          <div
-            key={member.userId}
-            className="relative flex flex-col items-center"
-          >
+          <div key={member.id} className="relative flex flex-col items-center">
             <button
-              onClick={() => handleDelete(member.userId!)}
+              onClick={() => handleDelete(member)}
               className="w-[0.8rem] h-[0.8rem] absolute top-[-5px] right-[-5px] bg-primary text-white rounded-full flex items-center justify-center"
             >
               <IoClose />

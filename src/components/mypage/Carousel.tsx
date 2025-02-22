@@ -6,12 +6,11 @@ import Image from 'next/image'
 import { HiMiniChevronLeft, HiMiniChevronRight } from 'react-icons/hi2'
 import { FaRegImage } from 'react-icons/fa6'
 import Link from 'next/link'
-import ImageOrIcon from '../common/ImageOrIcon'
 
 interface Team {
   id: number
   name: string
-  resultImages: string[]
+  mainImage: string
 }
 
 interface CarouselProps {
@@ -40,7 +39,34 @@ function PrevArrow(props: any) {
   )
 }
 
+// 이미지 혹은 대체 아이콘을 렌더링하는 컴포넌트
+function ImageOrIcon({ src, alt }: { src?: string; alt: string }) {
+  const [imgError, setImgError] = useState(false)
+
+  // src가 없거나 빈 문자열, 혹은 onError 발생 시 => 아이콘 표시
+  if (!src || imgError) {
+    return (
+      <div className="w-[64px] h-[64px] flex items-center justify-center bg-lightgray text-gray rounded">
+        <FaRegImage size={32} />
+      </div>
+    )
+  }
+
+  return (
+    <Image
+      src={src}
+      alt={alt}
+      width={64}
+      height={64}
+      className="rounded object-cover w-[64px] h-[64px]"
+      unoptimized
+      onError={() => setImgError(true)}
+    />
+  )
+}
+
 const Carousel: React.FC<CarouselProps> = ({ teams, routePrefix }) => {
+  console.log('Carousel:', teams)
   const settings = {
     dots: false,
     infinite: teams.length > 10,
@@ -61,8 +87,7 @@ const Carousel: React.FC<CarouselProps> = ({ teams, routePrefix }) => {
             href={`${routePrefix}/${team.id}`}
             className="relative group cursor-pointer"
           >
-            <ImageOrIcon src={team.resultImages?.[0]} alt={team.name} width={64}
-          height={64} />
+            <ImageOrIcon src={team.mainImage} alt={team.name} />
             <div className="absolute w-[64px] h-[64px] top-0 bg-black bg-opacity-60 text-white text-xs flex items-center justify-center text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded">
               {team.name}
             </div>
@@ -84,7 +109,7 @@ const Carousel: React.FC<CarouselProps> = ({ teams, routePrefix }) => {
             href={`${routePrefix}/${team.id}`}
             className="relative group cursor-pointer"
           >
-            <ImageOrIcon src={team.resultImages?.[0]} alt={team.name} />
+            <ImageOrIcon src={team.mainImage} alt={team.name} />
             <div className="absolute w-[64px] h-[64px] top-0 bg-black bg-opacity-60 text-white text-xs flex items-center justify-center text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded">
               {team.name}
             </div>

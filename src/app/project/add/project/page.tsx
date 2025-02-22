@@ -37,19 +37,28 @@ export default function AddProjectPage() {
   })
 
   const handleUpdate = (key: string, value: any) => {
+    console.log('[Parent] handleUpdate =>', key, value) // 여기 찍어보기
+
     setProjectData((prev) => ({ ...prev, [key]: value }))
   }
 
   const handleSubmit = async () => {
-    console.log(projectData)
+    // 1) 프로젝트 이름 확인
     if (!projectData.name.trim()) {
       alert('프로젝트 이름을 입력해주세요.')
       return
     }
 
-    // (B) 대표 이미지 체크
+    // 2) 메인 이미지 체크
     if (!projectData.mainImageFile) {
       alert('대표 이미지를 업로드해주세요.')
+      return
+    }
+
+    // 3) 리더(팀장) 체크
+    const hasLeader = projectData.projectMember.some((m) => m.isLeader)
+    if (!hasLeader) {
+      alert('리더를 한 명 이상 지정해주세요!')
       return
     }
 
@@ -57,10 +66,12 @@ export default function AddProjectPage() {
 
     if (dataToSend.projectMember && Array.isArray(dataToSend.projectMember)) {
       dataToSend.projectMember = dataToSend.projectMember.map((member) => {
-        const { profileImage, name, ...rest } = member
+        const { profileImage, name, id, email, ...rest } = member
         return rest
       })
     }
+
+    console.log('전송할 데이터:', dataToSend)
 
     // (C) 수정된 데이터(dataToSend)를 전송
     const response = await handleAddProject(dataToSend)
@@ -105,8 +116,8 @@ export default function AddProjectPage() {
           }
         />
         <AddResults
-          resultImages={projectData.resultImages || []}
-          onUpdate={handleUpdate}
+          newResultImages={projectData.resultImages} // File[] (새로 업로드할)
+          onUpdateResultImages={(files) => handleUpdate('resultImages', files)}
         />
         <button
           type="button"
