@@ -5,8 +5,7 @@ import Image from 'next/image'
 import { IoClose } from 'react-icons/io5'
 import { useRouter } from 'next/navigation'
 
-import MemberModal from '../modal/study/StudyModal'
-import ProjectMemberModal from '../modal/ProjectModal'
+import MemberModal from '../../modal/study/StudyModal'
 import { getStudyMember } from '@/api/project/study/study'
 
 interface TagProps {
@@ -93,19 +92,13 @@ export default function AddMember({
     <div>
       <div className="flex items-center">
         {/* 모달 */}
-        {isModalOpen &&
-          (projectType === 'project' ? (
-            <ProjectMemberModal
-            // onClose={handleCloseModal}
-            // onSave={handleSaveMembers}
-            />
-          ) : (
-            <MemberModal
-              existingMembers={projectMember}
-              onClose={handleCloseModal}
-              onSave={handleSaveMembers}
-            />
-          ))}
+        {isModalOpen && (
+          <MemberModal
+            existingMembers={projectMember}
+            onClose={handleCloseModal}
+            onSave={handleSaveMembers}
+          />
+        )}
         <div className="font-medium text-gray mb-3">
           팀원을 입력해주세요<span className="text-primary">*</span>
         </div>
@@ -130,7 +123,7 @@ export default function AddMember({
               width={76}
               height={76}
               alt="Picture"
-              className="border rounded-md bg-lightpink"
+              className="w-[76px] h-[76px] object-cover border rounded-md bg-lightpink"
             />
             {/* 리더 표시 */}
             {member.isLeader && (
