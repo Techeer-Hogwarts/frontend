@@ -3,15 +3,58 @@
 import { useState } from 'react'
 import dayjs from 'dayjs'
 import { MdOutlineCalendarMonth } from 'react-icons/md'
-import eventsByMonth from './eventsByMonth' // 이벤트 가져오기
+import CalendarEventCard, { CalendarEventCardProps } from './CalendarEventCard'
+import useGetEvents from '@/app/calendar/api/getEventList'
+import EventsDetailModal from './EventsDetailModal'
 
-export default function Calendar() {
+interface CalendarProps {
+  selectedCategories: string[]
+}
+
+export default function Calendar({ selectedCategories }: CalendarProps) {
   const [currentDate, setCurrentDate] = useState(dayjs())
+  const [selectedDate, setSelectedDate] = useState<string | null>(null)
   const daysOfWeek = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']
   const startOfMonth = currentDate.startOf('month').day()
   const daysInMonth = currentDate.daysInMonth()
   const currentMonth = currentDate.month() + 1 // month는 0부터 시작하므로 1을 더함
   const today = dayjs()
+
+  const { data: events } = useGetEvents({
+    category: selectedCategories.length > 0 ? selectedCategories : undefined,
+  })
+
+  const expandEvents = (events: CalendarEventCardProps[]) => {
+    const expanded: CalendarEventCardProps[] = []
+
+    events.forEach((event) => {
+      const start = dayjs(event.startDate)
+      const end = dayjs(event.endDate)
+      let current = start
+
+      while (current.isBefore(end) || current.isSame(end, 'day')) {
+        expanded.push({
+          ...event,
+          startDate: event.startDate,
+          endDate: event.endDate,
+          displayDate: current.format('YYYY-MM-DD')
+        })
+        current = current.add(1, 'day')
+      }
+    })
+
+    return expanded
+  }
+
+  const expandedEvents = events ? expandEvents(events) : []
+
+  const handleDayClick = (date: string) => {
+    setSelectedDate(date)
+  }
+
+  const handleCloseModal = () => {
+    setSelectedDate(null)
+  }
 
   const previousMonth = () => {
     setCurrentDate(currentDate.subtract(1, 'month'))
@@ -30,33 +73,59 @@ export default function Calendar() {
 
     // 이번 달의 날짜
     for (let i = 1; i <= daysInMonth; i += 1) {
-      const events = eventsByMonth[currentMonth]?.[i] || [] // 해당 월의 이벤트만 출력
+      const currentDay = currentDate.date(i).format('YYYY-MM-DD')
+      
+      const dayEvents = expandedEvents.filter((event) =>
+        dayjs(event.displayDate).isSame(currentDay, 'day')
+      )
+
       const isToday = today.date() === i && today.month() + 1 === currentMonth // 시스템 날짜 == 캘린더 날짜
+      
       daysArray.push(
-        <div
-          key={i}
-          className={`w-[138px] text-2xl font-bold h-[183px] border-t-2 p-2 ${
+        <div key={i} className="w-[138px] min-h-[183px] border-t-2">
+        <button
+          type="button"
+          className={`w-full h-full text-2xl font-bold p-3 cursor-pointer hover:bg-lightgray/50 flex flex-col items-start ${
             isToday ? 'border-primary bg-lightgray/30' : ''
           }`}
+          onClick={() => handleDayClick(currentDay)}
         >
           {i}
-          <div className="text-xs font-medium mt-2">
-            {events.map((event, index) => (
-              <span key={index} className="flex justify-start ">
-                <div className="w-2 h-2 mt-1 mx-1 bg-[#0992FA] rounded-full" />
-                <div className="flex flex-col">
-                  <p className="text-[12px]">{event.name}</p>
-                  <p className="text-[10px] text-gray">{event.period}</p>
-                </div>
-              </span>
-            ))}
+          <div className="text-xs font-medium">
+            {dayEvents.map((event) => {
+              const start = dayjs(event.startDate)
+              const end = dayjs(event.endDate)
+              const isSameDate = start.isSame(end, 'day')
+
+              return (
+                <CalendarEventCard
+                  key={`${event.id}-${event.startDate}`}
+                  title={event.title}
+                  startDate={event.startDate}
+                  endDate={event.endDate}
+                  category={event.category}
+                  url={event.url}
+                  className="mt-3"
+                  displayDate={
+                    isSameDate
+                      ? start.format('MM.DD')
+                      : `${start.format('MM.DD')} - ${end.format('MM.DD')}`
+                  }
+                />
+              )
+            })}
           </div>
-        </div>,
+        </button>
+      </div>
       )
     }
 
     return daysArray
   }
+
+  const eventsForSelectedDate = expandedEvents.filter(
+    (event) => event.displayDate === selectedDate
+  )
 
   return (
     <div className="w-[1200px] mx-auto pt-4">
@@ -94,6 +163,14 @@ export default function Calendar() {
       </div>
       {/* 일 */}
       <div className="grid grid-cols-7 gap-7">{renderDays()}</div>
+
+      {selectedDate && (
+        <EventsDetailModal
+          date={dayjs(selectedDate).format('MM.DD')}
+          events={eventsForSelectedDate}
+          onClose={handleCloseModal}
+        />
+      )}
     </div>
   )
 }
