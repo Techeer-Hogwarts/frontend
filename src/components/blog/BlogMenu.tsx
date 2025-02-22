@@ -7,9 +7,16 @@ import { useBookmark } from '@/app/blog/_lib/useBookmark'
 interface blogMenuProps {
   id: string
   onDelete: (id: string) => void
+  setModalOpen: (open: boolean) => void
+  setModalMessage: (message: string) => void
 }
 
-export default function BlogMenu({ id, onDelete }: blogMenuProps) {
+export default function BlogMenu({
+  id,
+  onDelete,
+  setModalOpen,
+  setModalMessage,
+}: blogMenuProps) {
   // const blogDelete = async () => {
   //   try {
   //     const response = await fetch(
@@ -47,13 +54,14 @@ export default function BlogMenu({ id, onDelete }: blogMenuProps) {
     try {
       const data = await fetchBookmarks('BLOG', 0, 50)
       if (data.find((bookmark: any) => bookmark.id === id)) {
-        addCancelBookmark(id, 'BLOG', false)
-        alert('북마크 취소하였습니다.')
+        await addCancelBookmark(id, 'BLOG', false)
+        setModalMessage('북마크에 취소하였습니다.')
       } else {
-        addCancelBookmark(id, 'BLOG', true)
-        alert('북마크 추가하였습니다.')
+        await addCancelBookmark(id, 'BLOG', true)
+        setModalMessage('북마크에 저장되었습니다.')
       }
-      // console.log(data)
+      setModalOpen(true)
+      setTimeout(() => setModalOpen(false), 2000)
     } catch (err) {
       console.error(err)
     }
