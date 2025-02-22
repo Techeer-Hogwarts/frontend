@@ -1,19 +1,14 @@
-<<<<<<< HEAD
-export default function StudyDetailPage() {
-    return <div>Study Detail Page</div>;
-  }
-=======
 'use client'
 
-import Profile from "@/components/project/detail/study/Profile"
-import Member from "@/components/project/detail/study/Member"
-import FindMember from "@/components/project/detail/study/FindMember"
+import Profile from '@/components/project/detail/study/Profile'
+import Member from '@/components/project/detail/study/Member'
+import FindMember from '@/components/project/detail/study/FindMember'
 import StudyGoal from '@/components/project/detail/study/StudyGoal'
 import StudyPlan from '@/components/project/detail/study/StudyPlan'
-import Results from "@/components/project/detail/study/Results"
-import BaseModal from "@/components/project/modal/BaseModal"
-import Applicants from "@/components/project/detail/study/Applicants"
-import ApplicantModal from "@/components/project/modal/study/ApplicantModal"
+import Results from '@/components/project/detail/study/Results'
+import BaseModal from '@/components/project/modal/BaseModal'
+import Applicants from '@/components/project/detail/study/Applicants'
+import ApplicantModal from '@/components/project/modal/study/ApplicantModal'
 
 import { BiSolidPencil } from 'react-icons/bi'
 import Link from 'next/link'
@@ -223,4 +218,3 @@ export default function ProjectDetailpage() {
     </div>
   )
 }
->>>>>>> main
