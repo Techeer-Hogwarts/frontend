@@ -5,6 +5,7 @@ import dayjs from 'dayjs'
 import { MdOutlineCalendarMonth } from 'react-icons/md'
 import CalendarEventCard, { CalendarEventCardProps } from './CalendarEventCard'
 import useGetEvents from '@/app/calendar/api/getEventList'
+import EventsDetailModal from './EventsDetailModal'
 
 interface CalendarProps {
   selectedCategories: string[]
@@ -12,6 +13,7 @@ interface CalendarProps {
 
 export default function Calendar({ selectedCategories }: CalendarProps) {
   const [currentDate, setCurrentDate] = useState(dayjs())
+  const [selectedDate, setSelectedDate] = useState<string | null>(null)
   const daysOfWeek = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']
   const startOfMonth = currentDate.startOf('month').day()
   const daysInMonth = currentDate.daysInMonth()
@@ -46,6 +48,14 @@ export default function Calendar({ selectedCategories }: CalendarProps) {
 
   const expandedEvents = events ? expandEvents(events) : []
 
+  const handleDayClick = (date: string) => {
+    setSelectedDate(date)
+  }
+
+  const handleCloseModal = () => {
+    setSelectedDate(null)
+  }
+
   const previousMonth = () => {
     setCurrentDate(currentDate.subtract(1, 'month'))
   }
@@ -74,9 +84,10 @@ export default function Calendar({ selectedCategories }: CalendarProps) {
       daysArray.push(
         <div
           key={i}
-          className={`w-[138px] text-2xl font-bold h-[183px] border-t-2 p-2 ${
+          className={`w-[138px] text-2xl font-bold h-[183px] border-t-2 p-2 cursor-pointer hover:bg-lightgray/50 ${
             isToday ? 'border-primary bg-lightgray/30' : ''
           }`}
+          onClick={() => handleDayClick(currentDay)}
         >
           {i}
           <div className="text-xs font-medium">
@@ -109,6 +120,10 @@ export default function Calendar({ selectedCategories }: CalendarProps) {
 
     return daysArray
   }
+
+  const eventsForSelectedDate = expandedEvents.filter(
+    (event) => event.displayDate === selectedDate
+  )
 
   return (
     <div className="w-[1200px] mx-auto pt-4">
@@ -146,6 +161,15 @@ export default function Calendar({ selectedCategories }: CalendarProps) {
       </div>
       {/* 일 */}
       <div className="grid grid-cols-7 gap-7">{renderDays()}</div>
+
+      {selectedDate && (
+        <EventsDetailModal
+          date={dayjs(selectedDate).format('MM.DD')}
+          events={eventsForSelectedDate}
+          onClose={handleCloseModal}
+          onEdit={(eventId) => alert(`수정: 이벤트 ID ${eventId}`)}
+        />
+      )}
     </div>
   )
 }

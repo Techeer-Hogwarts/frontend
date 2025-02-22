@@ -6,14 +6,18 @@ import Image from 'next/image'
 import { MdOutlineCalendarMonth } from 'react-icons/md'
 import { IoIosLink } from 'react-icons/io'
 import CategoryBtn from './CategoryBtn'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import usePostEvent from '@/app/calendar/api/postEvent'
+import usePatchEvent from '@/app/calendar/api/patchEvent'
+import useGetEvent from '@/app/calendar/api/getEvent'
 
 type AddCalenderModalProps = {
   handleBack: () => void
+  mode: 'create' | 'edit'
+  eventId?: number
 }
 
-export default function AddCalenderModal({ handleBack }: AddCalenderModalProps) {
+export default function AddCalenderModal({ handleBack, mode, eventId }: AddCalenderModalProps) {
   const [formData, setFormData] = useState({
     category: '',
     title: '',
@@ -23,10 +27,25 @@ export default function AddCalenderModal({ handleBack }: AddCalenderModalProps) 
   })
 
   const { mutate: createEvent } = usePostEvent()
+  const { mutate: editEvent } = usePatchEvent()
+  const { data: eventData } = useGetEvent(eventId)
 
   const [startDateOpen, setStartDateOpen] = useState(false)
   const [endDateOpen, setEndDateOpen] = useState(false)
   const [selectedCategory, setSelectedCategory] = useState<string>('')
+
+  useEffect(() => {
+    if (mode === 'edit' && eventData) {
+      setFormData({
+        category: eventData.category,
+        title: eventData.title,
+        startDate: eventData.startDate ? new Date(eventData.startDate) : null,
+        endDate: eventData.endDate ? new Date(eventData.endDate) : null,
+        url: eventData.url,
+      })
+      setSelectedCategory(eventData.category)
+    }
+  }, [eventData, mode])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -51,14 +70,25 @@ export default function AddCalenderModal({ handleBack }: AddCalenderModalProps) 
       endDate: new Date(formData.endDate).toISOString(),
     }
 
-    createEvent(formattedData, {
-      onSuccess: () => {
-        handleBack()
-      },
-      onError: (error) => {
-        console.error('이벤트 등록 실패:', error)
-      },
-    })
+    if (mode === 'create') {
+      createEvent(formattedData, {
+        onSuccess: () => {
+          handleBack()
+        },
+        onError: (error) => {
+          console.error('이벤트 등록 실패:', error)
+        },
+      })
+    } else if (mode === 'edit' && eventId) {
+      editEvent({ eventId, eventData: formattedData }, {
+        onSuccess: () => {
+          handleBack()
+        },
+        onError: (error) => {
+          console.error('이벤트 수정 실패:', error)
+        },
+      })
+    }
   }
 
   return (
@@ -66,7 +96,7 @@ export default function AddCalenderModal({ handleBack }: AddCalenderModalProps) 
       <div className="w-[486px] h-[576px] flex flex-col items-center items-cente bg-white rounded-lg">
         <div>
           <p className="text-2xl text-center mt-7 mb-1 font-semibold">
-            일정 추가
+            {mode === 'create' ? '일정 추가' : '일정 수정'}
           </p>
           <Image
             src="/images/calendericon.png"
@@ -193,7 +223,7 @@ export default function AddCalenderModal({ handleBack }: AddCalenderModalProps) 
             onClick={handleSubmit}
             className="w-[200px] rounded-md text-sm h-[34px] bg-primary text-white"
           >
-            등록
+            {mode === 'create'? '등록' : '수정'}
           </button>
         </div>
       </div>
