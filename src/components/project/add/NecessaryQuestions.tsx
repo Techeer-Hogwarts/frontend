@@ -2,9 +2,10 @@
 
 import { useState } from 'react'
 
-export default function NecessaryQuestions() {
-  const [projectStatus, setProjectStatus] = useState('진행중') // 기본 값: 진행중
-  const [recruitStatus, setRecruitStatus] = useState('모집') // 기본 값: 모집
+export default function NecessaryQuestions({ isFinished, onUpdate }) {
+  const handleProjectStatusChange = (status) => {
+    onUpdate('isFinished', status === '완료')
+  }
 
   return (
     <div className="flex flex-col w-full gap-6">
@@ -15,9 +16,9 @@ export default function NecessaryQuestions() {
         </p>
         <div className="flex gap-2">
           <button
-            onClick={() => setProjectStatus('진행중')}
+            onClick={() => handleProjectStatusChange('진행중')}
             className={`w-[10.875rem] h-[2.125rem] border ${
-              projectStatus === '진행중'
+              !isFinished
                 ? 'border-primary  text-primary'
                 : 'border-gray text-gray'
             } rounded-[0.1875rem]`}
@@ -25,9 +26,9 @@ export default function NecessaryQuestions() {
             진행중
           </button>
           <button
-            onClick={() => setProjectStatus('완료')}
+            onClick={() => handleProjectStatusChange('완료')}
             className={`w-[10.875rem] h-[2.125rem] border ${
-              projectStatus === '완료'
+              isFinished
                 ? 'border-primary  text-primary'
                 : 'border-gray text-gray'
             } rounded-[0.1875rem]`}

@@ -11,14 +11,23 @@ interface BoxProps {
   generation: string
   imageSrc: string
   onClose: () => void
+  isLeader: boolean
+  onUpdate: (isLeader: boolean) => void
 }
 
-const SmallMemberBox = ({ name, generation, imageSrc, onClose }: BoxProps) => {
-  const [isLeader, setIsLeader] = useState(false)
+const SmallMemberBox = ({
+  name,
+  generation,
+  imageSrc,
+  onClose,
+  isLeader,
+  onUpdate,
+}: any) => {
   const [selectedRoles, setSelectedRoles] = useState<string[]>([])
 
   const handleToggleLeader = () => {
-    setIsLeader((prev) => !prev)
+    const updatedLeaderState = !isLeader
+    onUpdate(updatedLeaderState)
   }
 
   const handleRoleClick = (role: string) => {

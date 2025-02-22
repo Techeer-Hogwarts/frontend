@@ -9,5 +9,5 @@ export default function page() {
     { name: '최수지', generation: '8기', imageSrc: '/profile5.png' },
   ]
 
-  return <MemberModal initialMembers={initialMembers} />
+  return <MemberModal />
 }
