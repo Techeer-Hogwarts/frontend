@@ -53,6 +53,7 @@ export default function AddPostModal() {
             title="블로그 링크를 입력해주세요"
             placeholder="www.TecheerBlog.com"
             name="title"
+            essential="*"
             value={blogLink}
             handleInputChange={handleInputChange}
           />
