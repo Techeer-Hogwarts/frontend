@@ -3,8 +3,11 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import { IoChevronDownSharp, IoChevronUpSharp } from 'react-icons/io5'
+import { getPositionStyle } from '@/styles/positionStyles'
+
 interface Applicant {
   id: number
+  userId: number
   name: string
   isLeader: boolean
   teamRole: string
@@ -33,10 +36,12 @@ function Box({
   profileImage?: string
   onClick?: () => void
 }) {
+  const { bg, textColor } = getPositionStyle(position)
+
   return (
     <div
       onClick={onClick}
-      className="flex items-center justify-between w-[19rem] h-[2.75rem] p-2 bg-gray-100 hover:bg-[#F5F5F5]"
+      className="flex items-center justify-between w-[19rem] h-[2.75rem] p-2 bg-gray-100 hover:bg-[#F5F5F5] cursor-pointer"
     >
       <div className="flex items-center">
         <Image
@@ -44,25 +49,21 @@ function Box({
           width={36}
           height={36}
           alt="Picture"
-          className="border rounded-lg mr-[0.75rem]"
+          className="border rounded-lg mr-[0.75rem] w-[36px] h-[36px] object-cover"
         />
         <div className="flex items-center gap-1">
           <p className="font-semibold">{name}</p>
           <p className="text-[#7B7B7B] text-sm">{year}기</p>
         </div>
       </div>
-      <div className="bg-lightblue text-blue px-3 py-1 rounded-md text-sm ">
+      <div className={`bg-${bg} ${textColor} px-3 py-1 rounded-md text-sm`}>
         {position}
       </div>
     </div>
   )
 }
 
-export default function Applicants({
-  projectType,
-  applicants,
-  onOpen,
-}: any) {
+export default function Applicants({ projectType, applicants, onOpen }: any) {
   const [isOpen, setIsOpen] = useState(false)
 
   const toggleDropdown = () => {

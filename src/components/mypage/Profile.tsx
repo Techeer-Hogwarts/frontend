@@ -297,6 +297,7 @@ export default function Profile({ profile }: ProfileProps) {
         placeholder="이름을 입력해주세요(시니어멘토는 영어 이름 입력 가능)"
         value={name}
         onChange={(e) => setName(e.target.value)}
+        readOnly
       />
 
       {/* 학교 정보 */}

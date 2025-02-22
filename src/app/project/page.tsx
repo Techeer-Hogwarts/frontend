@@ -8,7 +8,7 @@ import TapBar from '@/components/common/TapBar'
 import Dropdown from '@/components/common/Dropdown'
 import AddBtn from '../../components/project/add/AddBtn'
 import { useQueries } from '@tanstack/react-query'
-// import Loading from '@/components/common/Loading'
+import Loading from '@/components/common/Loading'
 
 import { getAllTeams } from '@/api/project/common'
 import { getMyInfo } from '@/api/project/common'
@@ -82,9 +82,9 @@ export default function Project() {
   }
 
   // 로딩 중
-  // if (!allTeams) {
-  //   return <Loading />
-  // }
+  if (!allTeams) {
+    return <Loading />
+  }
 
   return (
     <div className="max-w-[1200px] w-[1200px] mt-[3.56rem] items-center">

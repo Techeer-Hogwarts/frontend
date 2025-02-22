@@ -8,20 +8,22 @@ import Results from '@/components/project/detail/Results'
 import Applicants from '@/components/project/detail/Applicants'
 import { BiSolidPencil } from 'react-icons/bi'
 import Link from 'next/link'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import { useQueryClient } from '@tanstack/react-query'
+import Loading from '@/components/common/Loading'
 
-import ApplyModal from '@/components/project/modal/ApplyModal'
-import ProjectMemberModal from "@/components/project/modal/ProjectModal"
 import {
   getProjectDetail,
   deleteProjectTeam,
+  getStudyApplicants,
   handleCloseProject,
-  denyProjectApplicant,
+  handleDenyProject,
 } from '@/api/project/project/project'
 import { useQuery } from '@tanstack/react-query'
-import { useState } from 'react'
 import BaseModal from '@/components/project/modal/BaseModal'
 import ApplicantModal from '@/components/project/modal/ApplicantModal'
+import { useAuthStore } from '@/store/authStore'
 
 export default function ProjectDetailpage() {
   const MODAL_TEXT_MAP = {
@@ -37,16 +39,44 @@ export default function ProjectDetailpage() {
   }
 
   const router = useRouter()
-  const projectId = Number(localStorage.getItem('projectId'))
-  const projectType = localStorage.getItem('projectType')
+  const queryClient = useQueryClient()
 
-  // React Query로 프로젝트 상세 데이터 가져오기
+  const [projectId, setProjectId] = useState<number | null>(null)
+  const [projectType, setProjectType] = useState<string | null>(null)
+
+  useEffect(() => {
+    const storedId = localStorage.getItem('projectId')
+    const storedProjectType = localStorage.getItem('projectType')
+
+    if (storedId) {
+      setProjectId(Number(storedId))
+    }
+
+    if (storedProjectType) {
+      setProjectType(storedProjectType)
+    }
+  }, [])
+
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [modalType, setModalType] = useState<
+    'delete' | 'close' | 'cancel' | null
+  >(null)
+
+  // (1) 프로젝트 상세 데이터
   const { data: projectDetails } = useQuery({
     queryKey: ['getProjectDetails', projectId],
     queryFn: () => getProjectDetail(projectId),
+    enabled: projectId !== null,
   })
 
-  // 지원자 상세 조회 모달 상태
+  // (2) 프로젝트 지원자 (팀원만 조회 가능하게 프론트에서 처리해야함)
+  const { data: studyApplicants } = useQuery({
+    queryKey: ['getStudyApplicants', projectId],
+    queryFn: () => getStudyApplicants(projectId),
+    enabled: projectId !== null,
+  })
+
+  // 지원자 모달
   const [isApplicantModalOpen, setIsApplicantModalOpen] = useState(false)
   const [selectedApplicant, setSelectedApplicant] = useState(null)
 
@@ -54,47 +84,136 @@ export default function ProjectDetailpage() {
     setSelectedApplicant(applicant)
     setIsApplicantModalOpen(true)
   }
-
   const handleModalClose = () => {
     setIsApplicantModalOpen(false)
     setSelectedApplicant(null)
   }
 
-  const handleApply = () => {
-    router.push('/project/detail/project/1/applyProject')
+  // 지원하기 페이지 이동
+  const handleModal = () => {
+    router.push(`/project/detail/project/${projectId}/applyProject`)
+  }
+
+  // 로그인 유저 정보
+  const { user } = useAuthStore()
+  // 팀원 여부 판단
+  const isTeamMember = projectDetails?.projectMember?.some(
+    (member) => member.email === user?.email,
+  )
+
+  // 로딩 중
+  if (!projectDetails) {
+    return <Loading />
+  }
+
+  const { isRecruited } = projectDetails
+
+  // 현재 사용자가 이미 지원자인지 팒별
+  const isApplicant = studyApplicants?.some((app) => app.userId === user?.id)
+
+  // 모달 확인 클릭
+  const handleModalConfirm = async () => {
+    if (!projectId) return
+
+    try {
+      if (modalType === 'delete') {
+        // 삭제하기
+        await deleteProjectTeam(projectId)
+        // 삭제 후 /project 페이지로 이동
+        router.push('/project')
+      } else if (modalType === 'close') {
+        // 마감하기
+        await handleCloseProject(projectId)
+        queryClient.invalidateQueries({
+          queryKey: ['getStudyApplicants', projectId],
+        })
+        // 새로고침
+        router.refresh()
+      } else if (modalType === 'cancel') {
+        // 지원 취소
+        await handleDenyProject(projectId)
+        queryClient.invalidateQueries({
+          queryKey: ['getStudyApplicants', projectId],
+        })
+        // 새로고침
+        router.refresh()
+      }
+    } catch (error) {
+      console.error(error)
+    } finally {
+      setIsModalOpen(false)
+    }
+  }
+
+  const handleEdit = async () => {
+    // 1) 편집 페이지로 넘어가기 전에 최신 데이터 보장
+    // await queryClient.invalidateQueries({
+    //   queryKey: ['getProjectDetails', projectId],
+    // })
+
+    // 2) 편집 페이지로 이동
+    router.push(`/project/detail/project/edit/${projectId}`)
   }
 
   return (
     <div className="relative flex justify-between mt-[2.75rem]">
+      {isModalOpen && (
+        <BaseModal
+          text={MODAL_TEXT_MAP[modalType]}
+          btn={MODAL_BTN_TEXT_MAP[modalType]}
+          onClose={() => setIsModalOpen(false)}
+          onClick={handleModalConfirm}
+        />
+      )}
       {isApplicantModalOpen && selectedApplicant && (
         <ApplicantModal
           applicant={selectedApplicant}
           onClose={handleModalClose}
         />
       )}
-      <div className="flex rounded-xl items-center justify-center border border-primary absolute top-[-1rem] right-0 w-[8.375rem] h-[2.125rem]">
-        <Link
-          href={`/project/detail/project/edit/${projectId}`}
-          className="flex justify-center items-center gap-2 text-primary font-semibold"
-        >
-          <BiSolidPencil size={14} color="#FE9142" />
-          편집하기
-        </Link>
-      </div>
 
+      {/* (A) 팀원이라면 편집/삭제 */}
+      {isTeamMember && (
+        <div className="flex items-center justify-center absolute top-[-1rem] right-0 gap-2">
+          <button
+            onClick={handleEdit}
+            className="flex justify-center items-center gap-2 text-primary font-semibold border border-primary rounded-xl w-[8.375rem] h-[2.125rem]"
+          >
+            <BiSolidPencil size={14} color="#FE9142" />
+            편집하기
+          </button>
+          <button
+            onClick={() => {
+              setIsModalOpen(true)
+              setModalType('delete')
+            }}
+            className="flex justify-center items-center gap-2 text-primary font-semibold border border-primary rounded-xl w-[8.375rem] h-[2.125rem]"
+          >
+            <BiSolidPencil size={14} color="#FE9142" />
+            삭제하기
+          </button>
+        </div>
+      )}
+
+      {/* 왼쪽 영역 */}
       <div>
         <Profile projectDetail={projectDetails} />
-        <Applicants
-          projectType={projectType}
-          applicants={projectDetails?.projectApplicants || []}
-          onOpen={handleModalOpen}
-        />
+
+        {/* 팀원 + isRecruited → 지원자 목록 */}
+        {isTeamMember && isRecruited && (
+          <Applicants
+            applicants={studyApplicants || []}
+            onOpen={handleModalOpen}
+            projectType="project"
+          />
+        )}
       </div>
 
+      {/* 오른쪽 영역 */}
       <div className="flex flex-col gap-7">
         <Member members={projectDetails?.projectMember} />
-        {/* <Stack stacks={projectDetails?.teamStacks} /> */}
-        {projectDetails?.isRecruited && (
+        <Stack stacks={projectDetails?.teamStacks} />
+        {isRecruited && (
           <FindMember
             projectDetail={projectDetails}
             projectType={projectType}
@@ -106,12 +225,46 @@ export default function ProjectDetailpage() {
           }
         />
 
-        <button
-          onClick={handleApply}
-          className="w-full h-[2.16044rem] border border-primary text-primary rounded-md hover:shadow-md"
-        >
-          지원하기
-        </button>
+        {/* 
+          (A) 팀원이 아니고 isRecruited === true → 
+          - 이미 지원자(isApplicant === true)면 '지원 취소하기'만 
+          - 아니면 '지원하기'만
+        */}
+        {!isTeamMember && isRecruited && (
+          <>
+            {isApplicant ? (
+              <button
+                onClick={() => {
+                  setIsModalOpen(true)
+                  setModalType('cancel')
+                }}
+                className="w-full h-[2.16044rem] border border-primary text-primary rounded-md hover:shadow-md"
+              >
+                지원 취소하기
+              </button>
+            ) : (
+              <button
+                onClick={handleModal}
+                className="w-full h-[2.16044rem] border border-primary text-primary rounded-md hover:shadow-md"
+              >
+                지원하기
+              </button>
+            )}
+          </>
+        )}
+
+        {/* 팀원이면서 isRecruited → 마감하기 */}
+        {isTeamMember && isRecruited && (
+          <button
+            onClick={() => {
+              setIsModalOpen(true)
+              setModalType('close')
+            }}
+            className="w-full h-[2.16044rem] border border-primary text-primary rounded-md hover:shadow-md"
+          >
+            마감하기
+          </button>
+        )}
       </div>
     </div>
   )

@@ -2,10 +2,12 @@
 
 import AddBtn from './AddBtn'
 import Carousel from './Carousel'
+
 interface Team {
   id: number
   name: string
-  resultImages: string[]
+  resultImages?: string[]
+  mainImage?: string
 }
 
 interface Experience {

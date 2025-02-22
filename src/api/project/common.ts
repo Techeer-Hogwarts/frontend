@@ -14,7 +14,7 @@ interface ProjectTeam extends TeamBase {
   frontendNum: number
   backendNum: number
   devopsNum: number
-  uiuxNum: number
+  fullStackNum: number
   dataEngineerNum: number
   projectExplain: string
   mainImages: string[]

@@ -65,7 +65,6 @@ export const useAuthStore = create<AuthState>((set) => ({
       if (response.ok) {
         const data: User = await response.json()
         set({ isLoggedIn: true, user: data })
-        localStorage.setItem('userId', data.id.toString())
       } else {
         set({ isLoggedIn: false })
       }

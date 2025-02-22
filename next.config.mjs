@@ -9,8 +9,15 @@ const nextConfig = {
         port: '',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'techeerzip-bucket.s3.ap-southeast-2.amazonaws.com',
+        port: '',
+        pathname: '/**',
+      },
     ],
   },
+
   reactStrictMode: true,
 
   images: {
