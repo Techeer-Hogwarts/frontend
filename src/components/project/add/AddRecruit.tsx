@@ -4,9 +4,27 @@ import { useEffect, useState } from 'react'
 
 import RecruitInput from '../RecruitInput'
 
-export default function AddRecruit() {
-  const [recruitStatus, setRecruitStatus] = useState('모집하지 않음')
-  const [description, setDescription] = useState('')
+interface AddRecruitProps {
+  isRecruited: boolean
+  recruitNum?: number
+  frontendNum?: number
+  backendNum?: number
+  devopsNum?: number
+  fullStackNum?: number
+  recruitExplain: string
+  onUpdate: (key: string, value: any) => void
+}
+
+export default function AddRecruit({
+  isRecruited,
+  recruitNum,
+  frontendNum,
+  backendNum,
+  devopsNum,
+  fullStackNum,
+  recruitExplain,
+  onUpdate,
+}: AddRecruitProps) {
   const [projectType, setProjectType] = useState<null | string>(null)
 
   useEffect(() => {
@@ -15,6 +33,26 @@ export default function AddRecruit() {
       setProjectType(storedProjectType)
     }
   }, [])
+
+  const handleRecruitStatusChange = (status) => {
+    onUpdate('isRecruited', status === '모집')
+  }
+
+  // const handleRecruitNumChange = (event) => {
+  //   onUpdate('recruitNum', Number(event.target.value))
+  // }
+
+  const handleRecruitNumChange = (
+    role: string,
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const value = Number(event.target.value)
+    onUpdate(role, value)
+  }
+
+  const handleRecruitExplainChange = (event) => {
+    onUpdate('recruitExplain', event.target.value)
+  }
 
   return (
     <div>
@@ -25,9 +63,9 @@ export default function AddRecruit() {
         </p>
         <div className="flex gap-2">
           <button
-            onClick={() => setRecruitStatus('모집')}
+            onClick={() => handleRecruitStatusChange('모집')}
             className={`w-[10.875rem] h-[2.125rem] border ${
-              recruitStatus === '모집'
+              isRecruited
                 ? 'border-primary text-primary'
                 : 'border-gray text-gray'
             } rounded-[0.1875rem]`}
@@ -35,11 +73,11 @@ export default function AddRecruit() {
             모집
           </button>
           <button
-            onClick={() => setRecruitStatus('모집하지 않음')}
+            onClick={() => handleRecruitStatusChange('모집하지 않음')}
             className={`w-[10.875rem] h-[2.125rem] border ${
-              recruitStatus === '모집하지 않음'
-                ? 'border-primary text-primary'
-                : 'border-gray text-gray'
+              isRecruited
+                ? 'border-gray text-gray'
+                : 'border-primary text-primary'
             } rounded-[0.1875rem]`}
           >
             모집하지 않음
@@ -48,7 +86,7 @@ export default function AddRecruit() {
       </div>
 
       {/* 조건부 렌더링으로 모집정보 컴포넌트 표시 */}
-      {recruitStatus === '모집' && (
+      {isRecruited && (
         <div className="mt-6">
           <p className="font-medium text-gray mb-[1.22rem]">
             모집정보를 입력해주세요<span className="text-primary">*</span>
@@ -56,20 +94,56 @@ export default function AddRecruit() {
           <div className="flex gap-[0.84rem]">
             {projectType === 'study' ? (
               // 단일 역할 입력만 표시
-              <RecruitInput role="인원 입력" placeholder="1명" />
+              <RecruitInput
+                role="인원 입력"
+                placeholder="1명"
+                value={recruitNum || ''}
+                onChange={(event) =>
+                  handleRecruitNumChange('recruitNum', event)
+                }
+              />
             ) : (
               // 여러 역할 입력을 표시
               <>
-                <RecruitInput role="Frontend" placeholder="1명" />
-                <RecruitInput role="Backend" placeholder="1명" />
-                <RecruitInput role="DevOps" placeholder="1명" />
+                <RecruitInput
+                  role="Frontend"
+                  placeholder="1명"
+                  value={recruitNum || ''}
+                  onChange={(event) =>
+                    handleRecruitNumChange('frontendNum', event)
+                  }
+                />
+                <RecruitInput
+                  role="Backend"
+                  placeholder="1명"
+                  value={recruitNum || ''}
+                  onChange={(event) =>
+                    handleRecruitNumChange('backendNum', event)
+                  }
+                />
+                <RecruitInput
+                  role="DevOps"
+                  placeholder="1명"
+                  value={recruitNum || ''}
+                  onChange={(event) =>
+                    handleRecruitNumChange('devopsNum', event)
+                  }
+                />
+                <RecruitInput
+                  role="Full Stack"
+                  placeholder="1명"
+                  value={fullStackNum || ''}
+                  onChange={(event) =>
+                    handleRecruitNumChange('fullStackNum', event)
+                  }
+                />
               </>
             )}
           </div>
 
           <textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            value={recruitExplain || ''}
+            onChange={handleRecruitExplainChange}
             maxLength={1000}
             className="w-full h-[11.375rem] border border-gray rounded-xl p-4"
             placeholder={`• Of the techeer, By the techeer, For the techeer
@@ -78,7 +152,7 @@ export default function AddRecruit() {
       `}
           />
           <p className="text-right text-xs mt-1 text-gray">
-            {description.length}/1000
+            {recruitExplain.length}/1000
           </p>
         </div>
       )}

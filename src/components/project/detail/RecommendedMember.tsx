@@ -69,7 +69,7 @@ export default function MemberList() {
 
       <div
         className={`${
-          isOpen ? 'max-h-96' : 'max-h-0'
+          isOpen ? 'max-h-60' : 'max-h-0'
         }  overflow-y-auto transition-max-height duration-500 ease-in-out  w-[19rem]  mt-3 flex flex-col gap-2 shadow-bgshadow rounded-[0.63rem]  "`}
       >
         {members.map((member) => (

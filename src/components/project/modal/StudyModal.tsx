@@ -4,36 +4,95 @@ import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import SmallMemberBox from './SmallMemberBox'
 import { useRouter } from 'next/navigation'
+import { useQuery } from '@tanstack/react-query'
+import { getAllUsers } from '@/api/project/common'
+import { useAuthStore } from '@/store/authStore'
 
 interface Member {
+  id: number
   name: string
   generation: string
-  imageSrc?: string | null
+  profileImage?: string | null
+  isLeader: boolean
 }
 
 interface MemberModalProps {
-  initialMembers: Member[]
+  existingMembers: any
+  onClose: () => void
+  onSave: (selectedMembers: Member[]) => void
 }
 
-const MemberModal = ({ initialMembers }: MemberModalProps) => {
+const MemberModal = ({
+  existingMembers,
+  onClose,
+  onSave,
+}: MemberModalProps) => {
   const dropDownRef = useRef<HTMLInputElement>(null)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const [name, setName] = useState('')
-  const [filteredOptions, setFilteredOptions] =
-    useState<Member[]>(initialMembers)
+  const [members, setMembers] = useState<Member[]>([])
+  const userId = localStorage.getItem('userId')
 
-  const router = useRouter()
+  //모든 사용자 목록
+  const { data: allUsers } = useQuery({
+    queryKey: ['getAllUsers'],
+    queryFn: getAllUsers,
+  })
 
-  // 이름 검색 필터링
+  // 현재 사용자
+  const { user } = useAuthStore()
+
+  // 사람 선택
   const handleName = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
     setName(value)
-    const filtered = initialMembers.filter((member) =>
-      member.name.includes(value),
-    )
-    setFilteredOptions(filtered)
     setIsDropdownOpen(true)
   }
+
+  //컴포넌트에 입력자 자동 추가
+  useEffect(() => {
+    if (user) {
+      const alreadyExists = existingMembers.some(
+        (m) => m.userId === user.id || m.id === user.id,
+      )
+      if (!alreadyExists) {
+        // 모달 내부 members에도 없으면 추가
+        setMembers((prev: any) => {
+          const inModal = prev.some((mm) => mm.id === user.id)
+          if (!inModal) {
+            return [
+              ...prev,
+              {
+                id: user.id,
+                name: user.name,
+                year: user.year,
+                profileImage: user.profileImage,
+                isLeader: true, // 원하는 초기값
+                teamRole: '',
+              },
+            ]
+          }
+          return prev
+        })
+      }
+    }
+  }, [user, existingMembers])
+
+  // 드롭다운 필터
+  const filteredUsers = allUsers?.filter((u) => {
+    // 1) 이미 모달 내부(members)에 추가된 유저는 제외
+    const inModal = members.some((m) => m.id === u.id)
+    if (inModal) return false
+
+    // 2) 이미 상위에 존재(existingMembers)하면 제외
+    const inExisting = existingMembers.some(
+      (em) => em.userId === u.id || em.id === u.id,
+    )
+    if (inExisting) return false
+
+    // 3) 이름 검색
+    return u.name.toLowerCase().includes(name.toLowerCase())
+  })
 
   // 바깥 클릭 시 드롭다운 닫기
   useEffect(() => {
@@ -48,24 +107,13 @@ const MemberModal = ({ initialMembers }: MemberModalProps) => {
     }
   }, [isDropdownOpen])
 
-  const [members, setMembers] = useState<Member[]>([
-    { name: '홍길동', generation: '8기' },
-    { name: '김철수', generation: '8기' },
-    { name: '김철수', generation: '8기' },
-    { name: '김철수', generation: '8기' },
-    { name: '김철수', generation: '8기' },
-    { name: '김철수', generation: '8기' },
-    { name: '김철수', generation: '8기' },
-    { name: '김철수', generation: '8기' },
-    { name: '김철수', generation: '8기' },
-    { name: '김철수', generation: '8기' },
-    { name: '김철수', generation: '8기' },
-  ])
-
   // 멤버 추가
   const handleAddMember = (member: Member) => {
-    if (!members.find((m) => m.name === member.name)) {
-      setMembers((prevMembers) => [...prevMembers, member])
+    if (!members.some((m) => m.id === member.id)) {
+      setMembers((prevMembers) => [
+        ...prevMembers,
+        { ...member, isLeader: false },
+      ])
     }
     setIsDropdownOpen(false)
   }
@@ -77,6 +125,15 @@ const MemberModal = ({ initialMembers }: MemberModalProps) => {
     )
   }
 
+  // 리더 업데이트 함수
+  const handleUpdateLeader = (id: number, isLeader: boolean) => {
+    setMembers((prevMembers) =>
+      prevMembers.map((member) =>
+        member.id === id ? { ...member, isLeader } : member,
+      ),
+    )
+  }
+
   return (
     <div className="z-50 fixed inset-0 flex justify-center items-center bg-black bg-opacity-70 text-center">
       <div className="flex flex-col p-7 w-[30.375rem] h-[39.375rem] bg-white border rounded-xl">
@@ -85,7 +142,6 @@ const MemberModal = ({ initialMembers }: MemberModalProps) => {
         </p>
         <div className="mb-6">
           <p className="text-left mb-3">이름을 입력해주세요</p>
-
           <input
             type="text"
             className="w-full h-[2rem] border border-gray rounded-sm"
@@ -97,14 +153,14 @@ const MemberModal = ({ initialMembers }: MemberModalProps) => {
 
           {isDropdownOpen && (
             <div className="absolute w-[26.25rem] bg-white border border-gray mt-1 max-h-48 overflow-y-auto z-10">
-              {filteredOptions?.map((member, index) => (
+              {allUsers?.map((member) => (
                 <div
-                  key={index}
+                  key={member.id}
                   className="flex items-center gap-2 p-2 cursor-pointer hover:bg-lightprimary"
                   onClick={() => handleAddMember(member)}
                 >
                   <Image
-                    src={member.imageSrc || '/'}
+                    src={member.profileImage || '/'}
                     alt="Profile"
                     width={24}
                     height={24}
@@ -123,13 +179,15 @@ const MemberModal = ({ initialMembers }: MemberModalProps) => {
           className={`flex flex-wrap justify-between w-full h-[25m] overflow-y-auto gap-2 ${members.length > 10 ? '' : 'px-1'}`}
         >
           {members.length > 0 ? (
-            members.map((member, index) => (
+            members.map((member) => (
               <SmallMemberBox
-                key={member.name} //추후 member.id로 교체 예정
+                key={member.id}
                 name={member.name}
                 generation={member.generation}
-                imageSrc={member.imageSrc || '/default-profile.png'}
+                imageSrc={member.profileImage || '/default-profile.png'}
+                isLeader={member.isLeader}
                 onClose={() => handleRemoveMember(member.name)}
+                onUpdate={(isLeader) => handleUpdateLeader(member.id, isLeader)}
               />
             ))
           ) : (
@@ -142,7 +200,7 @@ const MemberModal = ({ initialMembers }: MemberModalProps) => {
         <div className="flex gap-4 mt-auto pt-4">
           <button
             type="button"
-            onClick={() => router.back()}
+            onClick={onClose}
             className="w-[200px] rounded-md text-sm h-[34px] bg-white text-gray border border-lightgray"
           >
             취소
@@ -150,6 +208,7 @@ const MemberModal = ({ initialMembers }: MemberModalProps) => {
           <button
             type="submit"
             className={`w-[200px] rounded-md text-sm h-[34px] text-white ${members.length > 0 ? 'bg-primary text-white' : 'bg-lightgray'}`}
+            onClick={() => onSave(members)}
           >
             저장하기
           </button>

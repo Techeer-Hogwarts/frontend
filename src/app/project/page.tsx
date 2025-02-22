@@ -1,14 +1,72 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import Card from '@/components/project/Card'
+import ProjectCard from '@/components/project/ProjectCard'
+import StudyCard from '@/components/project/StudyCard'
 import TapBar from '@/components/common/TapBar'
 import Dropdown from '@/components/common/Dropdown'
 import AddBtn from '../../components/project/add/AddBtn'
+import { useQueries } from '@tanstack/react-query'
+
+import { getAllTeams } from '@/api/project/common'
+import { getMyInfo } from '@/api/project/common'
+
+interface TeamBase {
+  id: number
+  isDeleted: boolean
+  isRecruited: boolean
+  isFinished: boolean
+  name: string
+  createdAt: string
+}
+
+interface ProjectTeam extends TeamBase {
+  type: 'project'
+  frontendNum: number
+  backendNum: number
+  devopsNum: number
+  uiuxNum: number
+  dataEngineerNum: number
+  projectExplain: string
+  mainImages: string[]
+  teamStacks: { stackName: string; isMain: boolean }[]
+}
+
+interface StudyTeam extends TeamBase {
+  type: 'study'
+  recruitNum: number
+  studyExplain: string
+}
+
+type Team = ProjectTeam | StudyTeam
+
+interface TeamsResponse {
+  allTeams: Team[]
+}
 
 export default function Project() {
+  const [projectId, setProjectId] = useState<number | null>(null)
   const [selectedPeriods, setSelectedPeriods] = useState<string[]>(['0'])
+
+  const [{ data: allTeams }] = useQueries({
+    queries: [
+      // {
+      //   queryKey: ['getMyInfo'],
+      //   queryFn: getMyInfo,
+      // },
+      {
+        queryKey: ['getAllTeams', projectId],
+        queryFn: getAllTeams,
+      },
+    ],
+  })
+
+  useEffect(() => {
+    const id = Number(localStorage.getItem('projectId'))
+    setProjectId(id)
+  }, [])
+
   const [inputValue, setInputValue] = useState('')
 
   // const handleSearch = (query: string) => {
@@ -19,8 +77,8 @@ export default function Project() {
   const handleCategoryChange = () => {}
 
   return (
-    <div className=" max-w-[1200px] w-[1200px] mt-[3.56rem] items-center">
-      <div className="flex justify-between mb-[2.84rem] ">
+    <div className="max-w-[1200px] w-[1200px] mt-[3.56rem] items-center">
+      <div className="flex justify-between mb-[2.84rem]">
         {/* 왼쪽 텍스트 영역 */}
         <div>
           <div className="text-[2.5rem] font-bold">프로젝트</div>
@@ -34,7 +92,7 @@ export default function Project() {
           <Link
             href="/"
             type="button"
-            className="w-[13.1875rem] h-[3.3125rem] text-center  rounded-lg shadow-md justify-center text-[1.125rem] flex items-center hover:shadow-custom"
+            className="w-[13.1875rem] h-[3.3125rem] text-center rounded-lg shadow-md justify-center text-[1.125rem] flex items-center hover:shadow-custom"
           >
             내 프로젝트 확인하기
             <span className="ml-2">✨</span>
@@ -74,6 +132,7 @@ export default function Project() {
           <Card key={el} />
         ))} */}
       </div>
+
       <AddBtn />
     </div>
   )

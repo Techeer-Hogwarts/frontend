@@ -2,8 +2,46 @@
 
 import { create } from 'zustand'
 
+interface ProjectTeam {
+  id: number
+  name: string
+  resultImages: string[]
+}
+
+interface Experience {
+  id: number
+  position: string
+  companyName: string
+  startDate: string
+  endDate: string
+  category: string
+  isFinished: boolean
+}
+
+interface User {
+  id: number
+  profileImage: string
+  name: string
+  nickname: string
+  email: string
+  school: string
+  grade: string
+  mainPosition: string
+  subPosition: string
+  githubUrl: string | null
+  mediumUrl: string | null
+  velogUrl: string | null
+  tistoryUrl: string | null
+  isLft: boolean
+  year: number
+  stack: string[]
+  projectTeams: ProjectTeam[]
+  experiences: Experience[]
+}
+
 interface AuthState {
   isLoggedIn: boolean
+  user: User | null
   setIsLoggedIn: (status: boolean) => void
   checkAuth: () => Promise<void>
   logout: () => Promise<void>
@@ -11,8 +49,10 @@ interface AuthState {
 
 export const useAuthStore = create<AuthState>((set) => ({
   isLoggedIn: false,
+  user: null,
 
   setIsLoggedIn: (status: boolean) => set({ isLoggedIn: status }),
+  setUser: (user: User | null) => set({ user }),
 
   // 쿠키의 유효성을 서버 API로 확인
   checkAuth: async () => {
@@ -23,7 +63,9 @@ export const useAuthStore = create<AuthState>((set) => ({
       })
 
       if (response.ok) {
-        set({ isLoggedIn: true })
+        const data: User = await response.json()
+        set({ isLoggedIn: true, user: data })
+        localStorage.setItem('userId', data.id.toString())
       } else {
         set({ isLoggedIn: false })
       }

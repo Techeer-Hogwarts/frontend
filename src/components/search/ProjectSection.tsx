@@ -1,4 +1,4 @@
-import Card from '@/components/project/Card'
+import Card from '@/components/project/ProjectCard'
 import Section from './Section'
 import CardItem from './CardItem'
 import { useState } from 'react'

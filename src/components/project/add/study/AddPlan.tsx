@@ -2,11 +2,9 @@
 
 import React, { useState } from 'react'
 
-export default function AddPlan() {
-  const [plan, setPlan] = useState('')
-
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPlan(event.target.value)
+export default function AddPlan({ rule, onUpdate }) {
+  const handleInputChange = (e) => {
+    onUpdate('rule', e.target.value)
   }
 
   return (
@@ -21,12 +19,12 @@ export default function AddPlan() {
 (예시)
 - 주에 한번씩 만나서 정해진 분량의 책을 읽고 정리해옵니다.
 - 정리해온 내용을 한 명이 발표하고 이후 해당 주제에 대한 토론을 진행합니다.`}
-        onChange={(e) => setPlan(e.target.value)}
-        value={plan}
+        onChange={handleInputChange}
+        value={rule}
         maxLength={1000}
         className="w-[52.5rem] h-[11.375rem] p-[1.25rem] whitespace-pre-line rounded-xl border border-gray"
       />
-      <p className="text-right text-xs mt-1 text-gray">{plan.length}/1000</p>
+      <p className="text-right text-xs mt-1 text-gray">{rule.length}/1000</p>
     </div>
   )
 }
