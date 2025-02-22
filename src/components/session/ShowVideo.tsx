@@ -10,7 +10,7 @@ export default function ShowVideo() {
   const params = useParams()
   const sessionId = params.id as string
   const onClickBack = () => {
-    router.push('/session')
+    window.location.href = '/session'
   }
   useEffect(() => {
     const fetchSignleSession = async (sessionId: string) => {
