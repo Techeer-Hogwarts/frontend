@@ -12,9 +12,6 @@ import SkeletonCardItem from '@/components/search/SkeletonCard'
 import EmptyLottie from '@/components/common/EmptyLottie'
 
 export default function Search() {
-  // 쿼리 파라미터 가져오기
-  const searchParams = useSearchParams()
-  const query = searchParams.get('query') // 'query' 파라미터 값 가져오기
   const [results, setResults] = useState<{
     project: any[]
     blog: any[]
@@ -27,6 +24,16 @@ export default function Search() {
     session: [],
   })
   const [isLoading, setIsLoading] = useState(true)
+  const [query, setQuery] = useState<string>('')
+
+  // 클라이언트 사이드에서만 실행되도록 변경
+  useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search)
+    const queryParam = searchParams.get('query')
+    if (queryParam) {
+      setQuery(queryParam)
+    }
+  }, []) // 페이지 처음 로딩 시 한 번만 실행
 
   useEffect(() => {
     if (query) {
