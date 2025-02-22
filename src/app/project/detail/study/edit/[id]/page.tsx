@@ -4,13 +4,13 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
 
-import AddMember from '@/components/project/add/AddMember'
-import AddProfile from '@/components/project/add/AddProfile'
-import AddResults from '@/components/project/add/project/AddResults'
+import AddMember from '@/components/project/add/study/AddMember'
+import AddProfile from '@/components/project/add/study/AddProfile'
+import AddResults from '@/components/project/add/study/AddResults'
 import NecessaryQuestions from '@/components/project/add/NecessaryQuestions'
 import AddGoal from '@/components/project/add/study/AddGoal'
 import AddPlan from '@/components/project/add/study/AddPlan'
-import AddRecruit from '@/components/project/add/AddRecruit'
+import AddRecruit from '@/components/project/add/study/AddRecruit'
 
 import {
   getStudyDetail,
@@ -116,12 +116,12 @@ export default function AddStudyPage() {
               recruitExplain={studyData.recruitExplain}
               onUpdate={handleUpdate}
             />
-            <AddResults
+            {/* <AddResults
               existingUrls={studyData.resultImages || []}
               resultImages={studyData.resultImages || []}
               deleteImages={studyData.deleteImages || []}
               onUpdate={handleUpdate}
-            />
+            /> */}
 
             <button
               type="button"

@@ -1,6 +1,6 @@
 'use client'
 
-import Btn from './Btn'
+import Btn from '../Btn'
 
 import { useState } from 'react'
 import Image from 'next/image'
