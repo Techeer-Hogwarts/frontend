@@ -91,7 +91,6 @@ export default function EditSession() {
   const sessionId = params.id as string
   const [debouncedThumbnail, setDebouncedThumbnail] = useState('')
   const [thumbnailError, setThumbnailError] = useState(false)
-  const [userId, setUserId] = useState(false)
   const [formData, setFormData] = useState<SessionFormData>(initialFormData)
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
 
@@ -123,12 +122,13 @@ export default function EditSession() {
     setFormData((prev) => ({ ...prev, date: value }))
   }
 
-  const fetchSignleSession = async () => {
-    getUser()
+  const fetchSignleSession = async (name: string) => {
     try {
       const singleVideo = await getSingleSession(sessionId)
       setFormData(singleVideo)
-      if (singleVideo.id !== userId) {
+      // console.log('a', singleVideo.user.name)
+      // console.log('b', name)
+      if (singleVideo.user.name !== name) {
         window.location.href = '/session'
         alert('본인이 작성한 게시물만 수정할 수 있습니다.')
         return
@@ -151,14 +151,14 @@ export default function EditSession() {
         throw new Error(`${response.status}`)
       }
       const data = await response.json()
-      setUserId(data.id)
+      fetchSignleSession(data.name)
     } catch (err) {
       console.error('Error fetching user:', err)
     }
   }
 
   useEffect(() => {
-    fetchSignleSession()
+    getUser()
   }, [sessionId])
 
   useEffect(() => {
@@ -218,6 +218,7 @@ export default function EditSession() {
             title="세션 제목을 입력해주세요"
             placeholder="세션 제목"
             name="title"
+            essential="*"
             value={formData.title}
             handleInputChange={handleInputChange}
           />
@@ -225,6 +226,7 @@ export default function EditSession() {
             title="발표자를 입력해주세요"
             placeholder="발표자"
             name="presenter"
+            essential="*"
             value={formData.presenter}
             handleInputChange={handleInputChange}
           />
@@ -233,6 +235,7 @@ export default function EditSession() {
               title="썸네일을 입력해주세요"
               placeholder="썸네일"
               name="thumbnail"
+              essential="*"
               value={formData.thumbnail}
               handleInputChange={handleInputChange}
             />
@@ -263,6 +266,7 @@ export default function EditSession() {
             title="영상 링크를 첨부해 주세요"
             placeholder="www.세션 제목.com"
             name="videoUrl"
+            essential=""
             value={formData.videoUrl}
             handleInputChange={handleInputChange}
           />
@@ -270,6 +274,7 @@ export default function EditSession() {
             title="발표 자료 링크를 첨부해주세요"
             placeholder="www.발표 자료 링크.com"
             name="fileUrl"
+            essential=""
             value={formData.fileUrl}
             handleInputChange={handleInputChange}
           />

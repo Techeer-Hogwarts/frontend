@@ -20,6 +20,7 @@ export const Default: Story = {
   args: {
     name: 'title',
     value: value,
+    essential: '*',
     handleInputChange: handleInputChange,
     title: '입력 제목에 대한 내용입니다',
     placeholder: 'placeholder',
