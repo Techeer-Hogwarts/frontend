@@ -14,11 +14,13 @@ import EmptyLottie from '@/components/common/EmptyLottie'
 export default function Search() {
   const [results, setResults] = useState<{
     project: any[]
+    study: any[]
     blog: any[]
     resume: any[]
     session: any[]
   }>({
     project: [],
+    study: [],
     blog: [],
     resume: [],
     session: [],
@@ -47,6 +49,7 @@ export default function Search() {
             project: Array.isArray(data.result.project)
               ? data.result.project
               : [],
+            study: Array.isArray(data.result.study) ? data.result.study : [],
             blog: Array.isArray(data.result.blog) ? data.result.blog : [],
             resume: Array.isArray(data.result.resume) ? data.result.resume : [],
             session: Array.isArray(data.result.session)
@@ -73,6 +76,7 @@ export default function Search() {
           <span className="text-amber-400">
             <span></span> &apos;
             {results.project.length +
+              results.study.length +
               results.blog.length +
               results.resume.length +
               results.session.length}
@@ -99,13 +103,14 @@ export default function Search() {
           ))}
         </div>
       ) : results.project.length ||
+        results.study.length ||
         results.blog.length ||
         results.resume.length ||
         results.session.length ? (
         <>
-          <ProjectSection project={results.project} />
-          <BlogSection blog={results.blog} />
+          <ProjectSection project={results.project} study={results.study} />
           <ResumeSection resumes={results.resume} />
+          <BlogSection blog={results.blog} />
           <SessionSection session={results.session} />
         </>
       ) : (

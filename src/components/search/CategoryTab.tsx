@@ -7,8 +7,8 @@ interface CategoryTabProps {
 const CategoryTab: React.FC<CategoryTabProps> = ({ onScrollToSection }) => {
   const categories = [
     { label: '프로젝트', id: 'project' },
-    { label: '블로그', id: 'blog' },
     { label: '이력서', id: 'resume' },
+    { label: '블로그', id: 'blog' },
     { label: '세션', id: 'session' },
   ]
 

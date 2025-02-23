@@ -12,7 +12,7 @@ import ApplicantModal from '@/components/project/modal/study/ApplicantModal'
 
 import { BiSolidPencil } from 'react-icons/bi'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
 import {
@@ -22,6 +22,7 @@ import {
   getStudyApplicants,
   handleDenyStudy,
 } from '@/api/project/study/study'
+import { useAuthStore } from '@/store/authStore'
 
 const MODAL_TEXT_MAP = {
   delete: '스터디를 삭제하시겠습니까?',
@@ -37,7 +38,11 @@ const MODAL_BTN_TEXT_MAP = {
 
 export default function ProjectDetailpage() {
   const router = useRouter()
-  const projectId = Number(localStorage.getItem('projectId'))
+  // const projectId = Number(localStorage.getItem('projectId'))
+  const params = useParams()
+  const projectId = Number(params.id)
+  // console.log('a', params)
+  // console.log('b', projectId)
   const projectType = localStorage.getItem('projectType')
 
   const [isStudyMember, setIsStudyMember] = useState<null | boolean>(false)
@@ -47,8 +52,9 @@ export default function ProjectDetailpage() {
 
   const [modalType, setModalType] = useState<
     'delete' | 'close' | 'cancel' | null
-  >(null)
-  const userId = Number(localStorage.getItem('userId'))
+    >(null)
+  
+  const {user} = useAuthStore()
 
   const queryClient = useQueryClient()
 
@@ -60,12 +66,12 @@ export default function ProjectDetailpage() {
 
   useEffect(() => {
     if (studyDetails) {
-      const isMember =
-        studyDetails?.studyMember?.some((member) => member.userId === userId) ??
-        false
+      const isMember = studyDetails.studyMember?.some(
+        (member) => member.userId === user?.id,
+      )
       setIsStudyMember(isMember)
     }
-  }, [studyDetails, userId])
+  }, [studyDetails, user])
 
   // 지원자 정보 불러오기
   const { data: studyApplicants } = useQuery({
@@ -75,7 +81,7 @@ export default function ProjectDetailpage() {
 
   // 현재 사용자가 이미 지원했는지 확인
   const hasApplied = studyApplicants?.some(
-    (applicant) => applicant.userId === userId,
+    (applicant) => applicant.userId === user?.id,
   )
 
   // 지원자 상세 조회 모달 여닫기
@@ -158,11 +164,7 @@ export default function ProjectDetailpage() {
       )}
 
       <div>
-        <Profile
-          type={projectType === 'study' ? 'study' : 'project'}
-          projectDetail={studyDetails}
-        />
-
+        <Profile projectDetail={studyDetails} />
         {/* Applicants 컴포넌트: 스터디 멤버일 경우만 렌더링 */}
         {isStudyMember && (
           <Applicants applicants={studyApplicants || []} onOpen={onOpen} />

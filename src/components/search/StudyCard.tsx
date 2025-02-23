@@ -36,17 +36,17 @@ export default function StudyCard({ team }: { team: Team }) {
           {team.name}
         </div>
 
-        <div className="h-[7.8125rem] w-[112px] flex flex-col justify-between">
+        <div className="h-[7.8125rem] w-[112px] flex flex-col justify-start ">
           {/* 프로젝트 제목 */}
           <h2 className="max-w-28 truncate font-bold text-[1.01688rem] gap-[2.44rem]">
             {team.name}
           </h2>
-          <p className="text-[0.75rem] mt-1 max-w-28 max-h-10 w-28 h-10 truncate ">
+          <p className="text-[0.75rem] max-w-28 max-h-8 truncate ">
             {team.studyExplain}
           </p>
 
           {team.isRecruited && (
-            <div className="bg-lightblue mt-10 py-[0.19rem] px-[0.8rem]  text-blue rounded-lg text-[13px] text-center">
+            <div className="bg-lightblue mt-14 py-[0.19rem] px-[0.8rem]  text-blue rounded-lg text-[13px] text-center">
               모집인원 : {team.recruitNum} 명
             </div>
           )}
@@ -56,7 +56,7 @@ export default function StudyCard({ team }: { team: Team }) {
       {/* 호버 시 표시되는 부분 */}
       <div className="w-[17.3rem] h-[9.6rem] py-[3.25rem] px-[3rem] rounded-[0.63rem] absolute left-1 bottom-1 bg-black bg-opacity-75 flex items-center justify-center text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
         <div className="text-white">
-          <p className="mt-2 text-sm">{team.studyExplain?team.studyExplain:'설명이 없습니다'}</p>
+          <p className="mt-2 text-sm">{team.studyExplain}</p>
         </div>
       </div>
     </Link>

@@ -5,7 +5,7 @@ export async function getResumeList({
   year = [],
   category = '',
   offset = 0,
-  limit = 10,
+  limit: limit,
 }: ResumeQueryParams) {
   try {
     // URLSearchParams를 사용하여 동적으로 쿼리 문자열 생성
@@ -26,8 +26,8 @@ export async function getResumeList({
     const mappedCategory = categoryMap[category]
     params.append('category', mappedCategory)
 
-    params.append('offset', offset.toString())
-    params.append('limit', limit.toString())
+    params.append('offset', (offset ?? 0).toString()) // undefined 방지
+    params.append('limit', (limit ?? 10).toString()) // undefined 방지
 
     const response = await fetch(`/api/v1/resumes?${params.toString()}`, {
       method: 'GET',

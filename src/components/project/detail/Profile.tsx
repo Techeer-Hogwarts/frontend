@@ -61,11 +61,7 @@ export default function Profile({ projectDetail }: ProfileProps) {
       </div>
 
       {/* 스터디 / 프로젝트 구분 */}
-      {projectType === 'study' ? (
-        <div className="flex w-[15.875rem] h-[15.875rem] bg-gradient-to-b from-[#FF8B20] to-[#FFC14F] rounded-2xl text-white justify-center text-center items-center text-[1.5rem] font-bold">
-          {projectDetail?.name}
-        </div>
-      ) : (
+      {mainImageUrl ? (
         <Image
           src={mainImageUrl}
           width={254}
@@ -73,6 +69,10 @@ export default function Profile({ projectDetail }: ProfileProps) {
           alt="프로젝트 메인 이미지"
           className="rounded-2xl object-cover w-[254px] h-[254px]"
         />
+      ) : (
+        <div className="flex w-[15.875rem] h-[15.875rem] bg-gradient-to-b from-[#FF8B20] to-[#FFC14F] rounded-2xl text-white justify-center text-center items-center text-[1.5rem] font-bold">
+          {projectDetail?.name}
+        </div>
       )}
 
       {/* 프로젝트 이름 + 깃허브/노션 링크 */}
@@ -84,7 +84,7 @@ export default function Profile({ projectDetail }: ProfileProps) {
         {/* 깃허브/노션 아이콘 영역 */}
         <div className="flex gap-2">
           {/* 깃허브: study가 아니고, githubLink가 있을 때만 표시 */}
-          {projectType !== 'study' && projectDetail?.githubLink && (
+          {projectDetail?.githubLink && (
             <button
               type="button"
               onClick={() => {

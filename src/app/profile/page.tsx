@@ -17,15 +17,6 @@ export default function Page() {
   const [selectedUniversity, setSelectedUniversity] = useState<string[]>([])
   const [selectedGrade, setSelectedGrade] = useState<string[]>([])
 
-  // 검색어 상태 추가
-  const [searchQuery, setSearchQuery] = useState<string>('')
-
-  // 검색어 저장 및 이력서 목록 업데이트
-  const handleSearch = (query: string) => {
-    setSearchQuery(query)
-    sessionStorage.setItem('searchQuery', query)
-  }
-
   const positionOptions = ['FRONTEND', 'BACKEND', 'DEVOPS', 'FULL_STACK']
   const yearOptions = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
   const gradeOptions = ['1학년', '2학년', '3학년', '4학년', '졸업']
@@ -56,6 +47,7 @@ export default function Page() {
     '한서대학교',
     '한성대학교',
     '호서대학교',
+    '해당 없음',
   ]
   //기수 탭
   // const category = ['전체', '이력서', '포트폴리오', 'ICT', 'OTHER']
@@ -115,39 +107,45 @@ export default function Page() {
             setSelectedOptions={setSelectedGrade}
           />
         </div>
-        {/* 목록 */}
-        <div className="bg-filterbg flex items-center w-[75rem] h-[4.375rem] px-4 gap-4 my-6">
-          {selectedPosition.map((item) => (
-            <FilterBtn
-              key={item}
-              title={item}
-              onClick={() => {
-                handleRemoveFilter(item, 'position')
-              }}
-            />
-          ))}
-          {selectedYear.map((item) => (
-            <FilterBtn
-              key={item}
-              title={item.toString()}
-              onClick={() => handleRemoveFilter(item, 'year')}
-            />
-          ))}
-          {selectedUniversity.map((item) => (
-            <FilterBtn
-              key={item}
-              title={item}
-              onClick={() => handleRemoveFilter(item, 'university')}
-            />
-          ))}
-          {selectedGrade.map((item) => (
-            <FilterBtn
-              key={item}
-              title={item}
-              onClick={() => handleRemoveFilter(item, 'grade')}
-            />
-          ))}
-        </div>
+        {[
+          selectedPosition,
+          selectedYear,
+          selectedUniversity,
+          selectedGrade,
+        ].some((arr) => arr.length > 0) && (
+          <div className="bg-filterbg flex items-center w-[75rem] h-[4.375rem] px-4 gap-4 mt-5">
+            {selectedPosition.map((item) => (
+              <FilterBtn
+                key={item}
+                title={item}
+                onClick={() => {
+                  handleRemoveFilter(item, 'position')
+                }}
+              />
+            ))}
+            {selectedYear.map((item) => (
+              <FilterBtn
+                key={item}
+                title={item.toString()}
+                onClick={() => handleRemoveFilter(item, 'year')}
+              />
+            ))}
+            {selectedUniversity.map((item) => (
+              <FilterBtn
+                key={item}
+                title={item}
+                onClick={() => handleRemoveFilter(item, 'university')}
+              />
+            ))}
+            {selectedGrade.map((item) => (
+              <FilterBtn
+                key={item}
+                title={item}
+                onClick={() => handleRemoveFilter(item, 'grade')}
+              />
+            ))}
+          </div>
+        )}
         <ProfileList
           position={selectedPosition}
           year={selectedYear}

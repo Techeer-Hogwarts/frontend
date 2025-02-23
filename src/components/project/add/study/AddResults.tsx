@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import ExistingResultImgBox from "../project/ResultImgBox"
+import ExistingResultImgBox from '../ExistingResultImgBox'
 import ResultImgBox from '../ResultImgBox'
 import { IoAddCircleOutline } from 'react-icons/io5'
 
@@ -23,7 +23,7 @@ export default function AddResults({
   newResultImages,
   onUpdateResultImages,
   onDeleteOldResultImage,
-}: any) {
+}: AddResultsProps) {
   const [imageItems, setImageItems] = useState<ImageItem[]>([])
   const [didInit, setDidInit] = useState(false)
 
@@ -38,7 +38,7 @@ export default function AddResults({
       url: img.imageUrl,
     }))
 
-    const newItems: ImageItem[] = newResultImages?.map((file) => ({
+    const newItems: ImageItem[] = newResultImages.map((file) => ({
       type: 'new',
       file,
       previewUrl: URL.createObjectURL(file),
@@ -65,19 +65,21 @@ export default function AddResults({
   }
 
   // (D) 파일 업로드
+
   const handleFileSelect = (index: number, file: File) => {
-    setImageItems((prev) => {
-      const copy = [...prev]
-      copy[index] = {
-        type: 'new',
-        file,
-        previewUrl: URL.createObjectURL(file),
-      }
-      return copy
+    setImageItems((prevItems: any) => {
+      const newItems = prevItems.map((item, idx) =>
+        idx === index
+          ? { type: 'new', file, previewUrl: URL.createObjectURL(file) }
+          : item,
+      )
+      // 새로 업데이트된 newItems에서 새 파일들만 추출하여 부모에게 전달
+      const newFiles = newItems
+        .filter((item) => item.type === 'new' && item.file)
+        .map((item) => (item as { file: File }).file)
+      onUpdateResultImages(newFiles)
+      return newItems
     })
-    // 새 File[]로 재구성
-    const newFiles = rebuildNewFiles(index, file)
-    onUpdateResultImages(newFiles)
   }
 
   function rebuildNewFiles(changedIndex: number, changedFile: File) {

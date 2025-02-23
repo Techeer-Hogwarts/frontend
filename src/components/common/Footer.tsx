@@ -44,7 +44,7 @@ export default function Footer() {
 
       {/* 저작권 영역 */}
       <div className="text-right text-[0.6rem] text-darkgray">
-        © 2024 Techeer. ALL RIGHTS RESERVED.
+        © 2025 Techeer. ALL RIGHTS RESERVED.
       </div>
     </div>
   )

@@ -6,6 +6,7 @@ import EmptyLottie from '@/components/common/EmptyLottie'
 import { ProfileQueryParams } from '@/types/queryParams'
 import { useEffect, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
+import SkeletonProfileCard from '@/components/profile/SkeletonProfileCard'
 
 interface Profile {
   id: number
@@ -31,7 +32,7 @@ export default function ProfileList({
   const [limit, setLimit] = useState(8)
   const [ref, inView] = useInView({ threshold: 0.5 })
 
-  const { data, isError } = useGetProfileQuery({
+  const { data, isError, isLoading } = useGetProfileQuery({
     position,
     year,
     university,
@@ -40,7 +41,7 @@ export default function ProfileList({
   })
   useEffect(() => {
     setProfiles([])
-    setLimit(8)
+    setLimit(12)
   }, [position, year, university, grade])
 
   useEffect(() => {
@@ -55,19 +56,19 @@ export default function ProfileList({
 
   useEffect(() => {
     if (inView) {
-      setLimit((prev) => prev + 4)
+      setLimit((prev) => prev + 8)
     }
   }, [inView])
 
-  // if (isLoading && profiles.length === 4) {
-  //   return (
-  //     <div className="grid grid-cols-4 gap-4">
-  //       {Array.from({ length: 8 }).map((_, i) => (
-  //         <SkeletonProfileCard key={`skeleton-${i}`} />
-  //       ))}
-  //     </div>
-  //   )
-  // }
+  if (isLoading && profiles.length === 0) {
+    return (
+      <div className="grid grid-cols-4 gap-4 mt-8">
+        {Array.from({ length: 12 }).map((_, i) => (
+          <SkeletonProfileCard key={`skeleton-${i}`} />
+        ))}
+      </div>
+    )
+  }
 
   if (isError || (data && profiles.length === 0)) {
     return (
@@ -81,7 +82,7 @@ export default function ProfileList({
   }
 
   return (
-    <div className="grid grid-cols-4 gap-4">
+    <div className="grid grid-cols-4 gap-4 mt-8">
       {profiles.map((profile) => (
         <ProfileCard
           key={profile.id}

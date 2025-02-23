@@ -1,5 +1,23 @@
 import Image from 'next/image'
 
+interface MainImage {
+  id: number
+  isDeleted: boolean
+  imageUrl: string
+}
+interface ResultImages {
+  id: number
+  imageUrl: string
+}
+interface StudyMember {
+  id: number
+  name: string
+  isDeleted: boolean
+  isLeader: boolean
+  studyTeamId: number
+  userId: number
+  email: string
+}
 interface ProfileProps {
   projectDetail?: {
     id: number
@@ -14,13 +32,14 @@ interface ProfileProps {
     studyExplain: string
     isRecruited: boolean
     isFinished: boolean
-    resultImages: string[]
-    studyMember: string[]
+    resultImages: ResultImages[]
+    studyMember: StudyMember[]
+    mainImages?: MainImage
     // studyMember: { name: string; leader: boolean }[] // 추후 수정 필요
   }
 }
 
-export default function Profile({ projectDetail }: any) {
+export default function Profile({ projectDetail }: ProfileProps) {
   const projectType = localStorage.getItem('projectType')
 
   return (
@@ -40,19 +59,20 @@ export default function Profile({ projectDetail }: any) {
           <div className=" text-pink ">진행중</div>
         )}
       </div>
-      {projectType === 'study' ? (
-        <div className="flex w-[15.875rem] h-[15.875rem] bg-gradient-to-b from-[#FF8B20] to-[#FFC14F] rounded-2xl text-white justify-center text-center items-center text-[1.5rem] font-bold">
-          {projectDetail?.name}
-        </div>
-      ) : (
-        <Image
-          src="/images/project/example.png"
-          width={254}
-          height={254}
-          alt="Picture"
-          className=" rounded-2xl"
-        />
-      )}
+      {
+        projectDetail && (
+          <div className="flex w-[15.875rem] h-[15.875rem] bg-gradient-to-b from-[#FF8B20] to-[#FFC14F] rounded-2xl text-white justify-center text-center items-center text-[1.5rem] font-bold">
+            {projectDetail?.name}
+          </div>
+        )
+        // <Image
+        //   src={projectDetail?.resultImages[0].imageUrl}
+        //   width={254}
+        //   height={254}
+        //   alt="Picture"
+        //   className=" rounded-2xl"
+        // />
+      }
 
       <div className="flex w-[15.875rem] justify-between items-center mt-[0.94rem] mb-[1.44rem] ">
         <div className="text-[1.25rem] font-bold  flex items-center justify-center">
@@ -60,33 +80,19 @@ export default function Profile({ projectDetail }: any) {
         </div>
 
         <div className="flex gap-2">
-          {projectType === 'study' ? (
-            ''
-          ) : (
+          {projectDetail?.notionLink && (
             <button
               type="button"
-              onClick={() => (window.location.href = projectDetail?.githubLink)}
+              onClick={() => (window.location.href = projectDetail?.notionLink)}
             >
               <Image
-                src="/images/project/github.png"
+                src="/images/project/notion.png"
                 width={20}
                 height={20}
-                alt="github"
+                alt="notion"
               />
             </button>
           )}
-
-          <button
-            type="button"
-            onClick={() => (window.location.href = projectDetail?.notionLink)}
-          >
-            <Image
-              src="/images/project/notion.png"
-              width={20}
-              height={20}
-              alt="notion"
-            />
-          </button>
         </div>
       </div>
       <div className="w-[15.875rem]">
