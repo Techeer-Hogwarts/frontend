@@ -2,6 +2,10 @@ import Image from 'next/image'
 import Link from 'next/link'
 import PositionTag from '../common/PositionTag'
 
+interface ProjectTeam {
+  mainImage: string
+}
+
 interface ProfileProps {
   id: number
   profileImage: string
@@ -11,8 +15,7 @@ interface ProfileProps {
   mainPosition: string
   year: number
   stack: string[]
-  mainImage: string
-  // projectTeams:
+  projectTeams: ProjectTeam[]
 }
 
 export default function ProfileCard({
@@ -24,7 +27,7 @@ export default function ProfileCard({
   mainPosition,
   year,
   stack = [],
-  mainImage,
+  projectTeams,
 }: ProfileProps) {
   return (
     <div className="flex flex-wrap gap-5">
@@ -77,14 +80,17 @@ export default function ProfileCard({
           </div>
           <hr className=" w-[15.45rem] ml-[0.72rem] mb-[0.32rem] border-lightgray " />
           <div className="flex gap-2 px-[0.64rem]">
-            {mainImage ? (
-              <Image
-                src={mainImage}
-                alt="Project"
-                width={45}
-                height={45}
-                className="w-[2.813rem] h-[2.813rem] bg-lightgray rounded-md object-cover"
-              />
+          {projectTeams && projectTeams.length > 0 ? (
+              projectTeams.map((team, idx) => (
+                <Image
+                  key={idx}
+                  src={team.mainImage}
+                  alt={`Project #${idx + 1}`}
+                  width={45}
+                  height={45}
+                  className="w-[2.813rem] h-[2.813rem] bg-lightgray rounded-md object-cover"
+                />
+              ))
             ) : (
               <p className="flex justify-center items-center text-gray text-[0.7rem] mt-[0.938rem] ml-[4.688rem]">
                 프로젝트를 등록하세요.

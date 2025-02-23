@@ -101,7 +101,7 @@ export default function Project() {
         {/* 오른쪽 버튼 영역 */}
         <div>
           <Link
-            href="/"
+            href="/mypage"
             type="button"
             className="w-[13.1875rem] h-[3.3125rem] text-center rounded-lg shadow-md justify-center text-[1.125rem] flex items-center hover:shadow-custom"
           >

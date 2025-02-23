@@ -8,6 +8,7 @@ import ProfileBox from '@/components/profile/ProfileBox'
 import ProfilepageTap from '@/components/profile/ProfilepageTap'
 import { fetchUserProfile } from '../api/getUserProfile'
 
+
 export default function Page({ params }: { params: { userId: string } }) {
   const [activeTab, setActiveTab] = useState<'home' | 'profile' | 'resume'>(
     'home',
@@ -31,8 +32,6 @@ export default function Page({ params }: { params: { userId: string } }) {
         })
     }
   }, [userId])
-
-  if (loading) return <div>로딩 중...</div>
 
   return (
     <div className="flex gap-16 mt-10">

@@ -7,6 +7,7 @@ import Link from 'next/link'
 import { ResumeQueryParams } from '@/types/queryParams'
 import { useGetResumeQuery } from '@/app/resume/query/useGetResumeQuery'
 import { fetchUserResumes } from '@/app/resume/api/getUserResume'
+import { usePathname } from 'next/navigation'
 
 interface Resume {
   id: number
@@ -39,6 +40,9 @@ export default function Resume({
   const [isError, setIsError] = useState(false)
   const [modal, setModal] = useState(false)
 
+    const pathname = usePathname()
+  const isMyPage = pathname === '/mypage'
+
   const fetchData = async () => {
     try {
       setIsLoading(true)
@@ -61,22 +65,32 @@ export default function Resume({
   }
   return (
     <div>
-      <div className="flex justify-end mb-4">
+      <div className="flex w-full justify-end mb-4">
+      {isMyPage && (
         <button
           onClick={handleClickAddResume}
           className="border border-lightgray text-black flex items-center justify-center p-2 h-8 w-[130px] rounded-md"
         >
           이력서 추가
         </button>
+        )}
         {modal && <AddResume setModal={setModal} fetchData={fetchData} />}
       </div>
-      <Link href="/detail">
-        <div className="grid grid-cols-3 gap-8">
-          {data?.map((resume: Resume) => (
-            <ResumeFolder key={resume.id} resume={resume} />
-          ))}
+      {data.length === 0 ? (
+        // (A) 이력서 데이터가 없을 때
+        <div className="text-center text-gray">
+          등록된 이력서가 없습니다.
         </div>
-      </Link>
+      ) : (
+        // (B) 이력서 데이터가 있을 때
+        <Link href={`/resume/$[resume.id]`} >
+          <div className="grid grid-cols-3 gap-8">
+            {data.map((resume: Resume) => (
+              <ResumeFolder key={resume.id} resume={resume} />
+            ))}
+          </div>
+        </Link>
+      )}
     </div>
   )
 }

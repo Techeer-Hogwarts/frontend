@@ -2,6 +2,7 @@
 
 import AddBtn from './AddBtn'
 import Carousel from './Carousel'
+import { usePathname } from 'next/navigation'
 
 interface Team {
   id: number
@@ -39,6 +40,9 @@ export default function Home({
   studyTeams = [],
   experiences = [],
 }: HomeProps) {
+  const pathname = usePathname()
+  const isMyPage = pathname === '/mypage'
+
   // 경력 데이터는 category를 기준으로 분리
   const internExperiences = experiences.filter((exp) => exp.category === '인턴')
   const fullTimeExperiences = experiences.filter(
@@ -59,7 +63,9 @@ export default function Home({
       <div>
         <div className="flex justify-between">
           <h2 className="text-lg font-semibold mb-2 text-black/70">프로젝트</h2>
-          <AddBtn title="+ 프로젝트 추가" href="/project/add/project" />
+          {isMyPage && (
+            <AddBtn title="+ 프로젝트 추가" href="/project/add/project" />
+          )}
         </div>
         {projectTeams.length === 0 ? (
           <div className="flex relative h-[140px] px-10 w-[890px] gap-3 overflow-x-auto items-center justify-center border border-lightgray rounded-lg">
@@ -77,7 +83,9 @@ export default function Home({
       <div>
         <div className="flex justify-between">
           <h2 className="text-lg font-semibold mb-2 text-black/70">스터디</h2>
-          <AddBtn title="+ 스터디 추가" href="/project/add/study" />
+          {isMyPage && (
+            <AddBtn title="+ 스터디 추가" href="/project/add/study" />
+          )}
         </div>
         {studyTeams.length === 0 ? (
           <div className="flex relative h-[140px] px-10 w-[890px] gap-3 overflow-x-auto items-center justify-center border border-lightgray rounded-lg">

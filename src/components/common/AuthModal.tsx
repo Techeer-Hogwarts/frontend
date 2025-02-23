@@ -28,7 +28,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
           <button
             onClick={() => {
               onClose()
-              if (currentPath === '/session' || currentPath === '/mypage') router.back()
+              if (currentPath === '/session' || currentPath === '/mypage' || currentPath === '/resume') router.back()
             }}
             className="w-[200px] px-4 py-2 bg-lightgray/30 font-semibold rounded-lg hover:bg-black/10"
           >

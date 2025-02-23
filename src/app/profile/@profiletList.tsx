@@ -19,7 +19,7 @@ interface Profile {
   stack: string[]
   projectTeams: {
     mainImage: string
-  }
+  }[]
 }
 
 export default function ProfileList({
@@ -60,6 +60,8 @@ export default function ProfileList({
     }
   }, [inView])
 
+  console.log('profiles', profiles)
+
   if (isLoading && profiles.length === 0) {
     return (
       <div className="grid grid-cols-4 gap-4">
@@ -94,7 +96,7 @@ export default function ProfileList({
           grade={profile.grade}
           year={profile.year}
           stack={profile.stack}
-          mainImage={profile.projectTeams.mainImage}
+          projectTeams={profile.projectTeams}
         />
       ))}
       <div ref={ref} className="h-1" />
