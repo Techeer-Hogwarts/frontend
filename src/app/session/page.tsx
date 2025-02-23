@@ -28,7 +28,7 @@ interface Session {
   fileUrl: string
   user: User
 }
-const tapBarOptions = ['금주의 세션', '전체보기', '부트캠프', '파트너스']
+const tapBarOptions = ['전체보기', '부트캠프', '파트너스', '금주의 세션']
 export default function Page() {
   const [selectedPeriodsP, setSelectedPeriodsP] = useState<string[]>([])
   const [selectedPeriodsB, setSelectedPeriodsB] = useState<string[]>([])
@@ -144,28 +144,18 @@ export default function Page() {
           <p className="text-[2rem] font-bold">세션영상</p>
           <p className="text-[1.25rem]">테커인들의 세션영상을 확인해보세요.</p>
         </div>
-        {/*<div*/}
-        {/*  typeof="button"*/}
-        {/*  onClick={() => {*/}
-        {/*    setSelectedPeriodsP([])*/}
-        {/*    setSelectedPeriodsPo([])*/}
-        {/*    setSelectedPeriodsB([])*/}
-        {/*  }}*/}
-        {/*>*/}
-        {/*  <TapBar options={tapBarOptions} onSelect={handleCategoryChange} />*/}
-        {/*</div>*/}
-        {/*<div className="flex w-full h-[1px] mt-5 bg-gray" />*/}
+        <div
+          typeof="button"
+          onClick={() => {
+            setSelectedPeriodsP([])
+            setSelectedPeriodsPo([])
+            setSelectedPeriodsB([])
+          }}
+        >
+          <TapBar options={tapBarOptions} onSelect={handleCategoryChange} />
+        </div>
+        <div className="flex w-full h-[1px] my-5 bg-gray" />
         <div className="flex items-center justify-start gap-8">
-          <div
-            typeof="button"
-            onClick={() => {
-              setSelectedPeriodsP([])
-              setSelectedPeriodsPo([])
-              setSelectedPeriodsB([])
-            }}
-          >
-            <TapBar options={tapBarOptions} onSelect={handleCategoryChange} />
-          </div>
           <div className="flex justify-start gap-3">
             {activeOption === '부트캠프' && (
               <>
@@ -283,34 +273,20 @@ export default function Page() {
               ))}
             </div>
           )}
-
-        <div className="grid flex-col grid-cols-3 gap-8">
-          {allSessions.map((data: Session) => (
-            <SessionPost
-              key={data.id}
-              likeCount={data.likeCount}
-              id={data.id}
-              thumbnail={data.thumbnail}
-              title={data.title}
-              date={data.date}
-              presenter={data.presenter}
-              fileUrl={data.fileUrl}
-              userImage={data.user.profileImage}
-              showMessage={showMessage}
-              likeList={likeList}
-              onLikeUpdate={handleLikeUpdate}
-            />
-          ))}
-          <div ref={ref} />
-        </div>
         {/* ✅ 로그인 안 했으면 즉시 EmptyLottie 표시 */}
         {authModalOpen ? (
           <div className="flex justify-center">
-            <EmptyLottie text="세션 데이터가 없습니다." text2="로그인 후 다시 시도해주세요." />
+            <EmptyLottie
+              text="세션 데이터가 없습니다."
+              text2="로그인 후 다시 시도해주세요."
+            />
           </div>
         ) : error || (newSessions && allSessions.length === 0) ? (
           <div className="flex justify-center">
-            <EmptyLottie text="세션 데이터가 없습니다." text2="다시 조회해주세요" />
+            <EmptyLottie
+              text="세션 데이터가 없습니다."
+              text2="다시 조회해주세요"
+            />
           </div>
         ) : (
           <div className="grid flex-col grid-cols-4 gap-8 mt-[2.84rem]">

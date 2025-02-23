@@ -67,12 +67,14 @@ export default function Page() {
   }
 
   return (
-    <div className="flex justify-center">
+    <div className="flex justify-center h-auto min-h-screen">
       <div className="flex flex-col">
         <div className="flex justify-between w-[1200px] mt-14 mb-[2.84rem]">
           <div className="text-left">
             <p className="text-[2rem] font-bold">프로필</p>
-            <p className="text-[1.25rem]">모든 테커인들의 프로필 정보를 확인해보세요.</p>
+            <p className="text-[1.25rem]">
+              모든 테커인들의 프로필 정보를 확인해보세요.
+            </p>
           </div>
           {/** 검색창 */}
           {/* <SearchBar
@@ -81,6 +83,7 @@ export default function Page() {
               onSearchResult={setSearchResults}
             /> */}
         </div>
+        <div className="flex w-full h-[1px] mb-5 bg-gray"></div>
         <div className="flex justify-start gap-3">
           <Dropdown
             title="포지션"

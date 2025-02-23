@@ -25,7 +25,7 @@ export default function Page() {
   const [isLoading, setIsLoading] = useState(true)
   const [ref, inView] = useInView()
 
-  const category = ['금주의 블로그', 'TECHEER', 'SHARED']
+  const category = ['TECHEER', 'SHARED', '금주의 블로그']
 
   // 카테고리 변경 처리 함수
   const handleCategoryChange = (selectedCategory: string) => {
@@ -173,12 +173,15 @@ export default function Page() {
           <p className="text-[1.25rem]">테커인들의 블로그를 확인해보세요.</p>
         </div>
         <TapBar options={category} onSelect={handleCategoryChange} />
-        {/*<div className="flex w-full h-[1px] mt-5 bg-gray" />*/}
+        <div className="flex w-full h-[1px] mt-5 bg-gray" />
         {isLoading ? (
           <Loading />
         ) : blog.length === 0 && hasFetched ? (
           <div className="flex justify-center">
-            <EmptyLottie text="블로그 데이터가 없습니다." text2="다시 조회해주세요" />
+            <EmptyLottie
+              text="블로그 데이터가 없습니다."
+              text2="다시 조회해주세요"
+            />
           </div>
         ) : (
           <div className="flex-col grid grid-cols-4 gap-8 mt-[2.84rem]">

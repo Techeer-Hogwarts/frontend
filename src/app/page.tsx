@@ -80,18 +80,7 @@ export default function Onboarding() {
           <ProfileInfo />
         </motion.div>
 
-        {/* 세 번째 - 블로그 */}
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          variants={fadeInVariants}
-          custom={0.3} // 0.4초 딜레이 추가
-          viewport={{ amount: 0.3, once: false }} // 40% 이상 보일 때 등장
-        >
-          <BlogInfo />
-        </motion.div>
-
-        {/* 네 번째 - 이력서 */}
+        {/* 세 번째 - 이력서 */}
         <motion.div
           initial="hidden"
           whileInView="visible"
@@ -100,6 +89,17 @@ export default function Onboarding() {
           viewport={{ amount: 0.3, once: false }} // 40% 이상 보일 때 등장
         >
           <ResumeInfo />
+        </motion.div>
+
+        {/* 네 번째 - 블로그 */}
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          variants={fadeInVariants}
+          custom={0.3} // 0.4초 딜레이 추가
+          viewport={{ amount: 0.3, once: false }} // 40% 이상 보일 때 등장
+        >
+          <BlogInfo />
         </motion.div>
 
         {/*  다섯번째 - 세션 */}
