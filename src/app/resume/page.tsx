@@ -91,10 +91,11 @@ export default function Resume() {
           {/** 기수 탭 */}
           <TapBar options={category} onSelect={handleCategoryChange} />
           {/** 검색창 */}
-          {/* <SearchBar
+          <SearchBar
+            placeholder="이름 또는 키워드로 검색해보세요"
             index="resume"
-            // onSearchResult={setSearchResults}
-          /> */}
+            onSearchResult={setSearchResults}
+          />
         </div>
         <div className="flex w-full h-[1px] mt-5 bg-gray"></div>
       </div>

@@ -12,7 +12,7 @@ import SessionPost from '@/components/session/SessionPost'
 import { useSessionsQuery } from './_lib/useSessionsQuery'
 import AuthModal from '@/components/common/AuthModal'
 import EmptyLottie from '@/components/common/EmptyLottie'
-
+import SearchBar from '@/components/common/SearchBar'
 interface User {
   name: string
   profileImage: string
@@ -110,7 +110,7 @@ export default function Page() {
       })
     }
   }, [newSessions, isLoading, limit])
-
+  const [searchResults, setSearchResults] = useState<any>(null)
   // 탭, 필터링 변경 시 상태 초기화
   useEffect(() => {
     setLimit(12)
@@ -152,7 +152,14 @@ export default function Page() {
             setSelectedPeriodsB([])
           }}
         >
-          <TapBar options={tapBarOptions} onSelect={handleCategoryChange} />
+          <div className="flex justify-between">
+            <TapBar options={tapBarOptions} onSelect={handleCategoryChange} />
+            <SearchBar
+              placeholder="이름 또는 키워드로 검색해보세요"
+              index="session"
+              onSearchResult={setSearchResults}
+            />
+          </div>
         </div>
         <div className="flex w-full h-[1px] mt-5 bg-gray" />
         <div className="flex justify-start my-6 gap-3">
@@ -294,11 +301,17 @@ export default function Page() {
         {/* ✅ 로그인 안 했으면 즉시 EmptyLottie 표시 */}
         {authModalOpen ? (
           <div className="flex justify-center">
-            <EmptyLottie text="세션 데이터가 없습니다." text2="로그인 후 다시 시도해주세요." />
+            <EmptyLottie
+              text="세션 데이터가 없습니다."
+              text2="로그인 후 다시 시도해주세요."
+            />
           </div>
         ) : error || (newSessions && allSessions.length === 0) ? (
           <div className="flex justify-center">
-            <EmptyLottie text="세션 데이터가 없습니다." text2="다시 조회해주세요" />
+            <EmptyLottie
+              text="세션 데이터가 없습니다."
+              text2="다시 조회해주세요"
+            />
           </div>
         ) : (
           <div className="grid flex-col grid-cols-3 gap-8">

@@ -9,6 +9,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { BlogProps } from '@/types/BlogProps'
 import EmptyLottie from '@/components/common/EmptyLottie'
 import Loading from '@/components/common/Loading'
+import SearchBar from '@/components/common/SearchBar'
 
 const tapBarOptions = ['금주의 블로그', 'TECHEER', 'SHARED']
 
@@ -40,7 +41,7 @@ export default function Page() {
       getBlog(3, inputValue, selectedCategory)
     }
   }
-
+  const [searchResults, setSearchResults] = useState<any>(null)
   const handleDeleteSession = (id: string) => {
     setBlog((prevblogs) => prevblogs.filter((blog) => blog.id !== id))
     setMessage('블로그 글이 삭제되었습니다.')
@@ -172,13 +173,23 @@ export default function Page() {
           <p className="text-[2.5rem] font-bold">블로그</p>
           <p className="text-[1.25rem]">테커인들의 블로그를 확인해보세요.</p>
         </div>
-        <TapBar options={category} onSelect={handleCategoryChange} />
+        <div className="flex justify-between">
+          <TapBar options={category} onSelect={handleCategoryChange} />
+          <SearchBar
+            placeholder="이름 또는 키워드로 검색해보세요"
+            index="blog"
+            onSearchResult={setSearchResults}
+          />
+        </div>
         <div className="flex w-full h-[1px] mt-5 bg-gray" />
         {isLoading ? (
           <Loading />
         ) : blog.length === 0 && hasFetched ? (
           <div className="flex justify-center">
-            <EmptyLottie text="블로그 데이터가 없습니다." text2="다시 조회해주세요" />
+            <EmptyLottie
+              text="블로그 데이터가 없습니다."
+              text2="다시 조회해주세요"
+            />
           </div>
         ) : (
           <div className="flex-col grid grid-cols-3 gap-8 mt-8">
