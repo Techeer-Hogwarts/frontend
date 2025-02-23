@@ -6,7 +6,7 @@ export interface FilterBtnProps {
 }
 
 export default function FilterBtn({
-  title,
+  title, 
   onClick,
 }: Readonly<FilterBtnProps>) {
   return (
