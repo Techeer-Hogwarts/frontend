@@ -9,7 +9,15 @@ interface ResultImages {
   id: number
   imageUrl: string
 }
-
+interface StudyMember {
+  id: number
+  name: string
+  isDeleted: boolean
+  isLeader: boolean
+  studyTeamId: number
+  userId: number
+  email: string
+}
 interface ProfileProps {
   projectDetail?: {
     id: number
@@ -25,8 +33,7 @@ interface ProfileProps {
     isRecruited: boolean
     isFinished: boolean
     resultImages: ResultImages[]
-
-    studyMember: string[]
+    studyMember: StudyMember[]
     mainImages?: MainImage
     // studyMember: { name: string; leader: boolean }[] // 추후 수정 필요
   }
