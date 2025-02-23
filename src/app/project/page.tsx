@@ -37,7 +37,7 @@ interface ProjectTeam extends TeamBase {
   fullStackNum: number
   dataEngineerNum: number
   projectExplain: string
-  mainImages?: MainImage[]
+  mainImages?: string[]
   teamStacks: { stackName: string; isMain: boolean }[]
 }
 

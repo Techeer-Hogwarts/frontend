@@ -6,20 +6,46 @@ import { MdOutlineCalendarMonth } from 'react-icons/md'
 import CalendarEventCard, { CalendarEventCardProps } from './CalendarEventCard'
 import useGetEvents from '@/app/calendar/api/getEventList'
 import EventsDetailModal from './EventsDetailModal'
+import BookmarkModal from '../common/BookmarkModal'
 
 interface CalendarProps {
   selectedCategories: string[]
+  setAuthModalOpen: () => void
 }
 
-export default function Calendar({ selectedCategories }: CalendarProps) {
+export default function Calendar({
+  selectedCategories,
+  setAuthModalOpen,
+}: CalendarProps) {
   const [currentDate, setCurrentDate] = useState(dayjs())
+  const [name, setName] = useState<string>('')
   const [selectedDate, setSelectedDate] = useState<string | null>(null)
   const daysOfWeek = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']
   const startOfMonth = currentDate.startOf('month').day()
   const daysInMonth = currentDate.daysInMonth()
   const currentMonth = currentDate.month() + 1 // month는 0부터 시작하므로 1을 더함
   const today = dayjs()
-
+  const fetchUserProfile = async (date: string) => {
+    try {
+      const response = await fetch('/api/v1/users', {
+        method: 'GET',
+        credentials: 'include',
+      })
+      if (response.status === 401) {
+        // 401이면 로그인 모달 오픈
+        setAuthModalOpen()
+        return
+      }
+      if (!response.ok) {
+        throw new Error('유저조회 실패')
+      }
+      const user = await response.json()
+      setName(user.name)
+      setSelectedDate(date)
+    } catch (err: any) {
+      throw new Error(err)
+    }
+  }
   const { data: events } = useGetEvents({
     category: selectedCategories.length > 0 ? selectedCategories : undefined,
   })
@@ -37,7 +63,7 @@ export default function Calendar({ selectedCategories }: CalendarProps) {
           ...event,
           startDate: event.startDate,
           endDate: event.endDate,
-          displayDate: current.format('YYYY-MM-DD')
+          displayDate: current.format('YYYY-MM-DD'),
         })
         current = current.add(1, 'day')
       }
@@ -49,7 +75,7 @@ export default function Calendar({ selectedCategories }: CalendarProps) {
   const expandedEvents = events ? expandEvents(events) : []
 
   const handleDayClick = (date: string) => {
-    setSelectedDate(date)
+    fetchUserProfile(date)
   }
 
   const handleCloseModal = () => {
@@ -74,49 +100,50 @@ export default function Calendar({ selectedCategories }: CalendarProps) {
     // 이번 달의 날짜
     for (let i = 1; i <= daysInMonth; i += 1) {
       const currentDay = currentDate.date(i).format('YYYY-MM-DD')
-      
+
       const dayEvents = expandedEvents.filter((event) =>
-        dayjs(event.displayDate).isSame(currentDay, 'day')
+        dayjs(event.displayDate).isSame(currentDay, 'day'),
       )
 
       const isToday = today.date() === i && today.month() + 1 === currentMonth // 시스템 날짜 == 캘린더 날짜
-      
+
       daysArray.push(
         <div key={i} className="w-[138px] min-h-[183px] border-t-2">
-        <button
-          type="button"
-          className={`w-full h-full text-2xl font-bold p-3 cursor-pointer hover:bg-lightgray/50 flex flex-col items-start ${
-            isToday ? 'border-primary bg-lightgray/30' : ''
-          }`}
-          onClick={() => handleDayClick(currentDay)}
-        >
-          {i}
-          <div className="text-xs font-medium">
-            {dayEvents.map((event) => {
-              const start = dayjs(event.startDate)
-              const end = dayjs(event.endDate)
-              const isSameDate = start.isSame(end, 'day')
+          <button
+            type="button"
+            className={`w-full h-full text-2xl font-bold p-3 cursor-pointer hover:bg-lightgray/50 flex flex-col items-start ${
+              isToday ? 'border-primary bg-lightgray/30' : ''
+            }`}
+            onClick={() => handleDayClick(currentDay)}
+          >
+            {i}
+            <div className="text-xs font-medium">
+              {dayEvents.map((event) => {
+                const start = dayjs(event.startDate)
+                const end = dayjs(event.endDate)
+                const isSameDate = start.isSame(end, 'day')
 
-              return (
-                <CalendarEventCard
-                  key={`${event.id}-${event.startDate}`}
-                  title={event.title}
-                  startDate={event.startDate}
-                  endDate={event.endDate}
-                  category={event.category}
-                  url={event.url}
-                  className="mt-3"
-                  displayDate={
-                    isSameDate
-                      ? start.format('MM.DD')
-                      : `${start.format('MM.DD')} - ${end.format('MM.DD')}`
-                  }
-                />
-              )
-            })}
-          </div>
-        </button>
-      </div>
+                return (
+                  <CalendarEventCard
+                    key={`${event.id}-${event.startDate}`}
+                    title={event.title}
+                    startDate={event.startDate}
+                    endDate={event.endDate}
+                    category={event.category}
+                    url={event.url}
+                    name={event.name}
+                    className="mt-3"
+                    displayDate={
+                      isSameDate
+                        ? start.format('MM.DD')
+                        : `${start.format('MM.DD')} - ${end.format('MM.DD')}`
+                    }
+                  />
+                )
+              })}
+            </div>
+          </button>
+        </div>,
       )
     }
 
@@ -124,9 +151,8 @@ export default function Calendar({ selectedCategories }: CalendarProps) {
   }
 
   const eventsForSelectedDate = expandedEvents.filter(
-    (event) => event.displayDate === selectedDate
+    (event) => event.displayDate === selectedDate,
   )
-
   return (
     <div className="w-[1200px] mx-auto pt-4">
       {/* 월과 네비게이션 */}
@@ -166,6 +192,7 @@ export default function Calendar({ selectedCategories }: CalendarProps) {
 
       {selectedDate && (
         <EventsDetailModal
+          name={name}
           date={dayjs(selectedDate).format('MM.DD')}
           events={eventsForSelectedDate}
           onClose={handleCloseModal}
