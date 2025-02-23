@@ -162,7 +162,7 @@ export default function NavBar() {
   return (
     <div
       ref={searchRef}
-      className="flex items-center w-[1200px] max-w-[1200px] h-[3.8125rem] justify-between border-b border-[#D7D7D7]"
+      className="flex items-center w-[1280px] max-w-[1280px] h-[4rem] justify-between"
     >
       <div className="flex">
         {/* 로고 */}
@@ -186,7 +186,7 @@ export default function NavBar() {
           ))}
         </div>
       </div>
-      <div className="flex items-center">
+      <div className="flex items-center cursor-pointer">
         {/* 돋보기 및 기타 아이콘 */}
         <div className="flex items-center">
           {/* 검색 영역 */}
@@ -256,17 +256,17 @@ export default function NavBar() {
           </div>
         </div>
         {/* 캘린더 아이콘 */}
-        <Link href="/calendar" className="p-2">
+        <Link href="/calendar" className="p-2 cursor-pointer">
           <IoCalendarOutline size={24} />
         </Link>
         {/* 마이페이지 아이콘 */}
-        <Link href="/mypage" className="p-2">
+        <Link href="/mypage" className="p-2 cursor-pointer">
           <IoPersonCircle size={24} />
         </Link>
         {isLoggedIn ? (
           <button
             type="button"
-            className="ml-4 text-gray-600 hover:text-gray-800"
+            className="ml-4 text-gray-600 hover:text-gray-800 cursor-pointer"
             onClick={handleLogout}
           >
             로그아웃
@@ -274,7 +274,7 @@ export default function NavBar() {
         ) : (
           <Link
             href="/login"
-            className="ml-4 text-gray-600 hover:text-gray-800"
+            className="ml-4 text-gray-600 hover:text-gray-800 cursor-pointer"
           >
             로그인
           </Link>
