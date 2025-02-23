@@ -123,9 +123,9 @@ export default function Page() {
     setHasFetched(false)
     let newBlogs: BlogProps[] = []
     if (activeOption === '금주의 블로그') {
-      newBlogs = await getBestBlog(6)
+      newBlogs = await getBestBlog(12)
     } else if (activeOption === 'TECHEER' || activeOption === 'SHARED') {
-      newBlogs = await getBlog(6, inputValue, activeOption)
+      newBlogs = await getBlog(12, inputValue, activeOption)
     }
     const newLikeList: { id: string }[] = await checkLike()
     syncLikeCount(newBlogs, newLikeList)
@@ -144,7 +144,7 @@ export default function Page() {
 
   useEffect(() => {
     setBlog([])
-    setLimit(6)
+    setLimit(12)
     setLikeList([])
     fetchData()
   }, [activeOption, inputValue])
@@ -153,9 +153,9 @@ export default function Page() {
     if (!inView) return
     if (inView) {
       if (activeOption === '금주의 블로그') {
-        getBestBlog(limit + 6)
+        getBestBlog(limit + 12)
       } else if (activeOption === 'TECHEER' || activeOption === 'SHARED') {
-        getBlog(limit + 6, inputValue, activeOption)
+        getBlog(limit + 12, inputValue, activeOption)
       }
     }
   }, [inView, activeOption])

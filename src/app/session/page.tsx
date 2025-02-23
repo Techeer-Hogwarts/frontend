@@ -37,7 +37,7 @@ export default function Page() {
   const [message, setMessage] = useState<string | null>(null)
   const { activeOption, setActiveOption } = useTapBarStore()
   const [inputValue, setInputValue] = useState('')
-  const [limit, setLimit] = useState(6)
+  const [limit, setLimit] = useState(12)
   const { fetchLikes } = useLike()
   const [allSessions, setAllSessions] = useState<Session[]>([])
   const [ref, inView] = useInView({ triggerOnce: false, threshold: 0.5 })
@@ -60,7 +60,7 @@ export default function Page() {
   // 카테고리 변경 처리 함수
   const handleCategoryChange = () => {
     // 카테고리가 변경되면 해당 카테고리에 맞는 블로그 데이터를 가져옵니다.
-    setLimit(3) // 페이지네이션 초기화
+    setLimit(12) // 페이지네이션 초기화
     refetch()
   }
   const showMessage = () => {
@@ -98,7 +98,7 @@ export default function Page() {
   useEffect(() => {
     if (!newSessions || isLoading) return
 
-    if (limit === 6) {
+    if (limit === 12) {
       setAllSessions(newSessions)
     } else {
       setAllSessions((prev) => {
@@ -113,14 +113,14 @@ export default function Page() {
 
   // 탭, 필터링 변경 시 상태 초기화
   useEffect(() => {
-    setLimit(6)
+    setLimit(12)
     checkLike()
     refetch()
   }, [activeOption, selectedPeriodsP, selectedPeriodsPo, selectedPeriodsB])
   // 무한 스크롤 처리
   useEffect(() => {
     if (!inView) return
-    setLimit((prev) => prev + 6)
+    setLimit((prev) => prev + 12)
     if (activeOption === '금주의 세션') {
       refetch()
     }
@@ -243,31 +243,35 @@ export default function Page() {
             </>
           )}
         </div>
-        {activeOption != '금주의 세션' && (
-          <div className="bg-filterbg flex items-center w-[1200px] h-[100px] px-4 gap-4 mt-3 mb-5">
-            {selectedPeriodsP.map((period) => (
-              <FilterBtn
-                key={period}
-                title={period}
-                onClick={() => setSelectedPeriodsP([])}
-              />
-            ))}
-            {selectedPeriodsB.map((period) => (
-              <FilterBtn
-                key={period}
-                title={period}
-                onClick={() => setSelectedPeriodsB([])}
-              />
-            ))}
-            {selectedPeriodsPo.map((period) => (
-              <FilterBtn
-                key={period}
-                title={period}
-                onClick={() => setSelectedPeriodsPo([])}
-              />
-            ))}
-          </div>
-        )}
+        {activeOption !== '금주의 세션' &&
+          [selectedPeriodsP, selectedPeriodsPo, selectedPeriodsB].some(
+            (arr) => arr.length > 0,
+          ) && (
+            <div className="bg-filterbg flex items-center w-[1200px] h-[100px] px-4 gap-4 mt-3 mb-5">
+              {selectedPeriodsP.map((period) => (
+                <FilterBtn
+                  key={period}
+                  title={period}
+                  onClick={() => setSelectedPeriodsP([])}
+                />
+              ))}
+              {selectedPeriodsB.map((period) => (
+                <FilterBtn
+                  key={period}
+                  title={period}
+                  onClick={() => setSelectedPeriodsB([])}
+                />
+              ))}
+              {selectedPeriodsPo.map((period) => (
+                <FilterBtn
+                  key={period}
+                  title={period}
+                  onClick={() => setSelectedPeriodsPo([])}
+                />
+              ))}
+            </div>
+          )}
+
         <div className="grid flex-col grid-cols-3 gap-8">
           {allSessions.map((data: Session) => (
             <SessionPost
