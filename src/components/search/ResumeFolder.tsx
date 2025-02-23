@@ -4,8 +4,6 @@ import CareerTag from '../common/CareerTag'
 import PositionTag from '../common/PositionTag'
 import Link from 'next/link'
 import Image from 'next/image'
-import { handleLikeClick } from '@/app/resume/api/like'
-import { handleBookmarkClick } from '@/app/resume/api/bookmarks'
 
 interface ResumeProps {
   resume: {

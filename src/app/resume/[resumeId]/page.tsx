@@ -51,11 +51,11 @@ export default function Detail({ params }: { params: { resumeId: string } }) {
     async function loadResume() {
       try {
         const data = await fetchResumeById(Number(resumeId))
-        console.log('Fetched resume data:', data)
+        // console.log('Fetched resume data:', data)
         setResume(data)
         setProfileData(data.user)
         setIsLoading(false)
-        console.log('detail 페이지 조회 성공', data)
+        // console.log('detail 페이지 조회 성공', data)
       } catch (err: any) {
         setError(err.message)
         setIsLoading(false)

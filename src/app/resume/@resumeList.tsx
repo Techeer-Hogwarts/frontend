@@ -3,6 +3,8 @@ import EmptyLottie from '@/components/common/EmptyLottie'
 import { ResumeQueryParams } from '@/types/queryParams'
 import ResumeFolder from '@/components/resume/ResumeFolder'
 import SkeletonResumeFolder from '@/components/resume/SkeletonResume'
+import { useEffect, useState } from 'react'
+import { useInView } from 'react-intersection-observer'
 
 interface Resume {
   id: number
@@ -25,32 +27,49 @@ export default function ResumeList({
   position = [],
   year = [],
   category = '전체',
-  offset,
-  limit,
 }: ResumeQueryParams = {}) {
+  const [resumes, setResumes] = useState<Resume[]>([])
+  const [limit, setLimit] = useState(8)
+  const [ref, inView] = useInView({ threshold: 0.1 })
+
   const { data, isLoading, isError } = useGetResumeQuery({
     position,
     year,
     category,
-    offset,
     limit,
   })
+  useEffect(() => {
+    setResumes([])
+    setLimit(8)
+  }, [position, year, category])
 
-  if (isLoading) {
-    const skeletons = Array.from({ length: 8 }).map((_, i) => ({
-      id: `skeleton-${i}`,
-    }))
+  useEffect(() => {
+    if (data && Array.isArray(data)) {
+      setResumes((prev) => {
+        const existingIds = new Set(prev.map((p) => p.id))
+        const newResumes = data.filter((p) => !existingIds.has(p.id)) // 중복 제거
+        return [...prev, ...newResumes]
+      })
+    }
+  }, [data])
+
+  useEffect(() => {
+    if (inView) {
+      setLimit((prev) => prev + 4)
+    }
+  }, [inView])
+
+  if (isLoading && resumes.length === 0) {
     return (
-      <div className="grid grid-cols-4 gap-4">
-        {skeletons.map((skeleton) => (
-          <SkeletonResumeFolder key={skeleton.id} />
+      <div className="grid grid-cols-4 gap-12">
+        {Array.from({ length: 8 }).map((_, i) => (
+          <SkeletonResumeFolder key={`skeleton-${i}`} />
         ))}
       </div>
     )
   }
 
-  if (isError || !data?.length) {
-    console.error('데이터 로드 실패 또는 빈 배열:', data)
+  if (isError || (data && resumes.length === 0)) {
     return (
       <div className="flex justify-center">
         <EmptyLottie
@@ -63,9 +82,10 @@ export default function ResumeList({
 
   return (
     <div className="grid grid-cols-4 gap-8">
-      {data?.map((resume: Resume) => (
+      {resumes.map((resume) => (
         <ResumeFolder key={resume.id} resume={resume} />
       ))}
+      <div ref={ref} className="h-1" />
     </div>
   )
 }
