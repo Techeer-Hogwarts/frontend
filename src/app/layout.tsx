@@ -28,7 +28,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={pretendard.variable}>
-      <body className={`${pretendard.className} min-h-screen flex flex-col`}>
+      <body
+        className={`${pretendard.className} min-h-screen flex flex-col justify-center items-center`}
+      >
         <NavBar />
         <Providers>
           <main className="flex-1">{children}</main>

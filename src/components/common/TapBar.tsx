@@ -32,7 +32,7 @@ export default function TapBar({ options, onSelect }: TapBarProps) {
               {option}
             </TapBtn>
             {option !== options[options.length - 1] && (
-              <div className="h-4 w-[1px] bg-gray" />
+              <div className="mx-4 h-4 w-[1px] bg-gray" />
             )}
           </div>
         ))}
