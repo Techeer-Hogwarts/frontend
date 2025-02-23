@@ -23,14 +23,16 @@ export const metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode
-}>) {
+}) {
   return (
-    <html lang="en" className={`${pretendard.variable}`}>
-      <body className={pretendard.className}>
+    <html lang="en" className={pretendard.variable}>
+      <body className={`${pretendard.className} min-h-screen flex flex-col`}>
         <NavBar />
-        <Providers>{children}</Providers>
+        <Providers>
+          <main className="flex-1">{children}</main>
+        </Providers>
         <Footer />
       </body>
     </html>
