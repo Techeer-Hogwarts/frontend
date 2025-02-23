@@ -147,6 +147,8 @@ export default function EditProjectPage() {
       return
     }
 
+    console.log('projectData', projectData)
+
     // (4) 삭제되지 않은 멤버만 골라서 최종 전송할 형태로 변환
     const finalMember = projectData.projectMember
       .filter((m: any) => {

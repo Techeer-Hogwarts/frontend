@@ -8,8 +8,6 @@ interface PositionProps {
 
 const PositionTag: React.FC<PositionProps> = ({ position }) => {
   const { bg, textColor } = getPositionStyle(position)
-  console.log('bg->', bg)
-  console.log('textColor->', textColor)
 
   return (
     <div

@@ -43,7 +43,7 @@ export default function NavBar() {
   const [query, setQuery] = useState('')
   const [basicResults, setBasicResults] = useState<BasicResult[]>([])
   const [finalResults, setFinalResults] = useState([])
-  const { isLoggedIn, checkAuth, logout } = useAuthStore()
+  const { isLoggedIn, logout } = useAuthStore()
   const router = useRouter()
 
   const debouncedQuery = useDebounce(query, 100)
@@ -61,10 +61,6 @@ export default function NavBar() {
     session: '세션',
     profile: '프로필',
   }
-
-  useEffect(() => {
-    checkAuth()
-  }, [checkAuth])
 
   const toggleSearch = () => {
     if (isSearchOpen) {

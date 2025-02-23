@@ -208,7 +208,7 @@ const Signup = () => {
         }
       }
 
-      router.push('/login?from=signup')
+      router.push('/login?form=signup')
     } catch (err: any) {
       setSignupError('네트워크 오류가 발생했습니다.')
     }
@@ -282,7 +282,7 @@ const Signup = () => {
             <InputField
               label="이름"
               name="name"
-              placeholder="이름을 입력해주세요(시니어멘토는 영어 이름 입력 가능)"
+              placeholder="이름을 입력해주세요"
               required={true}
               value={formData.name}
               onChange={handleChange}
@@ -699,7 +699,7 @@ const Signup = () => {
         </p>
         <p className="text-base mt-auto mb-6">이미 회원이신가요?</p>
         <Link
-          href="/login?from=signup"
+          href="/login?form=signup"
           className="underline text-xl mb-[7.5rem]"
         >
           로그인 하러가기

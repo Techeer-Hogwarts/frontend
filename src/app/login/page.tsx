@@ -2,10 +2,9 @@
 
 import React, { useState } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useAuthStore } from '@/store/authStore'
 import InputField from '@/components/common/InputField'
-import { useSearchParams } from 'next/navigation'
 
 export default function Login() {
   const [email, setEmail] = useState('')
@@ -20,7 +19,8 @@ export default function Login() {
   const router = useRouter()
 
   const searchParams = useSearchParams()
-  const from = searchParams.get('from') // 'signup' or null
+  const redirectPath = searchParams.get('redirect') // 예: "/project/detail/123"
+  const form = searchParams.get('form')
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -59,11 +59,11 @@ export default function Login() {
           setIsLoggedIn(true)
           setMessage('로그인이 완료되었습니다.')
           setIsError(false)
-          if (from === 'signup') {
-            // 예: 메인 페이지로 이동
-            router.push('/')
+          if (redirectPath) {
+            router.replace(redirectPath)
+          } else if (form === 'signup') {
+            router.replace('/')
           } else {
-            // 예: 이전 페이지로 이동
             router.back()
           }
         } else {

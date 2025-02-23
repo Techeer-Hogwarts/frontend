@@ -9,6 +9,7 @@ import Dropdown from '@/components/common/Dropdown'
 import AddBtn from '../../components/project/add/AddBtn'
 import { useQueries } from '@tanstack/react-query'
 import Loading from '@/components/common/Loading'
+import { useAuthStore } from '@/store/authStore'
 
 import { getAllTeams } from '@/api/project/common'
 import { getMyInfo } from '@/api/project/common'

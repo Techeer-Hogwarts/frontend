@@ -87,6 +87,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       }
       // 로그아웃 성공 시 상태 업데이트
       set({ isLoggedIn: false })
+      set({ user: null })
     } catch (error) {
       console.error('Logout error:', error)
       throw error
