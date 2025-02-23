@@ -7,7 +7,7 @@ import {
   IoCalendarOutline,
   IoPersonCircle,
 } from 'react-icons/io5'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import { useAuthStore } from '@/store/authStore'
 import {
   getBasicSearchResults,
@@ -45,6 +45,7 @@ export default function NavBar() {
   const [finalResults, setFinalResults] = useState([])
   const { isLoggedIn, logout } = useAuthStore()
   const router = useRouter()
+  const pathname = usePathname()
 
   const debouncedQuery = useDebounce(query, 100)
 
@@ -154,6 +155,14 @@ export default function NavBar() {
     }
   }
 
+  const navItems: { key: string; href: string }[] = [
+    { key: 'project', href: '/project' },
+    { key: 'profile', href: '/profile' },
+    { key: 'resume', href: '/resume' },
+    { key: 'blog', href: '/blog' },
+    { key: 'session', href: '/session' },
+  ]
+
   return (
     <div
       ref={searchRef}
@@ -170,15 +179,21 @@ export default function NavBar() {
 
         {/* 메뉴 */}
         <div className="flex items-center gap-[1.62rem]">
-          {['project', 'profile', 'resume', 'blog', 'session'].map((item) => (
-            <Link
-              key={item}
-              href={`/${item}`}
-              className="hover:text-primary cursor-pointer"
-            >
-              {indexMap[item]}
-            </Link>
-          ))}
+          {navItems.map((item) => {
+            // (C) 현재 경로(pathname)가 item.href로 시작하면 active 스타일
+            const isActive = pathname.startsWith(item.href)
+            return (
+              <Link
+                key={item.key}
+                href={item.href}
+                className={`hover:text-primary cursor-pointer ${
+                  isActive ? 'text-primary' : ''
+                }`}
+              >
+                {indexMap[item.key]}
+              </Link>
+            )
+          })}
         </div>
       </div>
       <div className="flex items-center">
