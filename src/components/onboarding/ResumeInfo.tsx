@@ -4,7 +4,7 @@ export default function ResumeInfo() {
   return (
     <div className="flex justify-between my-40 px-10">
       <Image width={500} height={500} src="/resume.png" alt="resume"></Image>
-      <div className="flex flex-col">
+      <div className="flex flex-col text-end">
         <span className="text-primary font-bold text-[30px]">이력서</span>
         <span className="font-bold text-[50px]">모든 이력서를 한 곳에서</span>
         <span className="mt-3 text-[25px] font-semibold text-black/60">
