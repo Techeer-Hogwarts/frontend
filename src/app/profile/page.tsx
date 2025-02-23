@@ -56,6 +56,7 @@ export default function Page() {
     '한서대학교',
     '한성대학교',
     '호서대학교',
+    '해당 없음',
   ]
   //기수 탭
   // const category = ['전체', '이력서', '포트폴리오', 'ICT', 'OTHER']

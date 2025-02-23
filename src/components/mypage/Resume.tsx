@@ -1,19 +1,61 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import ResumeFolder from '../resume/ResumeFolder'
 import AddResume from './AddResume'
 import Link from 'next/link'
+import { ResumeQueryParams } from '@/types/queryParams'
+import { useGetResumeQuery } from '@/app/resume/query/useGetResumeQuery'
+import { fetchUserResumes } from '@/app/resume/api/getUserResume'
 
-export default function Resume() {
+interface Resume {
+  id: number
+  createdAt: number
+  title: string
+  category: string
+  position: string
+  likeCount: number
+  year: string
+  user: {
+    id: number
+    name: string
+    profileImage: string
+    year: number
+    mainPosition: string
+  }
+}
+
+export default function Resume({
+  userId,
+  offset,
+  limit,
+}: {
+  userId: number
+  offset: number
+  limit: number
+}) {
+  const [data, setData] = useState<Resume[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [isError, setIsError] = useState(false)
   const [modal, setModal] = useState(false)
 
-  const [selectedPosition, setSelectedPosition] = useState<string | undefined>(
-    undefined,
-  )
-  const [selectedYear, setSelectedYear] = useState<number | undefined>(
-    undefined,
-  )
+  const fetchData = async () => {
+    try {
+      setIsLoading(true)
+      setIsError(false)
+      const result = await fetchUserResumes(userId, offset, limit)
+      setData(result.data || [])
+    } catch (error) {
+      setIsError(true)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchData()
+  }, [userId, offset, limit])
+
   const handleClickAddResume = () => {
     setModal(!modal)
   }
@@ -26,15 +68,14 @@ export default function Resume() {
         >
           이력서 추가
         </button>
-        {modal && <AddResume setModal={setModal} />}
+        {modal && <AddResume setModal={setModal} fetchData={fetchData} />}
       </div>
       <Link href="/detail">
-        {/* <ResumeFolder
-          position={selectedPosition}
-          year={selectedYear}
-          offset={0}
-          limit={10}
-        /> */}
+        <div className="grid grid-cols-3 gap-8">
+          {data?.map((resume: Resume) => (
+            <ResumeFolder key={resume.id} resume={resume} />
+          ))}
+        </div>
       </Link>
     </div>
   )

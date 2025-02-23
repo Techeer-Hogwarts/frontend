@@ -52,7 +52,7 @@ const SessionSection: React.FC<{ session: SessionProps[] }> = ({ session }) => {
           </button>
         </div>
       )}
-      <div className="w-[62.5rem] h-[1px] mt-10 bg-lightgray"></div>
+      <div className="w-[77rem] h-[1px] mt-10 bg-lightgray"></div>
     </Section>
   )
 }

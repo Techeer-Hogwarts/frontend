@@ -39,6 +39,19 @@ export default function BlogPost({ blog }: BlogPostProps) {
     window.open(blog.url, '_blank')
   }
 
+  const formattedDate = new Date(blog.date)
+    .toLocaleDateString('ko-KR', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    })
+    .replace(/\.$/, '')
+
+  // 블로그 타이틀 설정
+  const blogTitle = blog.title.split('-').slice(-1).join(' ')
+  const truncatedTitle =
+    blogTitle.length > 16 ? blogTitle.slice(0, 16) + '...' : blogTitle
+
   return (
     <div className="flex flex-wrap gap-12">
       <div className="flex flex-col w-[300px] relative ">
@@ -53,14 +66,14 @@ export default function BlogPost({ blog }: BlogPostProps) {
         </button>
         <div className="rounded-b-lg w-[300px] min-h-[100px] h-auto py-2  bg-white shadow-[0px_5px_8px_#bfbfbf]">
           <div className="flex justify-between relative">
-            <p className="text-base mx-5 mb-1 truncate">{blog.title}</p>
+            <p className="text-base mx-5 mb-1 truncate">{truncatedTitle}</p>
           </div>
-          <p className="text-sm text-black/30 ml-5">{blog.date}</p>
+          <p className="text-sm text-black/30 ml-5">{formattedDate}</p>
           <div className="flex ml-5 mt-3  justify-between">
             <div className="flex items-center gap-3">
               {/* <div className="rounded-full w-4 h-4 bg-zinc-400 mr-1" /> */}
               <Image
-                className="mr-1"
+                className="mr-1 rouded-full"
                 src={blog.userProfileImage}
                 width={16}
                 height={16}
