@@ -243,31 +243,35 @@ export default function Page() {
             </>
           )}
         </div>
-        {activeOption != '금주의 세션' && (
-          <div className="bg-filterbg flex items-center w-[1200px] h-[100px] px-4 gap-4 mt-3 mb-5">
-            {selectedPeriodsP.map((period) => (
-              <FilterBtn
-                key={period}
-                title={period}
-                onClick={() => setSelectedPeriodsP([])}
-              />
-            ))}
-            {selectedPeriodsB.map((period) => (
-              <FilterBtn
-                key={period}
-                title={period}
-                onClick={() => setSelectedPeriodsB([])}
-              />
-            ))}
-            {selectedPeriodsPo.map((period) => (
-              <FilterBtn
-                key={period}
-                title={period}
-                onClick={() => setSelectedPeriodsPo([])}
-              />
-            ))}
-          </div>
-        )}
+        {activeOption !== '금주의 세션' &&
+          [selectedPeriodsP, selectedPeriodsPo, selectedPeriodsB].some(
+            (arr) => arr.length > 0,
+          ) && (
+            <div className="bg-filterbg flex items-center w-[1200px] h-[100px] px-4 gap-4 mt-3 mb-5">
+              {selectedPeriodsP.map((period) => (
+                <FilterBtn
+                  key={period}
+                  title={period}
+                  onClick={() => setSelectedPeriodsP([])}
+                />
+              ))}
+              {selectedPeriodsB.map((period) => (
+                <FilterBtn
+                  key={period}
+                  title={period}
+                  onClick={() => setSelectedPeriodsB([])}
+                />
+              ))}
+              {selectedPeriodsPo.map((period) => (
+                <FilterBtn
+                  key={period}
+                  title={period}
+                  onClick={() => setSelectedPeriodsPo([])}
+                />
+              ))}
+            </div>
+          )}
+
         <div className="grid flex-col grid-cols-3 gap-8">
           {allSessions.map((data: Session) => (
             <SessionPost
