@@ -114,24 +114,26 @@ export default function Resume() {
         {/** ✅ BestResume에서 setAuthModalOpen을 전달하도록 수정 */}
         <BestResume offset={0} limit={10} setAuthModalOpen={setAuthModalOpen} />
       </div>
-      <div className="bg-filterbg flex items-center w-[75rem] h-[4.375rem] px-4 gap-4 my-3">
-        {selectedPosition.map((item) => (
-          <FilterBtn
-            key={item}
-            title={item}
-            onClick={() => {
-              handleRemoveFilter(item, 'position')
-            }}
-          />
-        ))}
-        {selectedYear.map((item) => (
-          <FilterBtn
-            key={item}
-            title={item.toString()}
-            onClick={() => handleRemoveFilter(item, 'year')}
-          />
-        ))}
-      </div>
+      {[selectedPosition, selectedYear].some((arr) => arr.length > 0) && (
+        <div className="bg-filterbg flex items-center w-[75rem] h-[4.375rem] px-4 gap-4 my-3">
+          {selectedPosition.map((item) => (
+            <FilterBtn
+              key={item}
+              title={item}
+              onClick={() => {
+                handleRemoveFilter(item, 'position')
+              }}
+            />
+          ))}
+          {selectedYear.map((item) => (
+            <FilterBtn
+              key={item}
+              title={item.toString()}
+              onClick={() => handleRemoveFilter(item, 'year')}
+            />
+          ))}
+        </div>
+      )}
       {/** 이력서 폴더 */}
       <ResumeList
         position={selectedPosition}
