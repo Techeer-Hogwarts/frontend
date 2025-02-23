@@ -12,7 +12,7 @@ import SessionPost from '@/components/session/SessionPost'
 import { useSessionsQuery } from './_lib/useSessionsQuery'
 import AuthModal from '@/components/common/AuthModal'
 import EmptyLottie from '@/components/common/EmptyLottie'
-
+import SearchBar from '@/components/common/SearchBar'
 interface User {
   name: string
   profileImage: string
@@ -110,7 +110,7 @@ export default function Page() {
       })
     }
   }, [newSessions, isLoading, limit])
-
+  const [searchResults, setSearchResults] = useState<any>(null)
   // 탭, 필터링 변경 시 상태 초기화
   useEffect(() => {
     setLimit(12)
@@ -152,7 +152,14 @@ export default function Page() {
             setSelectedPeriodsB([])
           }}
         >
-          <TapBar options={tapBarOptions} onSelect={handleCategoryChange} />
+          <div className="flex justify-between">
+            <TapBar options={tapBarOptions} onSelect={handleCategoryChange} />
+            <SearchBar
+              placeholder="이름 또는 키워드로 검색해보세요"
+              index="session"
+              onSearchResult={setSearchResults}
+            />
+          </div>
         </div>
         <div className="flex w-full h-[1px] my-5 bg-gray" />
         <div className="flex items-center justify-start gap-8">
