@@ -20,8 +20,9 @@ interface ResumeData {
 interface ResumeFolderProps {
   offset: number
   limit: number
+  setAuthModalOpen: (open: boolean) => void 
 }
-export default function BestResume({ offset, limit }: ResumeFolderProps) {
+export default function BestResume({ offset, limit, setAuthModalOpen }: ResumeFolderProps) {
   const [resumes, setResumes] = useState<ResumeData[]>([]) // 빈 배열로 초기화
   const router = useRouter() // useRouter 훅 추가
 
@@ -31,7 +32,7 @@ export default function BestResume({ offset, limit }: ResumeFolderProps) {
   useEffect(() => {
     async function loadBestResumes() {
       try {
-        const bestResumes = await fetchBestResumes(offset, limit) // 예시로 0번째부터 10개 가져오기
+        const bestResumes = await fetchBestResumes(offset, limit, setAuthModalOpen) // 예시로 0번째부터 10개 가져오기
         // console.log('Best resumes:', bestResumes)
         setResumes(bestResumes.data || []) // 가져온 데이터를 상태에 저장
       } catch (error) {
@@ -39,7 +40,7 @@ export default function BestResume({ offset, limit }: ResumeFolderProps) {
       }
     }
     loadBestResumes()
-  }, [offset, limit])
+  }, [offset, limit, setAuthModalOpen])
 
   const handleResumeClick = (id: number) => {
     router.push(`/resume/${id}`)

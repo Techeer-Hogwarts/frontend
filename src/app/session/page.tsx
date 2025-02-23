@@ -11,6 +11,7 @@ import { useInView } from 'react-intersection-observer'
 import SessionPost from '@/components/session/SessionPost'
 import { useSessionsQuery } from './_lib/useSessionsQuery'
 import AuthModal from '@/components/common/AuthModal'
+import EmptyLottie from '@/components/common/EmptyLottie'
 
 interface User {
   name: string
@@ -286,6 +287,36 @@ export default function Page() {
           ))}
           <div ref={ref} />
         </div>
+        {/* ✅ 로그인 안 했으면 즉시 EmptyLottie 표시 */}
+        {authModalOpen ? (
+          <div className="flex justify-center">
+            <EmptyLottie text="세션 데이터가 없습니다." text2="로그인 후 다시 시도해주세요." />
+          </div>
+        ) : error || (newSessions && allSessions.length === 0) ? (
+          <div className="flex justify-center">
+            <EmptyLottie text="세션 데이터가 없습니다." text2="다시 조회해주세요" />
+          </div>
+        ) : (
+          <div className="grid flex-col grid-cols-3 gap-8">
+            {allSessions.map((data: Session) => (
+              <SessionPost
+                key={data.id}
+                likeCount={data.likeCount}
+                id={data.id}
+                thumbnail={data.thumbnail}
+                title={data.title}
+                date={data.date}
+                presenter={data.presenter}
+                fileUrl={data.fileUrl}
+                userImage={data.user.profileImage}
+                showMessage={showMessage}
+                likeList={likeList}
+                onLikeUpdate={handleLikeUpdate}
+              />
+            ))}
+            <div ref={ref} />
+          </div>
+        )}
         <AddBtn />
       </div>
     </div>
