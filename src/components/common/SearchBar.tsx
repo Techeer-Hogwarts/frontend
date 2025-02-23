@@ -11,9 +11,9 @@ import {
 } from '../search/api/getSearch'
 
 interface SearchBarProps {
-  // placeholder: string
-  index: 'resume'
-  // onSearchResult: (results: SearchResultItem[]) => void
+  placeholder: string
+  index: string
+  onSearchResult: (results: SearchResultItem[]) => void
 }
 
 interface SearchResultItem {
@@ -28,7 +28,6 @@ interface SearchResultItem {
   score: number
 }
 
-// Debounce 함수
 const useDebounce = (value: string, delay: number) => {
   const [debouncedValue, setDebouncedValue] = useState(value)
 
@@ -49,19 +48,19 @@ interface BasicResult {
   id: number
   title: string
   index: string
+  url: string
 }
 
 export default function Search({
-  // placeholder,
+  placeholder,
   index,
-  // onSearchResult,
+  onSearchResult,
 }: SearchBarProps) {
   const [inputValue, setInputValue] = useState('')
 
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const [query, setQuery] = useState('')
   const [basicResults, setBasicResults] = useState<BasicResult[]>([])
-  // const [finalResults, setFinalResults] = useState([])
   const router = useRouter()
 
   const debouncedQuery = useDebounce(query, 100)
@@ -69,21 +68,14 @@ export default function Search({
   const searchRef = useRef<HTMLFormElement>(null)
 
   const handleSearch = async () => {
-    if (!query.trim()) return // inputValue → query 변경
+    if (!query.trim()) return
     try {
       const result = await searchAPI({ index, query })
-      // onSearchResult가 주석 처리되어 있으므로 필요 시 다시 활성화
-      // onSearchResult(result || [])
+      onSearchResult(result || [])
     } catch (error) {
       console.error('검색 API 호출 실패:', error)
     }
   }
-
-  // const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-  //   if (e.key === 'Enter') {
-  //     handleSearch()
-  //   }
-  // }
 
   const toggleSearch = () => {
     setIsSearchOpen((prev) => !prev)
@@ -94,13 +86,28 @@ export default function Search({
   }
 
   useEffect(() => {
-    // debouncedQuery가 바뀔 때마다 /api/v2/search/basic 호출
     if (debouncedQuery) {
-      setBasicResults([]) // 기존 결과 초기화
+      setBasicResults([])
       const fetchBasicResults = async () => {
         try {
           const data = await getBasicSearchResults(debouncedQuery)
-          setBasicResults(data.results || [])
+          if (data.results) {
+            let filteredResults = data.results
+
+            if (index !== 'blog' && index !== 'session' && index !== 'resume') {
+              filteredResults = data.results.filter(
+                (result) =>
+                  result.index !== 'blog' &&
+                  result.index !== 'session' &&
+                  result.index !== 'resume',
+              )
+            } else {
+              filteredResults = data.results.filter(
+                (result) => result.index === index,
+              )
+            }
+            setBasicResults(filteredResults)
+          }
         } catch (error) {
           console.error('기본 검색 결과 가져오기 실패:', error)
         }
@@ -116,7 +123,7 @@ export default function Search({
         !searchRef.current.contains(event.target as Node)
       ) {
         setQuery('')
-        setIsSearchOpen(false) // 자동완성 창 닫기
+        setIsSearchOpen(false)
       }
     }
 
@@ -129,10 +136,22 @@ export default function Search({
   const handleSelectResult = async (
     selectedTitle: string,
     result: BasicResult,
+    url: string,
+    resultIndex: string,
   ) => {
+    if (index === 'blog') {
+      router.push(url)
+      return
+    } else if (index === 'session') {
+      router.push(`/session/video/${result.id}`)
+      return
+    } else if (index === 'resume') {
+      router.push(`/resume/${result.id}`)
+      return
+    }
     setQuery(selectedTitle)
     setIsSearchOpen(false)
-    router.push(`/${result.index}/${result.id}`)
+    router.push(`/project/detail/${resultIndex}/${result.id}`)
   }
 
   return (
@@ -142,7 +161,6 @@ export default function Search({
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         placeholder="검색어를 입력하세요"
-        // onKeyDown={handleKeyDown}
         className="w-[300px] h-9 border border-gray outline-none rounded-2xl pl-4 pr-8 transition-all duration-300 ease-in-out focus:outline-none"
       />
       <Image
@@ -154,11 +172,10 @@ export default function Search({
         className="absolute right-2 top-1/2 transform -translate-y-1/2 cursor-pointer"
       />
 
-      {/* 자동완성 결과 출력 */}
       {debouncedQuery && (
         <ul className="absolute bg-white border border-gray rounded-lg mt-1 top-[2.813rem] w-[18.5rem] max-h-[17rem] overflow-y-auto z-10">
           {basicResults && basicResults.length > 0 ? (
-            basicResults.map((result, index) => {
+            basicResults.map((result) => {
               const truncatedTitle =
                 result.title.length > 16
                   ? result.title.slice(0, 16) + '...'
@@ -170,12 +187,13 @@ export default function Search({
                 >
                   <IoSearchOutline className="w-3" onClick={toggleSearch} />
                   <li
-                    // key={index}
                     className="p-1 cursor-pointer font-light"
                     onClick={() =>
                       handleSelectResult(
                         result.title.split('-').slice(-1).join(' '),
                         result,
+                        result.url,
+                        result.index,
                       )
                     }
                   >

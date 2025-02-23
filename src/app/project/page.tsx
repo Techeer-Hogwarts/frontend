@@ -11,7 +11,7 @@ import { useQuery } from '@tanstack/react-query'
 import FilterBtn from '@/components/session/FilterBtn'
 import EmptyLottie from '@/components/common/EmptyLottie'
 import SkeletonProjectCard from '@/components/project/SkeletonProjectCard'
-
+import SearchBar from '@/components/common/SearchBar'
 import { getAllTeams } from '@/api/project/common'
 import { getMyInfo } from '@/api/project/common'
 
@@ -64,7 +64,7 @@ export default function Project() {
   const [selectedProgress, setSelectedProgress] = useState<string[]>([]) // 진행여부: ['진행 중', '완료']
   const [selectedTeamType, setSelectedTeamType] = useState<string[]>([]) // 구분: ['프로젝트', '스터디']
   const [selectedPosition, setSelectedPosition] = useState<string[]>([]) // 포지션: ['Frontend', 'Backend', 'DevOps', 'FullStack', 'DataEngineer']
-
+  const [searchResults, setSearchResults] = useState<any>(null)
   // 탭 선택 핸들러: TapBar에서 선택 시 호출 (모집 중이면 selectedTab이 '모집 중'이 됨)
   const handleTabSelect = (option: string) => {
     setSelectedTab(option)
@@ -166,7 +166,14 @@ export default function Project() {
       </div>
 
       {/* 탭바: onSelect 핸들러로 탭 변경을 처리 */}
-      <TapBar options={['전체보기', '모집 중']} onSelect={handleTabSelect} />
+      <div className="flex justify-between">
+        <TapBar options={['전체보기', '모집 중']} onSelect={handleTabSelect} />
+        <SearchBar
+          placeholder="이름 또는 키워드로 검색해보세요"
+          index=""
+          onSearchResult={setSearchResults}
+        />
+      </div>
       <div className="flex w-full h-[1px] my-5 bg-gray" />
 
       {/* 드롭다운 필터 영역 */}
