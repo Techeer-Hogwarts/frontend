@@ -75,6 +75,7 @@ export default function Page() {
             <p className="text-[1.25rem]">
               모든 테커인들의 프로필 정보를 확인해보세요.
             </p>
+
             {/** 검색창 */}
             {/* <SearchBar
               placeholder="이름 또는 키워드로 검색해보세요"
@@ -82,6 +83,7 @@ export default function Page() {
               onSearchResult={setSearchResults}
             /> */}
           </div>
+          <div className="flex w-full h-[1px] mt-5 bg-gray" />
         </div>
         <div className="flex justify-start mt-5 gap-3">
           <Dropdown

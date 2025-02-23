@@ -28,6 +28,7 @@ interface Applicant {
   profileImage: string
   name: string
   teamRole: string
+  year: string
 }
 
 interface ApplicantModalProps {
@@ -131,7 +132,7 @@ export default function ApplicantModal({
           <p className="text-lg font-bold">{applicant.name}</p>
 
           {/* 추후 수정 예정 */}
-          <span className="text-gray-500 text-sm">| 8기</span>
+          <span className="text-gray-500 text-sm">| {applicant.year}기</span>
         </div>
 
         {/* 승인 / 거절 버튼 */}
