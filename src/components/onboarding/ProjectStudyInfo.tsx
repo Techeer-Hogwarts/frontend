@@ -1,87 +1,18 @@
 import Image from 'next/image'
-import { useEffect, useState } from 'react'
 
 export default function ProjectStudyInfo() {
-  // 이미지 슬라이드
-  const images = [
-    { id: 'img1', src: '/sample1.png' },
-    { id: 'img2', src: '/sample2.png' },
-    { id: 'img3', src: '/sample3.png' },
-  ]
-  const images2 = [
-    { id: 'img4', src: '/sample4.png' },
-    { id: 'img5', src: '/sample5.png' },
-    { id: 'img6', src: '/sample6.png' },
-  ]
-  const [currentIndex, setCurrentIndex] = useState(0)
-
-  const nextSlide = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length)
-  }
-
-  useEffect(() => {
-    const interval = setInterval(nextSlide, 3000) // 3초마다 슬라이드 변경
-    return () => clearInterval(interval) // 컴포넌트 언마운트 시 정리
-  }, [])
   return (
-    <div className="flex justify-between h-[540px] p-10">
-      {/* 왼쪽 슬라이더 */}
-      <div className="flex">
-        <div className="relative w-52 h-45 overflow-hidden">
-          <div
-            className="flex flex-col transition-transform duration-500"
-            // style={{ transform: `translateY(-${currentIndex * 140}px)` }}
-          >
-            {images.map((image) => (
-              <span key={image.id} className="flex-shrink-0">
-                <Image
-                  width={200}
-                  height={140}
-                  src={image.src}
-                  alt={`sample ${image.id}`}
-                />
-              </span>
-            ))}
-            <span className="flex-shrink-0">
-              <Image
-                width={200}
-                height={140}
-                src={images[0].src}
-                alt="sample 1"
-              />
-              {/* 첫 번째 이미지를 마지막에 추가 */}
-            </span>
-          </div>
-        </div>
-        {/* 오른쪽 슬라이더 */}
-        <div className="relative w-52 h-45 overflow-hidden">
-          <div
-            className="flex flex-col transition-transform duration-500"
-            // style={{ transform: `translateY(${currentIndex * 140}px)` }}
-          >
-            {images2.map((image) => (
-              <span key={image.id} className="flex-shrink-0">
-                <Image
-                  width={200}
-                  height={140}
-                  src={image.src}
-                  alt={`sample ${image.id}`}
-                />
-              </span>
-            ))}
-            <span className="flex-shrink-0">
-              <Image
-                width={200}
-                height={140}
-                src={images2[0].src}
-                alt="sample 4"
-              />
-            </span>
-          </div>
-        </div>
-      </div>
+    <div className="relative h-[540px] p-10 flex justify-end items-center">
+      {/* 배경 이미지 */}
+      <Image
+        width={400}
+        height={500}
+        src="/projectInfo.png"
+        alt="projectInfo"
+        className="absolute inset-0 left-20 -top-7 h-[500px] object-contain"
+      />
       {/* 문구 */}
-      <div className="flex flex-col">
+      <div className="flex flex-col h-full">
         <span className="text-primary font-bold text-[30px] text-end">
           프로젝트 & 스터디
         </span>
