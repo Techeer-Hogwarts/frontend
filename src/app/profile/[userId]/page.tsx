@@ -7,6 +7,7 @@ import Profile from '@/components/mypage/Profile'
 import ProfileBox from '@/components/profile/ProfileBox'
 import ProfilepageTap from '@/components/profile/ProfilepageTap'
 import { fetchUserProfile } from '../api/getUserProfile'
+import Skeleton from '@/components/profile/Skeleton'
 
 export default function Page({ params }: { params: { userId: string } }) {
   const [activeTab, setActiveTab] = useState<'home' | 'profile' | 'resume'>(
@@ -32,7 +33,7 @@ export default function Page({ params }: { params: { userId: string } }) {
     }
   }, [userId])
 
-  if (loading) return <div>로딩 중...</div>
+  if (loading) return <Skeleton />
 
   return (
     <div className="flex gap-16 mt-10">
@@ -45,9 +46,7 @@ export default function Page({ params }: { params: { userId: string } }) {
       {/** 우측 컨텐츠 영역 */}
       {activeTab === 'home' && <Home />}
       {activeTab === 'profile' && <Profile profile={profileData} />}
-      {activeTab === 'resume' && (
-        <Resume userId={Number(userId)} offset={0} limit={10} />
-      )}
+      {activeTab === 'resume' && <Resume userId={Number(userId)} />}
     </div>
   )
 }

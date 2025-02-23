@@ -1,20 +1,17 @@
 export const fetchUserResumes = async (
   userId: number,
-  offset: number,
-  limit: number,
+  // offset: number,
+  // limit: number,
 ): Promise<any> => {
   try {
     // URL에 userId를 경로 매개변수로 포함하고, offset과 limit은 쿼리 매개변수로 추가
-    const response = await fetch(
-      `/api/v1/resumes/user/${userId}?offset=${offset}&limit=${limit}`,
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
+    const response = await fetch(`/api/v1/resumes/user/${userId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
       },
-    )
+      credentials: 'include',
+    })
 
     if (!response.ok) {
       throw new Error(
