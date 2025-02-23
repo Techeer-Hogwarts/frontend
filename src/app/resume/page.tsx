@@ -1,17 +1,21 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 import Star from '../../../public/star.svg'
 import Dropdown from '@/components/common/Dropdown'
-import { useEffect, useState } from 'react'
 import TapBar from '@/components/common/TapBar'
 import BestResume from '@/components/resume/BestResume'
 import FilterBtn from '@/components/session/FilterBtn'
 import ResumeList from './@resumeList'
 import SearchBar from '@/components/common/SearchBar'
+import AuthModal from '@/components/common/AuthModal'
 
 export default function Resume() {
   const router = useRouter() // Resume 페이지에서 useRouter 사용
+
+  // ✅ 로그인 모달 상태 추가
+  const [authModalOpen, setAuthModalOpen] = useState(false)
 
   // 검색어 상태 추가
   const [searchResults, setSearchResults] = useState<any>(null)
@@ -58,6 +62,9 @@ export default function Resume() {
 
   return (
     <div className="flex flex-col max-w-[75rem] w-[75rem] mt-[3.56rem] gap-6">
+      {/* ✅ AuthModal 추가 */}
+      <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} />
+
       {/** 배너 */}
       <div className="flex justify-between gap-10 mb-[2.84rem]">
         <div className="flex flex-col">
@@ -104,8 +111,8 @@ export default function Resume() {
             setSelectedOptions={setSelectedYear}
           />
         </div>
-        {/** 인기 이력서 조회 */}
-        <BestResume offset={0} limit={10} />
+        {/** ✅ BestResume에서 setAuthModalOpen을 전달하도록 수정 */}
+        <BestResume offset={0} limit={10} setAuthModalOpen={setAuthModalOpen} />
       </div>
       <div className="bg-filterbg flex items-center w-[75rem] h-[4.375rem] px-4 gap-4 my-3">
         {selectedPosition.map((item) => (
