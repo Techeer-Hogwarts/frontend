@@ -62,7 +62,7 @@ export default function ProfileList({
 
   if (isLoading && profiles.length === 0) {
     return (
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-4 gap-4 mt-6">
         {Array.from({ length: 8 }).map((_, i) => (
           <SkeletonProfileCard key={`skeleton-${i}`} />
         ))}
@@ -82,7 +82,7 @@ export default function ProfileList({
   }
 
   return (
-    <div className="grid grid-cols-4 gap-4">
+    <div className="grid grid-cols-4 gap-4 mt-6">
       {profiles.map((profile) => (
         <ProfileCard
           key={profile.id}
