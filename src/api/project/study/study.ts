@@ -25,6 +25,7 @@ interface StudyDetail {
   studyExplain: string
   isRecruited: boolean
   isFinished: boolean
+  projectExplain: string
   resultImages: ResultImage[]
   studyMember: StudyMember[]
   likeCount: number

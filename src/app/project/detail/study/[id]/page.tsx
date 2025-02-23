@@ -164,10 +164,6 @@ export default function ProjectDetailpage() {
       )}
 
       <div>
-        {/* <Profile
-          type={projectType === 'study' ? 'study' : 'project'}
-          projectDetail={studyDetails}
-        /> */}
         <Profile projectDetail={studyDetails} />
         {/* Applicants 컴포넌트: 스터디 멤버일 경우만 렌더링 */}
         {isStudyMember && (
