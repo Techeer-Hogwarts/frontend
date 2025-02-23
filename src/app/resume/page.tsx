@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation'
 import Star from '../../../public/star.svg'
 import Dropdown from '@/components/common/Dropdown'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import TapBar from '@/components/common/TapBar'
 import BestResume from '@/components/resume/BestResume'
 import FilterBtn from '@/components/session/FilterBtn'
@@ -50,11 +50,6 @@ export default function Resume() {
   const openMyPage = () => {
     router.push(`/mypage`)
   }
-
-  // 필터링된 이력서 목록을 ResumeList에 전달
-  useEffect(() => {
-    // selectedPosition, selectedYear, selectedCategory 등이 변경되면 필터링된 결과를 가져오는 로직이 들어갈 수 있습니다.
-  }, [selectedPosition, selectedYear, selectedCategory])
 
   return (
     <div className="flex flex-col max-w-[75rem] w-[75rem] mt-[3.56rem] gap-6">

@@ -5,9 +5,11 @@ import ResumeFolder from '@/components/resume/ResumeFolder'
 import SkeletonResumeFolder from '@/components/resume/SkeletonResume'
 import { useEffect, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
+import { useLike } from '../blog/_lib/useLike'
+import { useBookmark } from '../blog/_lib/useBookmark'
 
 interface Resume {
-  id: number
+  id: string
   createdAt: number
   title: string
   category: string
@@ -21,6 +23,8 @@ interface Resume {
     year: number
     mainPosition: string
   }
+  likeList: string[]
+  bookmarkList: string[]
 }
 
 export default function ResumeList({
@@ -31,6 +35,10 @@ export default function ResumeList({
   const [resumes, setResumes] = useState<Resume[]>([])
   const [limit, setLimit] = useState(8)
   const [ref, inView] = useInView({ threshold: 0.1 })
+  const [likeList, setLikeList] = useState<string[]>([])
+  const { fetchLikes } = useLike()
+  const [bookmarkList, setBookmarkList] = useState<string[]>([])
+  const { fetchBookmarks } = useBookmark()
 
   const { data, isLoading, isError } = useGetResumeQuery({
     position,
@@ -38,9 +46,56 @@ export default function ResumeList({
     category,
     limit,
   })
+
+  const checkLike = async () => {
+    try {
+      const data = await fetchLikes('RESUME', 0, 50)
+      setLikeList(data)
+      return data
+    } catch (err) {
+      console.error(err)
+      return []
+    }
+  }
+
+  const checkBookmark = async () => {
+    try {
+      const data = await fetchBookmarks('RESUME', 0, 50)
+      setBookmarkList(data)
+      return data
+    } catch (err) {
+      console.error(err)
+      return []
+    }
+  }
+
+  const handleLikeUpdate = (resumeId: string, newLikeCount: number) => {
+    // 현재 이력서 데이터에서 해당 ID를 가진 이력서 찾아 업데이트
+    setResumes((prev) =>
+      prev.map((resume) =>
+        resume.id === resumeId
+          ? { ...resume, likeCount: newLikeCount }
+          : resume,
+      ),
+    )
+  }
+
+  const handleBookmarkUpdate = (resumeId: string, newBookmarkCount: number) => {
+    // 현재 이력서 데이터에서 해당 ID를 가진 이력서 찾아 업데이트
+    setResumes((prev) =>
+      prev.map((resume) =>
+        resume.id === resumeId
+          ? { ...resume, bookmarkCount: newBookmarkCount }
+          : resume,
+      ),
+    )
+  }
+
   useEffect(() => {
     setResumes([])
     setLimit(8)
+    checkLike()
+    checkBookmark()
   }, [position, year, category])
 
   useEffect(() => {
@@ -83,7 +138,14 @@ export default function ResumeList({
   return (
     <div className="grid grid-cols-4 gap-8">
       {resumes.map((resume) => (
-        <ResumeFolder key={resume.id} resume={resume} />
+        <ResumeFolder
+          key={resume.id}
+          resume={resume}
+          likeList={likeList}
+          onLikeUpdate={handleLikeUpdate}
+          bookmarkList={bookmarkList}
+          onBookmarkUpdate={handleBookmarkUpdate}
+        />
       ))}
       <div ref={ref} className="h-1" />
     </div>

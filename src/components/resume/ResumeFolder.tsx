@@ -4,67 +4,92 @@ import CareerTag from '../common/CareerTag'
 import PositionTag from '../common/PositionTag'
 import Link from 'next/link'
 import Image from 'next/image'
-import { handleLikeClick } from '@/app/resume/api/like'
-import { handleBookmarkClick } from '@/app/resume/api/bookmarks'
 import EmptyLottie from '../common/EmptyLottie'
+import { useLike } from '@/app/blog/_lib/useLike'
+import { useBookmark } from '@/app/blog/_lib/useBookmark'
 
 interface ResumeProps {
-  resume: {
-    id: number
-    createdAt: number
-    title: string
-    category: string
-    position: string
-    likeCount: number
-    year: string
-    user: {
-      id: number
-      name: string
-      profileImage: string
-      year: number
-      mainPosition: string
-    }
-  }
+  resume: Resume
+  likeList: string[] // 좋아요 리스트
+  onLikeUpdate: (resumeId: string, newLikeCount: number) => void
+  bookmarkList: string[] // 북마크 리스트
+  onBookmarkUpdate: (resumeId: string, newBookmarkCount: number) => void
 }
-export default function ResumeFolder({ resume }: ResumeProps) {
-  // 로컬스토리지에서 좋아요, 북마크 상태 불러오기
-  const [likes, setLikes] = useState<{
-    [key: number]: { count: number; isLiked: boolean }
-  }>({
-    [resume.id]: { count: resume.likeCount, isLiked: false },
-  })
+export default function ResumeFolder({
+  resume,
+  likeList,
+  onLikeUpdate,
+  bookmarkList,
+  onBookmarkUpdate,
+}: ResumeProps) {
+  // resume이 undefined일 경우 기본값을 설정합니다.
+  const { postLike } = useLike()
+  const { postBookmark } = useBookmark()
 
-  const [bookmarks, setBookmarks] = useState<{
-    [key: number]: { count: number; isMarked: boolean }
-  }>({
-    [resume.id]: { count: 0, isMarked: false },
-  })
+  // 로컬 스토리지에서 상태 불러오기
+  const storedLike = localStorage.getItem(`like-${resume.id}`)
+  const storedBookmark = localStorage.getItem(`bookmark-${resume.id}`)
+
+  const [isLike, setIsLike] = useState(storedLike === 'true')
+  const [likeCount, setLikeCount] = useState(
+    resume.likeCount >= 0 ? resume.likeCount : 0,
+  )
+
+  const [isBookmark, setIsBookmark] = useState(storedBookmark === 'true')
+  const [bookmarkCount, setBookmarkCount] = useState(
+    resume.bookmarkList?.length ?? 0,
+  )
 
   useEffect(() => {
-    const storedLikes = JSON.parse(localStorage.getItem('likes') || '{}')
-    setLikes(storedLikes)
+    // 좋아요, 북마크 상태 변경 시 로컬 스토리지에 저장
+    localStorage.setItem(`like-${resume.id}`, String(isLike))
+    localStorage.setItem(`bookmark-${resume.id}`, String(isBookmark))
+  }, [isLike, isBookmark, resume.id])
 
-    const storedBookmarks = JSON.parse(
-      localStorage.getItem('bookmarks') || '{}',
-    )
-    setBookmarks(storedBookmarks)
-  }, [])
+  const clickLike = async (event: React.MouseEvent) => {
+    event.preventDefault()
+    try {
+      const newIsLike = !isLike
+      const newLikeCount = newIsLike ? likeCount + 1 : likeCount - 1
+      // 낙관적 업데이트
+      setIsLike(newIsLike)
+      setLikeCount(newLikeCount)
+      await postLike(Number(resume.id), 'RESUME', newIsLike)
+      if (resume.onLikeUpdate) {
+        resume.onLikeUpdate(resume.id, newLikeCount)
+      }
+    } catch (err) {
+      setIsLike(!isLike)
+      setLikeCount(isLike ? likeCount : likeCount - 1)
+      console.error(err)
+    }
+  }
 
-  // resume이 undefined일 경우 기본값을 설정합니다.
+  const clickBookmark = async (event: React.MouseEvent) => {
+    event.preventDefault()
+    try {
+      const newIsBookmark = !isBookmark
+      const newBookmarkCount = newIsBookmark
+        ? bookmarkCount + 1
+        : bookmarkCount - 1
+      // 낙관적 업데이트
+      setIsBookmark(newIsBookmark)
+      setBookmarkCount(newBookmarkCount)
+      await postBookmark(Number(resume.id), 'RESUME', newIsBookmark)
+      if (resume.onBookmarkUpdate) {
+        resume.onBookmarkUpdate(resume.id, newBookmarkCount)
+      }
+    } catch (err) {
+      setIsBookmark(!isBookmark)
+      setBookmarkCount(isBookmark ? likeCount : likeCount - 1)
+      console.error(err)
+    }
+  }
+
   if (!resume) {
     return (
       <EmptyLottie text="이력서 데이터가 없습니다." text2="다시 조회해주세요" />
     ) // 로딩 중일 때나 resume이 없을 때 기본 UI
-  }
-
-  // 좋아요 상태를 localStorage에 저장하는 함수
-  const saveLikesToLocalStorage = (updatedLikes: any) => {
-    localStorage.setItem('likes', JSON.stringify(updatedLikes))
-  }
-
-  // 북마크 상태를 로컬스토리지에 저장하는 함수
-  const saveBookmarksToLocalStorage = (updatedBookmarks: any) => {
-    localStorage.setItem('bookmarks', JSON.stringify(updatedBookmarks))
   }
 
   const formattedDate = new Date(resume.createdAt)
@@ -108,57 +133,42 @@ export default function ResumeFolder({ resume }: ResumeProps) {
           {/* 북마크/좋아요 버튼 */}
           <div className="flex items-center gap-1">
             {/* 북마크 */}
-            <button
-              type="button"
-              onClick={(event) => {
-                event.preventDefault() // 페이지 이동 방지
-                handleBookmarkClick(
-                  resume.id,
-                  'RESUME',
-                  bookmarks,
-                  setBookmarks,
-                ).then(() => {
-                  saveBookmarksToLocalStorage(bookmarks)
-                })
-              }}
-            >
-              <Image
-                src={
-                  bookmarks[resume.id]?.isMarked
-                    ? '/images/bookmark-on.svg'
-                    : '/images/bookmark-off.svg'
-                }
-                alt="bookmark"
-                width={18}
-                height={18}
-              />
+            <button type="button" onClick={clickBookmark}>
+              {isBookmark ? (
+                <Image
+                  src="/images/bookmark-on.svg"
+                  alt="like-on"
+                  width={18}
+                  height={18}
+                />
+              ) : (
+                <Image
+                  src="/images/bookmark-off.svg"
+                  alt="like-off"
+                  width={18}
+                  height={18}
+                />
+              )}
             </button>
             {/* 좋아요 */}
-            <button
-              type="button"
-              onClick={(event) => {
-                event.preventDefault() // 페이지 이동 방지
-                handleLikeClick(resume.id, 'RESUME', likes, setLikes).then(
-                  () => {
-                    saveLikesToLocalStorage(likes)
-                  },
-                )
-              }}
-            >
-              <Image
-                src={
-                  likes[resume.id]?.isLiked
-                    ? '/images/like-on.svg'
-                    : '/images/like-off.svg'
-                }
-                alt="like"
-                width={18}
-                height={18}
-              />
+            <button type="button" onClick={clickLike}>
+              {isLike ? (
+                <Image
+                  src="/images/like-on.svg"
+                  alt="like-on"
+                  width={18}
+                  height={18}
+                />
+              ) : (
+                <Image
+                  src="/images/like-off.svg"
+                  alt="like-off"
+                  width={18}
+                  height={18}
+                />
+              )}
             </button>
-            {/* <span className="font-light text-[1rem]">
-              {likes[resume.id]?.count}
-            </span> */}
+            <span className="font-light text-[1rem]">{likeCount}</span>
           </div>
         </div>
       </Link>
