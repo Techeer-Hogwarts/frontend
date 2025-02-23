@@ -9,6 +9,8 @@ import Results from '@/components/project/detail/study/Results'
 import BaseModal from '@/components/project/modal/BaseModal'
 import Applicants from '@/components/project/detail/study/Applicants'
 import ApplicantModal from '@/components/project/modal/study/ApplicantModal'
+import { useAuthStore } from '@/store/authStore'
+import AuthModal from '@/components/common/AuthModal'
 
 import { BiSolidPencil } from 'react-icons/bi'
 import Link from 'next/link'
@@ -22,7 +24,8 @@ import {
   getStudyApplicants,
   handleDenyStudy,
 } from '@/api/project/study/study'
-import { useAuthStore } from '@/store/authStore'
+import ProjectDetailSkeleton from '@/components/project/detail/ProjectDetailSkeleton'
+
 
 const MODAL_TEXT_MAP = {
   delete: '스터디를 삭제하시겠습니까?',
@@ -52,11 +55,17 @@ export default function ProjectDetailpage() {
 
   const [modalType, setModalType] = useState<
     'delete' | 'close' | 'cancel' | null
-    >(null)
+  >(null)
   
-  const {user} = useAuthStore()
+  const { user, checkAuth } = useAuthStore()
+
+  useEffect(() => {
+    checkAuth()
+  }, [])
 
   const queryClient = useQueryClient()
+
+  const [authModalOpen, setAuthModalOpen] = useState(false)
 
   // 스터디 상세 정보 가져오기
   const { data: studyDetails } = useQuery({
@@ -84,6 +93,10 @@ export default function ProjectDetailpage() {
     (applicant) => applicant.userId === user?.id,
   )
 
+  if (!studyDetails) {
+    return <ProjectDetailSkeleton />
+  }
+
   // 지원자 상세 조회 모달 여닫기
   const onClose = () => {
     setIsApplicantModalOpen(false)
@@ -95,11 +108,20 @@ export default function ProjectDetailpage() {
   }
 
   const handleModal = () => {
+    if (!user) {
+      // 로그인 안 되어있으면 AuthModal 열기
+      setAuthModalOpen(true)
+      return
+    }
     router.push(`/project/detail/study/${projectId}/applyStudy`)
   }
 
   return (
-    <div className="relative flex justify-between mt-[2.75rem]">
+    <div className="relative flex justify-between mt-[2.75rem] gap-[3.313rem]">
+      <AuthModal
+        isOpen={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+      />
       {isModalOpen && (
         <BaseModal
           text={MODAL_TEXT_MAP[modalType]}

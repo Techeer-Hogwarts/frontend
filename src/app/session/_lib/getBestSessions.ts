@@ -1,4 +1,4 @@
-export const getBestSessions = async (limit: number, setAuthModalOpen: any) => {
+export const getBestSessions = async (limit: number) => {
   const response = await fetch(
     `/api/v1/sessions/best?offset=0&limit=${limit}`,
     {
@@ -8,7 +8,6 @@ export const getBestSessions = async (limit: number, setAuthModalOpen: any) => {
   )
 
   if (response.status == 401) {
-    setAuthModalOpen(true)
     throw new Error('금주의 세션 데이터를 가져오는 데 실패했습니다.')
   }
   if (!response.ok) {

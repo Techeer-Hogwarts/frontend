@@ -23,17 +23,23 @@ export const metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode
-}>) {
+}) {
   return (
-    <html lang="en" className={`${pretendard.variable}`}>
-      <body className={pretendard.className}>
-      <div className='flex flex-col justify-center items-center'>
+    <html lang="en" className={pretendard.variable}>
+      <body
+        className={`${pretendard.className} min-h-screen flex flex-col justify-center items-center`}
+      >
+        <div className = "flex">
+          <div className = "w-[15px]"/>
         <NavBar />
-        <Providers>{children}</Providers>
+        </div>
+        <Providers>
+          <main className="flex-1">{children}</main>
+        </Providers>
+
         <Footer />
-      </div>
       </body>
     </html>
   )

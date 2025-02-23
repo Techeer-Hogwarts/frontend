@@ -94,7 +94,7 @@ export default function Detail({ params }: { params: { resumeId: string } }) {
   // const career = 'Frontend'
 
   return (
-    <div className="flex justify-between mt-10">
+    <div className="flex justify-between mt-10 gap-[4.375rem]">
       {/** 좌측 영역 */}
       <div className="flex flex-col w-[15rem] gap-6">
         <ProfileBox profile={profileData} loading={false} error={''} />
@@ -112,7 +112,7 @@ export default function Detail({ params }: { params: { resumeId: string } }) {
 
       {/** 우측 영역 */}
       <div className="flex flex-col">
-        <div className="flex w-[55rem] h-[50rem] gap-5">
+        <div className="flex w-[55.625rem] h-[50rem] gap-5">
           {/** pdf 이력서 */}
           <div className="flex w-[50rem] h-[55rem]">
             <iframe

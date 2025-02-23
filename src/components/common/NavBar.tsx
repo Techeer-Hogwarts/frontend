@@ -7,7 +7,7 @@ import {
   IoCalendarOutline,
   IoPersonCircle,
 } from 'react-icons/io5'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import { useAuthStore } from '@/store/authStore'
 import {
   getBasicSearchResults,
@@ -43,8 +43,9 @@ export default function NavBar() {
   const [query, setQuery] = useState('')
   const [basicResults, setBasicResults] = useState<BasicResult[]>([])
   const [finalResults, setFinalResults] = useState([])
-  const { isLoggedIn, checkAuth, logout } = useAuthStore()
+  const { isLoggedIn, logout } = useAuthStore()
   const router = useRouter()
+  const pathname = usePathname()
 
   const debouncedQuery = useDebounce(query, 100)
 
@@ -61,10 +62,6 @@ export default function NavBar() {
     session: '세션',
     profile: '프로필',
   }
-
-  useEffect(() => {
-    checkAuth()
-  }, [checkAuth])
 
   const toggleSearch = () => {
     if (isSearchOpen) {
@@ -152,12 +149,19 @@ export default function NavBar() {
   const handleLogout = async () => {
     try {
       await logout()
-      router.push('/login')
+      router.push('/')
     } catch (error) {
-      console.error('Logout error:', error)
-      alert('로그아웃에 실패하였습니다.')
+      router.push('/login')
     }
   }
+
+  const navItems: { key: string; href: string }[] = [
+    { key: 'project', href: '/project' },
+    { key: 'profile', href: '/profile' },
+    { key: 'resume', href: '/resume' },
+    { key: 'blog', href: '/blog' },
+    { key: 'session', href: '/session' },
+  ]
 
   return (
     <div
@@ -175,15 +179,21 @@ export default function NavBar() {
 
         {/* 메뉴 */}
         <div className="flex items-center gap-[1.62rem]">
-          {['project', 'profile', 'resume', 'blog', 'session'].map((item) => (
-            <Link
-              key={item}
-              href={`/${item}`}
-              className="hover:text-primary cursor-pointer"
-            >
-              {indexMap[item]}
-            </Link>
-          ))}
+          {navItems.map((item) => {
+            // (C) 현재 경로(pathname)가 item.href로 시작하면 active 스타일
+            const isActive = pathname.startsWith(item.href)
+            return (
+              <Link
+                key={item.key}
+                href={item.href}
+                className={`hover:text-primary cursor-pointer ${
+                  isActive ? 'text-primary' : ''
+                }`}
+              >
+                {indexMap[item.key]}
+              </Link>
+            )
+          })}
         </div>
       </div>
       <div className="flex items-center cursor-pointer">
@@ -260,13 +270,13 @@ export default function NavBar() {
           <IoCalendarOutline size={24} />
         </Link>
         {/* 마이페이지 아이콘 */}
-        <Link href="/mypage" className="p-2 cursor-pointer">
+        <Link href="/mypage" className="p-[6px] cursor-pointer">
           <IoPersonCircle size={28} />
         </Link>
         {isLoggedIn ? (
           <button
             type="button"
-            className="ml-4 text-gray-600 hover:text-gray-800 cursor-pointer"
+            className="ml-4 hover:text-primary cursor-pointer"
             onClick={handleLogout}
           >
             로그아웃
@@ -274,7 +284,7 @@ export default function NavBar() {
         ) : (
           <Link
             href="/login"
-            className="ml-4 text-gray-600 hover:text-gray-800 cursor-pointer"
+            className="ml-4 hover:text-primary cursor-pointer"
           >
             로그인
           </Link>

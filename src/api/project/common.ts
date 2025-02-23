@@ -136,7 +136,7 @@ export const getAllTeams = async (
 // 테커 모든 인원 조회
 export const getAllUsers = async () => {
   try {
-    const response = await fetch(`/api/v1/users/profiles?offset=0&limit=10`, {
+    const response = await fetch(`/api/v1/users/profiles?offset=0&limit=200`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

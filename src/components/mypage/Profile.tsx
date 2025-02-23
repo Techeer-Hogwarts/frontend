@@ -256,7 +256,7 @@ export default function Profile({ profile }: ProfileProps) {
   ]
 
   return (
-    <div className="w-[750px] min-h-[1000px] flex flex-col gap-8">
+    <div className="w-[890px] min-h-[1000px] flex flex-col gap-8">
       {/* 프로필 사진 */}
       <div className="flex">
         <h3 className="w-32 text-lg mt-[6px]">프로필 사진</h3>

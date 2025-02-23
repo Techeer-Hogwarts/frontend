@@ -2,9 +2,11 @@
 
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { useAuthStore } from '@/store/authStore'
 
 export default function Page() {
   const router = useRouter()
+  const { logout } = useAuthStore()
 
   const [message, setMessage] = useState('')
   const [isError, setIsError] = useState(false)
@@ -32,6 +34,7 @@ export default function Page() {
       // 성공
       setIsError(false)
       setMessage('회원탈퇴가 완료되었습니다.')
+      await logout()
       setTimeout(() => {
         router.push('/')
       }, 1200)
