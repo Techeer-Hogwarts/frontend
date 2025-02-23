@@ -4,9 +4,9 @@ import Link from 'next/link'
 
 export default function Footer() {
   return (
-    <div className=" text-darkgray w-[75rem] h-[6rem] mt-[6.62rem] p-2">
+    <div className=" text-darkgray w-[1280px] h-[6rem] mt-[6.62rem] p-2">
       {/* 가로선 */}
-      <div className="border-t border-lightgray my-2 w-full" />
+      {/*<div className="border-t border-lightgray my-2 w-full" />*/}
       <div className="flex items-center justify-between">
         {/* 로고 영역 */}
         <div className="text-primary font-logo text-[1.5rem] mb-2 ">

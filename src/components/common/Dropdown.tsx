@@ -46,12 +46,12 @@ const Dropdown: React.FC<DropdownProps> = ({
   }, [])
 
   return (
-    <div ref={dropdownRef} className="relative w-[10.5rem]">
+    <div ref={dropdownRef} className="relative w-[10rem]">
       <button
         onClick={toggleDropdown}
-        className="flex w-full px-4 py-2 text-left bg-white border border-black rounded-full justify-between items-center"
+        className="flex w-full h-[35px] px-4 text-left bg-white border border-black rounded-full justify-between items-center"
       >
-        <span className="text-[1.125rem]">{title}</span>
+        <span className="text-[1rem]">{title}</span>
         <span className="text-xs">▼</span>
       </button>
       {isOpen && (

@@ -8,8 +8,9 @@ import TapBar from '@/components/common/TapBar'
 import Dropdown from '@/components/common/Dropdown'
 import AddBtn from '@/components/project/add/AddBtn'
 import { useQuery } from '@tanstack/react-query'
-import Loading from '@/components/common/Loading'
 import FilterBtn from '@/components/session/FilterBtn'
+import EmptyLottie from '@/components/common/EmptyLottie'
+import SkeletonProjectCard from '@/components/project/SkeletonProjectCard'
 import SearchBar from '@/components/common/SearchBar'
 import { getAllTeams } from '@/api/project/common'
 import { getMyInfo } from '@/api/project/common'
@@ -136,10 +137,6 @@ export default function Project() {
     }
   }
 
-  if (isLoading || !allTeams) {
-    return <Loading />
-  }
-
   // 하나 이상의 필터가 선택되었는지 확인
   const anyFilterSelected =
     selectedProgress.length > 0 ||
@@ -151,7 +148,7 @@ export default function Project() {
       <div className="flex justify-between mb-[2.84rem]">
         {/* 왼쪽 텍스트 영역 */}
         <div>
-          <div className="text-[2.5rem] font-bold">프로젝트</div>
+          <div className="text-[2rem] font-bold">프로젝트</div>
           <p className="text-[1.25rem]">
             모든 테커인들의 프로젝트와 스터디를 확인해보세요.
           </p>
@@ -177,10 +174,10 @@ export default function Project() {
           onSearchResult={setSearchResults}
         />
       </div>
-      <div className="flex w-full h-[1px] mt-5 bg-gray" />
+      <div className="flex w-full h-[1px] my-5 bg-gray" />
 
       {/* 드롭다운 필터 영역 */}
-      <div className="flex justify-start mt-5 gap-3 mb-[2.31rem]">
+      <div className="flex justify-start gap-3 mb-[2.31rem]">
         <Dropdown
           title="진행여부"
           options={['진행 중', '완료']}
@@ -238,15 +235,31 @@ export default function Project() {
       )}
 
       {/* 팀 목록 렌더링 */}
-      <div className="flex gap-[1rem] flex-wrap">
-        {allTeams?.allTeams?.map((team) =>
-          team.type === 'project' ? (
-            <ProjectCard key={'project' + team.id} team={team} />
-          ) : (
-            <StudyCard key={team.id} team={team} />
-          ),
-        )}
-      </div>
+      {isLoading ? (
+        <div className="grid grid-cols-4 gap-4">
+          {Array.from({ length: 8 }).map((_, index) => (
+            <SkeletonProjectCard key={index} />
+          ))}
+        </div>
+      ) : allTeams?.allTeams?.length === 0 ? (
+        <div className="flex justify-center w-full">
+          <EmptyLottie
+            text="프로젝트/스터디 데이터가 없습니다."
+            text2="다시 조회해주세요"
+          />
+        </div>
+      ) : (
+        <div className="grid grid-cols-4 gap-4">
+          {allTeams?.allTeams?.map((team) =>
+            team.type === 'project' ? (
+              <ProjectCard key={'project' + team.id} team={team} />
+            ) : (
+              <StudyCard key={team.id} team={team} />
+            ),
+          )}
+        </div>
+      )}
+
       <AddBtn />
     </div>
   )

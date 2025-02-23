@@ -26,7 +26,7 @@ export default function Page() {
   const [isLoading, setIsLoading] = useState(true)
   const [ref, inView] = useInView()
 
-  const category = ['금주의 블로그', 'TECHEER', 'SHARED']
+  const category = ['TECHEER', 'SHARED', '금주의 블로그']
 
   // 카테고리 변경 처리 함수
   const handleCategoryChange = (selectedCategory: string) => {
@@ -170,7 +170,7 @@ export default function Page() {
           </div>
         )}
         <div className="w-[1200px] text-left mt-14 mb-[2.84rem]">
-          <p className="text-[2.5rem] font-bold">블로그</p>
+          <p className="text-[2rem] font-bold">블로그</p>
           <p className="text-[1.25rem]">테커인들의 블로그를 확인해보세요.</p>
         </div>
         <div className="flex justify-between">
@@ -192,7 +192,7 @@ export default function Page() {
             />
           </div>
         ) : (
-          <div className="flex-col grid grid-cols-3 gap-8 mt-8">
+          <div className="flex-col grid grid-cols-4 gap-8 mt-[2.84rem]">
             {blog.map((blog, index) => (
               <BlogPost
                 key={index}

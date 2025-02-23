@@ -36,7 +36,7 @@ export default function StudyCard({ team }: { team: Team }) {
           {team.name}
         </div>
 
-        <div className="h-[7.8125rem] w-[112px] flex flex-col justify-start ">
+        <div className="h-[7.8125rem] w-[112px] flex flex-col justify-between">
           {/* 프로젝트 제목 */}
           <h2 className="max-w-28 truncate font-bold text-[1.01688rem] gap-[2.44rem]">
             {team.name}

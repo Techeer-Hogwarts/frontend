@@ -171,7 +171,7 @@ export default function ProjectMemberModal({
                 >
                   <Image
                     src={u.profileImage || '/default-profile.png'}
-                    alt="Profile"
+                    alt="ProfileInfo"
                     width={24}
                     height={24}
                     className="w-[24px] h-[24px] rounded-md bg-lightpink"
