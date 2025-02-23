@@ -270,8 +270,8 @@ export default function NavBar() {
           <IoCalendarOutline size={24} />
         </Link>
         {/* 마이페이지 아이콘 */}
-        <Link href="/mypage" className="p-2 cursor-pointer">
-          <IoPersonCircle size={24} />
+        <Link href="/mypage" className="p-[6px] cursor-pointer">
+          <IoPersonCircle size={28} />
         </Link>
         {isLoggedIn ? (
           <button

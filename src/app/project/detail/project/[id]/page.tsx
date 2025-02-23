@@ -7,7 +7,7 @@ import FindMember from '@/components/project/detail/FindMember'
 import Results from '@/components/project/detail/Results'
 import Applicants from '@/components/project/detail/Applicants'
 import { BiSolidPencil } from 'react-icons/bi'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, use } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { useQueryClient } from '@tanstack/react-query'
 import Loading from '@/components/common/Loading'
@@ -24,6 +24,8 @@ import {
 import { useQuery } from '@tanstack/react-query'
 import BaseModal from '@/components/project/modal/BaseModal'
 import ApplicantModal from '@/components/project/modal/ApplicantModal'
+import ProjectDetailSkeleton from '@/components/project/detail/ProjectDetailSkeleton'
+
 
 export default function ProjectDetailpage() {
   const MODAL_TEXT_MAP = {
@@ -46,7 +48,13 @@ export default function ProjectDetailpage() {
   const [projectType, setProjectType] = useState<string | null>(null)
 
   const [authModalOpen, setAuthModalOpen] = useState(false)
-  const { user } = useAuthStore()
+  const { user, checkAuth } = useAuthStore()
+
+  useEffect(() => {
+    checkAuth()
+  }, [])
+
+  console.log(user)
 
   useEffect(() => {
     const storedProjectType = localStorage.getItem('projectType')
@@ -109,7 +117,7 @@ export default function ProjectDetailpage() {
 
   // 로딩 중
   if (!projectDetails) {
-    return <Loading />
+    return <ProjectDetailSkeleton />
   }
 
   const { isRecruited } = projectDetails
@@ -156,7 +164,7 @@ export default function ProjectDetailpage() {
   }
 
   return (
-    <div className="relative flex justify-between mt-[2.75rem]">
+    <div className="relative flex justify-between mt-[2.75rem] gap-[3.313rem]">
       {/* (E) AuthModal */}
       <AuthModal
         isOpen={authModalOpen}

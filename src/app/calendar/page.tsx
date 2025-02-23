@@ -65,7 +65,7 @@ export default function Page() {
       />
       <AddCalendarBtn onClick={handleOpenModal} />
       <div className="w-[1200px] text-left mt-14 mb-[2.84rem]">
-        <p className="text-[2.5rem] font-bold">정보 공유</p>
+        <p className="text-[2rem] font-bold">정보 공유</p>
         <p className="text-[1.25rem]">행사, 컨퍼런스 및 취업 정보 모아보기</p>
       </div>
       <div className="flex w-[1200px] justify-between items-center">

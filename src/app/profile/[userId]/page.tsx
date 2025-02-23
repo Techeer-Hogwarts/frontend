@@ -32,7 +32,7 @@ export default function Page({ params }: { params: { userId: string } }) {
   }, [userId])
 
   return (
-    <div className="flex gap-16 mt-10">
+    <div className="flex gap-[4.375rem] mt-10">
       {/** 좌측 영역 */}
       <div className="flex flex-col w-[15rem] gap-6 ">
         <ProfileBox profile={profileData} loading={false} error={''} />

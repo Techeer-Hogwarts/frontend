@@ -24,6 +24,8 @@ import {
   getStudyApplicants,
   handleDenyStudy,
 } from '@/api/project/study/study'
+import ProjectDetailSkeleton from '@/components/project/detail/ProjectDetailSkeleton'
+
 
 const MODAL_TEXT_MAP = {
   delete: '스터디를 삭제하시겠습니까?',
@@ -54,8 +56,12 @@ export default function ProjectDetailpage() {
   const [modalType, setModalType] = useState<
     'delete' | 'close' | 'cancel' | null
   >(null)
+  
+  const { user, checkAuth } = useAuthStore()
 
-  const { user } = useAuthStore()
+  useEffect(() => {
+    checkAuth()
+  }, [])
 
   const queryClient = useQueryClient()
 
@@ -87,6 +93,10 @@ export default function ProjectDetailpage() {
     (applicant) => applicant.userId === user?.id,
   )
 
+  if (!studyDetails) {
+    return <ProjectDetailSkeleton />
+  }
+
   // 지원자 상세 조회 모달 여닫기
   const onClose = () => {
     setIsApplicantModalOpen(false)
@@ -107,7 +117,7 @@ export default function ProjectDetailpage() {
   }
 
   return (
-    <div className="relative flex justify-between mt-[2.75rem]">
+    <div className="relative flex justify-between mt-[2.75rem] gap-[3.313rem]">
       <AuthModal
         isOpen={authModalOpen}
         onClose={() => setAuthModalOpen(false)}

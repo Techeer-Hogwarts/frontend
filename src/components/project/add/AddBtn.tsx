@@ -12,7 +12,11 @@ export default function AddBtn() {
   const router = useRouter()
   const pathname = usePathname()
   const [authModalOpen, setAuthModalOpen] = useState(false)
-  const { user } = useAuthStore()
+  const { user, checkAuth } = useAuthStore()
+
+  useEffect(() => {
+    checkAuth()
+  }, [])
 
   const handleClickBtn = () => {
     setIsOpen((prev) => !prev)

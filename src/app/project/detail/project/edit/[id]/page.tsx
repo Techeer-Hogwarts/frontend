@@ -183,7 +183,7 @@ export default function EditProjectPage() {
   }
 
   return (
-    <div className="relative flex justify-between mt-[2.75rem]">
+    <div className="relative flex justify-between mt-[2.75rem] gap-[3.188rem]">
       <div>
         <AddProfile
           projectData={projectData}

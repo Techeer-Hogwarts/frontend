@@ -65,7 +65,7 @@ export default function Resume({
   }
   return (
     <div>
-      <div className="flex w-full justify-end mb-4">
+      <div className="flex w-[890px] justify-end mb-4">
       {isMyPage && (
         <button
           onClick={handleClickAddResume}

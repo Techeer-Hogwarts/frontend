@@ -76,11 +76,9 @@ export default function Bookmark() {
 
   const handleCategoryChange = () => {}
   return (
-    <div className="ml-10">
-      <div className="w-[800px]">
+    <div className="w-[890px]">
         <TapBar options={tapBarOptions} onSelect={handleSearch} />
         <div className="flex w-full h-[1px] mt-5 bg-gray" />
-      </div>
       <div className="grid grid-cols-2 gap-8 mt-5">
         {isLoading
           ? Array.from({ length: 4 }).map((_, index) => (
