@@ -8,7 +8,7 @@ import Results from '@/components/project/detail/Results'
 import Applicants from '@/components/project/detail/Applicants'
 import { BiSolidPencil } from 'react-icons/bi'
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import { useQueryClient } from '@tanstack/react-query'
 import Loading from '@/components/common/Loading'
 import AuthModal from '@/components/common/AuthModal'
@@ -37,7 +37,8 @@ export default function ProjectDetailpage() {
     close: '마감',
     cancel: '확인',
   }
-
+  const params = useParams()
+  const storedId = Number(params.id)
   const router = useRouter()
   const queryClient = useQueryClient()
 
@@ -48,7 +49,6 @@ export default function ProjectDetailpage() {
   const { user } = useAuthStore()
 
   useEffect(() => {
-    const storedId = localStorage.getItem('projectId')
     const storedProjectType = localStorage.getItem('projectType')
 
     if (storedId) {

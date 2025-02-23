@@ -10,9 +10,7 @@ import { fetchUserProfile } from '../api/getUserProfile'
 
 
 export default function Page({ params }: { params: { userId: string } }) {
-  const [activeTab, setActiveTab] = useState<'home' | 'profile' | 'resume'>(
-    'home',
-  )
+  const [activeTab, setActiveTab] = useState<'home' | 'resume'>('home')
 
   const [profileData, setProfileData] = useState<any>(null)
   const [loading, setLoading] = useState(true)
@@ -42,8 +40,14 @@ export default function Page({ params }: { params: { userId: string } }) {
       </div>
 
       {/** 우측 컨텐츠 영역 */}
-      {activeTab === 'home' && <Home />}
-      {activeTab === 'profile' && <Profile profile={profileData} />}
+      {activeTab === 'home' && (
+        <Home
+          projectTeams={profileData?.projectTeams}
+          studyTeams={profileData?.studyTeams}
+          experiences={profileData?.experiences}
+        />
+      )}
+      {/* {activeTab === 'profile' && <Profile profile={profileData} />} */}
       {activeTab === 'resume' && (
         <Resume userId={Number(userId)} offset={0} limit={10} />
       )}

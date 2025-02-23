@@ -25,6 +25,7 @@ interface StudyDetail {
   studyExplain: string
   isRecruited: boolean
   isFinished: boolean
+  projectExplain: string
   resultImages: ResultImage[]
   studyMember: StudyMember[]
   likeCount: number
@@ -67,7 +68,6 @@ export const handleAddStudy = async (data) => {
 
     if (response.ok) {
       const result = await response.json()
-      console.log(result)
 
       return result
     }
@@ -79,13 +79,12 @@ export const handleAddStudy = async (data) => {
 
 // 스터디 수정하기
 export const handleEditStudy = async (data, projectId) => {
-  console.log(data)
 
   try {
     const response = await fetch(`/api/v1/studyTeams/${projectId}`, {
       method: 'PATCH',
       credentials: 'include',
-      body: JSON.stringify(data),
+      body: data,
     })
 
     if (!response.ok) {
@@ -93,7 +92,6 @@ export const handleEditStudy = async (data, projectId) => {
     }
 
     const result = await response.json()
-    console.log('POST 요청 성공:', result)
     return result
   } catch (error: any) {
     console.error('POST 요청 중 오류 발생:', error.message)
@@ -163,7 +161,6 @@ export const handleApplyStudy = async (data) => {
     }
 
     const result = await response.json()
-    console.log('POST 요청 성공:', result)
     return result
   } catch (error: any) {
     console.error('POST 요청 중 오류 발생:', error.message)
@@ -183,7 +180,6 @@ export const handleDenyStudy = async (studyTeamId) => {
     }
 
     const result = await response.json()
-    console.log('PATCH 요청 성공:', result)
     return result
   } catch (error: any) {
     console.error('PATCH 요청 중 오류 발생:', error.message)
@@ -223,7 +219,6 @@ export const deleteStudyTeam = async (projectId) => {
     }
 
     const result = await response.json()
-    console.log('스터디 삭제 성공:', result)
     return result
   } catch (error: any) {
     console.error('스터디 삭제 요청 중 오류 발생:', error.message)
@@ -271,7 +266,6 @@ export const acceptStudyApplicant = async (data) => {
     }
 
     const result = await response.json()
-    console.log('스터디 지원 수락 성공:', result)
     return result
   } catch (error: any) {
     console.error('스터디 지원 수락 중 오류 발생:', error.message)
@@ -296,7 +290,6 @@ export const denyStudyApplicant = async (data) => {
     }
 
     const result = await response.json()
-    console.log('스터디 지원 거절 성공:', result)
     return result
   } catch (error: any) {
     console.error('스터디 지원 거절 중 오류 발생:', error.message)

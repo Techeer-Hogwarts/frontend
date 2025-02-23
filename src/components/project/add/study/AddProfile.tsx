@@ -48,54 +48,17 @@ export default function AddProfile({ projectData, onUpdate }) {
         </div>
       )}
 
-      {projectType === 'project' && (
-        <div className="relative w-[254px] h-[254px] min-w-[254px] min-h-[254px]flex justify-center items-center">
-          {/* 업로드된 이미지 미리보기 */}
-          {imgSrc ? (
-            <Image
-              src={imgSrc}
-              alt="Uploaded Preview"
-              width={254}
-              height={254}
-              className="rounded-2xl bg-contain min-w-[254px] min-h-[254px]"
-            />
-          ) : (
-            <div className="w-[254px] h-[254px] bg-gray rounded-2xl flex items-center justify-center">
-              <FaRegImage size={30} />
-            </div>
-          )}
-
-          {/* 이미지 업로드 버튼 */}
-          <label
-            htmlFor="image"
-            className="absolute bottom-[-1rem] right-[-1rem] cursor-pointer"
-          >
-            <div className="w-10 h-10 bg-lightgray border border-white rounded-full flex items-center justify-center">
-              <div className="border rounded-full p-2 border-white">
-                <BiSolidPencil color="white" />
-              </div>
-            </div>
-          </label>
-          <input
-            id="image"
-            type="file"
-            accept="image/*"
-            className="hidden"
-            ref={fileInput}
-            onChange={handleImageChange}
-          />
-        </div>
-      )}
-
       <div className="flex w-[15.875rem] justify-between items-center mt-[0.94rem] mb-[1.44rem]">
         <div>
-          <p className="text-sm mb-1 text-gray">프로젝트 이름을 입력해주세요</p>
+          <p className="text-sm mb-1 text-gray">
+            스터디 이름을 입력해주세요 <span className="text-primary">*</span>
+          </p>
           <input
             name="name"
             value={projectData.name}
             onChange={handleInputChange}
             className="font-medium w-[15.8125rem] h-[1.875rem] p-2 border border-gray rounded-[0.25rem] focus:outline-none"
-            placeholder="프로젝트 이름"
+            placeholder="스터디 이름"
           />
         </div>
       </div>
@@ -104,19 +67,6 @@ export default function AddProfile({ projectData, onUpdate }) {
         <p className="text-sm mb-1 text-gray">관련 링크를 입력해주세요</p>
 
         <div className="flex gap-2 flex-col">
-          <div className="flex justify-between items-center gap-1">
-            <div className="w-[4.41919rem] h-[1.5625rem] border border-primary rounded-[0.19rem] text-primary text-center">
-              깃허브
-            </div>
-            <input
-              name="githubLink"
-              value={projectData.githubLink}
-              onChange={handleInputChange}
-              className="w-[11.1875rem] h-[1.5625rem] p-2 border border-gray rounded-[0.25rem] focus:outline-none"
-              placeholder="레포지토리 주소"
-            />
-          </div>
-
           <div className="flex justify-between items-center gap-3">
             <div className="w-[4.41919rem] h-[1.5625rem] border border-primary rounded-[0.19rem] text-primary text-center">
               노션
@@ -133,7 +83,9 @@ export default function AddProfile({ projectData, onUpdate }) {
       </div>
 
       <div className="w-[15.875rem] mt-4">
-        <p className="text-sm mb-1 text-gray">프로젝트 설명을 입력해주세요</p>
+        <p className="text-sm mb-1 text-gray">
+          스터디 설명을 입력해주세요<span className="text-primary">*</span>
+        </p>
 
         <textarea
           name="studyExplain"

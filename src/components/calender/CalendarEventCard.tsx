@@ -1,7 +1,11 @@
 'use client'
 
-import Image from "next/image"
-
+import Image from 'next/image'
+interface User {
+  name: string
+  nickname: string
+  profileImage: string
+}
 export interface CalendarEventCardProps {
   id?: number
   userId?: number
@@ -12,14 +16,11 @@ export interface CalendarEventCardProps {
   url: string
   displayDate?: string
   className?: string
-  user?: {
-    name?: string
-    nickname?: string
-    profileImage?: string
-  }
+  user?: User
   mode?: 'calendar' | 'modal'
   onEdit?: () => void
   onDelete?: () => void
+  name: string
 }
 
 export default function CalendarEventCard({
@@ -27,12 +28,11 @@ export default function CalendarEventCard({
   category,
   displayDate,
   url,
-  className = "",
+  className = '',
   mode = 'calendar',
   onEdit,
-  onDelete
+  onDelete,
 }: CalendarEventCardProps) {
-  
   const getCategoryColor = () => {
     switch (category) {
       case 'TECHEER':
@@ -53,23 +53,26 @@ export default function CalendarEventCard({
   }
 
   return (
-    <div
-      className={`flex items-center justify-between ${className}`}
-    >
-       <button
+    <div className={`flex items-center justify-between ${className}`}>
+      <button
         type="button"
         className={`flex cursor-pointer ${className}`}
-        onClick={handleClick}>
-          <div className={`${mode === 'calendar' ? ' w-[9px] h-[9px] mr-[6px] mt-1' : ' w-[16px] h-[16px] mr-[10px] mt-1' } rounded-full ${getCategoryColor()}`} />
-          <div className="flex flex-col text-left">
-            <span className={`${mode === 'calendar' ? 'text-[12px] w-[95px]' : 'w-[280px]'} text-black truncate`}>
-              {title}
-            </span>
-            {mode === 'calendar' && displayDate && (
-              <span className="text-[10px] text-[#969696]">{displayDate}</span>
-            )}
-          </div>
-        </button>
+        onClick={handleClick}
+      >
+        <div
+          className={`${mode === 'calendar' ? ' w-[9px] h-[9px] mr-[6px] mt-1' : ' w-[16px] h-[16px] mr-[10px] mt-1'} rounded-full ${getCategoryColor()}`}
+        />
+        <div className="flex flex-col text-left">
+          <span
+            className={`${mode === 'calendar' ? 'text-[12px] w-[95px]' : 'w-[280px]'} text-black truncate`}
+          >
+            {title}
+          </span>
+          {mode === 'calendar' && displayDate && (
+            <span className="text-[10px] text-[#969696]">{displayDate}</span>
+          )}
+        </div>
+      </button>
       {mode === 'modal' && (
         <div className="flex gap-3">
           <button onClick={onEdit}>

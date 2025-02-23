@@ -113,6 +113,8 @@ export default function Profile({ profile }: ProfileProps) {
         setSyncMessage(`동기화 실패: ${errData?.message || '알 수 없는 오류'}`)
         return
       }
+      const data = await response.json()
+      setProfileImage(data.profileImage)
       setSyncIsError(false)
       setSyncMessage('프로필 사진 동기화가 완료되었습니다.')
     } catch (err) {
