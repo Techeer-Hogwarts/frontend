@@ -31,10 +31,14 @@ export default function RootLayout({
       <body
         className={`${pretendard.className} min-h-screen flex flex-col justify-center items-center`}
       >
+        <div className = "flex">
+          <div className = "w-[15px]"/>
         <NavBar />
+        </div>
         <Providers>
           <main className="flex-1">{children}</main>
         </Providers>
+
         <Footer />
       </body>
     </html>

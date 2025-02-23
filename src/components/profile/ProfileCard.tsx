@@ -52,7 +52,7 @@ export default function ProfileCard({
             )}
             <div className="flex flex-col">
               {/* <p className="text-[1.01688rem] font-normal">{mainPosition}</p> */}
-              <div className="flex justify-between items-center gap-2">
+              <div className="flex justify-between items-center gap-2 w-[148px]">
                 <p className="text-[1.1185rem] font-medium">{name}</p>
                 <PositionTag position={mainPosition} />
               </div>
@@ -80,7 +80,7 @@ export default function ProfileCard({
           </div>
           <hr className=" w-[15.45rem] ml-[0.72rem] mb-[0.32rem] border-lightgray " />
           <div className="flex gap-2 px-[0.64rem]">
-          {projectTeams && projectTeams.length > 0 ? (
+            {projectTeams && projectTeams.length > 0 ? (
               projectTeams.map((team, idx) => (
                 <Image
                   key={idx}
