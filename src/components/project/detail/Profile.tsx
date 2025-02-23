@@ -84,7 +84,7 @@ export default function Profile({ projectDetail }: ProfileProps) {
         {/* 깃허브/노션 아이콘 영역 */}
         <div className="flex gap-2">
           {/* 깃허브: study가 아니고, githubLink가 있을 때만 표시 */}
-          {projectType !== 'study' && projectDetail?.githubLink && (
+          {projectDetail?.githubLink && (
             <button
               type="button"
               onClick={() => {
