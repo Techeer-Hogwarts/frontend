@@ -170,6 +170,7 @@ export default function Project() {
 
       {/* 탭바: onSelect 핸들러로 탭 변경을 처리 */}
       <TapBar options={['전체보기', '모집 중']} onSelect={handleTabSelect} />
+      <div className="flex w-full h-[1px] mt-5 bg-gray" />
 
       {/* 드롭다운 필터 영역 */}
       <div className="flex justify-start mt-5 gap-3 mb-[2.31rem]">
