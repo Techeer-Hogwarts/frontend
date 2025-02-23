@@ -18,7 +18,6 @@ import {
   getProjectDetail,
   handleEditProject,
 } from '@/api/project/project/project'
-import { getAllUsers } from '@/api/project/common'
 
 export default function EditProjectPage() {
   const router = useRouter()
@@ -34,12 +33,6 @@ export default function EditProjectPage() {
     queryKey: ['getProjectDetails', projectId],
     queryFn: () => getProjectDetail(projectId),
     enabled: !!projectId,
-  })
-
-  // 2) 모든 유저
-  const { data: allUsers } = useQuery({
-    queryKey: ['getAllUsers'],
-    queryFn: getAllUsers,
   })
 
   // 3) 편집용 state
@@ -72,18 +65,7 @@ export default function EditProjectPage() {
 
   // 4) projectDetails 로딩 후 초기화
   useEffect(() => {
-    if (!projectDetails || !allUsers) return
-
-    // 1) 멤버 userId 매핑
-    const mappedMembers = projectDetails.projectMember.map((m) => {
-      if (!m.userId && m.email) {
-        const found = allUsers.find((u) => u.email === m.email)
-        if (found) {
-          return { ...m, userId: found.id }
-        }
-      }
-      return m
-    })
+    if (!projectDetails) return
 
     setProjectData({
       name: projectDetails.name || '',
@@ -98,7 +80,7 @@ export default function EditProjectPage() {
       recruitExplain: projectDetails.recruitExplain || '',
       githubLink: projectDetails.githubLink || '',
       notionLink: projectDetails.notionLink || '',
-      projectMember: mappedMembers,
+      projectMember: projectDetails.projectMember,
       teamStacks:
         projectDetails.teamStacks?.map((item: any) => ({
           stack: item.stack.name,
@@ -107,7 +89,7 @@ export default function EditProjectPage() {
       mainImageFile: null,
       resultImages: [],
     })
-  }, [projectDetails, allUsers])
+  }, [projectDetails])
 
   if (isLoading) return <Loading />
 

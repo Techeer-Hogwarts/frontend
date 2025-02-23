@@ -37,7 +37,7 @@ export default function EmailVerification({
 
     if (!email) {
       setRequestIsError(true)
-      setRequestMessage('이메일을 입력해주세요.')
+      setRequestMessage('슬랙에 등록된 이메일을 입력해주세요.')
       return
     }
 

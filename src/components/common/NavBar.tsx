@@ -152,10 +152,9 @@ export default function NavBar() {
   const handleLogout = async () => {
     try {
       await logout()
-      router.push('/login')
+      router.push('/')
     } catch (error) {
-      console.error('Logout error:', error)
-      alert('로그아웃에 실패하였습니다.')
+      router.push('/login')
     }
   }
 
@@ -266,7 +265,7 @@ export default function NavBar() {
         {isLoggedIn ? (
           <button
             type="button"
-            className="ml-4 text-gray-600 hover:text-gray-800"
+            className="ml-4 hover:text-primary cursor-pointer"
             onClick={handleLogout}
           >
             로그아웃
@@ -274,7 +273,7 @@ export default function NavBar() {
         ) : (
           <Link
             href="/login"
-            className="ml-4 text-gray-600 hover:text-gray-800"
+            className="ml-4 hover:text-primary cursor-pointer"
           >
             로그인
           </Link>
