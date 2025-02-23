@@ -107,24 +107,26 @@ export default function Resume() {
         {/** 인기 이력서 조회 */}
         <BestResume offset={0} limit={10} />
       </div>
-      <div className="bg-filterbg flex items-center w-[75rem] h-[4.375rem] px-4 gap-4 my-3">
-        {selectedPosition.map((item) => (
-          <FilterBtn
-            key={item}
-            title={item}
-            onClick={() => {
-              handleRemoveFilter(item, 'position')
-            }}
-          />
-        ))}
-        {selectedYear.map((item) => (
-          <FilterBtn
-            key={item}
-            title={item.toString()}
-            onClick={() => handleRemoveFilter(item, 'year')}
-          />
-        ))}
-      </div>
+      {[selectedPosition, selectedYear].some((arr) => arr.length > 0) && (
+        <div className="bg-filterbg flex items-center w-[75rem] h-[4.375rem] px-4 gap-4 my-3">
+          {selectedPosition.map((item) => (
+            <FilterBtn
+              key={item}
+              title={item}
+              onClick={() => {
+                handleRemoveFilter(item, 'position')
+              }}
+            />
+          ))}
+          {selectedYear.map((item) => (
+            <FilterBtn
+              key={item}
+              title={item.toString()}
+              onClick={() => handleRemoveFilter(item, 'year')}
+            />
+          ))}
+        </div>
+      )}
       {/** 이력서 폴더 */}
       <ResumeList
         position={selectedPosition}
