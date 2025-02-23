@@ -49,7 +49,9 @@ export default function Page({ params }: { params: { userId: string } }) {
         />
       )}
       {/* {activeTab === 'profile' && <Profile profile={profileData} />} */}
-      {activeTab === 'resume' && <Resume />}
+      {activeTab === 'resume' && (
+        <Resume userId={Number(userId)} offset={0} limit={10} />
+      )}
     </div>
   )
 }
