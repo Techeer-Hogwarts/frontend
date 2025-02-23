@@ -67,7 +67,7 @@ export default function Page() {
   }
 
   return (
-    <div className="flex justify-center h-auto min-h-screen">
+    <div className="flex justify-center">
       <div className="flex flex-col">
         <div className="flex justify-between w-[1200px] mt-14 mb-[2.84rem]">
           <div className="text-left">
