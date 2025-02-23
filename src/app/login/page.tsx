@@ -1,8 +1,8 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { useAuthStore } from '@/store/authStore'
 import InputField from '@/components/common/InputField'
 
@@ -18,9 +18,16 @@ export default function Login() {
   const { setIsLoggedIn } = useAuthStore()
   const router = useRouter()
 
-  const searchParams = useSearchParams()
-  const redirectPath = searchParams.get('redirect') // 예: "/project/detail/123"
-  const form = searchParams.get('form')
+  const [redirectPath, setRedirectPath] = useState<string | null>(null)
+  const [form, setForm] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search)
+      setRedirectPath(params.get('redirect'))
+      setForm(params.get('form'))
+    }
+  }, [])
 
   const handleLogin = async () => {
     if (!email || !password) {
