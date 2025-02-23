@@ -17,7 +17,7 @@ export default function MypageTap({ activeTab, setActiveTab }: MypageTapProps) {
     }
   }
 
-  const tabs: TabType[] = ['home', 'profile', 'resume']
+  const tabs: TabType[] = ['home', 'resume']
 
   return (
     <div className="flex flex-col w-[14.5rem] h-72 text-[1.1rem] gap-2">
@@ -33,7 +33,7 @@ export default function MypageTap({ activeTab, setActiveTab }: MypageTapProps) {
           }`}
         >
           {tab === 'home' && '홈'}
-          {tab === 'profile' && '나의 정보'}
+          {/* {tab === 'profile' && '나의 정보'} */}
           {tab === 'resume' && '이력서'}
         </button>
       ))}
