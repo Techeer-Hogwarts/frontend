@@ -6,7 +6,7 @@ export async function getProfileList({
   university = [],
   grade = [],
   offset = 0,
-  limit = 10,
+  limit: limit,
 }: ProfileQueryParams) {
   try {
     // URLSearchParams에 배열 데이터를 추가하는 함수
@@ -19,8 +19,8 @@ export async function getProfileList({
       university.forEach((u) => params.append('university', u))
     if (grade.length > 0) grade.forEach((g) => params.append('grade', g))
 
-    params.append('offset', offset.toString())
-    params.append('limit', limit.toString())
+    params.append('offset', (offset ?? 0).toString()) // undefined 방지
+    params.append('limit', (limit ?? 10).toString()) // undefined 방지
 
     const response = await fetch(
       `/api/v1/users/profiles?${params.toString()}`,

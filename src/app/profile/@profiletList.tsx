@@ -1,8 +1,12 @@
+'use client'
+
 import ProfileCard from '@/components/profile/ProfileCard'
 import { useGetProfileQuery } from './query/useGetProfileQuery'
-import SkeletonProfileCard from '../../components/profile/SkeletonProfileCard'
 import EmptyLottie from '@/components/common/EmptyLottie'
 import { ProfileQueryParams } from '@/types/queryParams'
+import { useEffect, useState } from 'react'
+import { useInView } from 'react-intersection-observer'
+import SkeletonProfileCard from '@/components/profile/SkeletonProfileCard'
 
 interface Profile {
   id: number
@@ -23,37 +27,50 @@ export default function ProfileList({
   year = [],
   university = [],
   grade = [],
-  offset,
-  limit,
 }: ProfileQueryParams = {}) {
-  const {
-    data = [],
-    isLoading,
-    isError,
-  } = useGetProfileQuery({
+  const [profiles, setProfiles] = useState<Profile[]>([])
+  const [limit, setLimit] = useState(8)
+  const [ref, inView] = useInView({ threshold: 0.5 })
+
+  const { data, isError, isLoading } = useGetProfileQuery({
     position,
     year,
     university,
     grade,
-    offset,
     limit,
   })
+  useEffect(() => {
+    setProfiles([])
+    setLimit(8)
+  }, [position, year, university, grade])
 
-  if (isLoading) {
-    const skeletons = Array.from({ length: 8 }).map((_, i) => ({
-      id: `skeleton-${i}`,
-    }))
+  useEffect(() => {
+    if (data && Array.isArray(data)) {
+      setProfiles((prev) => {
+        const existingIds = new Set(prev.map((p) => p.id))
+        const newProfiles = data.filter((p) => !existingIds.has(p.id)) // 중복 제거
+        return [...prev, ...newProfiles]
+      })
+    }
+  }, [data])
+
+  useEffect(() => {
+    if (inView) {
+      setLimit((prev) => prev + 4)
+    }
+  }, [inView])
+
+  if (isLoading && profiles.length === 0) {
     return (
       <div className="grid grid-cols-4 gap-4">
-        {skeletons.map((skeleton) => (
-          <SkeletonProfileCard key={skeleton.id} />
+        {Array.from({ length: 8 }).map((_, i) => (
+          <SkeletonProfileCard key={`skeleton-${i}`} />
         ))}
       </div>
     )
   }
 
-  if (isError || !data || !Array.isArray(data) || data.length === 0) {
-    console.error('데이터 로드 실패 또는 빈 배열:', data)
+  if (isError || (data && profiles.length === 0)) {
     return (
       <div className="flex justify-center">
         <EmptyLottie
@@ -61,12 +78,12 @@ export default function ProfileList({
           text2="다시 조회해주세요"
         />
       </div>
-    ) // 오류 발생 시 표시할 문구
+    )
   }
 
   return (
     <div className="grid grid-cols-4 gap-4">
-      {data?.map((profile: Profile) => (
+      {profiles.map((profile) => (
         <ProfileCard
           key={profile.id}
           id={profile.id}
@@ -76,10 +93,11 @@ export default function ProfileList({
           school={profile.school}
           grade={profile.grade}
           year={profile.year}
-          stack={profile.stack ?? []}
-          mainImage={profile.projectTeams?.mainImage ?? ''}
+          stack={profile.stack}
+          mainImage={profile.projectTeams.mainImage}
         />
       ))}
+      <div ref={ref} className="h-1" />
     </div>
   )
 }

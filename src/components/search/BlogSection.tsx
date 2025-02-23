@@ -26,15 +26,6 @@ const BlogSection: React.FC<{ blog: BlogProps[] }> = ({ blog }) => {
       {visibleBlogs.length > 0 ? (
         <div className="grid grid-cols-4 gap-[3rem]">
           {visibleBlogs.map((blog) => (
-            // <CardItem
-            //   key={item.id}
-            //   title={item.title}
-            //   date={item.date}
-            //   category="" // category 값을 고정하거나 다른 값으로 설정
-            //   author={item.userName} // author는 userName으로 설정
-            //   authorImage={item.userProfileImage} // authorImage는 userProfileImage로 설정
-            //   thumbnail={item.thumbnail}
-            // />
             <BlogCard key={blog.id} blog={blog}></BlogCard>
           ))}
         </div>
@@ -52,7 +43,7 @@ const BlogSection: React.FC<{ blog: BlogProps[] }> = ({ blog }) => {
           </button>
         </div>
       )}
-      <div className="w-[62.5rem] h-[1px] mt-10 bg-lightgray"></div>
+      <div className="w-[77rem] h-[1px] mt-10 bg-lightgray"></div>
     </Section>
   )
 }

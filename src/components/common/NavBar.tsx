@@ -138,6 +138,10 @@ export default function NavBar() {
       } else {
         console.error('Blog or event URL is missing')
       }
+    } else if (section === 'project') {
+      router.push(`/project/detail/project/${id}`)
+    } else if (section === 'study') {
+      router.push(`/project/detail/study/${id}`)
     } else if (section === 'session') {
       router.push(`/session/video/${id}`)
     } else {
@@ -171,7 +175,7 @@ export default function NavBar() {
 
         {/* 메뉴 */}
         <div className="flex items-center gap-[1.62rem]">
-          {['project', 'profile', 'blog', 'resume', 'session'].map((item) => (
+          {['project', 'profile', 'resume', 'blog', 'session'].map((item) => (
             <Link
               key={item}
               href={`/${item}`}
@@ -235,9 +239,9 @@ export default function NavBar() {
                             )
                           }
                         >
-                          <span className="text-gray text-sm">
+                          <span className=" text-primary text-sm">
                             {indexMap[result.index] || result.index}
-                            &nbsp; | &nbsp;
+                            <span className="text-gray"> &nbsp; | &nbsp;</span>
                           </span>
                           {truncatedTitle}
                         </li>
