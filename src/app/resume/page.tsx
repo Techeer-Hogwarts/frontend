@@ -63,7 +63,10 @@ export default function Resume() {
   return (
     <div className="flex flex-col max-w-[75rem] w-[75rem] mt-[3.56rem] gap-6">
       {/* ✅ AuthModal 추가 */}
-      <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} />
+      <AuthModal
+        isOpen={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+      />
 
       {/** 배너 */}
       <div className="flex justify-between gap-10 mb-[2.84rem]">
@@ -114,6 +117,26 @@ export default function Resume() {
         {/** ✅ BestResume에서 setAuthModalOpen을 전달하도록 수정 */}
         <BestResume offset={0} limit={10} setAuthModalOpen={setAuthModalOpen} />
       </div>
+      {[selectedPosition, selectedYear].some((arr) => arr.length > 0) && (
+        <div className="bg-filterbg flex items-center w-[75rem] h-[4.375rem] px-4 gap-4 my-3">
+          {selectedPosition.map((item) => (
+            <FilterBtn
+              key={item}
+              title={item}
+              onClick={() => {
+                handleRemoveFilter(item, 'position')
+              }}
+            />
+          ))}
+          {selectedYear.map((item) => (
+            <FilterBtn
+              key={item}
+              title={item.toString()}
+              onClick={() => handleRemoveFilter(item, 'year')}
+            />
+          ))}
+        </div>
+      )}
       {[selectedPosition, selectedYear].some((arr) => arr.length > 0) && (
         <div className="bg-filterbg flex items-center w-[75rem] h-[4.375rem] px-4 gap-4 my-3">
           {selectedPosition.map((item) => (
