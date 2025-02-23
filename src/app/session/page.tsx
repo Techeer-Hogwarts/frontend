@@ -139,9 +139,9 @@ export default function Page() {
             {message}
           </div>
         )}
-        <div className="w-[1200px] text-left mt-14 mb-7">
-          <p className="mb-5 text-4xl font-bold">세션영상</p>
-          <p className="text-xl">테커인들의 세션영상을 확인해보세요.</p>
+        <div className="w-[1200px] text-left mt-14 mb-[2.84rem]">
+          <p className="text-[2rem] font-bold">세션영상</p>
+          <p className="text-[1.25rem]">테커인들의 세션영상을 확인해보세요.</p>
         </div>
         <div
           typeof="button"
@@ -153,7 +153,7 @@ export default function Page() {
         >
           <TapBar options={tapBarOptions} onSelect={handleCategoryChange} />
         </div>
-        <div className="flex w-full h-[1px] mt-5 bg-gray" />
+        {/*<div className="flex w-full h-[1px] mt-5 bg-gray" />*/}
         <div className="flex justify-start my-6 gap-3">
           {activeOption === '부트캠프' && (
             <>
@@ -267,7 +267,7 @@ export default function Page() {
             ))}
           </div>
         )}
-        <div className="grid flex-col grid-cols-3 gap-8">
+        <div className="grid flex-col grid-cols-4 gap-8">
           {allSessions.map((data: Session) => (
             <SessionPost
               key={data.id}

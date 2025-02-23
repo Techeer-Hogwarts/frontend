@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
 
-export default function Second() {
+export default function ProjectStudyInfo() {
   // 이미지 슬라이드
   const images = [
     { id: 'img1', src: '/sample1.png' },
@@ -82,15 +82,15 @@ export default function Second() {
       </div>
       {/* 문구 */}
       <div className="flex flex-col">
-        <span className="text-primary font-extrabold text-[35px] text-end">
+        <span className="text-primary font-bold text-[30px] text-end">
           프로젝트 & 스터디
         </span>
-        <span className="font-bold text-[60px] text-end">
+        <span className="font-bold text-[50px] text-end">
           완성도 높은 프로젝트를 통해
           <br />
-          함께 경험하고 성장
+          함께 성장하는 경험
         </span>
-        <span className="text-[20px] text-end">
+        <span className="mt-3 text-[25px] font-semibold text-black/60 text-end">
           단순한 기능 구현이 아닌 심도 있는 공부를 통해 스펙 쌓기
         </span>
       </div>

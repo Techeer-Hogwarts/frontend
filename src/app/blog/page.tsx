@@ -147,12 +147,12 @@ export default function Page() {
           </div>
         )}
         <div className="w-[1200px] text-left mt-14 mb-[2.84rem]">
-          <p className="text-[2.5rem] font-bold">블로그</p>
+          <p className="text-[2rem] font-bold">블로그</p>
           <p className="text-[1.25rem]">테커인들의 블로그를 확인해보세요.</p>
         </div>
         <TapBar options={category} onSelect={handleCategoryChange} />
-        <div className="flex w-full h-[1px] mt-5 bg-gray" />
-        <div className="flex-col grid grid-cols-3 gap-8 mt-8">
+        {/*<div className="flex w-full h-[1px] mt-5 bg-gray" />*/}
+        <div className="flex-col grid grid-cols-4 gap-8 mt-[2.84rem]">
           {blog.map((blog, index) => (
             <BlogPost
               key={index}

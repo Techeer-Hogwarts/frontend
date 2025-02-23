@@ -29,9 +29,11 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${pretendard.variable}`}>
       <body className={pretendard.className}>
+      <div className='flex flex-col justify-center items-center'>
         <NavBar />
         <Providers>{children}</Providers>
         <Footer />
+      </div>
       </body>
     </html>
   )

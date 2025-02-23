@@ -77,21 +77,19 @@ export default function Page() {
   return (
     <div className="flex justify-center">
       <div className="flex flex-col">
-        <div className="max-w-[75rem] w-[75rem] text-left mt-[3.56rem] mb-[2rem]">
-          <p className="text-[2.5rem]  mb-5 font-bold">프로필</p>
-          <div className="flex justify-between">
-            <p className="text-[1.25rem]">
-              모든 테커인들의 프로필 정보를 확인해보세요.
-            </p>
-            {/** 검색창 */}
-            {/* <SearchBar
+        <div className="flex justify-between w-[1200px] mt-14 mb-[2.84rem]">
+          <div className="text-left">
+            <p className="text-[2rem] font-bold">프로필</p>
+            <p className="text-[1.25rem]">모든 테커인들의 프로필 정보를 확인해보세요.</p>
+          </div>
+          {/** 검색창 */}
+          {/* <SearchBar
               placeholder="이름 또는 키워드로 검색해보세요"
               index="profile"
               onSearchResult={setSearchResults}
             /> */}
-          </div>
         </div>
-        <div className="flex justify-start mt-5 gap-3">
+        <div className="flex justify-start gap-3">
           <Dropdown
             title="포지션"
             options={positionOptions}
@@ -117,6 +115,7 @@ export default function Page() {
             setSelectedOptions={setSelectedGrade}
           />
         </div>
+        {/* 목록 */}
         <div className="bg-filterbg flex items-center w-[75rem] h-[4.375rem] px-4 gap-4 my-6">
           {selectedPosition.map((item) => (
             <FilterBtn

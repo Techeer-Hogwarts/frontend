@@ -52,80 +52,111 @@ export default function Resume() {
   }
 
   return (
-    <div className="flex flex-col max-w-[75rem] w-[75rem] mt-[3.56rem] gap-6">
-      {/** 배너 */}
-      <div className="flex justify-between gap-10 mb-[2.84rem]">
-        <div className="flex flex-col">
-          <span className="text-[2.5rem] font-bold">이력서 & 포트폴리오</span>
-          <span className="text-[1.25rem]">
-            모든 테커인들의 이력서와 포트폴리오를 확인해보세요.
-          </span>
-        </div>
-        <div
-          className="flex justify-center items-center w-[13rem] h-[3rem] border-2 border-transparent shadow-md rounded-xl"
-          onClick={openMyPage}
-        >
-          <span className="text-[1.1rem] font-medium cursor-pointer">
-            나의 이력서 수정하기
-          </span>
-          <Star />
-        </div>
-      </div>
+    <div className="flex justify-center h-auto min-h-screen">
       <div className="flex flex-col">
-        <div className="flex justify-between">
-          {/** 기수 탭 */}
-          <TapBar options={category} onSelect={handleCategoryChange} />
-          {/** 검색창 */}
-          {/* <SearchBar
-            index="resume"
-            // onSearchResult={setSearchResults}
-          /> */}
+        {/** 배너 */}
+        <div className="flex justify-between w-[1200px] mt-14 mb-[2.84rem]">
+          <div className="text-left">
+            <p className="text-[2rem] font-bold">이력서 & 포트폴리오</p>
+            <p className="text-[1.25rem]">
+              모든 테커인들의 이력서와 포트폴리오를 확인해보세요.
+            </p>
+          </div>
+          <div
+            className="flex justify-center items-center w-[13rem] h-[3rem] border-2 border-transparent shadow-md rounded-xl"
+            onClick={openMyPage}
+          >
+            <span className="text-[1.1rem] font-medium cursor-pointer">
+              나의 이력서 수정하기
+            </span>
+            <Star />
+          </div>
         </div>
-        <div className="flex w-full h-[1px] mt-5 bg-gray"></div>
-      </div>
-      <div className="flex justify-between">
-        <div className="flex gap-3">
-          {/** 드롭다운 */}
-          <Dropdown
-            title="포지션"
-            options={positionOptions}
-            selectedOptions={selectedPosition}
-            setSelectedOptions={setSelectedPosition}
-          />
-          <Dropdown
-            title="기수"
-            options={yearOptions} // Dropdown 컴포넌트에서 문자열로 처리
-            selectedOptions={selectedYear.map(String)} // 숫자를 문자열로 변환
-            setSelectedOptions={setSelectedYear}
-          />
+        {/*<div className="flex justify-between gap-10 mb-[2.84rem]">*/}
+        {/*  <div*/}
+        {/*    className="flex justify-center items-center w-[13rem] h-[3rem] border-2 border-transparent shadow-md rounded-xl"*/}
+        {/*    onClick={openMyPage}*/}
+        {/*  >*/}
+        {/*  <span className="text-[1.1rem] font-medium cursor-pointer">*/}
+        {/*    나의 이력서 수정하기*/}
+        {/*  </span>*/}
+        {/*    <Star />*/}
+        {/*  </div>*/}
+        {/*</div>*/}
+        <div className="flex flex-col">
+          <div className="flex justify-between items-center">
+            {/** 기수 탭 */}
+            <div className="flex gap-8 items-center">
+              <TapBar options={category} onSelect={handleCategoryChange} />
+              {/* 드롭다운 */}
+              <div className="flex gap-3">
+                {/** 드롭다운 */}
+                <Dropdown
+                  title="포지션"
+                  options={positionOptions}
+                  selectedOptions={selectedPosition}
+                  setSelectedOptions={setSelectedPosition}
+                />
+                <Dropdown
+                  title="기수"
+                  options={yearOptions} // Dropdown 컴포넌트에서 문자열로 처리
+                  selectedOptions={selectedYear.map(String)} // 숫자를 문자열로 변환
+                  setSelectedOptions={setSelectedYear}
+                />
+              </div>
+            </div>
+            {/** 인기 이력서 조회 */}
+            <BestResume offset={0} limit={10} />
+            {/** 검색창 */}
+            {/* <SearchBar
+              index="resume"
+              // onSearchResult={setSearchResults}
+              /> */}
+          </div>
+          {/*<div className="flex justify-between">*/}
+          {/*  <div className="flex gap-3">*/}
+          {/*    /!** 드롭다운 *!/*/}
+          {/*    <Dropdown*/}
+          {/*      title="포지션"*/}
+          {/*      options={positionOptions}*/}
+          {/*      selectedOptions={selectedPosition}*/}
+          {/*      setSelectedOptions={setSelectedPosition}*/}
+          {/*    />*/}
+          {/*    <Dropdown*/}
+          {/*      title="기수"*/}
+          {/*      options={yearOptions} // Dropdown 컴포넌트에서 문자열로 처리*/}
+          {/*      selectedOptions={selectedYear.map(String)} // 숫자를 문자열로 변환*/}
+          {/*      setSelectedOptions={setSelectedYear}*/}
+          {/*    />*/}
+          {/*  </div>*/}
+          {/*  /!** 인기 이력서 조회 *!/*/}
+          {/*  <BestResume offset={0} limit={10} />*/}
         </div>
-        {/** 인기 이력서 조회 */}
-        <BestResume offset={0} limit={10} />
+        <div className="bg-filterbg flex items-center w-[75rem] h-[4.375rem] px-4 gap-4 my-3">
+          {selectedPosition.map((item) => (
+            <FilterBtn
+              key={item}
+              title={item}
+              onClick={() => {
+                handleRemoveFilter(item, 'position')
+              }}
+            />
+          ))}
+          {selectedYear.map((item) => (
+            <FilterBtn
+              key={item}
+              title={item.toString()}
+              onClick={() => handleRemoveFilter(item, 'year')}
+            />
+          ))}
+        </div>
+        {/** 이력서 폴더 */}
+        <ResumeList
+          position={selectedPosition}
+          year={selectedYear}
+          category={selectedCategory}
+        />
       </div>
-      <div className="bg-filterbg flex items-center w-[75rem] h-[4.375rem] px-4 gap-4 my-3">
-        {selectedPosition.map((item) => (
-          <FilterBtn
-            key={item}
-            title={item}
-            onClick={() => {
-              handleRemoveFilter(item, 'position')
-            }}
-          />
-        ))}
-        {selectedYear.map((item) => (
-          <FilterBtn
-            key={item}
-            title={item.toString()}
-            onClick={() => handleRemoveFilter(item, 'year')}
-          />
-        ))}
-      </div>
-      {/** 이력서 폴더 */}
-      <ResumeList
-        position={selectedPosition}
-        year={selectedYear}
-        category={selectedCategory}
-      />
     </div>
   )
 }

@@ -50,7 +50,7 @@ const SmallMemberBox = ({
 
       <Image
         src={imageSrc || '/default-profile.png'}
-        alt="Profile Image"
+        alt="ProfileInfo Image"
         width={48}
         height={48}
         className="w-[48px] h-[48px] bg-lightpink rounded-md"
