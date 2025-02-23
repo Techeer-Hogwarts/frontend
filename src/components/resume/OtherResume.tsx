@@ -33,7 +33,7 @@ export default function OtherResume({ id, offset, limit }: OtherResumeProps) {
           console.error('Expected an array, but received:', userResumes.data)
           return
         }
-        console.log('User resumes data:', userResumes.data)
+        // console.log('User resumes data:', userResumes.data)
 
         // 필요한 데이터 구조로 변환\
         const formattedData: Resume[] = userResumes.data.map((resume: any) => ({
@@ -58,20 +58,22 @@ export default function OtherResume({ id, offset, limit }: OtherResumeProps) {
   }
 
   return (
-    <div className="flex flex-col w-[14.5rem] h-auto rounded-xl shadow-md bg-lightprimary">
+    <div className="flex flex-col w-[14.5rem] h-auto rounded-xl shadow-md mt-1 hover:bg-lightprimary">
       {otherData.map((user) => {
         const resumeTitle = user.title.split('-').slice(-1).join(' ')
         const truncatedTitle =
-          resumeTitle.length > 8 ? resumeTitle.slice(0, 8) + '...' : resumeTitle
+          resumeTitle.length > 14
+            ? resumeTitle.slice(0, 14) + '...'
+            : resumeTitle
 
-        const formattedDate = new Date(user.createdAt).toLocaleDateString(
-          'ko-KR',
-          {
+        const formattedDate = new Date(user.createdAt)
+          .toLocaleDateString('ko-KR', {
             year: 'numeric',
             month: '2-digit',
             day: '2-digit',
-          },
-        )
+          })
+          .replace(/\.$/, '')
+
         return (
           <button
             key={user.id}

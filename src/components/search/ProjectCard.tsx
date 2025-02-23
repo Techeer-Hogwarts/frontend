@@ -1,3 +1,5 @@
+import { getAllTeams } from '@/api/project/common'
+import { useQueries } from '@tanstack/react-query'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
@@ -12,30 +14,28 @@ interface TeamBase {
 }
 
 interface ProjectTeam extends TeamBase {
-  id: number
   type: 'project'
-  category: string
   frontendNum: number
   backendNum: number
   devopsNum: number
-  uiuxNum: number
+  fullStackNum: number
   dataEngineerNum: number
   projectExplain: string
-  mainImages: string[]
+  resultImages?: string[]
   teamStacks: { stackName: string; isMain: boolean }[]
 }
 
-export default function ProjectCard({ team }: any) {
-  // console.log(team)
-  const handleClick = () => {
-    localStorage.setItem('projectType', 'project')
-    localStorage.setItem('projectId', team.id.toString())
-  }
+export default function ProjectCard({ team }: { team: ProjectTeam }) {
+  const projectImageUrl =
+    team.resultImages && team.resultImages.length > 0
+      ? team.resultImages[0] // 첫 번째 요소가 곧 URL
+      : '/images/project/example.png'
 
+  const stackNames = team.teamStacks.map((stack) => stack.stackName)
   return (
     <Link
       href={`/project/detail/project/${team.id}`}
-      onClick={handleClick}
+      // onClick={handleClick}
       className="relative group bg-[url('/images/project/projectCard.png')] bg-cover w-[18rem] h-[11.375rem]"
     >
       <div className="text-pink w-[4.375rem] pt-2 text-[0.71181rem] text-center">
@@ -46,7 +46,7 @@ export default function ProjectCard({ team }: any) {
         {/* 이미지 */}
         <div className="w-[7.8125rem] h-[7.8125rem] min-w-[7.8125rem] rounded-2xl">
           <Image
-            src="/images/project/example.png"
+            src={projectImageUrl}
             alt="프로젝트 이미지"
             width={125}
             height={125}
@@ -97,16 +97,17 @@ export default function ProjectCard({ team }: any) {
               </>
             ) : (
               <div className="flex gap-1">
-                {team.teamStacks.map(
-                  (stack) =>
-                    stack.isMain && (
-                      <div
-                        key={stack.stackName}
-                        className="bg-lightprimary text-pink max-h-[1.4181rem] px-[0.3rem] rounded-md text-[13px]"
-                      >
-                        {stack.stackName}
-                      </div>
-                    ),
+                {stackNames.map(
+                  (stack, index) => (
+                    // stack.isMain && (
+                    <div
+                      key={index}
+                      className="bg-lightprimary text-pink max-h-[1.4181rem] px-[0.3rem] rounded-md text-[13px]"
+                    >
+                      {stack}
+                    </div>
+                  ),
+                  // ),
                 )}
               </div>
             )}

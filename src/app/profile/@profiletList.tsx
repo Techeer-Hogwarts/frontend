@@ -6,6 +6,7 @@ import EmptyLottie from '@/components/common/EmptyLottie'
 import { ProfileQueryParams } from '@/types/queryParams'
 import { useEffect, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
+import SkeletonProfileCard from '@/components/profile/SkeletonProfileCard'
 
 interface Profile {
   id: number
@@ -31,7 +32,7 @@ export default function ProfileList({
   const [limit, setLimit] = useState(8)
   const [ref, inView] = useInView({ threshold: 0.5 })
 
-  const { data, isError } = useGetProfileQuery({
+  const { data, isError, isLoading } = useGetProfileQuery({
     position,
     year,
     university,
@@ -59,15 +60,15 @@ export default function ProfileList({
     }
   }, [inView])
 
-  // if (isLoading && profiles.length === 4) {
-  //   return (
-  //     <div className="grid grid-cols-4 gap-4">
-  //       {Array.from({ length: 8 }).map((_, i) => (
-  //         <SkeletonProfileCard key={`skeleton-${i}`} />
-  //       ))}
-  //     </div>
-  //   )
-  // }
+  if (isLoading && profiles.length === 0) {
+    return (
+      <div className="grid grid-cols-4 gap-4">
+        {Array.from({ length: 8 }).map((_, i) => (
+          <SkeletonProfileCard key={`skeleton-${i}`} />
+        ))}
+      </div>
+    )
+  }
 
   if (isError || (data && profiles.length === 0)) {
     return (

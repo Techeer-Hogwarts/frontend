@@ -26,6 +26,7 @@ const nextConfig = {
       'avatars.slack-edge.com',
       'techeerzip-bucket.s3.ap-southeast-2.amazonaws.com',
       'images.velog.io',
+      'encore.cloud',
     ], // 허용할 외부 도메인 추가
   },
 

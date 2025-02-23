@@ -35,6 +35,7 @@ interface BasicResult {
   id: number
   title: string
   index: string
+  url?: string
 }
 
 export default function NavBar() {
@@ -51,7 +52,7 @@ export default function NavBar() {
 
   // index 값을 한글 이름으로 매핑하는 객체
   const indexMap: Record<string, string> = {
-    user: '프로필',
+    user: '사용자',
     blog: '블로그',
     study: '스터디',
     project: '프로젝트',
@@ -122,14 +123,30 @@ export default function NavBar() {
     selectedTitle: string,
     section: string,
     id: number,
+    url?: string,
   ) => {
     setQuery(selectedTitle)
     setTimeout(() => setIsSearchOpen(false), 0) // 검색 결과 클릭 시 자동완성 창 닫기
     await handleSubmit(new Event('submit') as unknown as React.FormEvent) // 강제 제출 실행
 
     setQuery('') //자동 완성창 초기화
-    // 검색 결과 항목 ID를 포함한 URL로 이동
-    router.push(`/${section}/${id}`) // 예시: /resume/8
+
+    // section이 'event' 또는 'session'인 경우에는 URL로 직접 이동
+    if (section === 'blog' || section === 'event') {
+      if (url) {
+        router.push(url) // 반환된 URL로 이동
+      } else {
+        console.error('Blog or event URL is missing')
+      }
+    } else if (section === 'project') {
+      router.push(`/project/detail/project/${id}`)
+    } else if (section === 'study') {
+      router.push(`/project/detail/study/${id}`)
+    } else if (section === 'session') {
+      router.push(`/session/video/${id}`)
+    } else {
+      router.push(`/${section}/${id}`)
+    }
   }
 
   const handleLogout = async () => {
@@ -158,7 +175,7 @@ export default function NavBar() {
 
         {/* 메뉴 */}
         <div className="flex items-center gap-[1.62rem]">
-          {['project', 'profile', 'blog', 'resume', 'session'].map((item) => (
+          {['project', 'profile', 'resume', 'blog', 'session'].map((item) => (
             <Link
               key={item}
               href={`/${item}`}
@@ -218,12 +235,13 @@ export default function NavBar() {
                               result.title.split('-').slice(-1).join(' '),
                               result.index,
                               result.id,
+                              result.url,
                             )
                           }
                         >
-                          <span className="text-gray text-sm">
+                          <span className=" text-primary text-sm">
                             {indexMap[result.index] || result.index}
-                            &nbsp; | &nbsp;
+                            <span className="text-gray"> &nbsp; | &nbsp;</span>
                           </span>
                           {truncatedTitle}
                         </li>
