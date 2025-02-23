@@ -208,7 +208,7 @@ const Signup = () => {
         }
       }
 
-      router.push('/login')
+      router.push('/login?from=signup')
     } catch (err: any) {
       setSignupError('네트워크 오류가 발생했습니다.')
     }
@@ -698,7 +698,10 @@ const Signup = () => {
           개발자그룹에 조인해보세요
         </p>
         <p className="text-base mt-auto mb-6">이미 회원이신가요?</p>
-        <Link href="/login" className="underline text-xl mb-[7.5rem]">
+        <Link
+          href="/login?from=signup"
+          className="underline text-xl mb-[7.5rem]"
+        >
           로그인 하러가기
         </Link>
       </div>
