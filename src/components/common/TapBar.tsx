@@ -2,7 +2,7 @@
 
 import TapBtn from './TapBtn'
 import { useEffect } from 'react'
-import { usePathname, useRouter } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 import { useTapBarStore } from '@/store/tapBarStore'
 
 interface TapBarProps {
@@ -12,10 +12,10 @@ interface TapBarProps {
 
 export default function TapBar({ options, onSelect }: TapBarProps) {
   const { activeOption, setActiveOption } = useTapBarStore()
-  const pathname = usePathname() // 경로를 추적
+  const pathname = usePathname()
   useEffect(() => {
-    setActiveOption(options[0]) // 페이지 이동 시 항상 첫 번째 옵션으로 초기화
-  }, [pathname]) // 경로가 바뀔 때마다 실행
+    setActiveOption(options[0])
+  }, [pathname])
 
   return (
     <div>
