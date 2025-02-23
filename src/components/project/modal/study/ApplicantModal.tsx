@@ -42,7 +42,6 @@ export default function ApplicantModal({
   const [projectType, setProjectType] = useState<null | string>(null)
   const [approve, setApprove] = useState(true)
   const projectId = Number(localStorage.getItem('projectId'))
-  console.log(applicant)
 
   const queryClient = useQueryClient()
 

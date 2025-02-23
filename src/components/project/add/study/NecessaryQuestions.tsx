@@ -12,7 +12,7 @@ export default function NecessaryQuestions({ isFinished, onUpdate }) {
       {/* 프로젝트 진행 여부 */}
       <div className="flex justify-between items-center">
         <p className="font-medium text-gray">
-          프로젝트 진행 여부<span className="text-primary">*</span>
+          스터디 진행 여부<span className="text-primary">*</span>
         </p>
         <div className="flex gap-2">
           <button

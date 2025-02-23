@@ -60,33 +60,19 @@ export default function Profile({ projectDetail }: any) {
         </div>
 
         <div className="flex gap-2">
-          {projectType === 'study' ? (
-            ''
-          ) : (
+          {projectDetail?.notionLink && (
             <button
               type="button"
-              onClick={() => (window.location.href = projectDetail?.githubLink)}
+              onClick={() => (window.location.href = projectDetail?.notionLink)}
             >
               <Image
-                src="/images/project/github.png"
+                src="/images/project/notion.png"
                 width={20}
                 height={20}
-                alt="github"
+                alt="notion"
               />
             </button>
           )}
-
-          <button
-            type="button"
-            onClick={() => (window.location.href = projectDetail?.notionLink)}
-          >
-            <Image
-              src="/images/project/notion.png"
-              width={20}
-              height={20}
-              alt="notion"
-            />
-          </button>
         </div>
       </div>
       <div className="w-[15.875rem]">

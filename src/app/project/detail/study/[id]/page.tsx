@@ -22,6 +22,7 @@ import {
   getStudyApplicants,
   handleDenyStudy,
 } from '@/api/project/study/study'
+import { useAuthStore } from '@/store/authStore'
 
 const MODAL_TEXT_MAP = {
   delete: '스터디를 삭제하시겠습니까?',
@@ -47,8 +48,9 @@ export default function ProjectDetailpage() {
 
   const [modalType, setModalType] = useState<
     'delete' | 'close' | 'cancel' | null
-  >(null)
-  const userId = Number(localStorage.getItem('userId'))
+    >(null)
+  
+  const {user} = useAuthStore()
 
   const queryClient = useQueryClient()
 
@@ -60,12 +62,12 @@ export default function ProjectDetailpage() {
 
   useEffect(() => {
     if (studyDetails) {
-      const isMember =
-        studyDetails?.studyMember?.some((member) => member.userId === userId) ??
-        false
+      const isMember = studyDetails.studyMember?.some(
+        (member) => member.userId === user?.id,
+      )
       setIsStudyMember(isMember)
     }
-  }, [studyDetails, userId])
+  }, [studyDetails, user])
 
   // 지원자 정보 불러오기
   const { data: studyApplicants } = useQuery({
@@ -75,7 +77,7 @@ export default function ProjectDetailpage() {
 
   // 현재 사용자가 이미 지원했는지 확인
   const hasApplied = studyApplicants?.some(
-    (applicant) => applicant.userId === userId,
+    (applicant) => applicant.userId === user?.id,
   )
 
   // 지원자 상세 조회 모달 여닫기

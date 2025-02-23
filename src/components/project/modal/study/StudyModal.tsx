@@ -11,7 +11,7 @@ import { useAuthStore } from '@/store/authStore'
 interface Member {
   id: number
   name: string
-  generation: string
+  year: string
   profileImage?: string | null
   isLeader: boolean
 }
@@ -144,16 +144,22 @@ const MemberModal = ({
           <p className="text-left mb-3">이름을 입력해주세요</p>
           <input
             type="text"
-            className="w-full h-[2rem] border border-gray rounded-sm"
+            className="w-full h-[2rem] border border-gray rounded-sm px-2 focus:outline-none"
             value={name}
             onChange={handleName}
             onClick={() => setIsDropdownOpen((prev) => !prev)}
             ref={dropDownRef}
           />
 
-          {isDropdownOpen && (
-            <div className="absolute w-[26.25rem] bg-white border border-gray mt-1 max-h-48 overflow-y-auto z-10">
-              {allUsers?.map((member) => (
+          {isDropdownOpen && filteredUsers && filteredUsers.length > 0 && (
+            <div
+              className="absolute w-[26.25rem] bg-white border border-gray mt-1 max-h-48 overflow-y-auto z-10"
+              style={{
+                scrollbarWidth: 'thin',
+                scrollbarColor: 'rgba(0, 0, 0, 0.2) transparent',
+              }}
+            >
+              {filteredUsers?.map((member) => (
                 <div
                   key={member.id}
                   className="flex items-center gap-2 p-2 cursor-pointer hover:bg-lightprimary"
@@ -168,7 +174,7 @@ const MemberModal = ({
                   />
                   <div className="flex gap-3 items-center">
                     <p>{member.name}</p>
-                    <p className="text-gray text-xs">{member.generation}</p>
+                    <p className="text-gray text-xs">{member.year}기</p>
                   </div>
                 </div>
               ))}
@@ -183,7 +189,7 @@ const MemberModal = ({
               <SmallMemberBox
                 key={member.id}
                 name={member.name}
-                generation={member.generation}
+                generation={member.year}
                 imageSrc={member.profileImage || '/default-profile.png'}
                 isLeader={member.isLeader}
                 onClose={() => handleRemoveMember(member.name)}

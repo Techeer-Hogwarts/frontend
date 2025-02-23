@@ -45,8 +45,9 @@ export default function ApplyModal() {
           summary: apply,
         }
         const result = await handleApplyStudy(data)
-        console.log('스터디 지원 성공:', result)
-        // 원하는 후속 동작 (예: 페이지 이동, 모달 닫기)
+        queryClient.invalidateQueries({
+          queryKey: ['getStudyDetails', projectId],
+        })
         router.back()
 
         // 2) 프로젝트 지원 로직
