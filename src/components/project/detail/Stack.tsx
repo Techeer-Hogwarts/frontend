@@ -91,10 +91,10 @@ interface StackCategoryProps {
 function StackCategory({ title, stack }: StackCategoryProps) {
   return (
     <div className="flex gap-[1rem] items-center">
-      <div className="text-darkPrimary w-[4.76319rem] text-lg font-semibold">
+      <div className="text-darkPrimary w-[4.875rem] text-lg font-semibold">
         {title}
       </div>
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-2 w-[712px]">
         {stack.map((item) => (
           <Box key={item.name} text={item.name} isMain={item.isMain} />
         ))}
