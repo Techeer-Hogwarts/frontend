@@ -4,6 +4,7 @@ export const getSessions = async (
   newLimit: number,
   date: string[],
   position: string[],
+  setAuthModalOpen: any,
 ) => {
   const baseUrl = '/api/v1/sessions'
   const params = {
@@ -22,6 +23,10 @@ export const getSessions = async (
     method: 'GET',
     credentials: 'include',
   })
+  if (response.status == 401) {
+    setAuthModalOpen(true)
+    throw new Error('세션 데이터를 가져오는 데 실패했습니다.')
+  }
   if (!response.ok) {
     throw new Error('세션 데이터를 가져오는 데 실패했습니다.')
   }

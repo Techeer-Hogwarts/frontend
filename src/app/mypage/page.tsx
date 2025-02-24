@@ -92,7 +92,7 @@ export default function Mypage() {
   }, [])
 
   return (
-    <div className="flex gap-16 mt-10">
+    <div className="flex gap-[4.375rem] mt-10">
       <AuthModal
         isOpen={authModalOpen}
         onClose={() => setAuthModalOpen(false)}

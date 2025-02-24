@@ -9,12 +9,15 @@ import CareerToggle from '@/components/signup/CareerToggle'
 import InputField from '@/components/common/InputField'
 import EmailVerification from '@/components/common/EmailVerification'
 import Link from 'next/link'
+import Lottie from 'lottie-react'
+import loading from '../../../public/loading.json'
 
 const Signup = () => {
   const [signupError, setSignupError] = useState<string>('')
   const router = useRouter()
 
   const [step, setStep] = useState(1)
+  const [isLoading, setIsLoading] = useState(false)
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -102,6 +105,9 @@ const Signup = () => {
       setSignupError('비밀번호가 일치하지 않습니다.')
       return
     }
+
+    // 모든 검증 통과 후 로딩 시작
+    setIsLoading(true)
 
     // 경험 데이터를 백엔드 형식으로 통합
     const experiences: {
@@ -208,9 +214,11 @@ const Signup = () => {
         }
       }
 
-      router.push('/login')
+      router.push('/login?form=signup')
     } catch (err: any) {
       setSignupError('네트워크 오류가 발생했습니다.')
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -282,7 +290,7 @@ const Signup = () => {
             <InputField
               label="이름"
               name="name"
-              placeholder="이름을 입력해주세요(시니어멘토는 영어 이름 입력 가능)"
+              placeholder="이름을 입력해주세요"
               required={true}
               value={formData.name}
               onChange={handleChange}
@@ -290,7 +298,9 @@ const Signup = () => {
             <EmailVerification
               email={formData.email}
               isVerified={formData.isVerified}
-              setEmail={(email) => setFormData((prev) => ({ ...prev, email }))}
+              setEmail={(email) =>
+                setFormData((prev) => ({ ...prev, email }))
+              }
               setIsVerified={(verified) =>
                 setFormData((prev) => ({ ...prev, isVerified: verified }))
               }
@@ -676,10 +686,18 @@ const Signup = () => {
               </button>
               <button
                 type="button"
-                className="w-[30.25rem] h-10 text-xl border border-primary text-primary rounded-full hover:bg-primary hover:text-white"
                 onClick={handleSignup}
+                disabled={isLoading}
+                className="w-[30.25rem] h-10 text-xl border border-primary text-primary rounded-full hover:bg-primary hover:text-white flex items-center justify-center"
               >
-                회원가입
+                {isLoading ? (
+                  <Lottie
+                    animationData={loading}
+                    style={{ width: 40, height: 40 }}
+                  />
+                ) : (
+                  '회원가입'
+                )}
               </button>
             </div>
           )}
@@ -698,7 +716,10 @@ const Signup = () => {
           개발자그룹에 조인해보세요
         </p>
         <p className="text-base mt-auto mb-6">이미 회원이신가요?</p>
-        <Link href="/login" className="underline text-xl mb-[7.5rem]">
+        <Link
+          href="/login?form=signup"
+          className="underline text-xl mb-[7.5rem]"
+        >
           로그인 하러가기
         </Link>
       </div>

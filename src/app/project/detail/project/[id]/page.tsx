@@ -7,11 +7,12 @@ import FindMember from '@/components/project/detail/FindMember'
 import Results from '@/components/project/detail/Results'
 import Applicants from '@/components/project/detail/Applicants'
 import { BiSolidPencil } from 'react-icons/bi'
-import Link from 'next/link'
-import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect, use } from 'react'
+import { useParams, useRouter } from 'next/navigation'
 import { useQueryClient } from '@tanstack/react-query'
 import Loading from '@/components/common/Loading'
+import AuthModal from '@/components/common/AuthModal'
+import { useAuthStore } from '@/store/authStore'
 
 import {
   getProjectDetail,
@@ -23,7 +24,8 @@ import {
 import { useQuery } from '@tanstack/react-query'
 import BaseModal from '@/components/project/modal/BaseModal'
 import ApplicantModal from '@/components/project/modal/ApplicantModal'
-import { useAuthStore } from '@/store/authStore'
+import ProjectDetailSkeleton from '@/components/project/detail/ProjectDetailSkeleton'
+
 
 export default function ProjectDetailpage() {
   const MODAL_TEXT_MAP = {
@@ -37,15 +39,24 @@ export default function ProjectDetailpage() {
     close: '마감',
     cancel: '확인',
   }
-
+  const params = useParams()
+  const storedId = Number(params.id)
   const router = useRouter()
   const queryClient = useQueryClient()
 
   const [projectId, setProjectId] = useState<number | null>(null)
   const [projectType, setProjectType] = useState<string | null>(null)
 
+  const [authModalOpen, setAuthModalOpen] = useState(false)
+  const { user, checkAuth } = useAuthStore()
+
   useEffect(() => {
-    const storedId = localStorage.getItem('projectId')
+    checkAuth()
+  }, [])
+
+  console.log(user)
+
+  useEffect(() => {
     const storedProjectType = localStorage.getItem('projectType')
 
     if (storedId) {
@@ -91,11 +102,14 @@ export default function ProjectDetailpage() {
 
   // 지원하기 페이지 이동
   const handleModal = () => {
+    if (!user) {
+      // 로그인 안 되어있으면 AuthModal 열기
+      setAuthModalOpen(true)
+      return
+    }
     router.push(`/project/detail/project/${projectId}/applyProject`)
   }
 
-  // 로그인 유저 정보
-  const { user } = useAuthStore()
   // 팀원 여부 판단
   const isTeamMember = projectDetails?.projectMember?.some(
     (member) => member.email === user?.email,
@@ -103,7 +117,7 @@ export default function ProjectDetailpage() {
 
   // 로딩 중
   if (!projectDetails) {
-    return <Loading />
+    return <ProjectDetailSkeleton />
   }
 
   const { isRecruited } = projectDetails
@@ -125,7 +139,7 @@ export default function ProjectDetailpage() {
         // 마감하기
         await handleCloseProject(projectId)
         queryClient.invalidateQueries({
-          queryKey: ['getStudyApplicants', projectId],
+          queryKey: ['getProjectDetails', projectId],
         })
         // 새로고침
         router.refresh()
@@ -146,17 +160,16 @@ export default function ProjectDetailpage() {
   }
 
   const handleEdit = async () => {
-    // 1) 편집 페이지로 넘어가기 전에 최신 데이터 보장
-    // await queryClient.invalidateQueries({
-    //   queryKey: ['getProjectDetails', projectId],
-    // })
-
-    // 2) 편집 페이지로 이동
     router.push(`/project/detail/project/edit/${projectId}`)
   }
 
   return (
-    <div className="relative flex justify-between mt-[2.75rem]">
+    <div className="relative flex justify-between mt-[2.75rem] gap-[3.313rem]">
+      {/* (E) AuthModal */}
+      <AuthModal
+        isOpen={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+      />
       {isModalOpen && (
         <BaseModal
           text={MODAL_TEXT_MAP[modalType]}

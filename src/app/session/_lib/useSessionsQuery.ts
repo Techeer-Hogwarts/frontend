@@ -43,7 +43,7 @@ export const useSessionsQuery = ({
     ],
     queryFn: async () => {
       if (activeOption === '금주의 세션') {
-        const data = await getBestSessions(limit, setAuthModalOpen)
+        const data = await getBestSessions(limit)
         // console.log('getBestSessions result:', data)
         return data ?? []
       }
@@ -53,7 +53,8 @@ export const useSessionsQuery = ({
         category,
         limit,
         date,
-        selectedPeriodsPo, // 포지션 문자열
+        selectedPeriodsPo,
+        setAuthModalOpen, // 포지션 문자열
       )
       console.log('getSessions result:', data)
       return data ?? []

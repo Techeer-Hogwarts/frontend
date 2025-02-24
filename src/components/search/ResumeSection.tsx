@@ -10,6 +10,8 @@ type ResumeProps = {
   url: string
   createdAt: number
   userName: string
+  year: string
+  position: string
 }
 
 const ResumeSection: React.FC<{ resumes: ResumeProps[] }> = ({ resumes }) => {
@@ -21,7 +23,7 @@ const ResumeSection: React.FC<{ resumes: ResumeProps[] }> = ({ resumes }) => {
   return (
     <Section id="resume" title="이력서">
       {visibleResumes.length > 0 ? (
-        <div className="flex flex-wrap gap-6">
+        <div className="flex flex-wrap gap-12">
           {visibleResumes.map((resume) => (
             <ResumeFolder key={resume.id} resume={resume} />
           ))}

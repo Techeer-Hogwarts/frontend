@@ -22,19 +22,19 @@ interface MainImage {
 }
 
 interface ProjectTeam extends TeamBase {
-  type: 'project'
+  index: 'project'
   frontendNum: number
   backendNum: number
   devopsNum: number
   fullStackNum: number
   dataEngineerNum: number
   projectExplain: string
-  mainImages?: MainImage[]
+  mainImages?: string[]
   teamStacks: { stackName: string; isMain: boolean }[]
 }
 
 interface StudyTeam extends TeamBase {
-  type: 'study'
+  index: 'study'
   recruitNum: number
   studyExplain: string
 }
@@ -62,7 +62,7 @@ const ProjectSection: React.FC<{
       {visibleProjects?.length > 0 ? (
         <div className="grid grid-cols-4 gap-5">
           {visibleProjects?.map((team) =>
-            team.type === 'project' ? (
+            team.index === 'project' ? (
               <ProjectCard key={'project' + team.id} team={team} />
             ) : (
               <StudyCard key={team.id} team={team} />

@@ -11,6 +11,7 @@ import { useInView } from 'react-intersection-observer'
 import { useLike } from '@/app/blog/_lib/useLike'
 import { useBookmark } from '@/app/blog/_lib/useBookmark'
 import SkeletonResumeFolder from '../resume/SkeletonResume'
+import { usePathname } from 'next/navigation'
 
 interface Resume {
   id: string
@@ -44,6 +45,9 @@ export default function Resume({ userId }) {
   const { fetchLikes } = useLike()
   const [bookmarkList, setBookmarkList] = useState<string[]>([])
   const { fetchBookmarks } = useBookmark()
+
+  const pathname = usePathname()
+  const isMyPage = pathname === '/mypage'
 
   const fetchData = async () => {
     try {
@@ -146,13 +150,15 @@ export default function Resume({ userId }) {
   }
   return (
     <div>
-      <div className="flex justify-end mb-4">
-        <button
-          onClick={handleClickAddResume}
-          className="border border-lightgray text-black flex items-center justify-center p-2 h-8 w-[130px] rounded-md hover:bg-lightprimary hover:text-primary hover:border-primary hover:font-medium"
-        >
-          이력서 추가
-        </button>
+      <div className="flex w-[890px] justify-end mb-4">
+        {isMyPage && (
+          <button
+            onClick={handleClickAddResume}
+            className="border border-lightgray text-black flex items-center justify-center p-2 h-8 w-[130px] rounded-md hover:bg-lightprimary hover:text-primary hover:border-primary hover:font-medium"
+          >
+            이력서 추가
+          </button>
+        )}
         {modal && <AddResume setModal={setModal} fetchData={fetchData} />}
       </div>
       <Link href="/detail">

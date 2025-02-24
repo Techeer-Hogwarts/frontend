@@ -50,7 +50,7 @@ const SmallMemberBox = ({
 
       <Image
         src={imageSrc || '/default-profile.png'}
-        alt="Profile Image"
+        alt="ProfileInfo Image"
         width={48}
         height={48}
         className="w-[48px] h-[48px] bg-lightpink rounded-md"
@@ -58,7 +58,7 @@ const SmallMemberBox = ({
       <div className="flex flex-col">
         <div className="flex items-center gap-1">
           <p>{name}</p>
-          <p className="text-gray text-xs">{generation}</p>
+          <p className="text-gray text-xs">{generation}기</p>
         </div>
 
         {/* 리더 역할 토글 버튼 */}

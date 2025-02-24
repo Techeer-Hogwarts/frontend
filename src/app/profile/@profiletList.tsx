@@ -19,7 +19,7 @@ interface Profile {
   stack: string[]
   projectTeams: {
     mainImage: string
-  }
+  }[]
 }
 
 export default function ProfileList({
@@ -41,7 +41,7 @@ export default function ProfileList({
   })
   useEffect(() => {
     setProfiles([])
-    setLimit(8)
+    setLimit(12)
   }, [position, year, university, grade])
 
   useEffect(() => {
@@ -56,14 +56,16 @@ export default function ProfileList({
 
   useEffect(() => {
     if (inView) {
-      setLimit((prev) => prev + 4)
+      setLimit((prev) => prev + 8)
     }
   }, [inView])
 
+  console.log('profiles', profiles)
+
   if (isLoading && profiles.length === 0) {
     return (
-      <div className="grid grid-cols-4 gap-4">
-        {Array.from({ length: 8 }).map((_, i) => (
+      <div className="grid grid-cols-4 gap-4 mt-8">
+        {Array.from({ length: 12 }).map((_, i) => (
           <SkeletonProfileCard key={`skeleton-${i}`} />
         ))}
       </div>
@@ -82,7 +84,7 @@ export default function ProfileList({
   }
 
   return (
-    <div className="grid grid-cols-4 gap-4">
+    <div className="grid grid-cols-4 gap-4 mt-8">
       {profiles.map((profile) => (
         <ProfileCard
           key={profile.id}
@@ -94,7 +96,7 @@ export default function ProfileList({
           grade={profile.grade}
           year={profile.year}
           stack={profile.stack}
-          mainImage={profile.projectTeams.mainImage}
+          projectTeams={profile.projectTeams}
         />
       ))}
       <div ref={ref} className="h-1" />

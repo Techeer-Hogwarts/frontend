@@ -6,7 +6,6 @@ interface ResultBoxProps {
 }
 
 const ResultBox = ({ url }: ResultBoxProps) => {
-  console.log(url)
 
   return (
     <div className="flex flex-col gap-4">
@@ -21,7 +20,6 @@ const ResultBox = ({ url }: ResultBoxProps) => {
   )
 }
 export default function Results({ resultImages }) {
-  console.log(resultImages)
 
   return (
     <div>

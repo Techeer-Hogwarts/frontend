@@ -10,7 +10,7 @@ export default function TapBtn({ children, isActive, onClick }: TapBtnProps) {
     <button
       type="button"
       onClick={onClick}
-      className={`px-4 text-xl ${isActive ? 'text-primary ' : ' text-black '}`}
+      className={`text-xl ${isActive ? 'text-primary ' : ' text-black '}`}
     >
       {children}
     </button>

@@ -3,13 +3,13 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 
-import AddMember from "@/components/project/add/study/AddMember"
-import AddProfile from "@/components/project/add/study/AddProfile"
-import AddResults from "@/components/project/add/study/AddResults"
-import NecessaryQuestions from '@/components/project/add/NecessaryQuestions'
+import AddMember from '@/components/project/add/study/AddMember'
+import AddProfile from '@/components/project/add/study/AddProfile'
+import AddResults from '@/components/project/add/study/AddResults'
+import NecessaryQuestions from '@/components/project/add/study/NecessaryQuestions'
 import AddGoal from '@/components/project/add/study/AddGoal'
 import AddPlan from '@/components/project/add/study/AddPlan'
-import AddRecruit from "@/components/project/add/study/AddRecruit"
+import AddRecruit from '@/components/project/add/study/AddRecruit'
 
 import { handleAddStudy } from '@/api/project/study/study'
 
@@ -36,6 +36,44 @@ export default function AddStudyPage() {
   }
 
   const handleSubmit = async () => {
+if (!studyData.name) {
+  alert('이름을 입력해주세요.')
+  return
+}
+
+if ((studyData.studyExplain?.trim() ?? '') === '') {
+  alert('스터디 설명을 입력해주세요.')
+  return
+}
+
+if (studyData.studyMember.length === 0) {
+  alert('스터디 멤버를 최소 1명 이상 추가해주세요.')
+  return
+}
+
+if ((studyData.goal?.trim() ?? '') === '') {
+  alert('스터디 목표를 입력해주세요.')
+  return
+}
+
+if ((studyData.rule?.trim() ?? '') === '') {
+  alert('스터디 규칙을 입력해주세요.')
+  return
+}
+
+if (studyData.isRecruited) {
+  if (studyData.recruitNum <= 0) {
+    alert('모집 인원은 1명 이상이어야 합니다.')
+    return
+  }
+
+  if ((studyData.recruitExplain?.trim() ?? '') === '') {
+    alert('모집 설명을 입력해주세요.')
+    return
+  }
+}
+
+
     const formData = new FormData()
 
     try {
@@ -53,13 +91,11 @@ export default function AddStudyPage() {
 
       router.push(`/project/detail/study/${response.id}`)
       localStorage.setItem('projectId', response.id)
-    } catch (error) {
-      alert('서버 요청 중 오류가 발생했습니다.')
-    }
+    } catch (error) {}
   }
 
   return (
-    <div className="relative flex justify-between mt-[2.75rem]">
+    <div className="relative flex justify-between mt-[2.75rem] gap-[3.188rem]">
       <div>
         <AddProfile projectData={studyData} onUpdate={handleUpdate} />
       </div>
@@ -82,10 +118,10 @@ export default function AddStudyPage() {
           recruitExplain={studyData.recruitExplain}
           onUpdate={handleUpdate}
         />
-        {/* <AddResults
-          resultImages={studyData.resultImages || []}
-          onUpdate={handleUpdate}
-        /> */}
+        <AddResults
+          newResultImages={studyData.resultImages} // File[] (새로 업로드할)
+          onUpdateResultImages={(files) => handleUpdate('resultImages', files)}
+        />
 
         <button
           type="button"

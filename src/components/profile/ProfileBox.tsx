@@ -70,7 +70,7 @@ export default function ProfileBox({
               src={profile.profileImage || '/pro.png'}
               width={176}
               height={176}
-              alt="Profile"
+              alt="ProfileInfo"
               style={{ objectFit: 'cover' }}
             />
           </div>

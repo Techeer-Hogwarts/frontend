@@ -113,6 +113,8 @@ export default function Profile({ profile }: ProfileProps) {
         setSyncMessage(`동기화 실패: ${errData?.message || '알 수 없는 오류'}`)
         return
       }
+      const data = await response.json()
+      setProfileImage(data.profileImage)
       setSyncIsError(false)
       setSyncMessage('프로필 사진 동기화가 완료되었습니다.')
     } catch (err) {
@@ -254,7 +256,7 @@ export default function Profile({ profile }: ProfileProps) {
   ]
 
   return (
-    <div className="w-[750px] min-h-[1000px] flex flex-col gap-8">
+    <div className="w-[890px] min-h-[1000px] flex flex-col gap-8">
       {/* 프로필 사진 */}
       <div className="flex">
         <h3 className="w-32 text-lg mt-[6px]">프로필 사진</h3>

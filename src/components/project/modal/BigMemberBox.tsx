@@ -62,7 +62,7 @@ const BigMemberBox = ({
 
       <Image
         src={imageSrc || '/default-profile.png'}
-        alt="Profile Image"
+        alt="ProfileInfo Image"
         width={76}
         height={76}
         className="w-[76px] h-[76px] bg-lightpink rounded-md object-cover"

@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useAuthStore } from '@/store/authStore'
@@ -17,6 +17,17 @@ export default function Login() {
 
   const { setIsLoggedIn } = useAuthStore()
   const router = useRouter()
+
+  const [redirectPath, setRedirectPath] = useState<string | null>(null)
+  const [form, setForm] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search)
+      setRedirectPath(params.get('redirect'))
+      setForm(params.get('form'))
+    }
+  }, [])
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -55,7 +66,13 @@ export default function Login() {
           setIsLoggedIn(true)
           setMessage('로그인이 완료되었습니다.')
           setIsError(false)
-          router.push('/')
+          if (redirectPath) {
+            router.replace(redirectPath)
+          } else if (form === 'signup') {
+            router.replace('/')
+          } else {
+            router.back()
+          }
         } else {
           setIsError(true)
           setMessage('로그인 응답이 예상과 다릅니다.')

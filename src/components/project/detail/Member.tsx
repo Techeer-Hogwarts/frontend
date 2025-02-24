@@ -55,7 +55,7 @@ export default function Member({ members }: any) {
                   src={member.profileImage}
                   width={76}
                   height={76}
-                  alt="Profile"
+                  alt="ProfileInfo"
                   className="border rounded-md bg-lightpink object-cover w-[76px] h-[76px]"
                 />
                 {member.isLeader && (
