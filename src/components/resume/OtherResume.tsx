@@ -44,8 +44,7 @@ export default function OtherResume({ id, offset, limit }: OtherResumeProps) {
         }))
 
         setOtherData(formattedData)
-      } catch (err: any) {
-      }
+      } catch (err: any) {}
     }
 
     loadUserResumes()
@@ -56,7 +55,7 @@ export default function OtherResume({ id, offset, limit }: OtherResumeProps) {
   }
 
   return (
-    <div className="flex flex-col w-[14.5rem] h-auto rounded-xl shadow-md mt-1 hover:bg-lightprimary">
+    <div className="flex flex-col w-[14.5rem] h-auto rounded-xl shadow-md mt-1">
       {otherData.map((user) => {
         const resumeTitle = user.title.split('-').slice(-1).join(' ')
         const truncatedTitle =
@@ -76,7 +75,7 @@ export default function OtherResume({ id, offset, limit }: OtherResumeProps) {
           <button
             key={user.id}
             onClick={() => handleResumeClick(user.id)}
-            className="flex justify-left items-center my-3 ml-3 gap-2"
+            className="flex justify-left items-center py-3 pl-3 gap-2 hover:bg-lightprimary"
             role="button"
             tabIndex={0}
           >

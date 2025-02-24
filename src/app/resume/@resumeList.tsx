@@ -33,7 +33,7 @@ export default function ResumeList({
   category = '전체',
 }: ResumeQueryParams = {}) {
   const [resumes, setResumes] = useState<Resume[]>([])
-  const [limit, setLimit] = useState(8)
+  const [limit, setLimit] = useState(12)
 
   const [ref, inView] = useInView({ threshold: 0.1 })
 
@@ -110,29 +110,24 @@ export default function ResumeList({
       refetch()
     }, 500)
   }
-  useEffect(() => {
-    if (!nesResumes || isLoading) return
-
-    if (limit === 6) {
-      setResumes(nesResumes)
-    } else {
-      setResumes((prev) => {
-        const existingIds = new Set(prev.map((resume) => resume.id))
-        const newItems = nesResumes.filter(
-          (resume: any) => !existingIds.has(resume.id),
-        )
-        return [...prev, ...newItems]
-      })
-    }
-  }, [nesResumes, isLoading, limit])
 
   useEffect(() => {
-    // setResumes([])
+    setResumes([])
     setLimit(8)
     checkLike()
     checkBookmark()
     refetch()
   }, [position, year, category])
+
+  useEffect(() => {
+    if (nesResumes && Array.isArray(nesResumes)) {
+      setResumes((prev) => {
+        const existingIds = new Set(prev.map((p) => p.id))
+        const newResumes = nesResumes.filter((p) => !existingIds.has(p.id)) // 중복 제거
+        return [...prev, ...newResumes]
+      })
+    }
+  }, [nesResumes])
 
   useEffect(() => {
     if (inView) {
@@ -150,7 +145,7 @@ export default function ResumeList({
     )
   }
 
-  if (isError) {
+  if (isError || (nesResumes && resumes.length === 0)) {
     return (
       <div className="flex justify-center">
         <EmptyLottie

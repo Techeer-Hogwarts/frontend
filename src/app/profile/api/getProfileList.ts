@@ -19,7 +19,7 @@ export async function getProfileList({
     if (grade.length > 0) grade.forEach((g) => params.append('grade', g))
 
     // params.append('offset', (offset ?? 0).toString()) // undefined 방지
-    // params.append('limit', (limit ?? 10).toString()) // undefined 방지
+    params.append('limit', (limit ?? 10).toString()) // undefined 방지
 
     const response = await fetch(
       `/api/v1/users/profiles?${params.toString()}`,

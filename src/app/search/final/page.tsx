@@ -30,13 +30,16 @@ export default function Search() {
 
   const searchParams = useSearchParams()
 
-  // URL에서 query 파라미터를 가져오는 useEffect
+  // 클라이언트에서만 searchParams를 사용하도록 설정
   useEffect(() => {
-    const queryParam = searchParams.get('query')
-    if (queryParam) {
-      setQuery(queryParam)
+    if (typeof window !== 'undefined') {
+      const searchParams = new URLSearchParams(window.location.search)
+      const queryParam = searchParams.get('query')
+      if (queryParam) {
+        setQuery(queryParam)
+      }
     }
-  }, [searchParams]) // searchParams가 바뀔 때마다 실행
+  }, [searchParams])
 
   useEffect(() => {
     if (query) {
@@ -44,7 +47,6 @@ export default function Search() {
         try {
           setIsLoading(true) // 데이터 요청 전 로딩 시작
           const data = await getSearchList(query as string) // API 호출
-
           setResults({
             project: Array.isArray(data.result.project)
               ? data.result.project

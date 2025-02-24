@@ -27,7 +27,7 @@ export async function getResumeList({
     params.append('category', mappedCategory)
 
     // params.append('offset', (offset ?? 0).toString()) // undefined 방지
-    // params.append('limit', (limit ?? 10).toString()) // undefined 방지
+    params.append('limit', limit.toString()) // undefined 방지
 
     const response = await fetch(`/api/v1/resumes?${params.toString()}`, {
       method: 'GET',
