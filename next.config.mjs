@@ -27,6 +27,7 @@ const nextConfig = {
       'techeerzip-bucket.s3.ap-southeast-2.amazonaws.com',
       'images.velog.io',
       'encore.cloud',
+      'github.com',
     ], // 허용할 외부 도메인 추가
   },
 

@@ -178,7 +178,6 @@ const Signup = () => {
       },
     }
 
-
     try {
       const formDataToSend = new FormData()
       if (formData.resumeFile) {
@@ -297,9 +296,7 @@ const Signup = () => {
             <EmailVerification
               email={formData.email}
               isVerified={formData.isVerified}
-              setEmail={(email) =>
-                setFormData((prev) => ({ ...prev, email }))
-              }
+              setEmail={(email) => setFormData((prev) => ({ ...prev, email }))}
               setIsVerified={(verified) =>
                 setFormData((prev) => ({ ...prev, isVerified: verified }))
               }
@@ -571,11 +568,12 @@ const Signup = () => {
               <div className="flex flex-col space-y-2">
                 <div className="flex justify-between space-x-5">
                   <div className="flex items-center justify-center w-[10rem] h-10 rounded-[0.25rem] text-primary border border-primary">
-                    깃허브
+                    깃허브<span className="text-primary">*</span>
                   </div>
                   <input
                     type="text"
                     name="githubUrl"
+                    placeholder="https://github.com/user"
                     className="w-full h-10 px-4 border border-gray rounded-[0.25rem] focus:outline-none focus:border-primary"
                     value={formData.githubUrl}
                     onChange={handleChange}
