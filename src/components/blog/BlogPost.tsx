@@ -93,17 +93,18 @@ export default function BlogPost({
         message={modalMessage}
         onClose={() => setModalOpen(false)}
       />
-      <div className="flex flex-col w-full relative rounded-b-lg shadow-[0px_5px_8px_#e5e5e5] overflow-hidden">
-        <button onClick={handleClickUrl}>
-          <img
-            src={image}
-            alt="testIMG"
-            className="w-full h-[155px] z-1 object-cover"
-            onError={(e: any) => {
-              e.target.src = '/images/session/thumbnail.png' // 대체 이미지 경로
-            }}
-          />
-        </button>
+      <div
+        className="flex flex-col w-full relative rounded-b-lg shadow-[0px_5px_8px_#e5e5e5] overflow-hidden transition-transform transform hover:-translate-y-2 cursor-pointer"
+        onClick={handleClickUrl}
+      >
+        <img
+          src={image}
+          alt="testIMG"
+          className="w-full h-[155px] z-1 object-cover"
+          onError={(e: any) => {
+            e.target.src = '/images/session/thumbnail.png' // 대체 이미지 경로
+          }}
+        />
         <div className="w-full min-h-[100px] h-auto py-2 bg-white">
           <div className="relative flex justify-between">
             <p className="w-full px-5 mr-1 mb-1 text-base truncate whitespace-nowrap overflow-hidden">

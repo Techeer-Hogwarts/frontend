@@ -69,29 +69,29 @@ export default function SessionPost({
         message={modalMessage}
         onClose={() => setModalOpen(false)}
       />
-      <div className="flex transition-transform transform hover:-translate-y-2 ">
+      <div
+        className="flex transition-transform transform hover:-translate-y-2 cursor-pointer "
+        onClick={() => {
+          router.push(`/session/video/${id}`)
+        }}
+      >
         <div className="flex flex-col w-full relativ rounded-b-lg shadow-[0px_5px_8px_#e5e5e5] overflow-hidden">
-          <button
-            onClick={() => {
-              router.push(`/session/video/${id}`)
+          <Image
+            src={thumbnail}
+            alt="img"
+            unoptimized
+            width={379}
+            height={199}
+            className="w-full h-[155px] z-1 object-cover"
+            onError={(e: any) => {
+              e.target.src = '/images/session/thumbnail.png' // 대체 이미지 경로
             }}
-          >
-            <Image
-              src={thumbnail}
-              alt="img"
-              unoptimized
-              width={379}
-              height={199}
-              className="w-full h-[155px] z-1 object-cover"
-              onError={(e: any) => {
-                e.target.src = '/images/session/thumbnail.png' // 대체 이미지 경로
-              }}
-            />
-          </button>
-
+          />
           <div className="w-full min-h-[100px] h-auto py-2 bg-white">
             <div className="relative flex justify-between">
-              <p className="w-full px-5 mr-1 mb-1 text-base truncate whitespace-nowrap overflow-hidden">{title}</p>
+              <p className="w-full px-5 mr-1 mb-1 text-base truncate whitespace-nowrap overflow-hidden">
+                {title}
+              </p>
               <Image
                 src="/images/session/session-menu.svg"
                 alt="seesionmenu"

@@ -28,7 +28,7 @@ export default function Member({ members }: any) {
     return (
       <div>
         <div className="text-[1.125rem] font-[600] mb-3">팀원</div>
-        <div className="flex items-center justify-center w-[52.5rem] min-w-[52.5rem] h-[10rem] p-[1.25rem] rounded-2xl border border-gray text-center ">
+        <div className="flex items-center justify-center w-[52.5rem] min-w-[52.5rem] p-[1.25rem] rounded-2xl border border-gray text-center ">
           <p className="text-sm text-gray">현재 팀원이 없습니다.</p>
         </div>
       </div>
@@ -41,7 +41,7 @@ export default function Member({ members }: any) {
       <div className="flex justify-start gap-1 text-xs items-center text-gray mb-1">
         <RxQuestionMarkCircled /> Data: DataEngineer
       </div>
-      <div className="grid grid-cols-9 gap-3 w-[52.5rem] min-w-[52.5rem] h-[10rem] px-[1.875rem] py-[1.5rem] rounded-2xl border border-gray">
+      <div className="grid grid-cols-9 gap-3 w-[52.5rem] min-w-[52.5rem] px-[1.875rem] py-[1.5rem] rounded-2xl border border-gray">
         {members.map((member, index) => {
           const { bg, textColor } = getPositionStyle(member.teamRole)
 
@@ -83,11 +83,6 @@ export default function Member({ members }: any) {
                   </div>
                 )}
               </div>
-
-              {/* 줄바꿈 시 구분선 (9명씩) */}
-              {(index + 1) % 9 === 0 && index + 1 !== members.length && (
-                <div className="w-full border-b border-lightgray my-2"></div>
-              )}
             </div>
           )
         })}

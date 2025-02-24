@@ -79,7 +79,7 @@ export default function AddMember({
 
     selectedMembers.forEach((newMember) => {
       // 이미 있는지 확인 (id 기준)
-      const exist = merged.find((m) => m.id === newMember.id)
+      const exist = merged.find((m) => m.id === newMember.userId)
       if (!exist) {
         // 새로 추가
         merged.push({
@@ -96,6 +96,8 @@ export default function AddMember({
         onRestoreMember?.(newMember.id!, newMember.id!)
       }
     })
+    console.log('newMembers', selectedMembers)
+    console.log('projectMember', projectMember)
 
     onUpdateMember?.(merged)
     setIsModalOpen(false)
