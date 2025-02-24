@@ -78,19 +78,12 @@ export default function ProjectMemberModal({
     if (inModal) return false
 
     // 2) 이미 상위에 존재(existingMembers)하면 제외
-    const inExisting = existingMembers.some(
-      (em) => em.userId === u.id,
-    )
+    const inExisting = existingMembers.some((em) => em.userId === u.id)
     if (inExisting) return false
 
     // 3) 이름 검색
     return u.name.toLowerCase().includes(name.toLowerCase())
   })
-
-  console.log('existingMembers', existingMembers)
-  console.log('allUsers', allUsers)
-  console.log('filteredUsers', filteredUsers)
-  console.log('members',members)
 
   // 바깥 클릭 시 닫기
   useEffect(() => {
