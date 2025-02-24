@@ -1,12 +1,16 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import ProfileBox from '@/components/profile/ProfileBox'
+import { useParams } from 'next/navigation'
 import Image from 'next/image'
+
+import ProfileBox from '@/components/profile/ProfileBox'
 import Other from '@/components/resume/OtherResume'
 import { fetchResumeById } from '@/app/resume/api/getResume'
 import EmptyLottie from '@/components/common/EmptyLottie'
-import { useParams } from 'next/navigation'
+import AuthModal from '@/components/common/AuthModal'
+import { useAuthStore } from '@/store/authStore'
+
 import Skeleton from '@/components/resume/Skeleton'
 
 interface ResumeData {
@@ -23,97 +27,102 @@ interface ResumeData {
     profileImage: string
     year: number
     mainPosition: string
-    // school: string
-    // grade: string
-    // email: string
-    // githubUrl: string
-    // mediumUrl: string
-    // velogUrl: string
-    // tistoryUrl: string
   }
 }
 
-export default function Detail({ params }: { params: { resumeId: string } }) {
+export default function Detail() {
   const { resumeId } = useParams() as { resumeId: string }
-  const [resume, setResume] = useState<ResumeData | null>(null)
+
+  // 로딩 / 에러 상태
+  const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [showOther, setShowOther] = useState(false) // Other 컴포넌트 표시 여부 상태 추가
+
+  // 인증 모달
+  const [authModalOpen, setAuthModalOpen] = useState(false)
+
+  // 이력서 데이터
+  const [resume, setResume] = useState<ResumeData | null>(null)
   const [profileData, setProfileData] = useState<any>(null)
 
-  const [isLoading, setIsLoading] = useState<boolean>(true)
+  // OtherResume 표시
+  const [showOther, setShowOther] = useState(false)
 
-  // 다른 사람 이력서 보기를 클릭했을 때 Other 컴포넌트 표시 토글
-  const handleToggleOther = () => {
-    setShowOther((prev) => !prev) // 상태를 토글하여 보이기/숨기기 처리
-  }
+  // 사용자 인증
+  const { user, checkAuth } = useAuthStore()
 
+  // 1) 사용자 인증
   useEffect(() => {
-    async function loadResume() {
+    const doCheckAuth = async () => {
+      await checkAuth()
+    }
+    doCheckAuth()
+  }, [checkAuth])
+
+  // 2) 이력서 데이터 로드
+  useEffect(() => {
+    const loadResume = async () => {
       try {
+        setIsLoading(true)
+        setError(null)
+
         const data = await fetchResumeById(Number(resumeId))
-        // console.log('Fetched resume data:', data)
         setResume(data)
         setProfileData(data.user)
-        setIsLoading(false)
-        // console.log('detail 페이지 조회 성공', data)
       } catch (err: any) {
-        setError(err.message)
+        console.error('이력서 가져오기 실패:', err)
+        setError(err.message || '이력서 불러오기 실패')
+      } finally {
         setIsLoading(false)
       }
     }
-
     loadResume()
   }, [resumeId])
 
-  if (isLoading) {
-    return (
-      <div className="flex justify-center">
-        <Skeleton />
-      </div>
-    )
+  // 3) 로딩 끝난 뒤 로그인 상태 확인
+  useEffect(() => {
+    if (!isLoading) {
+      if (user === null) {
+        setAuthModalOpen(true)
+      } else {
+        setAuthModalOpen(false)
+      }
+    }
+  }, [isLoading, user])
+
+  // Other 컴포넌트 표시 토글
+  const handleToggleOther = () => {
+    setShowOther((prev) => !prev)
   }
 
-  if (error || profileData?.length === 0 || !resume) {
-    return (
-      <div className="flex justify-center">
-        <EmptyLottie
-          text="이력서를 조회하는데 실패했습니다."
-          text2="다시 조회해주세요"
-        />
-      </div>
-    ) // 오류 발생 시 표시할 문구
-  }
-
-  // Google Drive PDF 미리보기 URL 수정
-  const pdfPreviewUrl = `https://drive.google.com/file/d/${resume.url.split('/d/')[1].split('/')[0]}/preview`
-  const pdfDownloadUrl = `https://drive.google.com/uc?export=download&id=${resume.url.split('/d/')[1].split('/')[0]}` // 다운로드 링크
-
-  // 신입/경력 구분
-  // const isIntern = resume.user.isIntern
-  // const userCareer = isIntern ? '경력' : '신입'
-  // const career = 'Frontend'
-
-  return (
-    <div className="flex justify-between mt-10 gap-[4.375rem]">
-      {/** 좌측 영역 */}
-      <div className="flex flex-col w-[15rem] gap-6">
-        <ProfileBox profile={profileData} loading={false} error={''} />
-        <div className="flex flex-col">
-          <button
-            className="flex justify-between items-center w-[14.25rem] h-[2.5rem] px-4 shadow-md border-2 border-primary rounded-xl font-medium text-[1rem]"
-            onClick={handleToggleOther}
-          >
-            이력서 리스트
-            <Image src="/arrow.png" width={15} height={10} alt="arrow" />
-          </button>
-          {showOther && <Other id={profileData.id} offset={0} limit={10} />}
+  // (A) 오른쪽 영역 렌더 함수
+  const renderRightSide = () => {
+    if (error || !resume) {
+      // 에러 상태 or resume가 null
+      return (
+        <div className="w-[55.625rem] text-center text-gray">
+          이력서를 불러오는 중 오류가 발생했습니다.
         </div>
-      </div>
+      )
+    }
 
-      {/** 우측 영역 */}
+    if (!resume.url || !resume.url.includes('/d/')) {
+      // url이 없거나 Drive 링크 아님
+      return (
+        <div className="w-[55.625rem] text-center text-gray">
+          등록된 이력서가 없습니다.
+        </div>
+      )
+    }
+
+    // 정상 데이터
+    const driveId = resume.url.split('/d/')[1].split('/')[0]
+    const pdfPreviewUrl = `https://drive.google.com/file/d/${driveId}/preview`
+    const pdfDownloadUrl = `https://drive.google.com/uc?export=download&id=${driveId}`
+
+    return (
       <div className="flex flex-col">
         <div className="flex w-[55.625rem] h-[50rem] gap-5">
-          {/** pdf 이력서 */}
+          {/* pdf 이력서 */}
           <div className="flex w-[50rem] h-[55rem]">
             <iframe
               src={pdfPreviewUrl}
@@ -123,15 +132,16 @@ export default function Detail({ params }: { params: { resumeId: string } }) {
               title="Resume PDF"
             ></iframe>
           </div>
-          {/** 버튼 */}
+
+          {/* 다운로드 버튼 */}
           <div className="flex flex-col gap-5">
             <button
               className="flex justify-center items-center w-[2.5rem] h-[2.5rem] shadow-md border border-gray outline-none rounded-full"
               type="button"
             >
               <a
-                href={pdfDownloadUrl} // 다운로드할 PDF 파일 경로
-                download="name.pdf" // 다운로드될 파일 이름 지정
+                href={pdfDownloadUrl}
+                download="name.pdf"
                 className="flex justify-center items-center w-[2rem] h-[2rem] outline-none"
               >
                 <Image
@@ -145,6 +155,41 @@ export default function Detail({ params }: { params: { resumeId: string } }) {
           </div>
         </div>
       </div>
-    </div>
+    )
+  }
+
+  return (
+    <>
+      {/* 인증 모달 */}
+      <AuthModal
+        isOpen={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+      />
+
+      {isLoading ? (
+        // 로딩 중: 왼/오른쪽 모두 스켈레톤
+        <Skeleton />
+      ) : (
+        <div className="flex justify-between mt-10 gap-[4.375rem]">
+          {/* 왼쪽 영역 (항상 표시) */}
+          <div className="flex flex-col w-[15rem] gap-6">
+            <ProfileBox profile={profileData} loading={false} error={''} />
+            <div className="flex flex-col">
+              <button
+                className="flex justify-between items-center w-[14.25rem] h-[2.5rem] px-4 shadow-md border-2 border-primary rounded-xl font-medium text-[1rem]"
+                onClick={handleToggleOther}
+              >
+                이력서 리스트
+                <Image src="/arrow.png" width={15} height={10} alt="arrow" />
+              </button>
+              {showOther && profileData && (
+                <Other id={profileData.id} offset={0} limit={10} />
+              )}
+            </div>
+          </div>
+          {renderRightSide()}
+        </div>
+      )}
+    </>
   )
 }

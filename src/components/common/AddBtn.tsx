@@ -2,17 +2,30 @@
 
 import Image from 'next/image'
 import { useRouter, usePathname } from 'next/navigation'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import AddSessionModal from '../session/AddSessionModal'
+import AuthModal from '@/components/common/AuthModal'
+import { useAuthStore } from '@/store/authStore'
 
 export default function AddBtn() {
   const [isSession, setIsSession] = useState(false)
   const [modal, setModal] = useState(0)
   const router = useRouter()
   const pathname = usePathname()
+  const [authModalOpen, setAuthModalOpen] = useState(false)
+  const { user, checkAuth } = useAuthStore()
+
+  useEffect(() => {
+    checkAuth()
+  }, [])
 
   const handleClickBtn = () => {
-    if (pathname === '/blog') {
+    if (!user) {
+      // 로그인 안 되어있으면 AuthModal 열기
+      setAuthModalOpen(true)
+      return
+    }
+    else if (pathname === '/blog') {
       router.push('/blog/post')
     } else if (pathname === '/session') {
       setIsSession(!isSession)
@@ -26,6 +39,10 @@ export default function AddBtn() {
 
   return (
     <div className="relative">
+      <AuthModal
+        isOpen={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+      />
       <button
         type="button"
         onClick={handleClickBtn}

@@ -81,7 +81,7 @@ export default function Resume() {
           onClick={openMyPage}
         >
           <span className="text-[1.1rem] font-medium cursor-pointer">
-            나의 이력서 수정하기
+            내 이력서 수정하기
           </span>
           <Star />
         </div>

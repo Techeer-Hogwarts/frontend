@@ -14,6 +14,7 @@ import SkeletonProjectCard from '@/components/project/SkeletonProjectCard'
 import SearchBar from '@/components/common/SearchBar'
 import { getAllTeams } from '@/api/project/common'
 import { getMyInfo } from '@/api/project/common'
+import Star from '../../../public/star.svg'
 
 interface TeamBase {
   id: number
@@ -158,9 +159,12 @@ export default function Project() {
           <Link
             href="/mypage"
             type="button"
-            className="w-[13.1875rem] h-[3.3125rem] text-center rounded-lg shadow-md justify-center text-[1.125rem] flex items-center hover:shadow-custom"
+            className="flex justify-center items-center w-[13rem] h-[3rem] border-2 border-transparent shadow-md rounded-xl"
           >
-            내 프로젝트 확인하기 <span className="ml-2">✨</span>
+            <span className="text-[1.1rem] font-medium cursor-pointer">
+              내 프로젝트 확인하기
+            </span>
+            <Star />
           </Link>
         </div>
       </div>
