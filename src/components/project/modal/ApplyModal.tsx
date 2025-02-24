@@ -62,7 +62,6 @@ export default function ApplyModal() {
           summary: apply,
         }
         const result = await handleApplyProject(data)
-        console.log('프로젝트 지원 성공:', result)
         queryClient.invalidateQueries({
           queryKey: ['getStudyApplicants', projectId],
         })

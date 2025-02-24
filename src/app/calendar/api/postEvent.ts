@@ -29,7 +29,6 @@ const usePostEvent = () => {
       queryClient.invalidateQueries({ queryKey: ['events'] })
     },
     onError: (error) => {
-      console.error('이벤트 생성 실패:', error)
     },
   })
 }

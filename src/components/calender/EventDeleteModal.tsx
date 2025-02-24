@@ -17,7 +17,6 @@ export default function EventDeleteModal({ eventId, title, onClose }: EventDelet
           onClose()
         },
         onError: (error) => {
-          console.error('이벤트 삭제 실패:', error)
         },
       })
   }

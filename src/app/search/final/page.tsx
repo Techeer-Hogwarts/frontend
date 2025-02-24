@@ -43,7 +43,6 @@ export default function Search() {
         try {
           setIsLoading(true) // 데이터 요청 전 로딩 시작
           const data = await getSearchList(query as string) // API 호출
-          console.log('검색 결과 데이터:', data.result) // 응답 데이터 확인
 
           setResults({
             project: Array.isArray(data.result.project)
@@ -57,7 +56,6 @@ export default function Search() {
               : [],
           })
         } catch (error) {
-          console.error('검색 오류:', error)
         } finally {
           setIsLoading(false) // 데이터 로딩 완료
         }

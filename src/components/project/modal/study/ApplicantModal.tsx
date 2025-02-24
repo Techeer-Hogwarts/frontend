@@ -80,7 +80,6 @@ export default function ApplicantModal({
         queryKey: ['getStudyApplicants', projectId],
       })
     } catch (error) {
-      console.error(error)
       alert('오류가 발생했습니다.')
     }
   }
@@ -98,7 +97,6 @@ export default function ApplicantModal({
         queryKey: ['getStudyDetails', projectId],
       })
     } catch (error) {
-      console.error(error)
       alert('오류가 발생했습니다.')
     }
     onClose()

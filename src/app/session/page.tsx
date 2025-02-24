@@ -94,7 +94,6 @@ export default function Page() {
       setLikeList(data)
       return data
     } catch (err) {
-      console.error(err)
       return []
     }
   }

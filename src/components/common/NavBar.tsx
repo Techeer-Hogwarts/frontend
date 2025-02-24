@@ -137,7 +137,6 @@ export default function NavBar() {
       if (url) {
         router.push(url) // 반환된 URL로 이동
       } else {
-        console.error('Blog or event URL is missing')
       }
     } else if (section === 'project') {
       router.push(`/project/detail/project/${id}`)

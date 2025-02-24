@@ -53,7 +53,6 @@ export default function AddMember({
 }: AddMemberProps) {
   const [projectType, setProjectType] = useState<null | string>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
-  console.log('projectMember', projectMember)
 
   useEffect(() => {
     if (typeof window !== 'undefined') {

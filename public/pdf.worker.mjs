@@ -340,12 +340,10 @@ function getVerbosityLevel() {
 }
 function info(msg) {
   if (verbosity >= VerbosityLevel.INFOS) {
-    console.log(`Info: ${msg}`);
   }
 }
 function warn(msg) {
   if (verbosity >= VerbosityLevel.WARNINGS) {
-    console.log(`Warning: ${msg}`);
   }
 }
 function unreachable(msg) {
@@ -7720,8 +7718,8 @@ var OpenJPEG = (() => {
         }).then(onload, onerror);
       };
     } else {}
-    var out = Module["print"] || console.log.bind(console);
-    var err = Module["printErr"] || console.error.bind(console);
+    var out = Module["print"] || 
+    var err = Module["printErr"] || 
     Object.assign(Module, moduleOverrides);
     moduleOverrides = null;
     if (Module["arguments"]) arguments_ = Module["arguments"];

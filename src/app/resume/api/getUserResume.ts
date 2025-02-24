@@ -25,10 +25,8 @@ export const fetchUserResumes = async (
     const result = await response.json()
     const dataWithWrapper = { data: result } // API 응답 구조에 따라 데이터 반환
 
-    console.log('Fetched resumes:', result)
     return dataWithWrapper
   } catch (error: any) {
-    console.error('Error fetching user resumes:', error.message)
     throw error
   }
 }

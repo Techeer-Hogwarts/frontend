@@ -36,7 +36,6 @@ export default function BestResume({ offset, limit, setAuthModalOpen }: ResumeFo
         // console.log('Best resumes:', bestResumes)
         setResumes(bestResumes.data || []) // 가져온 데이터를 상태에 저장
       } catch (error) {
-        console.error('Error loading best resumes:', error)
       }
     }
     loadBestResumes()

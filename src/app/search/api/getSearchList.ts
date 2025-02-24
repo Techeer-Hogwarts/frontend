@@ -17,10 +17,8 @@ export const getSearchList = async (query: string) => {
     }
 
     const data = await response.json()
-    console.log('검색 리스트 조회 결과:', data.result)
     return data // 결과 반환
   } catch (error) {
-    console.error('Error fetching data:', error)
     throw new Error('Error fetching search list')
   }
 }

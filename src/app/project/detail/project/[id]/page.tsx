@@ -54,7 +54,6 @@ export default function ProjectDetailpage() {
     checkAuth()
   }, [])
 
-  console.log(user)
 
   useEffect(() => {
     const storedProjectType = localStorage.getItem('projectType')
@@ -153,7 +152,6 @@ export default function ProjectDetailpage() {
         router.refresh()
       }
     } catch (error) {
-      console.error(error)
     } finally {
       setIsModalOpen(false)
     }

@@ -46,12 +46,10 @@ export default function BlogPost({
         method: 'PUT',
         credentials: 'include',
       })
-      console.log('response:', response)
       if (!response.ok) {
         throw new Error('블로그 조회수를 업데이트하는 데 실패했습니다.')
       }
     } catch (err) {
-      console.error('블로그 조회수 업데이트 중 오류 발생:', err)
     }
   }
   const formattedDate = date.split('T')[0]
@@ -71,7 +69,6 @@ export default function BlogPost({
         setLikeCount((prev) => prev + 1)
       }
     } catch (err) {
-      console.error(err)
     }
   }
   const handleClickUrl = () => {

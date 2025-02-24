@@ -18,7 +18,6 @@ export const fetchResumeById = async (resumeId: number): Promise<any> => {
 
     return dataWithWrapper.data
   } catch (error: any) {
-    console.error('이력서 단일 조회 실패:', error.message)
     throw error
   }
 }

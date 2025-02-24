@@ -36,7 +36,6 @@ export const searchAPI = async ({
     const data: { results: SearchResult[] } = await response.json()
 
     if (!data.results) return null
-    console.log(data.results)
     // 중복 제거 (같은 URL을 가진 항목 중에서 최신 항목만 남김)
     const uniqueResults = Object.values(
       data.results.reduce(
@@ -59,7 +58,6 @@ export const searchAPI = async ({
         new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
     )
   } catch (error) {
-    console.error('Search API Error:', error)
     return null
   }
 }

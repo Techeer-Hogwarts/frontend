@@ -37,7 +37,6 @@ export default function Likes() {
       setLikes(data)
       return data
     } catch (err) {
-      console.error(err)
       return []
     }
   }
