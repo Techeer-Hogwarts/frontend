@@ -23,7 +23,6 @@ const usePatchEvent = () => {
             queryClient.invalidateQueries({ queryKey: ['events'] })
           },
           onError: (error) => {
-            console.error('이벤트 수정 실패:', error)
           },
     })
 }

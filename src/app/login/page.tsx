@@ -80,7 +80,6 @@ export default function Login() {
       }
     } catch (error) {
       // 네트워크 에러, CORS 문제 등
-      console.error('Login error:', error)
       setIsError(true)
       setMessage('네트워크 오류가 발생했습니다.')
     } finally {

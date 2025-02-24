@@ -47,7 +47,6 @@ export default function BlogMenu({
     try {
       await postBookmark(id, category, bookmarkStatus)
     } catch (err) {
-      console.error(err)
     }
   }
   const clickBookmark = async () => {
@@ -63,7 +62,6 @@ export default function BlogMenu({
       setModalOpen(true)
       setTimeout(() => setModalOpen(false), 2000)
     } catch (err) {
-      console.error(err)
     }
   }
   return (

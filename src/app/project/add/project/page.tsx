@@ -37,7 +37,6 @@ export default function AddProjectPage() {
   })
 
   const handleUpdate = (key: string, value: any) => {
-    console.log('[Parent] handleUpdate =>', key, value) // 여기 찍어보기
 
     setProjectData((prev) => ({ ...prev, [key]: value }))
   }
@@ -71,7 +70,6 @@ export default function AddProjectPage() {
       })
     }
 
-    console.log('전송할 데이터:', dataToSend)
 
     // (C) 수정된 데이터(dataToSend)를 전송
     const response = await handleAddProject(dataToSend)

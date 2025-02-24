@@ -80,7 +80,6 @@ export default function AddCalenderModal({
           handleBack()
         },
         onError: (error) => {
-          console.error('이벤트 등록 실패:', error)
         },
       })
     } else if (mode === 'edit' && eventId) {
@@ -91,7 +90,6 @@ export default function AddCalenderModal({
             handleBack()
           },
           onError: (error) => {
-            console.error('이벤트 수정 실패:', error)
           },
         },
       )

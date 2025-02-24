@@ -31,7 +31,6 @@ export default function Bookmark() {
       setLikeList(data)
       return data
     } catch (err) {
-      console.error(err)
       return []
     }
   }
@@ -47,7 +46,6 @@ export default function Bookmark() {
       setBookmarks(data)
       checkLike(category)
     } catch (err) {
-      console.error(err)
     }
   }
 

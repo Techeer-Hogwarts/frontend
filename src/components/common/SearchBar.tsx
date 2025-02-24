@@ -73,7 +73,6 @@ export default function Search({
       const result = await searchAPI({ index, query })
       onSearchResult(result || [])
     } catch (error) {
-      console.error('검색 API 호출 실패:', error)
     }
   }
 
@@ -109,7 +108,6 @@ export default function Search({
             setBasicResults(filteredResults)
           }
         } catch (error) {
-          console.error('기본 검색 결과 가져오기 실패:', error)
         }
       }
       fetchBasicResults()

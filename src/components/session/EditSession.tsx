@@ -97,11 +97,9 @@ export default function EditSession() {
   const { mutate } = useMutation({
     mutationFn: updateSession,
     onSuccess: () => {
-      console.log('세션이 성공적으로 수정되었습니다')
       window.location.href = '/session'
     },
     onError: (error: Error) => {
-      console.error('세션 데이터 수정 중 오류 발생:', error)
       if (error.message.includes('본인이 작성한 게시물')) {
         alert('본인이 작성한 게시물만 수정할 수 있습니다.')
       }
@@ -135,7 +133,6 @@ export default function EditSession() {
       }
       setSelectedCategory(singleVideo.category)
     } catch (err) {
-      console.error('세션 데이터 가져오기 실패:', err)
     }
   }
   const getUser = async () => {
@@ -153,7 +150,6 @@ export default function EditSession() {
       const data = await response.json()
       fetchSignleSession(data.name)
     } catch (err) {
-      console.error('Error fetching user:', err)
     }
   }
 

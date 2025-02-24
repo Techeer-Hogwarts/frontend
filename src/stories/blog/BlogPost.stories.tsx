@@ -14,7 +14,6 @@ export default meta
 
 type Story = StoryObj<typeof meta>
 const onDelete = (id: string) => {
-  console.log(`Deleted post with id: ${id}`)
 }
 const likeList = ['테스트']
 export const Default: Story = {

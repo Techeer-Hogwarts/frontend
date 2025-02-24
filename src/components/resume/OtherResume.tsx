@@ -30,7 +30,6 @@ export default function OtherResume({ id, offset, limit }: OtherResumeProps) {
 
         // userResumes.data로 접근하여 데이터를 배열로 처리
         if (!Array.isArray(userResumes.data)) {
-          console.error('Expected an array, but received:', userResumes.data)
           return
         }
         // console.log('User resumes data:', userResumes.data)
@@ -46,7 +45,6 @@ export default function OtherResume({ id, offset, limit }: OtherResumeProps) {
 
         setOtherData(formattedData)
       } catch (err: any) {
-        console.error('Error fetching resumes:', err)
       }
     }
 

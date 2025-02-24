@@ -67,7 +67,6 @@ function ImageOrIcon({ src, alt }: { src?: string; alt: string }) {
 }
 
 const Carousel: React.FC<CarouselProps> = ({ teams, routePrefix }) => {
-  console.log('Carousel:', teams)
   const settings = {
     dots: false,
     infinite: teams.length > 10,

@@ -55,7 +55,6 @@ export default function SessionPost({
     } catch (err) {
       setIsLike(!isLike)
       setLikeCount(isLike ? likeCount : likeCount - 1)
-      console.error(err)
     }
   }
   useEffect(() => {

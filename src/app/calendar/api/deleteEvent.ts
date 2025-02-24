@@ -26,7 +26,6 @@ const useDeleteEvent = () => {
         queryClient.invalidateQueries({ queryKey: ['events'] })
       },
       onError: (error: Error) => {
-        console.error('이벤트 삭제 실패:', error)
       },
     })
   }

@@ -56,7 +56,6 @@ export const useSessionsQuery = ({
         selectedPeriodsPo,
         setAuthModalOpen, // 포지션 문자열
       )
-      console.log('getSessions result:', data)
       return data ?? []
     },
   })
