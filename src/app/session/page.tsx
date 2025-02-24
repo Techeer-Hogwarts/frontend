@@ -324,14 +324,14 @@ export default function Page() {
               text2="로그인 후 다시 시도해주세요."
             />
           </div>
-        ) : isLoading ? (
-          // 로딩 중 → 스켈레톤 (예: 8개)
-          <div className="grid grid-cols-4 gap-8 mt-[2.84rem] ">
-            {Array.from({ length: 8 }).map((_, i) => (
-              <BlogPostSkeleton key={i} />
-            ))}
-          </div>
-        ) : error || (newSessions && allSessions.length === 0) ? (
+        ) : // ) : isLoading ? (
+        //   // 로딩 중 → 스켈레톤 (예: 8개)
+        //   <div className="grid grid-cols-4 gap-8 mt-[2.84rem] ">
+        //     {Array.from({ length: 8 }).map((_, i) => (
+        //       <BlogPostSkeleton key={i} />
+        //     ))}
+        //   </div>
+        error || (newSessions && allSessions.length === 0) ? (
           // 에러 or 빈 배열
           <div className="flex justify-center">
             <EmptyLottie
