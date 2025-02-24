@@ -113,12 +113,12 @@ export default function Search() {
           <SessionSection session={results.session} />
         </>
       ) : (
-        <>
+        <div className="flex justify-center">
           <EmptyLottie
             text="검색한 데이터가 없습니다."
             text2="다시 검색해주세요"
           />
-        </>
+        </div>
       )}
     </div>
   )
