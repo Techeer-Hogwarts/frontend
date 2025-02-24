@@ -97,8 +97,12 @@ export default function AddProfile({
               className="rounded-2xl bg-contain min-w-[254px] min-h-[254px]"
             />
           ) : (
-            <div className="w-[254px] h-[254px] bg-gray rounded-2xl flex items-center justify-center">
+            <div className="flex flex-col w-full h-full rounded-md bg-lightgray text-gray items-center justify-center gap-4">
               <FaRegImage size={30} />
+              <div className = "flex flex-col items-center">
+                <span className="text-gray">눌러서 이미지를 업로드해주세요</span>
+                <span className="text-gray">jpg, jpeg, png, gif 가능</span>
+              </div>
             </div>
           )}
 
