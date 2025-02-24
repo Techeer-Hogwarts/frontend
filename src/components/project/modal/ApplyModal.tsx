@@ -120,7 +120,9 @@ export default function ApplyModal() {
 
         {/* (B) 지원동기(요약) 입력 */}
         <div className="mb-4">
-          <p className="text-left mb-2">지원동기를 입력해주세요</p>
+          <p className="text-left mb-2">
+            지원동기를 입력해주세요(30자 이내로 작성해주세요)
+          </p>
           <textarea
             className="w-full h-[9.3125rem] border border-gray rounded-sm p-2 focus:outline-none"
             value={apply}

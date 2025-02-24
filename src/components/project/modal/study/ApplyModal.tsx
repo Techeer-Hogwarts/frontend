@@ -64,7 +64,9 @@ const ApplyModal = () => {
         {/*project일 경우에만 보임 : 스택 선택 */}
         {projectType === 'project' && (
           <div className="mb-4">
-            <p className="text-left mb-2">지원하고자하는 포지션을 선택주세요</p>
+            <p className="text-left mb-2">
+              지원하고자하는 포지션을 선택주세요(30자 이내로 작성해주세요)
+            </p>
             <div className="w-full flex justify-between mb-[2.5rem]">
               {['Frontend', 'Backend', 'Full-Stack', 'DevOps'].map((el) => {
                 return (

@@ -78,7 +78,7 @@ export default function Resume() {
           </span>
         </div>
         <div
-          className="flex justify-center items-center w-[13rem] h-[3rem] border-2 border-transparent shadow-md rounded-xl"
+          className="flex justify-center items-center w-[13rem] h-[3rem] border-2 border-transparent shadow-md rounded-xl hover:shadow-custom"
           onClick={openMyPage}
         >
           <span className="text-[1.1rem] font-medium cursor-pointer">
