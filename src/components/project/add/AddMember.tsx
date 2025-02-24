@@ -96,8 +96,6 @@ export default function AddMember({
         onRestoreMember?.(newMember.id!, newMember.id!)
       }
     })
-    console.log('newMembers', selectedMembers)
-    console.log('projectMember', projectMember)
 
     onUpdateMember?.(merged)
     setIsModalOpen(false)
