@@ -57,6 +57,7 @@ export default function Mypage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [authModalOpen, setAuthModalOpen] = useState(false)
+  const [userId, setUserId] = useState()
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -80,6 +81,7 @@ export default function Mypage() {
         }
         const result = await response.json()
         setProfile(result as ProfileData)
+        setUserId(result.id)
       } catch (err: any) {
         setError('유저 정보를 불러오지 못했습니다.')
       } finally {
@@ -110,9 +112,7 @@ export default function Mypage() {
         />
       )}
       {activeTab === 'profile' && <Profile profile={profile} />}
-      {activeTab === 'resume' && (
-        <Resume userId={profile.id} offset={0} limit={10} />
-      )}
+      {activeTab === 'resume' && <Resume userId={Number(userId)} />}
       {activeTab === 'bookmark' && <Bookmark />}
       {activeTab === 'likes' && <Likes />}
       {activeTab === 'settings' && <Settings />}

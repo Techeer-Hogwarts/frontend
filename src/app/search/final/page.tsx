@@ -28,14 +28,16 @@ export default function Search() {
   const [isLoading, setIsLoading] = useState(true)
   const [query, setQuery] = useState<string>('')
 
-  // 클라이언트 사이드에서만 실행되도록 변경
+  // const searchParams = useSearchParams()
+
+  // URL에서 query 파라미터를 가져오는 useEffect
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search)
     const queryParam = searchParams.get('query')
     if (queryParam) {
       setQuery(queryParam)
     }
-  }, []) // 페이지 처음 로딩 시 한 번만 실행
+  }, []) // searchParams가 바뀔 때마다 실행
 
   useEffect(() => {
     if (query) {
@@ -43,7 +45,6 @@ export default function Search() {
         try {
           setIsLoading(true) // 데이터 요청 전 로딩 시작
           const data = await getSearchList(query as string) // API 호출
-
           setResults({
             project: Array.isArray(data.result.project)
               ? data.result.project

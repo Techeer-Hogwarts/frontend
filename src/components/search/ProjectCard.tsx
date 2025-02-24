@@ -14,24 +14,35 @@ interface TeamBase {
 }
 
 interface ProjectTeam extends TeamBase {
-  type: 'project'
+  index: 'project'
   frontendNum: number
   backendNum: number
   devopsNum: number
   fullStackNum: number
   dataEngineerNum: number
   projectExplain: string
-  resultImages?: string[]
+  mainImages?: string[]
   teamStacks: { stackName: string; isMain: boolean }[]
 }
 
 export default function ProjectCard({ team }: { team: ProjectTeam }) {
-  const projectImageUrl =
-    team.resultImages && team.resultImages.length > 0
-      ? team.resultImages[0] // 첫 번째 요소가 곧 URL
+  const mainImageUrl =
+    team.mainImages && team.mainImages.length > 0
+      ? team.mainImages[0] // 첫 번째 요소가 곧 URL
       : '/images/project/example.png'
 
-  const stackNames = team.teamStacks.map((stack) => stack.stackName)
+  // 팀 스택이 없으면 아무것도 출력하지 않도록 처리
+  const displayStacks =
+    team.teamStacks.length > 0
+      ? team.teamStacks.slice(0, 4).map((stack) => (
+          <div
+            key={stack.stackName}
+            className="bg-lightprimary text-pink max-h-[1.4181rem] px-[0.3rem] rounded-md text-[13px]"
+          >
+            {stack.stackName}
+          </div>
+        ))
+      : null
   return (
     <Link
       href={`/project/detail/project/${team.id}`}
@@ -46,11 +57,11 @@ export default function ProjectCard({ team }: { team: ProjectTeam }) {
         {/* 이미지 */}
         <div className="w-[7.8125rem] h-[7.8125rem] min-w-[7.8125rem] rounded-2xl">
           <Image
-            src={projectImageUrl}
+            src={mainImageUrl}
             alt="프로젝트 이미지"
             width={125}
             height={125}
-            className="rounded-lg border bg-pink-300"
+            className="object-cover w-[125px] h-[125px] rounded-lg border bg-pink-300"
           />
         </div>
 
@@ -96,20 +107,7 @@ export default function ProjectCard({ team }: { team: ProjectTeam }) {
                 </div>
               </>
             ) : (
-              <div className="flex gap-1">
-                {stackNames.map(
-                  (stack, index) => (
-                    // stack.isMain && (
-                    <div
-                      key={index}
-                      className="bg-lightprimary text-pink max-h-[1.4181rem] px-[0.3rem] rounded-md text-[13px]"
-                    >
-                      {stack}
-                    </div>
-                  ),
-                  // ),
-                )}
-              </div>
+              <div className="flex gap-1">{displayStacks}</div>
             )}
           </div>
         </div>

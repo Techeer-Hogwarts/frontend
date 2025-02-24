@@ -112,14 +112,19 @@ export default function AddResume({ setModal, fetchData }: AddResumeProps) {
       ref={formRef}
       className="w-screen h-screen flex items-center justify-center bg-black/50 fixed inset-0"
     >
-      <div className="w-[486px] h-[500px] flex flex-col items-center bg-white rounded-lg">
+      <div className="w-[30rem] h-[35rem] flex flex-col items-center bg-white rounded-lg">
         <div>
-          <p className="text-2xl text-center mt-7 mb-1 font-semibold">
+          <p className="text-2xl text-center mt-7 mb-1 font-semibold ">
             이력서 추가
           </p>
-          <Image src="/folder.png" alt="folder" width={100} height={100} />
+          <Image
+            src="/images/blog/folder.png"
+            alt="folder"
+            width={100}
+            height={100}
+          />
         </div>
-        <div className="relative mx-5 mt-4">
+        <div className="relative mx-5 mt-4 flex flex-col justify-between gap-4">
           <InputField
             label="이력서 제목"
             name="resumeTitle"
@@ -203,19 +208,19 @@ export default function AddResume({ setModal, fetchData }: AddResumeProps) {
             </div>
           </div>
         </div>
-        <div className="flex gap-4 mt-4">
+        <div className="flex gap-4 mt-8">
           <button
             type="submit"
             onClick={() => {
               setModal(false)
             }}
-            className="w-[200px] rounded-md text-sm h-[34px] bg-white text-gray border border-lightgray "
+            className="w-[12.5rem] rounded-md text-sm h-[2.125rem] bg-white text-gray border border-lightgray "
           >
             취소
           </button>
           <button
             type="submit"
-            className="w-[200px] rounded-md text-sm h-[34px] bg-primary text-white"
+            className="w-[12.5rem] rounded-md text-sm h-[2.125rem] bg-primary text-white"
             onClick={handleAddResume}
           >
             등록

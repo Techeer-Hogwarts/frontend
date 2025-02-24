@@ -18,7 +18,7 @@ const CategoryTab: React.FC<CategoryTabProps> = ({ onScrollToSection }) => {
         <a
           key={category.id}
           href={`#${category.id}`}
-          className={`flex items-center justify-between w-[18.75rem] text-xl text-left px-12 ${category.id !== 'session' ? 'border-r-2 border-lightgray' : ''}`}
+          className={`flex items-center justify-between w-[18.75rem] text-xl text-left px-12 hover:text-primary ${category.id !== 'session' ? 'border-r-2 border-lightgray' : ''}`}
         >
           {category.label}
           <Image

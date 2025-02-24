@@ -26,7 +26,7 @@ export default function OtherResume({ id, offset, limit }: OtherResumeProps) {
   useEffect(() => {
     async function loadUserResumes() {
       try {
-        const userResumes = await fetchUserResumes(id, offset, limit)
+        const userResumes = await fetchUserResumes(id)
 
         // userResumes.data로 접근하여 데이터를 배열로 처리
         if (!Array.isArray(userResumes.data)) {
@@ -44,8 +44,7 @@ export default function OtherResume({ id, offset, limit }: OtherResumeProps) {
         }))
 
         setOtherData(formattedData)
-      } catch (err: any) {
-      }
+      } catch (err: any) {}
     }
 
     loadUserResumes()
@@ -56,7 +55,7 @@ export default function OtherResume({ id, offset, limit }: OtherResumeProps) {
   }
 
   return (
-    <div className="flex flex-col w-[14.5rem] h-auto rounded-xl shadow-md mt-1 hover:bg-lightprimary">
+    <div className="flex flex-col w-[14.5rem] h-auto rounded-xl shadow-md mt-1">
       {otherData.map((user) => {
         const resumeTitle = user.title.split('-').slice(-1).join(' ')
         const truncatedTitle =
@@ -76,7 +75,7 @@ export default function OtherResume({ id, offset, limit }: OtherResumeProps) {
           <button
             key={user.id}
             onClick={() => handleResumeClick(user.id)}
-            className="flex justify-left items-center my-3 ml-3 gap-2"
+            className="flex justify-left items-center py-3 pl-3 gap-2 hover:bg-lightprimary"
             role="button"
             tabIndex={0}
           >

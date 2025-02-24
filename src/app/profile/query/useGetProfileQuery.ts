@@ -7,13 +7,11 @@ export function useGetProfileQuery({
   year = [],
   university = [],
   grade = [],
-  offset,
   limit,
 }: ProfileQueryParams) {
   return useQuery({
-    queryKey: ['profiles', position, year, university, grade, offset, limit], // 고유 쿼리 키에 파라미터 추가
-    queryFn: () =>
-      getProfileList({ position, year, university, grade, offset, limit }), // 파라미터 전달
+    queryKey: ['profiles', position, year, university, grade, limit], // 고유 쿼리 키에 파라미터 추가
+    queryFn: () => getProfileList({ position, year, university, grade, limit }), // 파라미터 전달
     staleTime: 10 * 1000, // 10초 동안 fresh
     // cacheTime: 30 * 60 * 1000, // 30분 동안 캐시 유지
     retry: 0, // 실패 시 재시도 횟수 설정

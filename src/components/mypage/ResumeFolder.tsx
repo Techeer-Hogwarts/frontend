@@ -28,7 +28,7 @@ export default function ResumeFolder({
   const { postLike } = useLike()
   const { postBookmark } = useBookmark()
 
-  const [resumes, setResumes] = useState<Resume[]>([])
+  //   const [resumes, setResumes] = useState<Resume[]>([])
 
   const [isLike, setIsLike] = useState(false)
   const [isBookmark, setIsBookmark] = useState(false)
@@ -78,9 +78,11 @@ export default function ResumeFolder({
       // 낙관적 업데이트
       setIsBookmark(newIsBookmark)
       setBookmarkCount(newBookmarkCount)
+
       await postBookmark(Number(resume.id), 'RESUME', newIsBookmark)
+
       if (resume.onBookmarkUpdate) {
-        resume.onBookmarkUpdate(resume.id, newBookmarkCount)
+        onBookmarkUpdate(resume.id, newBookmarkCount)
       }
     } catch (err) {
       setIsBookmark(!isBookmark)

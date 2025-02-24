@@ -29,7 +29,7 @@ export default function ProfileList({
   grade = [],
 }: ProfileQueryParams = {}) {
   const [profiles, setProfiles] = useState<Profile[]>([])
-  const [limit, setLimit] = useState(8)
+  const [limit, setLimit] = useState(12)
   const [ref, inView] = useInView({ threshold: 0.5 })
 
   const { data, isError, isLoading } = useGetProfileQuery({
@@ -59,7 +59,6 @@ export default function ProfileList({
       setLimit((prev) => prev + 8)
     }
   }, [inView])
-
 
   if (isLoading && profiles.length === 0) {
     return (

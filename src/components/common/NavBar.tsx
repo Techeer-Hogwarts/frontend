@@ -47,7 +47,7 @@ export default function NavBar() {
   const router = useRouter()
   const pathname = usePathname()
 
-  const debouncedQuery = useDebounce(query, 100)
+  const debouncedQuery = useDebounce(query, 300)
 
   const searchRef = useRef<HTMLDivElement>(null)
 

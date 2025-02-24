@@ -159,11 +159,9 @@ export default function Project() {
           <Link
             href="/mypage"
             type="button"
-            className="flex justify-center items-center w-[13rem] h-[3rem] border-2 border-transparent shadow-md rounded-xl"
+            className="w-[13rem] h-[3rem] text-center rounded-xl shadow-md justify-center text-[1.1rem] font-medium flex items-center hover:shadow-custom"
           >
-            <span className="text-[1.1rem] font-medium cursor-pointer">
-              내 프로젝트 확인하기
-            </span>
+            <span>내 프로젝트 확인하기</span>
             <Star />
           </Link>
         </div>

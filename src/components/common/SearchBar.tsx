@@ -93,12 +93,18 @@ export default function Search({
           if (data.results) {
             let filteredResults = data.results
 
-            if (index !== 'blog' && index !== 'session' && index !== 'resume') {
+            if (
+              index !== 'blog' &&
+              index !== 'session' &&
+              index !== 'resume' &&
+              index !== 'event'
+            ) {
               filteredResults = data.results.filter(
                 (result) =>
                   result.index !== 'blog' &&
                   result.index !== 'session' &&
-                  result.index !== 'resume',
+                  result.index !== 'resume' &&
+                  result.index !== 'event',
               )
             } else {
               filteredResults = data.results.filter(
@@ -195,8 +201,9 @@ export default function Search({
                       )
                     }
                   >
-                    <span className="text-gray text-sm">
-                      {result.index} &nbsp; | &nbsp;
+                    <span className="text-primary text-sm">
+                      {result.index}
+                      <span className="text-gray"> &nbsp; | &nbsp;</span>
                     </span>
                     {truncatedTitle}
                   </li>

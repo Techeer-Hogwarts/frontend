@@ -46,13 +46,19 @@ export default function BlogPost({
         method: 'PUT',
         credentials: 'include',
       })
+      // console.log('response:', response)
       if (!response.ok) {
         throw new Error('블로그 조회수를 업데이트하는 데 실패했습니다.')
       }
-    } catch (err) {
-    }
+    } catch (err) {}
   }
-  const formattedDate = date.split('T')[0]
+  const formattedDate = new Date(date)
+    .toLocaleDateString('ko-KR', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    })
+    .replace(/\.$/, '')
   const clickLike = async () => {
     setIsLike(!isLike)
     try {
@@ -68,8 +74,7 @@ export default function BlogPost({
         setIsLike(true)
         setLikeCount((prev) => prev + 1)
       }
-    } catch (err) {
-    }
+    } catch (err) {}
   }
   const handleClickUrl = () => {
     window.open(url, '_blank')
@@ -101,7 +106,9 @@ export default function BlogPost({
         </button>
         <div className="w-full min-h-[100px] h-auto py-2 bg-white">
           <div className="relative flex justify-between">
-            <p className="w-full px-5 mr-1 mb-1 text-base truncate whitespace-nowrap overflow-hidden">{title}</p>
+            <p className="w-full px-5 mr-1 mb-1 text-base truncate whitespace-nowrap overflow-hidden">
+              {title}
+            </p>
             <Image
               src="/images/session/session-menu.svg"
               alt="seesionmenu"

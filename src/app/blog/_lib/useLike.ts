@@ -1,4 +1,4 @@
-const API_URL = '/api/v1/Likes'
+const API_URL = '/api/v1/likes'
 
 export function useLike() {
   const postLike = async (

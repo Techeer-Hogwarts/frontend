@@ -17,7 +17,13 @@ export default function Page() {
   const [selectedUniversity, setSelectedUniversity] = useState<string[]>([])
   const [selectedGrade, setSelectedGrade] = useState<string[]>([])
 
-  const positionOptions = ['FRONTEND', 'BACKEND', 'DEVOPS', 'FULL_STACK']
+  const positionOptions = [
+    'FRONTEND',
+    'BACKEND',
+    'DEVOPS',
+    'FULL_STACK',
+    'DATA_ENGINEER',
+  ]
   const yearOptions = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
   const gradeOptions = ['1학년', '2학년', '3학년', '4학년', '졸업']
   const universityOptions = [

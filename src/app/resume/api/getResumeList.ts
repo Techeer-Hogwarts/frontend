@@ -4,7 +4,7 @@ export async function getResumeList({
   position = [],
   year = [],
   category = '',
-  offset = 0,
+  // offset = 0,
   limit: limit,
 }: ResumeQueryParams) {
   try {
@@ -26,8 +26,8 @@ export async function getResumeList({
     const mappedCategory = categoryMap[category]
     params.append('category', mappedCategory)
 
-    params.append('offset', (offset ?? 0).toString()) // undefined 방지
-    params.append('limit', (limit ?? 10).toString()) // undefined 방지
+    // params.append('offset', (offset ?? 0).toString()) // undefined 방지
+    params.append('limit', limit.toString()) // undefined 방지
 
     const response = await fetch(`/api/v1/resumes?${params.toString()}`, {
       method: 'GET',

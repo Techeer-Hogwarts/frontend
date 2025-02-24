@@ -1,17 +1,21 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import ResumeFolder from '../resume/ResumeFolder'
+import ResumeFolder from './ResumeFolder'
 import AddResume from './AddResume'
 import Link from 'next/link'
+import { ResumeQueryParams } from '@/types/queryParams'
 import { fetchUserResumes } from '@/app/resume/api/getUserResume'
+import { useInView } from 'react-intersection-observer'
+import { useLike } from '@/app/blog/_lib/useLike'
+import { useBookmark } from '@/app/blog/_lib/useBookmark'
+import SkeletonResumeFolder from '@/components/resume/SkeletonResume'
 import { usePathname } from 'next/navigation'
 import AuthModal from '@/components/common/AuthModal'
 import { useAuthStore } from '@/store/authStore'
-import SkeletonResumeFolder from '@/components/resume/SkeletonResume' // 스켈레톤 UI
 
 interface Resume {
-  id: number
+  id: string
   createdAt: number
   title: string
   category: string
@@ -25,27 +29,28 @@ interface Resume {
     year: number
     mainPosition: string
   }
+  likeList: string[]
+  bookmarkList: string[]
 }
 
-export default function Resume({
-  userId,
-  offset,
-  limit,
-}: {
-  userId: number
-  offset: number
-  limit: number
-}) {
+export default function Resume({ userId }) {
   const [data, setData] = useState<Resume[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isError, setIsError] = useState(false)
   const [modal, setModal] = useState(false)
 
+  const [resumes, setResumes] = useState<Resume[]>([])
+  const [limit, setLimit] = useState(6)
+  const [ref, inView] = useInView({ threshold: 0.1 })
+  const [likeList, setLikeList] = useState<string[]>([])
+  const { fetchLikes } = useLike()
+  const [bookmarkList, setBookmarkList] = useState<string[]>([])
+  const { fetchBookmarks } = useBookmark()
+
   const pathname = usePathname()
   const [authModalOpen, setAuthModalOpen] = useState(false)
   const { user, checkAuth } = useAuthStore()
 
-  // '마이페이지' 여부
   const isMyPage = pathname === '/mypage'
 
   // API 호출
@@ -53,13 +58,57 @@ export default function Resume({
     try {
       setIsLoading(true)
       setIsError(false)
-      const result = await fetchUserResumes(userId, offset, limit)
+      const result = await fetchUserResumes(userId)
       setData(result.data || [])
     } catch (error) {
       setIsError(true)
     } finally {
       setIsLoading(false)
     }
+  }
+
+  const checkLike = async () => {
+    try {
+      const data = await fetchLikes('RESUME', 0, 50)
+      setLikeList(data)
+      return data
+    } catch (err) {
+      console.error(err)
+      return []
+    }
+  }
+
+  const checkBookmark = async () => {
+    try {
+      const data = await fetchBookmarks('RESUME', 0, 50)
+      setBookmarkList(data)
+      return data
+    } catch (err) {
+      console.error(err)
+      return []
+    }
+  }
+
+  const handleLikeUpdate = (resumeId: string, newLikeCount: number) => {
+    // 현재 이력서 데이터에서 해당 ID를 가진 이력서 찾아 업데이트
+    setResumes((prev) =>
+      prev.map((resume) =>
+        resume.id === resumeId
+          ? { ...resume, likeCount: newLikeCount }
+          : resume,
+      ),
+    )
+  }
+
+  const handleBookmarkUpdate = (resumeId: string, newBookmarkCount: number) => {
+    // 현재 이력서 데이터에서 해당 ID를 가진 이력서 찾아 업데이트
+    setResumes((prev) =>
+      prev.map((resume) =>
+        resume.id === resumeId
+          ? { ...resume, bookmarkCount: newBookmarkCount }
+          : resume,
+      ),
+    )
   }
 
   useEffect(() => {
@@ -69,16 +118,27 @@ export default function Resume({
   useEffect(() => {
     // 로그인 상태가 바뀔 때마다 데이터를 다시 불러옴
     fetchData()
-  }, [userId, offset, limit, user])
+    setResumes([])
+    setLimit(8)
+    checkLike()
+    checkBookmark()
+  }, [userId, limit])
 
-  // user === null이면 인증 모달 표시
   useEffect(() => {
-    if (!isLoading && user === null) {
-      setAuthModalOpen(true)
-    } else {
-      setAuthModalOpen(false)
+    if (data && Array.isArray(data)) {
+      setResumes((prev) => {
+        const existingIds = new Set(prev.map((p) => p.id))
+        const newResumes = data.filter((p) => !existingIds.has(p.id)) // 중복 제거
+        return [...prev, ...newResumes]
+      })
     }
-  }, [user, isLoading])
+  }, [data])
+
+  useEffect(() => {
+    if (inView) {
+      setLimit((prev) => prev + 4)
+    }
+  }, [inView])
 
   const handleClickAddResume = () => {
     setModal(!modal)
@@ -88,41 +148,40 @@ export default function Resume({
   return (
     <div>
       {/* 인증 모달 */}
-      <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} />
+      <AuthModal
+        isOpen={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+      />
 
       {/* 상단 영역 */}
       <div className="flex w-[890px] justify-end mb-4">
         {isMyPage && (
           <button
             onClick={handleClickAddResume}
-            className="border border-lightgray text-black flex items-center justify-center p-2 h-8 w-[130px] rounded-md"
+            className="border border-lightgray text-black flex items-center justify-center p-2 h-8 w-[130px] rounded-md hover:bg-lightprimary hover:text-primary hover:border-primary hover:font-medium"
           >
             이력서 추가
           </button>
         )}
         {modal && <AddResume setModal={setModal} fetchData={fetchData} />}
       </div>
-
-      {/* 메인 렌더 */}
-      {isLoading ? (
-        // 로딩 중 → 스켈레톤
-        <div className="grid grid-cols-3 gap-8">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <SkeletonResumeFolder key={i} />
-          ))}
-        </div>
-      ) : isError ? (
-        // 에러
-        <div className="text-center text-gray">이력서를 불러오는 중 오류가 발생했습니다.</div>
-      ) : data.length === 0 ? (
-        // 이력서 데이터가 없음
+      {data.length === 0 ? (
+        // (A) 이력서 데이터가 없을 때
         <div className="text-center text-gray">등록된 이력서가 없습니다.</div>
       ) : (
-        // 정상 데이터
+        // (B) 이력서 데이터가 있을 때
         <Link href={`/resume/$[resume.id]`}>
           <div className="grid grid-cols-3 gap-8">
-            {data.map((resume: Resume) => (
-              <ResumeFolder key={resume.id} resume={resume} />
+            {resumes.map((resume) => (
+              <ResumeFolder
+                key={resume.id}
+                likeCount={resume.likeCount}
+                resume={resume}
+                likeList={likeList}
+                onLikeUpdate={handleLikeUpdate}
+                bookmarkList={bookmarkList}
+                onBookmarkUpdate={handleBookmarkUpdate}
+              />
             ))}
           </div>
         </Link>
