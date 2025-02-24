@@ -60,7 +60,6 @@ export default function ProfileList({
     }
   }, [inView])
 
-  console.log('profiles', profiles)
 
   if (isLoading && profiles.length === 0) {
     return (

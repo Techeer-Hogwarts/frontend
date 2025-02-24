@@ -12,7 +12,6 @@ export const getSearchResults = async (index: string, query: string) => {
     }
     return await res.json()
   } catch (error) {
-    console.error(error)
     return []
   }
 }
@@ -31,7 +30,6 @@ export const getBasicSearchResults = async (query: string) => {
     }
     return await res.json()
   } catch (error) {
-    console.error(error)
     return []
   }
 }
@@ -53,7 +51,6 @@ export const getFinalSearchResults = async (query: string) => {
     }
     return await res.json()
   } catch (error) {
-    console.error(error)
     return []
   }
 }

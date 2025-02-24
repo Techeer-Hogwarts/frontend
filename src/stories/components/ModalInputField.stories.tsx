@@ -14,7 +14,6 @@ export default meta
 type Story = StoryObj<typeof meta>
 const value = '가나다'
 const handleInputChange = () => {
-  console.log('handleInputChange')
 }
 export const Default: Story = {
   args: {

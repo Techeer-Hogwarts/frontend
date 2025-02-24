@@ -20,7 +20,6 @@ export default function AddBtn() {
 
   const handleClickBtn = () => {
     setIsOpen((prev) => !prev)
-    console.log(user)
   }
 
   const handleOptionClick = (type: string) => {

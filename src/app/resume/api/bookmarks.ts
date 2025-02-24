@@ -24,12 +24,10 @@ export const handleBookmarkClick = async (
         bookmarkStatus,
       }),
     })
-    console.log('성공')
     if (!response.ok) {
       throw new Error('Bookmark request failed')
     }
   } catch (error) {
-    console.error('Bookmark request error:', error)
   }
 
   // 북마크 상태 업데이트

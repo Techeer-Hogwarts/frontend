@@ -34,7 +34,6 @@ export default function SessionMenu({
     try {
       await postBookmark(id, category, bookmarkStatus)
     } catch (err) {
-      console.error(err)
     }
   }
 
@@ -51,7 +50,6 @@ export default function SessionMenu({
       setModalOpen(true)
       setTimeout(() => setModalOpen(false), 2000)
     } catch (err) {
-      console.error(err)
     }
   }
 
@@ -61,7 +59,6 @@ export default function SessionMenu({
       showMessage()
     },
     onError: (error) => {
-      console.error('세션 데이터 삭제 실패:', error)
     },
   })
 

@@ -35,7 +35,6 @@ export default function ShowVideo() {
   useEffect(() => {
     const fetchSingleSession = async () => {
       if (!sessionId) {
-        console.error('Session ID is missing!')
         setSessionLoading(false)
         return
       }
@@ -43,7 +42,6 @@ export default function ShowVideo() {
         const singleVideo = await getSingleSession(sessionId)
         setSessionUrl(singleVideo.videoUrl)
       } catch (err) {
-        console.error('세션 데이터 가져오기 실패:', err)
       } finally {
         setSessionLoading(false)
       }

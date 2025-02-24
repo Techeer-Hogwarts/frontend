@@ -72,7 +72,6 @@ export const handleAddStudy = async (data) => {
       return result
     }
   } catch (error: any) {
-    console.error('POST 요청 중 오류 발생:', error.message)
     throw error
   }
 }
@@ -94,7 +93,6 @@ export const handleEditStudy = async (data, projectId) => {
     const result = await response.json()
     return result
   } catch (error: any) {
-    console.error('POST 요청 중 오류 발생:', error.message)
     throw error
   }
 }
@@ -118,7 +116,6 @@ export const getStudyDetail = async (
     const result: GetStudyDetailResponse = await response.json()
     return result
   } catch (error: any) {
-    console.error('스터디 상세 가져오기 중 오류 발생:', error.message)
     throw error
   }
 }
@@ -139,7 +136,6 @@ export const getStudyMember = async (
     const result: GetStudyApplicantsResponse = await response.json()
     return result
   } catch (error: any) {
-    console.error('스터디 참여 멤버 가져오기 중 오류 발생:', error.message)
     throw error
   }
 }
@@ -163,7 +159,6 @@ export const handleApplyStudy = async (data) => {
     const result = await response.json()
     return result
   } catch (error: any) {
-    console.error('POST 요청 중 오류 발생:', error.message)
     throw error
   }
 }
@@ -182,7 +177,6 @@ export const handleDenyStudy = async (studyTeamId) => {
     const result = await response.json()
     return result
   } catch (error: any) {
-    console.error('PATCH 요청 중 오류 발생:', error.message)
     throw error
   }
 }
@@ -201,7 +195,6 @@ export const handleCloseStudy = async (studyTeamId) => {
 
     return true
   } catch (error: any) {
-    console.error('스터디 마감 요청 중 오류 발생:', error.message)
     throw error
   }
 }
@@ -221,7 +214,6 @@ export const deleteStudyTeam = async (projectId) => {
     const result = await response.json()
     return result
   } catch (error: any) {
-    console.error('스터디 삭제 요청 중 오류 발생:', error.message)
     throw error
   }
 }
@@ -244,7 +236,6 @@ export const getStudyApplicants = async (studyTeamId) => {
     const result = await response.json()
     return result
   } catch (error: any) {
-    console.error('스터디 신청자 목록 조회 중 오류 발생:', error.message)
     throw error
   }
 }
@@ -268,7 +259,6 @@ export const acceptStudyApplicant = async (data) => {
     const result = await response.json()
     return result
   } catch (error: any) {
-    console.error('스터디 지원 수락 중 오류 발생:', error.message)
     throw error
   }
 }
@@ -292,7 +282,6 @@ export const denyStudyApplicant = async (data) => {
     const result = await response.json()
     return result
   } catch (error: any) {
-    console.error('스터디 지원 거절 중 오류 발생:', error.message)
     throw error
   }
 }

@@ -25,7 +25,6 @@ export default function Page({ params }: { params: { userId: string } }) {
           setLoading(false)
         })
         .catch((err) => {
-          console.error('유저 프로필 데이터 가져오기 실패:', err)
           setLoading(false)
         })
     }

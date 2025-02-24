@@ -11,7 +11,6 @@ interface BoxProps {
 }
 
 const ResultImgBox = ({ previewUrl, onFileSelect, onDelete }: BoxProps) => {
-  console.log(previewUrl);
   
   // 파일 선택 시 파일 객체를 받아 상위 컴포넌트에 전달하는 핸들러
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {

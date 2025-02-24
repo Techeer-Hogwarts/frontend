@@ -128,7 +128,6 @@ export const getAllTeams = async (
     // 그 외 응답 구조(예: allTeams 키가 있는 경우)
     return result as TeamsResponse
   } catch (error: any) {
-    console.error('팀 정보 가져오기 중 오류 발생:', error.message)
     throw error
   }
 }
@@ -151,7 +150,6 @@ export const getAllUsers = async () => {
     const result = await response.json()
     return result
   } catch (error: any) {
-    console.error('사용자 목록 가져오기 중 오류 발생:', error.message)
     throw error
   }
 }
@@ -174,7 +172,6 @@ export const getMyInfo = async (): Promise<UserProfile> => {
     const result: UserProfile = await response.json()
     return result
   } catch (error: any) {
-    console.error('사용자 목록 가져오기 중 오류 발생:', error.message)
     throw error
   }
 }

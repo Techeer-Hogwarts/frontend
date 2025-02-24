@@ -93,8 +93,6 @@ export default function AddStack({
     queryFn: getStacks,
   })
 
-  console.log('initialTeamStacks:', initialTeamStacks)
-
   // 2) allStacks를 카테고리별로 분류
   useEffect(() => {
     if (!allStacks) return

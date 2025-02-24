@@ -42,7 +42,6 @@ export async function getProfileList({
 
     return dataWithWrapper?.data || []
   } catch (error) {
-    console.error('프로필 목록 조회 실패:', error)
     throw error
   }
 }

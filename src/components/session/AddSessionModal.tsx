@@ -86,11 +86,9 @@ export default function AddSessionModal({
         throw new Error('세션 데이터를 업로드하는 데 실패했습니다.')
       }
       const result = await response.json()
-      console.log('세션이 성공적으로 추가되었습니다:', result)
       window.location.href = '/session'
       onClose()
     } catch (err) {
-      console.error('세션 데이터 업로드 중 오류 발생:', err)
     }
   }
 

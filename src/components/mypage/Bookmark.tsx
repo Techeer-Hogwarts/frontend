@@ -37,6 +37,7 @@ export default function Bookmark() {
     sessionStorage.setItem('searchQuery', query)
     setInputValue(query)
   }
+
   const checkBookmark = async () => {
     const category =
       activeOption === '이력서'
@@ -51,10 +52,10 @@ export default function Bookmark() {
       setBookmarks(data)
       return data
     } catch (err) {
-      console.error(err)
       return []
     }
   }
+
   const checkLike = async () => {
     const category =
       activeOption === '이력서'
@@ -69,8 +70,7 @@ export default function Bookmark() {
       setLike(data)
       return data
     } catch (err) {
-      console.error(err)
-      return []
+      // console.error(err)
     }
   }
 

@@ -31,7 +31,6 @@ export default function ProjectCard({ team }: { team: ProjectTeam }) {
   const handleClick = () => {
     localStorage.setItem('projectType', 'project')
     localStorage.setItem('projectId', team.id.toString())
-    console.log(team)
   }
 
   let count = 0

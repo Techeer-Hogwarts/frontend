@@ -18,7 +18,6 @@ export function useLike() {
 
       if (!response.ok) throw new Error('좋아요 처리 중 오류 발생')
     } catch (err: any) {
-      console.error(err)
       throw err
     }
   }
@@ -42,7 +41,6 @@ export function useLike() {
       const data = await response.json()
       return data
     } catch (err: any) {
-      console.error(err)
       throw err
     }
   }

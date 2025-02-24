@@ -34,7 +34,6 @@ export const handleAddProject = async (data: any) => {
     const result = await response.json()
     return result
   } catch (error: any) {
-    console.error('POST 요청 중 오류 발생:', error.message)
     throw error
   }
 }
@@ -55,7 +54,6 @@ export const getProjectDetail = async (projectTeamId) => {
     const result = await response.json()
     return result
   } catch (error: any) {
-    console.error('프로젝트 상세 가져오기 중 오류 발생:', error.message)
     throw error
   }
 }
@@ -75,7 +73,6 @@ export const getProjectMember = async (projectTeamId) => {
     const result = await response.json()
     return result
   } catch (error: any) {
-    console.error('프로젝트 참여 멤버 가져오기 중 오류 발생:', error.message)
     throw error
   }
 }
@@ -98,7 +95,6 @@ export const getProjectApplicants = async (projectTeamId) => {
     const result = await response.json()
     return result
   } catch (error: any) {
-    console.error('프로젝트 신청자 목록 조회 중 오류 발생:', error.message)
     throw error
   }
 }
@@ -138,7 +134,6 @@ export const handleEditProject = async (projectId: number, data: any) => {
     const result = await response.json()
     return result
   } catch (error: any) {
-    console.error('PATCH 요청 중 오류 발생:', error.message)
     throw error
   }
 }
@@ -159,10 +154,8 @@ export const handleCloseProject = async (projectTeamId) => {
     }
 
     const result = await response.json()
-    console.log('프로젝트 마감 성공:', result)
     return result
   } catch (error: any) {
-    console.error('프로젝트 마감 요청 중 오류 발생:', error.message)
     throw error
   }
 }
@@ -180,10 +173,8 @@ export const deleteProjectTeam = async (projectId) => {
     }
 
     const result = await response.json()
-    console.log('프로젝트 삭제 성공:', result)
     return result
   } catch (error: any) {
-    console.error('프로젝트 삭제 요청 중 오류 발생:', error.message)
     throw error
   }
 }
@@ -205,10 +196,8 @@ export const handleApplyProject = async (data) => {
     }
 
     const result = await response.json()
-    console.log('POST 요청 성공:', result)
     return result
   } catch (error: any) {
-    console.error('POST 요청 중 오류 발생:', error.message)
     throw error
   }
 }
@@ -226,10 +215,8 @@ export const handleDenyProject = async (projectId) => {
     }
 
     const result = await response.json()
-    console.log('PATCH 요청 성공:', result)
     return result
   } catch (error: any) {
-    console.error('PATCH 요청 중 오류 발생:', error.message)
     throw error
   }
 }
@@ -252,7 +239,6 @@ export const getStudyApplicants = async (projectTeamId) => {
     const result = await response.json()
     return result
   } catch (error: any) {
-    console.error('프로젝트 신청자 목록 조회 중 오류 발생:', error.message)
     throw error
   }
 }
@@ -272,10 +258,8 @@ export const acceptProjectApplicant = async (data) => {
     }
 
     const result = await response.json()
-    console.log('프로젝트 지원 수락 성공:', result)
     return result
   } catch (error: any) {
-    console.error('프로젝트 지원 수락 중 오류 발생:', error.message)
     throw error
   }
 }
@@ -295,10 +279,8 @@ export const denyProjectApplicant = async (data) => {
     }
 
     const result = await response.json()
-    console.log('프로젝트 지원 거절 성공:', result)
     return result
   } catch (error: any) {
-    console.error('프로젝트 지원 거절 중 오류 발생:', error.message)
     throw error
   }
 }

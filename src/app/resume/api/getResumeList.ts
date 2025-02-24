@@ -47,7 +47,6 @@ export async function getResumeList({
 
     return dataWithWrapper?.data || []
   } catch (error) {
-    console.error('이력서 목록 조회 실패:', error)
     throw error // 에러를 호출한 함수에 다시 전달
   }
 }

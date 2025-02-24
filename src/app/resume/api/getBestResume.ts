@@ -31,7 +31,6 @@ export const fetchBestResumes = async (
     // console.log('인기 이력서 조회 성공', dataWithWrapper)
     return dataWithWrapper
   } catch (error: any) {
-    console.error('Error fetching best resumes:', error.message)
     throw error
   }
 }

@@ -178,7 +178,6 @@ const Signup = () => {
       },
     }
 
-    console.log('Signup payload:', requestPayload)
 
     try {
       const formDataToSend = new FormData()

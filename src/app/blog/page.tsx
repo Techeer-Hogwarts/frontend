@@ -99,7 +99,6 @@ export default function Page() {
     try {
       return await fetchLikes('BLOG', 0, 50)
     } catch (err) {
-      console.error(err)
       return []
     }
   }
@@ -133,7 +132,6 @@ export default function Page() {
       setBlog(updated)
       setLikeList(newLikeList)
     } catch (err) {
-      console.error('fetchData error:', err)
     } finally {
       // 모든 API 완료 후
       setIsLoading(false)
@@ -170,7 +168,6 @@ export default function Page() {
         setBlog(updated)
         setLimit(newLimit)
       } catch (err) {
-        console.error(err)
       }
     }
 
