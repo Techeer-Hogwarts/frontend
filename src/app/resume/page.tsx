@@ -26,7 +26,13 @@ export default function Resume() {
   const [selectedCategory, setSelectedCategory] = useState('전체')
 
   // 드롭다운 항목 리스트
-  const positionOptions = ['FRONTEND', 'BACKEND', 'DEVOPS', 'FULL_STACK']
+  const positionOptions = [
+    'FRONTEND',
+    'BACKEND',
+    'DEVOPS',
+    'FULL_STACK',
+    'DATA_ENGINEER',
+  ]
   const yearOptions = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
   const category = ['전체', '이력서', '포트폴리오', 'ICT', 'OTHER']
 
