@@ -13,7 +13,6 @@ import EmptyLottie from '@/components/common/EmptyLottie'
 import SkeletonProjectCard from '@/components/project/SkeletonProjectCard'
 import SearchBar from '@/components/common/SearchBar'
 import { getAllTeams } from '@/api/project/common'
-import { getMyInfo } from '@/api/project/common'
 import Star from '../../../public/star.svg'
 
 interface TeamBase {
