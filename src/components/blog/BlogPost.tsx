@@ -47,6 +47,7 @@ export default function BlogPost({
         credentials: 'include',
       })
       console.log('response:', response)
+      console.log(response)
       if (!response.ok) {
         throw new Error('블로그 조회수를 업데이트하는 데 실패했습니다.')
       }
@@ -54,7 +55,13 @@ export default function BlogPost({
       console.error('블로그 조회수 업데이트 중 오류 발생:', err)
     }
   }
-  const formattedDate = date.split('T')[0]
+  const formattedDate = new Date(date)
+    .toLocaleDateString('ko-KR', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    })
+    .replace(/\.$/, '')
   const clickLike = async () => {
     setIsLike(!isLike)
     try {

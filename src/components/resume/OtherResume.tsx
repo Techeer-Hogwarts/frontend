@@ -26,7 +26,7 @@ export default function OtherResume({ id, offset, limit }: OtherResumeProps) {
   useEffect(() => {
     async function loadUserResumes() {
       try {
-        const userResumes = await fetchUserResumes(id, offset, limit)
+        const userResumes = await fetchUserResumes(id)
 
         // userResumes.data로 접근하여 데이터를 배열로 처리
         if (!Array.isArray(userResumes.data)) {

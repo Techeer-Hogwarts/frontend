@@ -149,7 +149,7 @@ export default function Resume({ userId }) {
       <div className="flex justify-end mb-4">
         <button
           onClick={handleClickAddResume}
-          className="border border-lightgray text-black flex items-center justify-center p-2 h-8 w-[130px] rounded-md"
+          className="border border-lightgray text-black flex items-center justify-center p-2 h-8 w-[130px] rounded-md hover:bg-lightprimary hover:text-primary hover:border-primary hover:font-medium"
         >
           이력서 추가
         </button>
@@ -160,6 +160,7 @@ export default function Resume({ userId }) {
           {resumes.map((resume) => (
             <ResumeFolder
               key={resume.id}
+              likeCount={resume.likeCount}
               resume={resume}
               likeList={likeList}
               onLikeUpdate={handleLikeUpdate}

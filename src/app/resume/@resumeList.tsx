@@ -34,13 +34,21 @@ export default function ResumeList({
 }: ResumeQueryParams = {}) {
   const [resumes, setResumes] = useState<Resume[]>([])
   const [limit, setLimit] = useState(8)
+
   const [ref, inView] = useInView({ threshold: 0.1 })
+
   const [likeList, setLikeList] = useState<string[]>([])
-  const { fetchLikes } = useLike()
   const [bookmarkList, setBookmarkList] = useState<string[]>([])
+
+  const { fetchLikes } = useLike()
   const { fetchBookmarks } = useBookmark()
 
-  const { data, isLoading, isError } = useGetResumeQuery({
+  const {
+    data: nesResumes,
+    isLoading,
+    isError,
+    refetch,
+  } = useGetResumeQuery({
     position,
     year,
     category,
@@ -78,6 +86,12 @@ export default function ResumeList({
           : resume,
       ),
     )
+
+    // 탭 변경 시에도 좋아요 상태 유지를 위해 서버 데이터 갱신
+    setTimeout(() => {
+      checkLike()
+      refetch()
+    }, 500)
   }
 
   const handleBookmarkUpdate = (resumeId: string, newBookmarkCount: number) => {
@@ -89,28 +103,40 @@ export default function ResumeList({
           : resume,
       ),
     )
+
+    // 탭 변경 시에도 좋아요 상태 유지를 위해 서버 데이터 갱신
+    setTimeout(() => {
+      checkBookmark()
+      refetch()
+    }, 500)
   }
+  useEffect(() => {
+    if (!nesResumes || isLoading) return
+
+    if (limit === 6) {
+      setResumes(nesResumes)
+    } else {
+      setResumes((prev) => {
+        const existingIds = new Set(prev.map((resume) => resume.id))
+        const newItems = nesResumes.filter(
+          (resume: any) => !existingIds.has(resume.id),
+        )
+        return [...prev, ...newItems]
+      })
+    }
+  }, [nesResumes, isLoading, limit])
 
   useEffect(() => {
-    setResumes([])
+    // setResumes([])
     setLimit(8)
     checkLike()
     checkBookmark()
+    refetch()
   }, [position, year, category])
 
   useEffect(() => {
-    if (data && Array.isArray(data)) {
-      setResumes((prev) => {
-        const existingIds = new Set(prev.map((p) => p.id))
-        const newResumes = data.filter((p) => !existingIds.has(p.id)) // 중복 제거
-        return [...prev, ...newResumes]
-      })
-    }
-  }, [data])
-
-  useEffect(() => {
     if (inView) {
-      setLimit((prev) => prev + 4)
+      setLimit((prev) => prev + 8)
     }
   }, [inView])
 
@@ -124,7 +150,7 @@ export default function ResumeList({
     )
   }
 
-  if (isError || (data && resumes.length === 0)) {
+  if (isError) {
     return (
       <div className="flex justify-center">
         <EmptyLottie
@@ -140,6 +166,7 @@ export default function ResumeList({
       {resumes.map((resume) => (
         <ResumeFolder
           key={resume.id}
+          likeCount={resume.likeCount}
           resume={resume}
           likeList={likeList}
           onLikeUpdate={handleLikeUpdate}
