@@ -28,18 +28,16 @@ export default function Search() {
   const [isLoading, setIsLoading] = useState(true)
   const [query, setQuery] = useState<string>('')
 
-  const searchParams = useSearchParams()
+  // const searchParams = useSearchParams()
 
-  // 클라이언트에서만 searchParams를 사용하도록 설정
+  // URL에서 query 파라미터를 가져오는 useEffect
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const searchParams = new URLSearchParams(window.location.search)
-      const queryParam = searchParams.get('query')
-      if (queryParam) {
-        setQuery(queryParam)
-      }
+    const searchParams = new URLSearchParams(window.location.search)
+    const queryParam = searchParams.get('query')
+    if (queryParam) {
+      setQuery(queryParam)
     }
-  }, [searchParams])
+  }, []) // searchParams가 바뀔 때마다 실행
 
   useEffect(() => {
     if (query) {
