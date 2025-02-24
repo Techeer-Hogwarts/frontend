@@ -5,13 +5,14 @@ import ResumeFolder from './ResumeFolder'
 import AddResume from './AddResume'
 import Link from 'next/link'
 import { ResumeQueryParams } from '@/types/queryParams'
-import { useGetResumeQuery } from '@/app/resume/query/useGetResumeQuery'
 import { fetchUserResumes } from '@/app/resume/api/getUserResume'
 import { useInView } from 'react-intersection-observer'
 import { useLike } from '@/app/blog/_lib/useLike'
 import { useBookmark } from '@/app/blog/_lib/useBookmark'
-import SkeletonResumeFolder from '../resume/SkeletonResume'
+import SkeletonResumeFolder from '@/components/resume/SkeletonResume'
 import { usePathname } from 'next/navigation'
+import AuthModal from '@/components/common/AuthModal'
+import { useAuthStore } from '@/store/authStore'
 
 interface Resume {
   id: string
@@ -47,8 +48,12 @@ export default function Resume({ userId }) {
   const { fetchBookmarks } = useBookmark()
 
   const pathname = usePathname()
+  const [authModalOpen, setAuthModalOpen] = useState(false)
+  const { user, checkAuth } = useAuthStore()
+
   const isMyPage = pathname === '/mypage'
 
+  // API 호출
   const fetchData = async () => {
     try {
       setIsLoading(true)
@@ -107,12 +112,17 @@ export default function Resume({ userId }) {
   }
 
   useEffect(() => {
+    checkAuth()
+  }, [checkAuth])
+
+  useEffect(() => {
+    // 로그인 상태가 바뀔 때마다 데이터를 다시 불러옴
     fetchData()
     setResumes([])
     setLimit(8)
     checkLike()
     checkBookmark()
-  }, [])
+  }, [userId, limit])
 
   useEffect(() => {
     if (data && Array.isArray(data)) {
@@ -130,26 +140,20 @@ export default function Resume({ userId }) {
     }
   }, [inView])
 
-  if (isLoading && resumes.length === 0) {
-    return (
-      <div className="flex flex-col">
-        <div className="flex justify-end mb-4">
-          <button className=" flex items-center justify-center p-2 h-8 w-[130px] rounded-md"></button>
-        </div>
-        <div className="grid grid-cols-3 gap-8">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <SkeletonResumeFolder key={`skeleton-${i}`} />
-          ))}
-        </div>
-      </div>
-    )
-  }
-
   const handleClickAddResume = () => {
     setModal(!modal)
   }
+
+  // 렌더
   return (
     <div>
+      {/* 인증 모달 */}
+      <AuthModal
+        isOpen={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+      />
+
+      {/* 상단 영역 */}
       <div className="flex w-[890px] justify-end mb-4">
         {isMyPage && (
           <button
@@ -161,21 +165,27 @@ export default function Resume({ userId }) {
         )}
         {modal && <AddResume setModal={setModal} fetchData={fetchData} />}
       </div>
-      <Link href="/detail">
-        <div className="grid grid-cols-3 gap-8">
-          {resumes.map((resume) => (
-            <ResumeFolder
-              key={resume.id}
-              likeCount={resume.likeCount}
-              resume={resume}
-              likeList={likeList}
-              onLikeUpdate={handleLikeUpdate}
-              bookmarkList={bookmarkList}
-              onBookmarkUpdate={handleBookmarkUpdate}
-            />
-          ))}
-        </div>
-      </Link>
+      {data.length === 0 ? (
+        // (A) 이력서 데이터가 없을 때
+        <div className="text-center text-gray">등록된 이력서가 없습니다.</div>
+      ) : (
+        // (B) 이력서 데이터가 있을 때
+        <Link href={`/resume/$[resume.id]`}>
+          <div className="grid grid-cols-3 gap-8">
+            {resumes.map((resume) => (
+              <ResumeFolder
+                key={resume.id}
+                likeCount={resume.likeCount}
+                resume={resume}
+                likeList={likeList}
+                onLikeUpdate={handleLikeUpdate}
+                bookmarkList={bookmarkList}
+                onBookmarkUpdate={handleBookmarkUpdate}
+              />
+            ))}
+          </div>
+        </Link>
+      )}
     </div>
   )
 }

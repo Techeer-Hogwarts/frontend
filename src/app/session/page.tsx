@@ -13,6 +13,8 @@ import { useSessionsQuery } from './_lib/useSessionsQuery'
 import AuthModal from '@/components/common/AuthModal'
 import EmptyLottie from '@/components/common/EmptyLottie'
 import SearchBar from '@/components/common/SearchBar'
+import BlogPostSkeleton from '@/components/blog/BlogPostSkeleton'
+
 interface User {
   name: string
   profileImage: string
@@ -28,20 +30,35 @@ interface Session {
   fileUrl: string
   user: User
 }
+
 const tapBarOptions = ['전체보기', '부트캠프', '파트너스', '금주의 세션']
+
 export default function Page() {
   const [selectedPeriodsP, setSelectedPeriodsP] = useState<string[]>([])
   const [selectedPeriodsB, setSelectedPeriodsB] = useState<string[]>([])
   const [selectedPeriodsPo, setSelectedPeriodsPo] = useState<string[]>([])
   const [likeList, setLikeList] = useState([])
   const [message, setMessage] = useState<string | null>(null)
+
+  // 탭 상태
   const { activeOption, setActiveOption } = useTapBarStore()
+
+  // 검색어, limit
   const [inputValue, setInputValue] = useState('')
   const [limit, setLimit] = useState(12)
-  const { fetchLikes } = useLike()
+
+  // 세션 목록
   const [allSessions, setAllSessions] = useState<Session[]>([])
-  const [ref, inView] = useInView({ triggerOnce: false, threshold: 0.5 })
+  // 로그인 모달
   const [authModalOpen, setAuthModalOpen] = useState(false)
+
+  // 무한 스크롤
+  const [ref, inView] = useInView({ triggerOnce: false, threshold: 0.5 })
+
+  // 좋아요 API
+  const { fetchLikes } = useLike()
+
+  // React Query
   const {
     data: newSessions,
     isLoading,
@@ -57,17 +74,20 @@ export default function Page() {
     setAuthModalOpen,
   })
 
-  // 카테고리 변경 처리 함수
+  // 탭 변경 시
   const handleCategoryChange = () => {
-    // 카테고리가 변경되면 해당 카테고리에 맞는 블로그 데이터를 가져옵니다.
-    setLimit(12) // 페이지네이션 초기화
+    setLimit(12)
     refetch()
   }
+
+  // 삭제 메시지
   const showMessage = () => {
     setMessage('세션영상이 삭제되었습니다.')
     setTimeout(() => setMessage(null), 2000)
     refetch()
   }
+
+  // 좋아요 목록 조회
   const checkLike = async () => {
     try {
       const data = await fetchLikes('SESSION', 0, 50)
@@ -79,8 +99,8 @@ export default function Page() {
     }
   }
 
+  // 좋아요 업데이트
   const handleLikeUpdate = (sessionId: string, newLikeCount: number) => {
-    // 현재 세션 데이터에서 해당 ID를 가진 세션 찾아 업데이트
     setAllSessions((prev) =>
       prev.map((session) =>
         session.id === sessionId
@@ -88,13 +108,13 @@ export default function Page() {
           : session,
       ),
     )
-
-    // 탭 변경 시에도 좋아요 상태 유지를 위해 서버 데이터 갱신
     setTimeout(() => {
       checkLike()
       refetch()
     }, 500)
   }
+
+  // newSessions가 바뀔 때, allSessions에 합침
   useEffect(() => {
     if (!newSessions || isLoading) return
 
@@ -110,42 +130,51 @@ export default function Page() {
       })
     }
   }, [newSessions, isLoading, limit])
-  const [searchResults, setSearchResults] = useState<any>(null)
-  // 탭, 필터링 변경 시 상태 초기화
+
+  // 탭/필터 변경 시
   useEffect(() => {
     setLimit(12)
     checkLike()
     refetch()
   }, [activeOption, selectedPeriodsP, selectedPeriodsPo, selectedPeriodsB])
-  // 무한 스크롤 처리
+
+  // 무한 스크롤
   useEffect(() => {
-    if (!inView) return
+    if (!inView || isLoading) return
     setLimit((prev) => prev + 12)
     if (activeOption === '금주의 세션') {
       refetch()
     }
-  }, [inView])
-  // useEffect(() => {
-  //   setActiveOption(tapBatOptions[0])
-  // }, [])
+  }, [inView, isLoading])
+
+  // 검색 결과
+  const [searchResults, setSearchResults] = useState<any>(null)
+
   return (
     <div className="flex justify-center h-auto min-h-screen">
       <div className="flex flex-col">
+        {/* 로그인 모달 */}
         <AuthModal
           isOpen={authModalOpen}
           onClose={() => setAuthModalOpen(false)}
         />
+
+        {/* 삭제 메시지 */}
         {message && (
           <div className="fixed z-50 px-4 py-2 text-center text-white transform -translate-x-1/2 rounded-md bg-red-500/80 bottom-5 left-1/2">
             {message}
           </div>
         )}
+
+        {/* 상단 제목 */}
         <div className="w-[1200px] text-left mt-14 mb-[2.84rem]">
           <p className="text-[2rem] font-bold">세션영상</p>
           <p className="text-[1.25rem]">테커인들의 세션영상을 확인해보세요.</p>
         </div>
+
+        {/* 필터 초기화 대신 role="button" */}
         <div
-          typeof="button"
+          role="button"
           onClick={() => {
             setSelectedPeriodsP([])
             setSelectedPeriodsPo([])
@@ -161,7 +190,11 @@ export default function Page() {
             />
           </div>
         </div>
+
+        {/* 구분선 */}
         <div className="flex w-full h-[1px] my-5 bg-gray" />
+
+        {/* 필터 드롭다운 */}
         <div className="flex items-center justify-start gap-8">
           <div className="flex justify-start gap-3">
             {activeOption === '부트캠프' && (
@@ -252,6 +285,8 @@ export default function Page() {
             )}
           </div>
         </div>
+
+        {/* 필터 버튼들 */}
         {activeOption !== '금주의 세션' &&
           [selectedPeriodsP, selectedPeriodsPo, selectedPeriodsB].some(
             (arr) => arr.length > 0,
@@ -280,7 +315,8 @@ export default function Page() {
               ))}
             </div>
           )}
-        {/* ✅ 로그인 안 했으면 즉시 EmptyLottie 표시 */}
+
+        {/* 메인 렌더 로직 */}
         {authModalOpen ? (
           <div className="flex justify-center">
             <EmptyLottie
@@ -288,7 +324,15 @@ export default function Page() {
               text2="로그인 후 다시 시도해주세요."
             />
           </div>
+        ) : isLoading ? (
+          // 로딩 중 → 스켈레톤 (예: 8개)
+          <div className="grid grid-cols-4 gap-8 mt-[2.84rem] ">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <BlogPostSkeleton key={i} />
+            ))}
+          </div>
         ) : error || (newSessions && allSessions.length === 0) ? (
+          // 에러 or 빈 배열
           <div className="flex justify-center">
             <EmptyLottie
               text="세션 데이터가 없습니다."
@@ -296,6 +340,7 @@ export default function Page() {
             />
           </div>
         ) : (
+          // 정상 목록
           <div className="grid flex-col grid-cols-4 gap-8 mt-[2.84rem]">
             {allSessions.map((data: Session) => (
               <SessionPost
@@ -316,6 +361,7 @@ export default function Page() {
             <div ref={ref} />
           </div>
         )}
+
         <AddBtn />
       </div>
     </div>
