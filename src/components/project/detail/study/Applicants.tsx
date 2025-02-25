@@ -58,11 +58,7 @@ function Box({
   )
 }
 
-export default function Applicants({
-  projectType,
-  applicants,
-  onOpen,
-}: any) {
+export default function Applicants({ projectType, applicants, onOpen }: any) {
   const [isOpen, setIsOpen] = useState(false)
 
   const toggleDropdown = () => {
@@ -77,7 +73,7 @@ export default function Applicants({
         onClick={toggleDropdown}
         className="w-[19rem] gap-32 px-[1.63rem] h-[2.4375rem] flex items-center bg-white rounded-lg shadow-md border border-primary cursor-pointer"
       >
-        {projectType === 'study' ? '스터디 지원자' : '프로젝트 지원자'}
+        스터디 지원자
         {isOpen ? <IoChevronUpSharp /> : <IoChevronDownSharp />}
       </div>
       {/* 드롭다운 내용 */}
