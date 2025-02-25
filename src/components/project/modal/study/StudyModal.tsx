@@ -170,7 +170,7 @@ const MemberModal = ({
                     alt="ProfileInfo"
                     width={24}
                     height={24}
-                    className="w-[24px] h-[24px] rounded-md bg-lightpink"
+                    className="w-[24px] h-[24px] rounded-md "
                   />
                   <div className="flex gap-3 items-center">
                     <p>{member.name}</p>

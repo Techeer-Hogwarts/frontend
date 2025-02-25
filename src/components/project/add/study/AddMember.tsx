@@ -123,7 +123,7 @@ export default function AddMember({
               width={76}
               height={76}
               alt="Profile Image"
-              className="w-[76px] h-[76px] object-cover border rounded-md bg-lightpink"
+              className="w-[76px] h-[76px] object-cover border rounded-md "
             />
             {/* 리더 표시 */}
             {member.isLeader && (

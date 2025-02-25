@@ -133,7 +133,7 @@ export default function ApplicantModal({
             width={100}
             height={100}
             alt="img"
-            className="border bg-lightpink object-cover w-[100px] h-[100px] rounded-md"
+            className="border  object-cover w-[100px] h-[100px] rounded-md"
           />
         </div>
         <div className="flex items-center justify-center gap-2 mb-3">

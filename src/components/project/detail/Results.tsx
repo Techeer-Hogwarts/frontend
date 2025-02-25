@@ -15,7 +15,7 @@ const ResultBox = ({ url }: ResultBoxProps) => {
         width={409}
         height={223}
         alt="Picture"
-        className="rounded-md bg-lightpink object-cover w-[409px] h-[223px]"
+        className="rounded-md object-cover w-[409px] h-[223px]"
       />
     </div>
   )
