@@ -35,7 +35,7 @@ export default function Member({ members }: any) {
                 width={76}
                 height={76}
                 alt="Picture"
-                className="mas-w-[4.75rem] max-h-[4.75rem] border rounded-md bg-lightpink"
+                className="mas-w-[4.75rem] max-h-[4.75rem] border rounded-md "
               ></Image>
               {member.isLeader && (
                 <div

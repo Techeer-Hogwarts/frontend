@@ -56,7 +56,7 @@ export default function Member({ members }: any) {
                   width={76}
                   height={76}
                   alt="ProfileInfo"
-                  className="border rounded-md bg-lightpink object-cover w-[76px] h-[76px]"
+                  className="border rounded-md  object-cover w-[76px] h-[76px]"
                 />
                 {member.isLeader && (
                   <div
