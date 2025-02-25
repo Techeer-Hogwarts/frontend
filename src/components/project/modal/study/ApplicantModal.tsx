@@ -123,7 +123,7 @@ export default function ApplicantModal({
             width={100}
             height={100}
             alt="img"
-            className="border bg-lightpink"
+            className="border "
           />
         </div>
         <div className="flex items-center justify-center gap-2 mb-3">

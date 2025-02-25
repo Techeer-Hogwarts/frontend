@@ -154,7 +154,7 @@ export default function AddMember({
               width={76}
               height={76}
               alt="Picture"
-              className="border rounded-md bg-lightpink w-[76px] h-[76px] object-cover"
+              className="border rounded-md w-[76px] h-[76px] object-cover"
             />
 
             {member.isLeader && (

@@ -14,7 +14,7 @@ const ResultBox = ({ url }: ResultBoxProps) => {
         width={409}
         height={223}
         alt="Picture"
-        className="max-w-[25.5625rem] max-h-[13.9375rem] rounded-md bg-lightpink"
+        className="max-w-[25.5625rem] max-h-[13.9375rem] rounded-md "
       />
     </div>
   )

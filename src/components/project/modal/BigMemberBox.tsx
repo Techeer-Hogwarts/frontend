@@ -65,7 +65,7 @@ const BigMemberBox = ({
         alt="ProfileInfo Image"
         width={76}
         height={76}
-        className="w-[76px] h-[76px] bg-lightpink rounded-md object-cover"
+        className="w-[76px] h-[76px] rounded-md object-cover"
       />
       <div className="flex flex-col">
         <div className="flex items-center gap-1">

@@ -13,7 +13,10 @@ import { useGetResumeQuery } from '@/app/resume/query/useGetResumeQuery'
 import ResumeFolder from './ResumeFolder'
 import SkeletonResumeFolder from '../resume/SkeletonResume'
 import { IoReturnDownBack } from 'react-icons/io5'
+import EmptyLottie from '../common/EmptyLottie'
+
 const tapBarOptions = ['세션영상', '블로그', '이력서']
+
 export default function Bookmark() {
   const { refetch } = useGetResumeQuery({})
 
@@ -75,7 +78,6 @@ export default function Bookmark() {
   }
 
   const handleBookmarkUpdate = (resumeId: string, newBookmarkCount: number) => {
-    // 현재 이력서 데이터에서 해당 ID를 가진 이력서 찾아 업데이트
     setBookmarkList((prev) =>
       prev.map((resume) =>
         resume.id === resumeId
@@ -83,15 +85,13 @@ export default function Bookmark() {
           : resume,
       ),
     )
-
-    // 탭 변경 시에도 좋아요 상태 유지를 위해 서버 데이터 갱신
     setTimeout(() => {
       checkBookmark()
       refetch()
     }, 500)
   }
+
   const handleLikeUpdate = (resumeId: string, newLikeCount: number) => {
-    // 현재 이력서 데이터에서 해당 ID를 가진 이력서 찾아 업데이트
     setLikeList((prev) =>
       prev.map((resume) =>
         resume.id === resumeId
@@ -99,13 +99,12 @@ export default function Bookmark() {
           : resume,
       ),
     )
-
-    // 탭 변경 시에도 좋아요 상태 유지를 위해 서버 데이터 갱신
     setTimeout(() => {
       checkLike()
       refetch()
     }, 500)
   }
+
   useEffect(() => {
     setLimit(6)
     checkLike()
@@ -127,80 +126,93 @@ export default function Bookmark() {
   }, [inView])
 
   const handleCategoryChange = () => {
-    // 카테고리가 변경되면 해당 카테고리에 맞는 블로그 데이터를 가져옵니다.
-    setLimit(6) // 페이지네이션 초기화
+    setLimit(6)
     refetch()
   }
+
   return (
     <div>
       <div className="w-[890px]">
         <TapBar options={tapBarOptions} onSelect={handleCategoryChange} />
         <div className="flex w-full h-[1px] mt-5 bg-gray" />
       </div>
-      <div
-        className={`grid gap-7 mt-5 ${
-          activeOption === '이력서' ? 'grid-cols-3' : 'grid-cols-2'
-        }`}
-      >
-        {isLoading
-          ? activeOption === '이력서'
+      {isLoading ? (
+        <div
+          className={`grid gap-7 mt-5 ${
+            activeOption === '이력서' ? 'grid-cols-3' : 'grid-cols-2'
+          }`}
+        >
+          {activeOption === '이력서'
             ? Array.from({ length: 6 }).map((_, index) => (
                 <SkeletonResumeFolder key={index} />
               ))
             : Array.from({ length: 4 }).map((_, index) => (
                 <Skeleton key={index} />
-              ))
-          : bookmarks.map((bookmark: any) => {
-              if (activeOption === '블로그') {
-                return (
-                  <BlogPost
-                    key={bookmark.id}
-                    title={bookmark.title}
-                    id={bookmark.id}
-                    date={bookmark.date}
-                    url={bookmark.url}
-                    likeCount={bookmark.likeCount}
-                    name={bookmark.author?.authorName || ''}
-                    image={bookmark.thumbnail}
-                    authorImage={bookmark.author?.authorImage}
-                    onDelete={bookmark}
-                    likeList={likeList}
-                  />
-                )
-              } else if (activeOption === '세션영상') {
-                return (
-                  <SessionPost
-                    key={bookmark.id}
-                    likeCount={bookmark.likeCount}
-                    id={bookmark.id}
-                    thumbnail={bookmark.thumbnail}
-                    title={bookmark.title}
-                    date={bookmark.date}
-                    presenter={bookmark.presenter}
-                    fileUrl={bookmark.fileUrl}
-                    showMessage={bookmark}
-                    userImage={bookmark.user.profileImage}
-                    likeList={likeList}
-                    onLikeUpdate={bookmark}
-                  />
-                )
-              } else if (activeOption === '이력서') {
-                return (
-                  <ResumeFolder
-                    key={bookmark.id}
-                    likeCount={bookmark.likeCount}
-                    resume={bookmark}
-                    likeList={likeList}
-                    onLikeUpdate={handleLikeUpdate}
-                    bookmarkList={bookmarkList}
-                    onBookmarkUpdate={handleBookmarkUpdate}
-                  />
-                )
-              }
-              return null
-            })}
-        <div ref={ref} />
-      </div>
+              ))}
+        </div>
+      ) : bookmarks.length === 0 ? (
+        // grid 외부에 빈 상태 컴포넌트를 flex 컨테이너로 중앙 정렬 처리
+        <div className="flex flex-col items-center justify-center mt-20">
+          <EmptyLottie text="북마크한 세션영상이 없습니다." text2="" />
+        </div>
+      ) : (
+        <div
+          className={`grid gap-7 mt-5 ${
+            activeOption === '이력서' ? 'grid-cols-3' : 'grid-cols-2'
+          }`}
+        >
+          {bookmarks.map((bookmark: any) => {
+            if (activeOption === '블로그') {
+              return (
+                <BlogPost
+                  key={bookmark.id}
+                  title={bookmark.title}
+                  id={bookmark.id}
+                  date={bookmark.date}
+                  url={bookmark.url}
+                  likeCount={bookmark.likeCount}
+                  name={bookmark.author?.authorName || ''}
+                  image={bookmark.thumbnail}
+                  authorImage={bookmark.author?.authorImage}
+                  onDelete={bookmark}
+                  likeList={likeList}
+                />
+              )
+            } else if (activeOption === '세션영상') {
+              return (
+                <SessionPost
+                  key={bookmark.id}
+                  likeCount={bookmark.likeCount}
+                  id={bookmark.id}
+                  thumbnail={bookmark.thumbnail}
+                  title={bookmark.title}
+                  date={bookmark.date}
+                  presenter={bookmark.presenter}
+                  fileUrl={bookmark.fileUrl}
+                  showMessage={bookmark}
+                  userImage={bookmark.user.profileImage}
+                  likeList={likeList}
+                  onLikeUpdate={bookmark}
+                />
+              )
+            } else if (activeOption === '이력서') {
+              return (
+                <ResumeFolder
+                  key={bookmark.id}
+                  likeCount={bookmark.likeCount}
+                  resume={bookmark}
+                  likeList={likeList}
+                  onLikeUpdate={handleLikeUpdate}
+                  bookmarkList={bookmarkList}
+                  onBookmarkUpdate={handleBookmarkUpdate}
+                />
+              )
+            }
+            return null
+          })}
+          <div ref={ref} />
+        </div>
+      )}
     </div>
   )
 }

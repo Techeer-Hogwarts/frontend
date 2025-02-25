@@ -59,7 +59,7 @@ function ImageOrIcon({ src, alt }: { src?: string; alt: string }) {
       alt={alt}
       width={64}
       height={64}
-      className="rounded object-cover w-[64px] h-[64px]"
+      className="rounded object-cover w-[64px] h-[64px] "
       unoptimized
       onError={() => setImgError(true)}
     />

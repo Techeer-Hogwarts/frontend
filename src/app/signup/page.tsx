@@ -75,8 +75,45 @@ const Signup = () => {
     }))
   }
 
+  const passwordsMatch =
+    formData.password === formData.confirmPassword &&
+    formData.password.length > 0
+
   const handleNext = () => {
     setSignupError('')
+    // 스텝 1 필드 검증: 각 필드가 비어있거나, isVerified가 false면 alert 후 진행하지 않음
+    if (!formData.name.trim()) {
+      alert('이름을 입력해주세요.')
+      return
+    }
+    if (!formData.email.trim()) {
+      alert('이메일을 입력해주세요.')
+      return
+    }
+    if (!formData.password) {
+      alert('비밀번호를 입력해주세요.')
+      return
+    }
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&]).{8,}$/
+    if (!passwordRegex.test(formData.password)) {
+      alert(
+        '비밀번호 양식에 맞지 않습니다. 영어, 숫자, 특수문자를 각각 최소 한 개 이상 포함해주세요.',
+      )
+      return
+    }
+    if (!formData.confirmPassword) {
+      alert('비밀번호 확인을 입력해주세요.')
+      return
+    }
+    if (!formData.isVerified) {
+      alert('이메일 인증을 완료해주세요.')
+      return
+    }
+    if (!passwordsMatch) {
+      alert('비밀번호가 일치하지 않습니다.')
+      return
+    }
+    // 모든 필드가 유효하면 스텝 진행
     if (step < 2) {
       setStep(step + 1)
     }
@@ -89,22 +126,78 @@ const Signup = () => {
     }
   }
 
-  const passwordsMatch =
-    formData.password === formData.confirmPassword &&
-    formData.password.length > 0
-
   const handleSignup = async () => {
     setSignupError('')
 
-    if (!formData.isVerified) {
-      setSignupError('이메일 인증을 완료해주세요.')
+    if (!formData.school.trim()) {
+      alert('대학교를 선택해주세요.')
+      return
+    }
+    if (!formData.classYear.trim()) {
+      alert('학년을 선택해주세요.')
+      return
+    }
+    if (!formData.selectedBatch.trim()) {
+      alert('기수를 선택해주세요.')
+      return
+    }
+    if (!formData.resumeTitle.trim()) {
+      alert('이력서 제목을 입력해주세요.')
+      return
+    }
+    if (!formData.resumeFile) {
+      alert('이력서 파일을 업로드해주세요.')
+      return
+    }
+    if (!formData.resumeCategory.trim()) {
+      alert('이력서 카테고리를 선택해주세요.')
+      return
+    }
+    if (!formData.resumePosition) {
+      alert('이력서 포지션을 선택해주세요.')
+      return
+    }
+    if (formData.selectedPositions.length === 0) {
+      alert('포지션을 선택해주세요.')
+      return
+    }
+    if (!formData.recommendation) {
+      alert('추천 여부를 선택해주세요.')
+      return
+    }
+    if (!formData.githubUrl.trim()) {
+      alert('깃허브 URL을 입력해주세요.')
       return
     }
 
-    if (!passwordsMatch) {
-      setSignupError('비밀번호가 일치하지 않습니다.')
+    if (!formData.employmentStatus) {
+      alert('경력 여부를 선택해주세요.')
       return
     }
+    if (formData.employmentStatus === 'yes') {
+      if (!formData.internshipExperience) {
+        alert('인턴 경험 여부를 선택해주세요.')
+        return
+      }
+      if (!formData.jobExperience) {
+        alert('정규직 경험 여부를 선택해주세요.')
+        return
+      }
+    }
+    if (!formData.isVerified) {
+      alert('이메일 인증을 완료해주세요.')
+      return
+    }
+
+    // if (!formData.isVerified) {
+    //   setSignupError('이메일 인증을 완료해주세요.')
+    //   return
+    // }
+
+    // if (!passwordsMatch) {
+    //   setSignupError('비밀번호가 일치하지 않습니다.')
+    //   return
+    // }
 
     // 모든 검증 통과 후 로딩 시작
     setIsLoading(true)
