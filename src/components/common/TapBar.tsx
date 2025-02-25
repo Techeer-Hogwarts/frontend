@@ -18,9 +18,9 @@ export default function TapBar({ options, onSelect }: TapBarProps) {
   }, [pathname])
 
   return (
-    <div className="flex">
+    <div className="flex items-center">
       {options.map((option) => (
-        <div key={option} className="flex ">
+        <div key={option} className="flex items-center">
           <TapBtn
             isActive={activeOption === option}
             onClick={() => {
