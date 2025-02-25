@@ -132,7 +132,7 @@ export default function Bookmark() {
     refetch()
   }
   return (
-    <div className="ml-10">
+    <div>
       <div className="w-[890px]">
         <TapBar options={tapBarOptions} onSelect={handleCategoryChange} />
         <div className="flex w-full h-[1px] mt-5 bg-gray" />
