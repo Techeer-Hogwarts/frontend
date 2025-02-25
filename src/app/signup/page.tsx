@@ -94,7 +94,7 @@ const Signup = () => {
       alert('비밀번호를 입력해주세요.')
       return
     }
-    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&]).+$/
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&]).{8,}$/
     if (!passwordRegex.test(formData.password)) {
       alert(
         '비밀번호 양식에 맞지 않습니다. 영어, 숫자, 특수문자를 각각 최소 한 개 이상 포함해주세요.',
