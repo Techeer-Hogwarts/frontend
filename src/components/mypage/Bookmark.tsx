@@ -153,7 +153,7 @@ export default function Bookmark() {
       ) : bookmarks.length === 0 ? (
         // grid 외부에 빈 상태 컴포넌트를 flex 컨테이너로 중앙 정렬 처리
         <div className="flex flex-col items-center justify-center mt-20">
-          <EmptyLottie text="북마크한 세션영상이 없습니다." text2="" />
+          <EmptyLottie text="북마크한 콘텐츠가 없습니다." text2="" />
         </div>
       ) : (
         <div
