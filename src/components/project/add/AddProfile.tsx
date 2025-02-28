@@ -99,8 +99,10 @@ export default function AddProfile({
           ) : (
             <div className="flex flex-col w-full h-full rounded-md bg-lightgray text-gray items-center justify-center gap-4">
               <FaRegImage size={30} />
-              <div className = "flex flex-col items-center">
-                <span className="text-gray">눌러서 이미지를 업로드해주세요</span>
+              <div className="flex flex-col items-center">
+                <span className="text-gray">
+                  눌러서 이미지를 업로드해주세요
+                </span>
                 <span className="text-gray">jpg, jpeg, png, gif 가능</span>
               </div>
             </div>
@@ -181,7 +183,8 @@ export default function AddProfile({
             value={projectData.studyExplain}
             onChange={handleInputChange}
             maxLength={200}
-            className="w-full p-2 border border-gray rounded-lg focus:outline-none"
+            className="w-full p-2 border border-gray rounded-lg focus:outline-none resize-none
+"
             rows={7}
           />
         )}
@@ -191,12 +194,13 @@ export default function AddProfile({
             value={projectData.projectExplain}
             onChange={handleInputChange}
             maxLength={200}
-            className="w-full p-2 border border-gray rounded-lg focus:outline-none"
+            className="w-full p-2 border border-gray rounded-lg focus:outline-none resize-none
+"
             rows={7}
           />
         )}
-        <p className="text-right text-xs mt-1">
-          {projectData?.studyExplain?.length}/200
+        <p className="text-right text-xs mt-1 whitespace-pre-wrap">
+          {projectData?.projectExplain?.length}/200
         </p>
       </div>
     </div>
