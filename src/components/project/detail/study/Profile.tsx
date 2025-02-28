@@ -86,7 +86,7 @@ export default function Profile({ projectDetail }: ProfileProps) {
               onClick={() => (window.location.href = projectDetail?.notionLink)}
             >
               <Image
-                src="/images/project/notion.png"
+                src="/images/project/notion.svg"
                 width={20}
                 height={20}
                 alt="notion"
@@ -95,7 +95,7 @@ export default function Profile({ projectDetail }: ProfileProps) {
           )}
         </div>
       </div>
-      <div className="w-[15.875rem]">
+      <div className="w-[15.875rem] whitespace-pre-wrap">
         {projectType === 'study'
           ? projectDetail?.studyExplain
           : projectDetail?.projectExplain}
