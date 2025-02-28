@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation'
 import AuthModal from '@/components/common/AuthModal'
 import { useAuthStore } from '@/store/authStore'
 import { getSingleSession } from '@/app/session/_lib/getSingleSession'
+import Link from 'next/link'
 
 export default function ShowVideo() {
   const router = useRouter()
@@ -61,17 +62,12 @@ export default function ShowVideo() {
     }
   }, [loadingAuth, sessionLoading, user])
 
-  // 뒤로 가기
-  const onClickBack = () => {
-    router.push('/session')
-  }
-
-  // 4) 아직 로딩 중이면 스켈레톤이나 빈 화면 표시 (간단히 null 처리)
+  // 아직 로딩 중이면 스켈레톤이나 빈 화면 표시 (간단히 null 처리)
   if (loadingAuth || sessionLoading) {
     return null // 혹은 스켈레톤 컴포넌트
   }
 
-  // 5) 최종 렌더
+  //  최종 렌더
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
       {/* 인증 모달 */}
@@ -90,12 +86,13 @@ export default function ShowVideo() {
             height="480"
             title="Session Video"
           />
-          <button
-            onClick={onClickBack}
+          <Link
+            href="/session"
+            // onClick={onClickBack}
             className="absolute z-40 flex items-center justify-center text-white text-gray-500 rounded-full top-6 right-6 w-7 h-7 bg-black/60 hover:text-white/70"
           >
             ✕
-          </button>
+          </Link>
         </div>
       )}
     </div>
