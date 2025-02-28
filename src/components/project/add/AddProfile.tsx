@@ -200,7 +200,7 @@ export default function AddProfile({
           />
         )}
         <p className="text-right text-xs mt-1 whitespace-pre-wrap">
-          {projectData?.studyExplain?.length}/200
+          {projectData?.projectExplain?.length}/200
         </p>
       </div>
     </div>
