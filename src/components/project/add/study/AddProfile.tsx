@@ -92,10 +92,11 @@ export default function AddProfile({ projectData, onUpdate }) {
           value={projectData.studyExplain}
           onChange={handleInputChange}
           maxLength={200}
-          className="w-full p-2 border border-gray rounded-lg focus:outline-none"
+          className="w-full p-2 border border-gray rounded-lg focus:outline-none resize-none
+"
           rows={7}
         />
-        <p className="text-right text-xs mt-1">
+        <p className="text-right text-xs mt-1 whitespace-pre-wrap">
           {projectData?.studyExplain?.length}/200
         </p>
       </div>

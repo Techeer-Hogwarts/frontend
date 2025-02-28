@@ -120,7 +120,7 @@ export default function Profile({ projectDetail }: ProfileProps) {
       </div>
 
       {/* 설명 */}
-      <div className="w-[15.875rem]">
+      <div className="w-[15.875rem] whitespace-pre-wrap">
         {projectType === 'study'
           ? projectDetail?.studyExplain
           : projectDetail?.projectExplain}
