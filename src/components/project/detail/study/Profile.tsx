@@ -86,7 +86,7 @@ export default function Profile({ projectDetail }: ProfileProps) {
               onClick={() => (window.location.href = projectDetail?.notionLink)}
             >
               <Image
-                src="/images/project/notion.png"
+                src="/images/project/notion.svg"
                 width={20}
                 height={20}
                 alt="notion"
