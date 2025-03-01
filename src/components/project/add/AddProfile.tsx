@@ -132,7 +132,9 @@ export default function AddProfile({
 
       <div className="flex w-[15.875rem] justify-between items-center mt-[0.94rem] mb-[1.44rem]">
         <div>
-          <p className="text-sm mb-1 text-gray">프로젝트 이름을 입력해주세요</p>
+          <p className="text-sm mb-1 text-gray">
+            프로젝트 이름을 입력해주세요 <span className="text-primary">*</span>
+          </p>
           <input
             name="name"
             value={projectData.name}
@@ -160,7 +162,7 @@ export default function AddProfile({
             />
           </div>
 
-          <div className="flex justify-between items-center gap-3">
+          <div className="flex justify-between items-center gap-1">
             <div className="w-[4.41919rem] h-[1.5625rem] border border-primary rounded-[0.19rem] text-primary text-center">
               노션
             </div>

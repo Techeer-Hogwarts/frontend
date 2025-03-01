@@ -67,7 +67,7 @@ export default function AddProfile({ projectData, onUpdate }) {
         <p className="text-sm mb-1 text-gray">관련 링크를 입력해주세요</p>
 
         <div className="flex gap-2 flex-col">
-          <div className="flex justify-between items-center gap-3">
+          <div className="flex justify-between items-center gap-1">
             <div className="w-[4.41919rem] h-[1.5625rem] border border-primary rounded-[0.19rem] text-primary text-center">
               노션
             </div>
@@ -83,9 +83,7 @@ export default function AddProfile({ projectData, onUpdate }) {
       </div>
 
       <div className="w-[15.875rem] mt-4">
-        <p className="text-sm mb-1 text-gray">
-          스터디 설명을 입력해주세요<span className="text-primary">*</span>
-        </p>
+        <p className="text-sm mb-1 text-gray">스터디 설명을 입력해주세요</p>
 
         <textarea
           name="studyExplain"

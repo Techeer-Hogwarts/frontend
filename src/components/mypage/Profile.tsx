@@ -47,6 +47,8 @@ export default function Profile({ profile }: ProfileProps) {
   const [name, setName] = useState(profile?.name || '')
   const [email, setEmail] = useState(profile?.email || '')
   const [school, setSchool] = useState(profile?.school || '')
+  // "해당 없음"을 선택했을 때 사용자가 직접 입력한 학교명
+  const [customSchool, setCustomSchool] = useState('')
   const [classYear, setClassYear] = useState(profile?.grade || '')
   const [year, setYear] = useState<number>(profile?.year || 6)
   const [githubUrl, setGithubUrl] = useState(profile?.githubUrl || '')
@@ -85,7 +87,6 @@ export default function Profile({ profile }: ProfileProps) {
   const [syncMessage, setSyncMessage] = useState('')
   const [syncIsError, setSyncIsError] = useState(false)
   const [updateMessage, setUpdateMessage] = useState('')
-  const [updateError, setUpdateError] = useState('')
 
   const bottomRef = useRef<HTMLDivElement>(null)
 
@@ -143,7 +144,13 @@ export default function Profile({ profile }: ProfileProps) {
   // 최종 수정 로직
   const handleProfileUpdate = async () => {
     setUpdateMessage('')
-    setUpdateError('')
+
+    if (school === '해당 없음' && !customSchool.trim()) {
+      alert('학교명을 직접 입력해주세요.')
+      return
+    }
+
+    const finalSchool = school === '해당 없음' ? customSchool.trim() : school
 
     // 경력 삭제
     try {
@@ -162,7 +169,7 @@ export default function Profile({ profile }: ProfileProps) {
         })
       }
     } catch (err) {
-      setUpdateError('경력 삭제 중 오류가 발생했습니다.')
+      alert('경력 삭제 중 오류가 발생했습니다.')
       return
     }
 
@@ -209,7 +216,7 @@ export default function Profile({ profile }: ProfileProps) {
       updateRequest: {
         year,
         isLft: recommendation === '예',
-        school,
+        school: finalSchool,
         grade: classYear,
         mainPosition,
         subPosition,
@@ -233,7 +240,7 @@ export default function Profile({ profile }: ProfileProps) {
 
       if (!response.ok) {
         if (response.status === 400) {
-          setUpdateError('항목을 모두 입력해주세요.')
+          alert('항목을 모두 입력해주세요.')
           return
         }
         return
@@ -242,7 +249,7 @@ export default function Profile({ profile }: ProfileProps) {
       setUpdateMessage('프로필 업데이트가 완료되었습니다.')
       window.location.reload()
     } catch (error: any) {
-      setUpdateError('네트워크 오류가 발생했습니다.')
+      alert('네트워크 오류가 발생했습니다.')
     }
   }
 
@@ -296,63 +303,87 @@ export default function Profile({ profile }: ProfileProps) {
       {/* 이름 */}
       <ProfileInputField
         title="이름"
-        placeholder="이름을 입력해주세요(시니어멘토는 영어 이름 입력 가능)"
+        placeholder="이름을 입력해주세요"
         value={name}
         onChange={(e) => setName(e.target.value)}
         readOnly
       />
 
       {/* 학교 정보 */}
-      <div className="flex items-center">
-        <h3 className="w-[130px] text-lg">학교 정보</h3>
-        <div className="flex w-80 justify-start space-x-5">
-          <Select
-            title="대학교"
-            options={[
-              '강원대학교',
-              '가톨릭대학교',
-              '가천대학교',
-              '광운대학교',
-              '단국대학교',
-              '대구가톨릭대학교',
-              '덕성여자대학교',
-              '동덕여자대학교',
-              '서강대학교',
-              '성결대학교',
-              '세종대학교',
-              '안양대학교',
-              '연세대학교',
-              '이화여자대학교',
-              '인천대학교',
-              '인하대학교',
-              '중앙대학교',
-              '창원대학교',
-              '충남대학교',
-              '충북대학교',
-              '평택대학교',
-              '부산대학교',
-              '한국공학대학교',
-              '한서대학교',
-              '한성대학교',
-              '호서대학교',
-              '해당 없음',
-            ]}
-            value={school}
-            onChange={(val) => setSchool(val)}
-          />
-          <Select
-            title="학년"
-            options={['1학년', '2학년', '3학년', '4학년', '졸업', '해당 없음']}
-            value={classYear}
-            onChange={(val) => setClassYear(val)}
-          />
+      <div className="flex items-start">
+        <h3 className="flex w-[130px] h-[40px] items-center text-lg">
+          학교 정보
+        </h3>
+        <div className="flex w-[420px] justify-start space-x-5">
+          <div className="relative w-[200px]">
+            <Select
+              title="대학교"
+              options={[
+                '강원대학교',
+                '가톨릭대학교',
+                '가천대학교',
+                '광운대학교',
+                '단국대학교',
+                '대구가톨릭대학교',
+                '덕성여자대학교',
+                '동덕여자대학교',
+                '서강대학교',
+                '성결대학교',
+                '세종대학교',
+                '안양대학교',
+                '연세대학교',
+                '이화여자대학교',
+                '인천대학교',
+                '인하대학교',
+                '중앙대학교',
+                '창원대학교',
+                '충남대학교',
+                '충북대학교',
+                '평택대학교',
+                '부산대학교',
+                '한국공학대학교',
+                '한서대학교',
+                '한성대학교',
+                '호서대학교',
+                '해당 없음',
+              ]}
+              value={school}
+              onChange={(val) => setSchool(val)}
+            />
+            {/* "해당 없음" 선택 시, 직접 입력 필드 표시 */}
+            {school === '해당 없음' && (
+              <input
+                type="text"
+                placeholder="직접 입력"
+                className="mt-2 w-[200px] h-10 px-4 border border-gray rounded-[0.25rem] focus:outline-none focus:border-primary"
+                value={customSchool}
+                onChange={(e) => setCustomSchool(e.target.value)}
+              />
+            )}
+          </div>
+
+          <div className="w-[200px]">
+            <Select
+              title="학년"
+              options={[
+                '1학년',
+                '2학년',
+                '3학년',
+                '4학년',
+                '졸업',
+                '해당 없음',
+              ]}
+              value={classYear}
+              onChange={(val) => setClassYear(val)}
+            />
+          </div>
         </div>
       </div>
 
       {/* 기수 */}
       <div className="flex items-center">
         <h3 className="w-[130px] text-lg mt-[6px]">기수</h3>
-        <div className="flex w-80 justify-start space-x-5">
+        <div className="flex w-[200px] justify-start space-x-5">
           <Select
             title="기수"
             options={[
@@ -475,7 +506,6 @@ export default function Profile({ profile }: ProfileProps) {
 
       {/* 업데이트 메시지 */}
       {updateMessage && <p className="text-green text-sm">{updateMessage}</p>}
-      {updateError && <p className="text-red-500 text-sm">{updateError}</p>}
 
       <div ref={bottomRef} className="border border-t-[1px] border-lightgray" />
 

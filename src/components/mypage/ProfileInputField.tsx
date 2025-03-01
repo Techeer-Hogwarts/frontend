@@ -22,7 +22,7 @@ export default function ProfileInputField({
         value={value}
         onChange={onChange}
         readOnly={readOnly}
-        className="w-[620px] h-10 px-4 border border-gray rounded-[0.25rem] focus:outline-none focus:border-primary"
+        className="w-[760px] h-10 px-4 border border-gray rounded-[0.25rem] focus:outline-none focus:border-primary"
       />
     </div>
   )

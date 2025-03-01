@@ -77,7 +77,7 @@ export default function Profile({ projectDetail }: ProfileProps) {
 
       {/* 프로젝트 이름 + 깃허브/노션 링크 */}
       <div className="flex w-[15.875rem] justify-between items-center mt-[0.94rem] mb-[1.44rem]">
-        <div className="text-[1.25rem] font-bold flex items-center justify-center">
+        <div className="w-[12.25rem] text-[1.25rem] font-bold flex items-center truncate">
           {projectDetail?.name}
         </div>
 
