@@ -74,8 +74,8 @@ export default function Profile({ projectDetail }: ProfileProps) {
         // />
       }
 
-      <div className="flex w-[15.875rem] justify-between items-center mt-[0.94rem] mb-[1.44rem] ">
-        <div className="w-[12.25rem] text-[1.25rem] font-bold flex items-center truncate">
+      <div className="flex w-[15.875rem] justify-between items-center mt-[0.94rem] mb-[1.44rem]">
+        <div className="max-w-[12.25rem] text-[1.25rem] font-bold flex items-center truncate">
           {projectDetail?.name}
         </div>
 

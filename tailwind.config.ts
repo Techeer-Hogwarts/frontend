@@ -38,6 +38,8 @@ const config: Config = {
       boxShadow: {
         custom: '1px 2px 4px 0px rgba(128, 128, 128, 0.73)',
         bgshadow: '0px 0px 8.2px 0px rgba(0, 0, 0, 0.14)',
+        cardtop: '0px -1px 4px 0px rgba(0, 0, 0, 0.1)',
+        card: '0px -1px 4px 0px rgba(0, 0, 0, 0.1), 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);',
       },
     },
   },
