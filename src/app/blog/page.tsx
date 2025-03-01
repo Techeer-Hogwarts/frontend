@@ -167,8 +167,7 @@ export default function Page() {
         const updated = syncLikeCount(newBlogs, newLikeList)
         setBlog(updated)
         setLimit(newLimit)
-      } catch (err) {
-      }
+      } catch (err) {}
     }
 
     fetchMore()
@@ -206,10 +205,10 @@ export default function Page() {
         {/* 메인 렌더 */}
         {isLoading ? (
           <div className="grid grid-cols-4 gap-8 mt-[2.84rem] ">
-          {Array.from({ length: 8 }).map((_, i) => (
-            <BlogPostSkeleton key={i} />
-          ))}
-        </div>
+            {Array.from({ length: 8 }).map((_, i) => (
+              <BlogPostSkeleton key={i} />
+            ))}
+          </div>
         ) : blog.length === 0 && hasFetched ? (
           // 로딩 완료 & 빈 배열
           <div className="flex justify-center">
@@ -226,12 +225,15 @@ export default function Page() {
                 key={index}
                 title={b.title}
                 id={b.id}
+                category={b.category}
                 date={b.date}
                 url={b.url}
                 likeCount={b.likeCount}
-                name={b.author.authorName}
+                userName={b.user.name}
+                userImage={b.user.profileImage}
                 image={b.thumbnail}
                 authorImage={b.author.authorImage}
+                authorName={b.author.authorName}
                 onDelete={handleDeleteSession}
                 likeList={likeList}
               />

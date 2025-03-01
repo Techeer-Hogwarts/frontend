@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 'use client'
 
 import Image from 'next/image'
@@ -7,14 +8,17 @@ import { useLike } from '@/app/blog/_lib/useLike'
 import BookmarkModal from '../common/BookmarkModal'
 
 export interface BlogPostProps {
-  readonly title: string
-  readonly name: string
-  readonly date: string
+  title: string
+  userName: string
+  userImage: string
+  date: string
   id: string
   url: string
   likeCount: number
   image: string
+  category: string
   likeList: string[]
+  authorName: string
   authorImage: string
   onDelete: (id: string) => void
 }
@@ -22,12 +26,15 @@ export interface BlogPostProps {
 export default function BlogPost({
   title,
   date,
-  name,
+  userName,
+  userImage,
   id,
+  category,
   likeCount: initialLikeCount,
   url,
   image,
   onDelete,
+  authorName,
   authorImage,
   likeList,
 }: BlogPostProps) {
@@ -37,6 +44,11 @@ export default function BlogPost({
   const [likeCount, setLikeCount] = useState(initialLikeCount)
   const [modalOpen, setModalOpen] = useState(false)
   const [modalMessage, setModalMessage] = useState('')
+  const profile =
+    category === 'TECHEER'
+      ? { image: userImage, name: userName }
+      : { image: authorImage, name: authorName }
+
   const clickModal = () => {
     setShowModal(!showModal)
   }
@@ -100,7 +112,7 @@ export default function BlogPost({
           className="w-full h-[155px] z-1 object-cover"
           onClick={handleClickUrl}
           onError={(e: any) => {
-            e.target.src = '/images/session/thumbnail.png' // 대체 이미지 경로
+            e.target.src = '/images/session/thumbnail.png'
           }}
         />
         <div className="w-full min-h-[100px] h-auto py-2 bg-white">
@@ -131,15 +143,18 @@ export default function BlogPost({
           <div className="flex justify-between mt-3 ml-5">
             <div className="flex items-center">
               <img
-                src={authorImage}
+                src={profile.image}
                 alt="img"
                 className="w-5 h-5 mr-1 rounded-full"
                 onError={(e: any) => {
                   e.target.src = '/images/session/thumbnail.png' // 대체 이미지 경로
                 }}
               />
-              <span className="font-semibold text-black text-md">{name}</span>
+              <span className="font-semibold text-black text-md">
+                {profile.name}
+              </span>
             </div>
+
             <div className="flex mr-2">
               <span className="mr-1">{likeCount}</span>
               <button type="button" onClick={clickLike}>
