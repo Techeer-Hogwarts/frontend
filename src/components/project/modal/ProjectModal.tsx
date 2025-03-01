@@ -44,12 +44,10 @@ export default function ProjectMemberModal({
   // (C) 모달 열릴 때: 현재 사용자가 상위 컴포넌트에 없으면 자동 추가
   useEffect(() => {
     if (user) {
-      // 상위에서 이미 user를 추가했는지 확인
       const alreadyExists = existingMembers.some(
         (m) => m.userId === user.id || m.id === user.id,
       )
       if (!alreadyExists) {
-        // 모달 내부 members에도 없으면 추가
         setMembers((prev) => {
           const inModal = prev.some((mm) => mm.id === user.id)
           if (!inModal) {
@@ -60,8 +58,8 @@ export default function ProjectMemberModal({
                 name: user.name,
                 year: user.year,
                 profileImage: user.profileImage,
-                isLeader: true, // 원하는 초기값
-                teamRole: '',
+                isLeader: true,
+                teamRole: '', // 초기에는 빈 문자열
               },
             ]
           }
@@ -71,13 +69,13 @@ export default function ProjectMemberModal({
     }
   }, [user, existingMembers])
 
-  // (D) 드롭다운 필터
+  // (D) 드롭다운에 표시할 유저 필터
   const filteredUsers = allUsers?.filter((u) => {
     // 1) 이미 모달 내부(members)에 추가된 유저는 제외
     const inModal = members.some((m) => m.id === u.id)
     if (inModal) return false
 
-    // 2) 이미 상위에 존재(existingMembers)하면 제외
+    // 2) 이미 상위(existingMembers)에 있으면 제외
     const inExisting = existingMembers.some((em) => em.userId === u.id)
     if (inExisting) return false
 
@@ -85,7 +83,7 @@ export default function ProjectMemberModal({
     return u.name.toLowerCase().includes(name.toLowerCase())
   })
 
-  // 바깥 클릭 시 닫기
+  // 드롭다운 외부 클릭 시 닫기
   useEffect(() => {
     const outSideClick = (e: MouseEvent) => {
       if (!dropDownRef.current?.contains(e.target as Node)) {
@@ -99,20 +97,23 @@ export default function ProjectMemberModal({
     }
   }, [isDropdownOpen])
 
-  // 멤버 추가
+  // (E) 멤버 추가
   const handleAddMember = (user: Member) => {
     if (!members.some((m) => m.id === user.id)) {
-      setMembers((prev) => [...prev, { ...user, isLeader: false }])
+      setMembers((prev) => [
+        ...prev,
+        { ...user, isLeader: false, teamRole: '' },
+      ])
     }
     setIsDropdownOpen(false)
   }
 
-  // 멤버 삭제
+  // (F) 멤버 삭제
   const handleRemoveMember = (memberName: string) => {
     setMembers((prev) => prev.filter((m) => m.name !== memberName))
   }
 
-  // 리더 & 역할 업데이트
+  // (G) 리더 & 포지션(teamRole) 업데이트
   const handleUpdateMember = (
     id: number,
     newIsLeader: boolean,
@@ -125,9 +126,17 @@ export default function ProjectMemberModal({
     )
   }
 
-  // 저장
+  // (H) “저장하기” 버튼 활성화 조건:
+  // 1) members.length > 0
+  // 2) 모든 멤버가 teamRole을 가지고 있어야 함 (비어있으면 안 됨)
+  const canSave = members.length > 0 && members.every((m) => m.teamRole?.trim())
+
+  // (I) 저장
   const handleSave = () => {
-    onSave(members)
+    // 모든 조건 충족 시 onSave(members)
+    if (canSave) {
+      onSave(members)
+    }
   }
 
   return (
@@ -137,7 +146,7 @@ export default function ProjectMemberModal({
           프로젝트 팀원 추가
         </p>
 
-        {/* 이름 입력 */}
+        {/* 이름 검색 */}
         <div className="mb-6">
           <p className="text-left mb-3">이름을 입력해주세요</p>
           <input
@@ -172,7 +181,7 @@ export default function ProjectMemberModal({
                     alt="ProfileInfo"
                     width={24}
                     height={24}
-                    className="w-[24px] h-[24px] rounded-md "
+                    className="w-[24px] h-[24px] rounded-md"
                   />
                   <div className="flex gap-3 items-center">
                     <p>{u.name}</p>
@@ -221,10 +230,11 @@ export default function ProjectMemberModal({
           </button>
           <button
             type="submit"
-            className={`w-full rounded-md text-sm h-[34px] ${
-              members.length > 0 ? 'bg-primary text-white' : 'bg-lightgray'
-            }`}
             onClick={handleSave}
+            disabled={!canSave}
+            className={`w-full rounded-md text-sm h-[34px] ${
+              canSave ? 'bg-primary text-white' : 'bg-lightgray text-gray'
+            }`}
           >
             저장하기
           </button>
