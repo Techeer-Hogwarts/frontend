@@ -61,6 +61,8 @@ function convertCategoryName(category: string) {
       return 'Frontend'
     case 'BACKEND':
       return 'Backend'
+    case 'DATABASE':
+      return 'Database'
     case 'DEVOPS':
       return 'DevOps'
     case 'OTHER':

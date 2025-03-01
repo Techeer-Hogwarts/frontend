@@ -207,13 +207,13 @@ const MemberModal = ({
           <button
             type="button"
             onClick={onClose}
-            className="w-[200px] rounded-md text-sm h-[34px] bg-white text-gray border border-lightgray"
+            className="w-full rounded-md text-sm h-[34px] bg-white text-gray border border-lightgray"
           >
             취소
           </button>
           <button
             type="submit"
-            className={`w-[200px] rounded-md text-sm h-[34px] text-white ${members.length > 0 ? 'bg-primary text-white' : 'bg-lightgray'}`}
+            className={`w-full rounded-md text-sm h-[34px] text-white ${members.length > 0 ? 'bg-primary text-white' : 'bg-lightgray'}`}
             onClick={() => onSave(members)}
           >
             저장하기
