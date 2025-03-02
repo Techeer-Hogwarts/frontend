@@ -27,7 +27,6 @@ export default function AddProfile({
   onDeleteOldMainImage,
 }: AddProfileProps) {
   const [imgSrc, setImgSrc] = useState<string>('') // 미리보기용
-  const [projectType, setProjectType] = useState<null | string>(null)
   const fileInput = useRef<HTMLInputElement>(null)
 
   // 만약 새로 업로드한 File이 없고, 기존 URL이 있으면 → 그걸 보여주기
@@ -49,13 +48,6 @@ export default function AddProfile({
     onUpdate(name, value)
   }
 
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const storedProjectType = localStorage.getItem('projectType')
-      setProjectType(storedProjectType)
-    }
-  }, [])
-
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
@@ -76,59 +68,46 @@ export default function AddProfile({
   return (
     <div className="flex flex-col items-center bg-[url('/images/project/add/addProfile.png')] w-[19.1875rem] h-[46.6875rem] bg-cover ">
       <div className="flex mt-[3.07rem] w-full" />
-      {projectType === 'study' && (
-        <div
-          onChange={handleInputChange}
-          className="flex w-[15.875rem] h-[15.875rem] bg-gradient-to-b from-[#FF8B20] to-[#FFC14F] rounded-2xl text-white justify-center text-center items-center text-[1.5rem] font-bold"
-        >
-          {projectData.name}
-        </div>
-      )}
-
-      {projectType === 'project' && (
-        <div className="relative w-[254px] h-[254px] min-w-[254px] min-h-[254px]flex justify-center items-center">
-          {/* 업로드된 이미지 미리보기 */}
-          {imgSrc ? (
-            <Image
-              src={imgSrc}
-              alt="Uploaded Preview"
-              width={254}
-              height={254}
-              className="rounded-2xl bg-contain min-w-[254px] min-h-[254px]"
-            />
-          ) : (
-            <div className="flex flex-col w-full h-full rounded-md bg-lightgray text-gray items-center justify-center gap-4">
-              <FaRegImage size={30} />
-              <div className="flex flex-col items-center">
-                <span className="text-gray">
-                  눌러서 이미지를 업로드해주세요
-                </span>
-                <span className="text-gray">jpg, jpeg, png, gif 가능</span>
-              </div>
-            </div>
-          )}
-
-          {/* 이미지 업로드 버튼 */}
-          <label
-            htmlFor="image"
-            className="absolute bottom-[-1rem] right-[-1rem] cursor-pointer"
-          >
-            <div className="w-10 h-10 bg-lightgray border border-white rounded-full flex items-center justify-center">
-              <div className="border rounded-full p-2 border-white">
-                <BiSolidPencil color="white" />
-              </div>
-            </div>
-          </label>
-          <input
-            id="image"
-            type="file"
-            accept="image/*"
-            className="hidden"
-            ref={fileInput}
-            onChange={handleImageChange}
+      <div className="relative w-[254px] h-[254px] min-w-[254px] min-h-[254px]flex justify-center items-center">
+        {/* 업로드된 이미지 미리보기 */}
+        {imgSrc ? (
+          <Image
+            src={imgSrc}
+            alt="Uploaded Preview"
+            width={254}
+            height={254}
+            className="rounded-2xl bg-contain min-w-[254px] min-h-[254px]"
           />
-        </div>
-      )}
+        ) : (
+          <div className="flex flex-col w-full h-full rounded-md bg-lightgray text-gray items-center justify-center gap-4">
+            <FaRegImage size={30} />
+            <div className="flex flex-col items-center">
+              <span className="text-gray">눌러서 이미지를 업로드해주세요</span>
+              <span className="text-gray">jpg, jpeg, png, gif 가능</span>
+            </div>
+          </div>
+        )}
+
+        {/* 이미지 업로드 버튼 */}
+        <label
+          htmlFor="image"
+          className="absolute bottom-[-1rem] right-[-1rem] cursor-pointer"
+        >
+          <div className="w-10 h-10 bg-lightgray border border-white rounded-full flex items-center justify-center">
+            <div className="border rounded-full p-2 border-white">
+              <BiSolidPencil color="white" />
+            </div>
+          </div>
+        </label>
+        <input
+          id="image"
+          type="file"
+          accept="image/*"
+          className="hidden"
+          ref={fileInput}
+          onChange={handleImageChange}
+        />
+      </div>
 
       <div className="flex w-[15.875rem] justify-between items-center mt-[0.94rem] mb-[1.44rem]">
         <div>
@@ -179,28 +158,16 @@ export default function AddProfile({
 
       <div className="w-[15.875rem] mt-4">
         <p className="text-sm mb-1 text-gray">프로젝트 설명을 입력해주세요</p>
-        {projectType === 'study' && (
-          <textarea
-            name="studyExplain"
-            value={projectData.studyExplain}
-            onChange={handleInputChange}
-            maxLength={200}
-            className="w-full p-2 border border-gray rounded-lg focus:outline-none resize-none
+
+        <textarea
+          name="projectExplain"
+          value={projectData.projectExplain}
+          onChange={handleInputChange}
+          maxLength={200}
+          className="w-full p-2 border border-gray rounded-lg focus:outline-none resize-none
 "
-            rows={7}
-          />
-        )}
-        {projectType === 'project' && (
-          <textarea
-            name="projectExplain"
-            value={projectData.projectExplain}
-            onChange={handleInputChange}
-            maxLength={200}
-            className="w-full p-2 border border-gray rounded-lg focus:outline-none resize-none
-"
-            rows={7}
-          />
-        )}
+          rows={7}
+        />
         <p className="text-right text-xs mt-1 whitespace-pre-wrap">
           {projectData?.projectExplain?.length}/200
         </p>

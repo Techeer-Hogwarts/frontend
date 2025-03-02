@@ -12,16 +12,9 @@ type Team = {
 }
 
 export default function StudyCard({ team }: { team: Team }) {
-  const handleClick = () => {
-    localStorage.setItem('projectType', 'study')
-    localStorage.setItem('projectId', team.id.toString())
-  }
-
   return (
     <Link
       href={`/project/detail/study/${team.id}`}
-      onClick={handleClick}
-      // ProjectCard와 동일한 크기/구조
       className="inline-block group w-[17.5rem] h-[11.375rem] relative"
     >
       {/* 탭 부분 (직사각형 + 삼각형) */}

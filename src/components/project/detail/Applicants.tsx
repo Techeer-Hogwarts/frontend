@@ -63,7 +63,11 @@ function Box({
   )
 }
 
-export default function Applicants({ projectType, applicants, onOpen }: any) {
+export default function Applicants({
+  projectType,
+  applicants,
+  onOpen,
+}: ApplicantsProps) {
   const [isOpen, setIsOpen] = useState(false)
 
   const toggleDropdown = () => {

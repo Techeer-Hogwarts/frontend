@@ -1,9 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
 
-// 더미값
-const projectId = 1
-
 type Team = {
   id: number
   name: string
@@ -14,16 +11,9 @@ type Team = {
 }
 
 export default function StudyCard({ team }: { team: Team }) {
-  // console.log('study', team)
-
-  const handleClick = () => {
-    localStorage.setItem('projectType', 'study')
-    localStorage.setItem('projectId', team.id.toString())
-  }
   return (
     <Link
       href={`/project/detail/study/${team.id}`}
-      onClick={handleClick}
       className="relative group bg-[url('/images/project/studyCard.png')] bg-cover w-[18rem] h-[11.375rem]"
     >
       <div className="text-blue w-[4.375rem] pl-1 pt-2 text-[0.71181rem] text-center">

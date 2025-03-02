@@ -40,8 +40,6 @@ interface ProfileProps {
 }
 
 export default function Profile({ projectDetail }: ProfileProps) {
-  const projectType = localStorage.getItem('projectType')
-
   return (
     <div
       className={`flex flex-col items-center ${
@@ -96,9 +94,7 @@ export default function Profile({ projectDetail }: ProfileProps) {
         </div>
       </div>
       <div className="w-[15.875rem] whitespace-pre-wrap">
-        {projectType === 'study'
-          ? projectDetail?.studyExplain
-          : projectDetail?.projectExplain}
+        {projectDetail?.studyExplain}
       </div>
     </div>
   )

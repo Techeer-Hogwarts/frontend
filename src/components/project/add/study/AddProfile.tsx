@@ -7,21 +7,12 @@ import { BiSolidPencil } from 'react-icons/bi'
 
 export default function AddProfile({ projectData, onUpdate }) {
   const [imgSrc, setImgSrc] = useState<string | null>('') // 기본 이미지 설정
-  const [projectType, setProjectType] = useState<null | string>(null)
-
   const fileInput = useRef<HTMLInputElement>(null)
 
   const handleInputChange = (e) => {
     const { name, value } = e.target
     onUpdate(name, value)
   }
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const storedProjectType = localStorage.getItem('projectType')
-      setProjectType(storedProjectType)
-    }
-  }, [])
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
@@ -39,14 +30,12 @@ export default function AddProfile({ projectData, onUpdate }) {
   return (
     <div className="flex flex-col items-center bg-[url('/images/project/add/addProfile.png')] w-[19.1875rem] h-[46.6875rem] bg-cover ">
       <div className="flex mt-[3.07rem] w-full" />
-      {projectType === 'study' && (
         <div
           onChange={handleInputChange}
           className="flex w-[15.875rem] h-[15.875rem] bg-gradient-to-b from-[#FF8B20] to-[#FFC14F] rounded-2xl text-white justify-center text-center items-center text-[1.5rem] font-bold"
         >
           {projectData.name}
         </div>
-      )}
 
       <div className="flex w-[15.875rem] justify-between items-center mt-[0.94rem] mb-[1.44rem]">
         <div>
@@ -84,7 +73,6 @@ export default function AddProfile({ projectData, onUpdate }) {
 
       <div className="w-[15.875rem] mt-4">
         <p className="text-sm mb-1 text-gray">스터디 설명을 입력해주세요</p>
-
         <textarea
           name="studyExplain"
           value={projectData.studyExplain}

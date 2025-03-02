@@ -25,19 +25,12 @@ interface ProjectTeam extends TeamBase {
 export default function ProjectCard({ team }: { team: ProjectTeam }) {
   const mainImageUrl = team.mainImages[0]
 
-  const handleClick = () => {
-    localStorage.setItem('projectType', 'project')
-    localStorage.setItem('projectId', team.id.toString())
-  }
-
   // 인원표시 제한을 위해 count 변수 사용
   let count = 0
 
   return (
     <Link
       href={`/project/detail/project/${team.id}`}
-      onClick={handleClick}
-      // 카드 전체에 group + relative
       className="inline-block group w-[17.5rem] h-[11.375rem] relative"
     >
       {/* 탭 부분 */}

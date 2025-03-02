@@ -29,15 +29,6 @@ interface ProfileProps {
 }
 
 export default function Profile({ projectDetail }: ProfileProps) {
-  const [projectType, setProjectType] = useState<string | null>(null)
-
-  useEffect(() => {
-    const storedProjectType = localStorage.getItem('projectType')
-    if (storedProjectType) {
-      setProjectType(storedProjectType)
-    }
-  }, [])
-
   // 메인 이미지 URL
   const mainImageUrl = projectDetail?.mainImages?.[0]?.imageUrl
     ? projectDetail.mainImages[0].imageUrl
@@ -121,9 +112,7 @@ export default function Profile({ projectDetail }: ProfileProps) {
 
       {/* 설명 */}
       <div className="w-[15.875rem] whitespace-pre-wrap">
-        {projectType === 'study'
-          ? projectDetail?.studyExplain
-          : projectDetail?.projectExplain}
+        {projectDetail?.projectExplain}
       </div>
     </div>
   )

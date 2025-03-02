@@ -26,7 +26,6 @@ import BaseModal from '@/components/project/modal/BaseModal'
 import ApplicantModal from '@/components/project/modal/ApplicantModal'
 import ProjectDetailSkeleton from '@/components/project/detail/ProjectDetailSkeleton'
 
-
 export default function ProjectDetailpage() {
   const MODAL_TEXT_MAP = {
     delete: '프로젝트를 삭제하시겠습니까?',
@@ -40,31 +39,15 @@ export default function ProjectDetailpage() {
     cancel: '확인',
   }
   const params = useParams()
-  const storedId = Number(params.id)
+  const projectId = Number(params.id)
   const router = useRouter()
   const queryClient = useQueryClient()
-
-  const [projectId, setProjectId] = useState<number | null>(null)
-  const [projectType, setProjectType] = useState<string | null>(null)
 
   const [authModalOpen, setAuthModalOpen] = useState(false)
   const { user, checkAuth } = useAuthStore()
 
   useEffect(() => {
     checkAuth()
-  }, [])
-
-
-  useEffect(() => {
-    const storedProjectType = localStorage.getItem('projectType')
-
-    if (storedId) {
-      setProjectId(Number(storedId))
-    }
-
-    if (storedProjectType) {
-      setProjectType(storedProjectType)
-    }
   }, [])
 
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -225,10 +208,7 @@ export default function ProjectDetailpage() {
         <Member members={projectDetails?.projectMember} />
         <Stack stacks={projectDetails?.teamStacks} />
         {isRecruited && (
-          <FindMember
-            projectDetail={projectDetails}
-            projectType={projectType}
-          />
+          <FindMember projectDetail={projectDetails} projectType={'project'} />
         )}
         <Results
           resultImages={

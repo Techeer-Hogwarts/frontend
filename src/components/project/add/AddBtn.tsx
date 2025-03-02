@@ -8,7 +8,6 @@ import { useAuthStore } from '@/store/authStore'
 
 export default function AddBtn() {
   const [isOpen, setIsOpen] = useState(false)
-  const [modal, setModal] = useState(0)
   const router = useRouter()
   const pathname = usePathname()
   const [authModalOpen, setAuthModalOpen] = useState(false)
@@ -23,7 +22,6 @@ export default function AddBtn() {
   }
 
   const handleOptionClick = (type: string) => {
-    localStorage.setItem('projectType', type) // 'projectType'이라는 키로 저장
     if (!user) {
       // 로그인 안 되어있으면 AuthModal 열기
       setAuthModalOpen(true)

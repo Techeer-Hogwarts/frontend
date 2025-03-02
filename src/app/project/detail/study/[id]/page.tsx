@@ -40,12 +40,8 @@ const MODAL_BTN_TEXT_MAP = {
 
 export default function ProjectDetailpage() {
   const router = useRouter()
-  // const projectId = Number(localStorage.getItem('projectId'))
   const params = useParams()
   const projectId = Number(params.id)
-  // console.log('a', params)
-  // console.log('b', projectId)
-  const projectType = localStorage.getItem('projectType')
 
   const [isStudyMember, setIsStudyMember] = useState<null | boolean>(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -197,7 +193,7 @@ export default function ProjectDetailpage() {
         <StudyGoal goal={studyDetails?.goal} />
         <StudyPlan rule={studyDetails?.rule} />
         {studyDetails?.isRecruited && (
-          <FindMember projectDetail={studyDetails} projectType={projectType} />
+          <FindMember projectDetail={studyDetails} projectType={'study'} />
         )}
         <Results
           resultImages={

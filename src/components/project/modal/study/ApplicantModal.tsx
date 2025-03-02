@@ -7,6 +7,7 @@ import {
   denyStudyApplicant,
 } from '@/api/project/study/study'
 import { useQueryClient } from '@tanstack/react-query'
+import { useParams } from 'next/navigation'
 
 interface User {
   name: string
@@ -42,31 +43,18 @@ export default function ApplicantModal({
 }: ApplicantModalProps) {
   const [projectType, setProjectType] = useState<null | string>(null)
   const [approve, setApprove] = useState(true)
-  const projectId = Number(localStorage.getItem('projectId'))
+  const params = useParams()
+  const projectId = Number(params.id)
 
   const queryClient = useQueryClient()
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const storedProjectType = localStorage.getItem('projectType')
-      setProjectType(storedProjectType)
-    }
-  }, [])
 
   // 승인 버튼 핸들러
   const handleApprove = async () => {
     let data
     try {
-      if (projectType === 'study') {
-        data = {
-          studyTeamId: projectId,
-          applicantId: applicant.userId,
-        }
-      } else {
-        data = {
-          projectTeamId: projectId,
-          applicantId: applicant.userId,
-        }
+      data = {
+        studyTeamId: projectId,
+        applicantId: applicant.userId,
       }
 
       await acceptStudyApplicant(data)
@@ -129,7 +117,6 @@ export default function ApplicantModal({
         <div className="flex items-center justify-center gap-2 mb-3">
           <p className="text-lg font-bold">{applicant.name}</p>
 
-          {/* 추후 수정 예정 */}
           <span className="text-gray-500 text-sm">| {applicant.year}기</span>
         </div>
 
@@ -153,25 +140,6 @@ export default function ApplicantModal({
           </button>
         </div>
 
-        {/*project일 경우에만 보임 : 스택 선택 */}
-        {projectType === 'project' && (
-          <div className="mb-4">
-            <p className="text-left mb-2 font-medium">지원한 포지션</p>
-            <div className="w-full flex justify-between">
-              {['Frontend', 'Backend', 'Full-Stack', 'DevOps'].map((el) => {
-                return (
-                  <div
-                    key={el}
-                    className={`w-[5.875rem] h-[1.75rem] border border-lightprimary rounded-md ${applicant.teamRole === el ? 'bg-lightprimary text-primary' : 'bg-white text-gray'} `}
-                    // className={`w-[5.875rem] h-[1.75rem] border border-lightprimary rounded-md `}
-                  >
-                    {el}
-                  </div>
-                )
-              })}
-            </div>
-          </div>
-        )}
         {/* 지원 동기 */}
         <div className="mb-4">
           <p className="text-left mb-2 font-medium">

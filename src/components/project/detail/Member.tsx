@@ -15,15 +15,6 @@ interface MemberProps {
 }
 
 export default function Member({ members }: any) {
-  const [projectType, setProjectType] = useState<null | string>(null)
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const storedProjectType = localStorage.getItem('projectType')
-      setProjectType(storedProjectType)
-    }
-  }, [])
-
   if (!members || members.length === 0) {
     return (
       <div>
@@ -59,7 +50,7 @@ export default function Member({ members }: any) {
                 {member.isLeader && (
                   <div
                     className={`absolute ${
-                      projectType === 'study' ? 'bottom-8' : 'bottom-[45px]'
+                      member.teamRole ? 'bottom-[45px]' : 'bottom-8'
                     } w-[4.75rem] h-[1.5rem] bg-black bg-opacity-40 flex items-center justify-center rounded-b-md`}
                   >
                     <span className="text-white text-sm font-semibold">
@@ -70,7 +61,7 @@ export default function Member({ members }: any) {
 
                 <div>{member.name}</div>
 
-                {projectType === 'project' && (
+                {member.teamRole && (
                   <div
                     className={`
                       w-[4.5rem] rounded-md text-center

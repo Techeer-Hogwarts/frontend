@@ -31,7 +31,6 @@ const MemberModal = ({
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const [name, setName] = useState('')
   const [members, setMembers] = useState<Member[]>([])
-  const userId = localStorage.getItem('userId')
 
   //모든 사용자 목록
   const { data: allUsers } = useQuery({
@@ -52,7 +51,7 @@ const MemberModal = ({
   //컴포넌트에 입력자 자동 추가
   useEffect(() => {
     if (user) {
-      const alreadyExists = existingMembers.some(
+      const alreadyExists = existingMembers?.some(
         (m) => m.userId === user.id || m.id === user.id,
       )
       if (!alreadyExists) {
@@ -85,7 +84,7 @@ const MemberModal = ({
     if (inModal) return false
 
     // 2) 이미 상위에 존재(existingMembers)하면 제외
-    const inExisting = existingMembers.some(
+    const inExisting = existingMembers?.some(
       (em) => em.userId === u.id || em.id === u.id,
     )
     if (inExisting) return false
