@@ -31,7 +31,7 @@ export default function ProjectCard({ team }: { team: ProjectTeam }) {
   return (
     <Link
       href={`/project/detail/project/${team.id}`}
-      className="inline-block group w-[17.5rem] h-[11.375rem] relative"
+      className="inline-block group w-[18rem] h-[11.375rem] relative"
     >
       {/* 탭 부분 */}
       <div className="flex items-end">

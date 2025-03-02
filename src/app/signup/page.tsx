@@ -514,6 +514,35 @@ const Signup = () => {
               </div>
             </div>
 
+            <div className="flex justify-between items-center">
+              <p className="text-lg ">
+                기수를 선택해주세요 <span className="text-primary">*</span>
+              </p>
+              <div className="w-[9.5rem]">
+                <Select
+                  title="기수"
+                  options={[
+                    '1기',
+                    '2기',
+                    '3기',
+                    '4기',
+                    '5기',
+                    '6기',
+                    '7기',
+                    '8기',
+                    '9기',
+                  ]}
+                  value={formData.selectedBatch}
+                  onChange={(value) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      selectedBatch: value.replace('기', ''),
+                    }))
+                  }
+                />
+              </div>
+            </div>
+
             {/* 이력서 섹션 */}
             <div>
               <div className="space-y-9">
