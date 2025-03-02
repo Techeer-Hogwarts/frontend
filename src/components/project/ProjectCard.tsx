@@ -157,8 +157,8 @@ export default function ProjectCard({ team }: { team: ProjectTeam }) {
         {/* 폴더 본체 (오버레이) */}
         <div className="flex items-center p-[1rem] gap-3 justify-center w-full h-[10.125rem] rounded-b-lg rounded-tr-lg bg-black/70">
           {/* 오버레이 내용: 프로젝트 설명 등 */}
-          <div className="text-white mx-4 text-sm line-clamp-4">
-            {team.projectExplain}
+          <div className="text-white mx-4 text-sm line-clamp-4 text-center">
+            {team.projectExplain || '설명이 없습니다'}
           </div>
         </div>
       </div>

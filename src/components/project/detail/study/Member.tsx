@@ -55,10 +55,6 @@ export default function Member({ members }: any) {
                 </div>
               )}
             </div>
-            {/* 줄바꿈 시 구분선 추가 */}
-            {(index + 1) % 9 === 0 && index + 1 !== members.length && (
-              <div className="w-full border-b border-lightgray my-2"></div>
-            )}
           </div>
         ))}
       </div>

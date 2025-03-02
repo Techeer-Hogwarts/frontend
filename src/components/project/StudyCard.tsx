@@ -57,7 +57,7 @@ export default function StudyCard({ team }: { team: Team }) {
 
           {/* 모집 중이면 표시 */}
           {team.isRecruited && (
-            <div className="bg-lightblue py-[0.19rem] px-[0.8rem] text-blue rounded-lg text-[13px] text-center">
+            <div className="bg-lightblue py-[0.1rem] text-blue rounded-lg text-[13px] text-center">
               모집인원 : {team.recruitNum} 명
             </div>
           )}
@@ -88,7 +88,7 @@ export default function StudyCard({ team }: { team: Team }) {
         {/* 오버레이 폴더 본체 */}
         <div className="flex items-center p-[1rem] gap-3 justify-center w-full h-[10.125rem] rounded-b-lg rounded-tr-lg bg-black/70">
           {/* 여기에 스터디 설명 등 표시 */}
-          <div className="text-white text-sm line-clamp-4">
+          <div className="text-white text-sm line-clamp-4 text-center">
             {team.studyExplain || '설명이 없습니다'}
           </div>
         </div>
