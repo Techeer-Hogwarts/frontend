@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 
-import RecruitInput from "./RecruitInput"
+import RecruitInput from './RecruitInput'
 
 interface AddRecruitProps {
   isRecruited: boolean
@@ -25,17 +25,15 @@ export default function AddRecruit({
   recruitExplain,
   onUpdate,
 }: AddRecruitProps) {
-  const [projectType, setProjectType] = useState<null | string>(null)
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const storedProjectType = localStorage.getItem('projectType')
-      setProjectType(storedProjectType)
-    }
-  }, [])
-
   const handleRecruitStatusChange = (status) => {
-    onUpdate('isRecruited', status === '모집')
+    const isRecruit = status === '모집'
+    onUpdate('isRecruited', isRecruit)
+
+    // "모집하지 않음"일 때 기존 입력값 초기화
+    if (!isRecruit) {
+      onUpdate('recruitNum', null)
+      onUpdate('recruitExplain', '')
+    }
   }
 
   // const handleRecruitNumChange = (event) => {
@@ -92,53 +90,12 @@ export default function AddRecruit({
             모집정보를 입력해주세요<span className="text-primary">*</span>
           </p>
           <div className="flex gap-[0.84rem]">
-            {projectType === 'study' ? (
-              // 단일 역할 입력만 표시
-              <RecruitInput
-                role="인원 입력"
-                placeholder="1명"
-                value={recruitNum || ''}
-                onChange={(event) =>
-                  handleRecruitNumChange('recruitNum', event)
-                }
-              />
-            ) : (
-              // 여러 역할 입력을 표시
-              <>
-                <RecruitInput
-                  role="Frontend"
-                  placeholder="1명"
-                  value={recruitNum || ''}
-                  onChange={(event) =>
-                    handleRecruitNumChange('frontendNum', event)
-                  }
-                />
-                <RecruitInput
-                  role="Backend"
-                  placeholder="1명"
-                  value={recruitNum || ''}
-                  onChange={(event) =>
-                    handleRecruitNumChange('backendNum', event)
-                  }
-                />
-                <RecruitInput
-                  role="DevOps"
-                  placeholder="1명"
-                  value={recruitNum || ''}
-                  onChange={(event) =>
-                    handleRecruitNumChange('devopsNum', event)
-                  }
-                />
-                <RecruitInput
-                  role="Full Stack"
-                  placeholder="1명"
-                  value={fullStackNum || ''}
-                  onChange={(event) =>
-                    handleRecruitNumChange('fullStackNum', event)
-                  }
-                />
-              </>
-            )}
+            <RecruitInput
+              role="인원 입력"
+              placeholder="1명"
+              value={recruitNum || ''}
+              onChange={(event) => handleRecruitNumChange('recruitNum', event)}
+            />
           </div>
 
           <textarea

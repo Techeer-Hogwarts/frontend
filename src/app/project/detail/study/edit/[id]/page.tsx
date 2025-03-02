@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useParams } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
 
 import AddMember from '@/components/project/add/study/AddMember'
@@ -17,8 +17,8 @@ import { getStudyDetail, handleEditStudy } from '@/api/project/study/study'
 
 export default function AddStudyPage() {
   const router = useRouter()
-
-  const projectId = Number(localStorage.getItem('projectId'))
+  const params = useParams()
+  const projectId = Number(params.id)
 
   const { data: studyDetails, isLoading } = useQuery({
     queryKey: ['getStudyDetails', projectId],
@@ -79,7 +79,6 @@ export default function AddStudyPage() {
   if (isLoading) return <Loading />
 
   const handleUpdate = (key, value) => {
-
     setStudyData((prev) => ({ ...prev, [key]: value }))
   }
 
@@ -198,7 +197,6 @@ export default function AddStudyPage() {
 
       // 성공적으로 요청이 완료되면 해당 study의 상세 페이지로 이동합니다.
       router.push(`/project/detail/study/${response.id}`)
-      localStorage.setItem('projectId', response.id)
     } catch (error) {}
   }
 

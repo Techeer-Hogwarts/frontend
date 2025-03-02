@@ -100,7 +100,6 @@ const StackDropdown: React.FC<StackDropdownProps> = ({
                     <input
                       type="checkbox"
                       checked={selectedOptions.includes(option)}
-                      onChange={() => handleSelect(option)}
                       className="w-4 h-4 mr-2 border border-gray appearance-none rounded flex items-center justify-center checked:bg-primary checked:border-primary cursor-pointer checked:before:content-['✓'] checked:before:text-white checked:before:text-xs checked:before:flex checked:before:items-center checked:before:justify-center"
                     />
                     {option}

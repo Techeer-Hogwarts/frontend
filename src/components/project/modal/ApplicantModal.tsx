@@ -13,6 +13,7 @@ import {
   acceptProjectApplicant,
   denyProjectApplicant,
 } from '@/api/project/project/project'
+import { useParams } from 'next/navigation'
 
 interface Applicant {
   id: number
@@ -37,33 +38,18 @@ export default function ApplicantModal({
 }: ApplicantModalProps) {
   const [projectType, setProjectType] = useState<null | string>(null)
   const [approve, setApprove] = useState(true)
-  const projectId = Number(localStorage.getItem('projectId'))
+  const params = useParams()
+  const projectId = Number(params.id)
 
   const queryClient = useQueryClient()
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const storedProjectType = localStorage.getItem('projectType')
-      setProjectType(storedProjectType)
-    }
-  }, [])
 
   // 승인 버튼 핸들러
   const handleApprove = async () => {
     try {
-      if (projectType === 'project') {
-        // 프로젝트 지원자 승인
-        await acceptProjectApplicant({
-          projectTeamId: projectId,
-          applicantId: applicant.userId,
-        })
-      } else {
-        // study 지원자 승인
-        await acceptStudyApplicant({
-          studyTeamId: projectId,
-          applicantId: applicant.userId,
-        })
-      }
+      await acceptProjectApplicant({
+        projectTeamId: projectId,
+        applicantId: applicant.userId,
+      })
 
       queryClient.invalidateQueries({
         queryKey: ['getProjectDetails', projectId],
@@ -84,19 +70,10 @@ export default function ApplicantModal({
   // 거절 버튼 핸들러
   const handleReject = async () => {
     try {
-      if (projectType === 'project') {
-        // 프로젝트 지원자 거절
-        await denyProjectApplicant({
-          projectTeamId: projectId,
-          applicantId: applicant.userId,
-        })
-      } else {
-        // study 지원자 거절
-        await denyStudyApplicant({
-          studyTeamId: projectId,
-          applicantId: applicant.userId,
-        })
-      }
+      await denyProjectApplicant({
+        projectTeamId: projectId,
+        applicantId: applicant.userId,
+      })
 
       queryClient.invalidateQueries({
         queryKey: ['getProjectDetails', projectId],
@@ -163,18 +140,12 @@ export default function ApplicantModal({
           </button>
         </div>
 
-        {/*project일 경우에만 보임 : 스택 선택 */}
-        {projectType === 'project' && (
-          <div className="mb-4">
-            <p className="text-left mb-2 font-medium">지원한 포지션</p>
-            <div className="w-full flex justify-between">
-              {[
-                'Frontend',
-                'Backend',
-                'DevOps',
-                'FullStack',
-                'DataEngineer',
-              ].map((el) => {
+        {/* 지원 포지션 */}
+        <div className="mb-4">
+          <p className="text-left mb-2 font-medium">지원한 포지션</p>
+          <div className="w-full flex justify-between">
+            {['Frontend', 'Backend', 'DevOps', 'FullStack', 'DataEngineer'].map(
+              (el) => {
                 const { bg, textColor } = getPositionStyle(el)
 
                 return (
@@ -185,10 +156,11 @@ export default function ApplicantModal({
                     {el}
                   </div>
                 )
-              })}
-            </div>
+              },
+            )}
           </div>
-        )}
+        </div>
+
         {/* 지원 동기 */}
         <div className="mb-4">
           <p className="text-left mb-2 font-medium">

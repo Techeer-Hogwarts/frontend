@@ -5,9 +5,7 @@ import Image from 'next/image'
 import { IoClose } from 'react-icons/io5'
 import { RxQuestionMarkCircled } from 'react-icons/rx'
 import { getPositionStyle } from '@/styles/positionStyles'
-import MemberModal from '../modal/study/StudyModal'
 import ProjectMemberModal from '../modal/ProjectModal'
-import { getStudyMember } from '@/api/project/study/study'
 
 interface TagProps {
   position: string
@@ -51,14 +49,7 @@ export default function AddMember({
   onDeleteMember,
   onRestoreMember,
 }: AddMemberProps) {
-  const [projectType, setProjectType] = useState<null | string>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      setProjectType(localStorage.getItem('projectType'))
-    }
-  }, [])
 
   /** (A) 모달 열기 */
   const handleAddMember = () => {
@@ -117,28 +108,17 @@ export default function AddMember({
   return (
     <div>
       {/* (E) 모달 */}
-      {isModalOpen &&
-        (projectType === 'project' ? (
-          <ProjectMemberModal
-            onClose={handleCloseModal}
-            onSave={handleSaveMembers}
-            existingMembers={projectMember}
-          />
-        ) : (
-          <MemberModal
-            onClose={handleCloseModal}
-            onSave={handleSaveMembers}
-            existingMembers={undefined}
-          />
-        ))}
+      {isModalOpen && (
+        <ProjectMemberModal
+          onClose={handleCloseModal}
+          onSave={handleSaveMembers}
+          existingMembers={projectMember}
+        />
+      )}
 
-      <div className="font-medium text-gray mb-2">
+      <div className="font-medium text-gray mb-3">
         팀원을 입력해주세요<span className="text-primary">*</span>
       </div>
-      <div className="flex justify-start gap-1 text-xs items-center text-gray mb-1">
-        <RxQuestionMarkCircled /> Data: DataEngineer
-      </div>
-
       <div className="grid grid-cols-9 items-start gap-3 w-[52.5rem] px-[1.875rem] py-[1.5rem] rounded-2xl border border-gray">
         {projectMember.map((member) => (
           <div key={member.id} className="relative flex flex-col items-center">
@@ -164,7 +144,7 @@ export default function AddMember({
             )}
 
             <div>{member.name}</div>
-            {projectType === 'project' && member.teamRole && (
+            {member.teamRole && (
               <div className="flex flex-col gap-1">
                 <Tag position={member.teamRole} />
               </div>

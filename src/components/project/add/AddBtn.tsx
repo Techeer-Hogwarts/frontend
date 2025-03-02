@@ -8,7 +8,6 @@ import { useAuthStore } from '@/store/authStore'
 
 export default function AddBtn() {
   const [isOpen, setIsOpen] = useState(false)
-  const [modal, setModal] = useState(0)
   const router = useRouter()
   const pathname = usePathname()
   const [authModalOpen, setAuthModalOpen] = useState(false)
@@ -23,7 +22,6 @@ export default function AddBtn() {
   }
 
   const handleOptionClick = (type: string) => {
-    localStorage.setItem('projectType', type) // 'projectType'이라는 키로 저장
     if (!user) {
       // 로그인 안 되어있으면 AuthModal 열기
       setAuthModalOpen(true)
@@ -40,11 +38,10 @@ export default function AddBtn() {
         onClose={() => setAuthModalOpen(false)}
       />
       <button
-        type="button"
         onClick={handleClickBtn}
-        className="fixed right-36 bottom-8 w-12 h-12 rounded-full shadow-md flex justify-center items-center text-xl text-[#545454] bg-white border border-lightgray"
+        className="fixed right-36 bottom-8 w-12 h-12 bg-primary rounded-full shadow-md flex items-center justify-center"
       >
-        <Image src="/grayplus.png" alt="addBtn" width={15} height={15} />
+        <Image src="/whiteplus.png" alt="addBtn" width={15} height={15} />
       </button>
       {isOpen && (
         <div className="fixed text-black/60 flex flex-col shadow-md justify-center items-center right-36 bottom-[88px] w-24 rounded-md h-[66px] bg-white border border-lightgray cursor-pointer">

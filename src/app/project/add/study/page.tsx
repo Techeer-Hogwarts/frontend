@@ -90,7 +90,6 @@ if (studyData.isRecruited) {
       const response = await handleAddStudy(formData)
 
       router.push(`/project/detail/study/${response.id}`)
-      localStorage.setItem('projectId', response.id)
     } catch (error) {}
   }
 

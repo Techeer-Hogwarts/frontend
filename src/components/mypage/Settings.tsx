@@ -8,7 +8,7 @@ export default function Settings() {
         비밀번호 변경
         <FaChevronRight className="text-gray" />
       </Link>
-      <div className="border-t-[0.5px] w-[600px] border border-lightgray" />
+      <div className="border-t-[0.5px] w-[640px] border border-lightgray" />
       <Link
         href="/mypage/leave"
         type="button"
@@ -17,7 +17,7 @@ export default function Settings() {
         회원 탈퇴
         <FaChevronRight className="text-gray" />
       </Link>
-      <div className="border-t-[0.5px] w-[600px] border border-lightgray" />
+      <div className="border-t-[0.5px] w-[640px] border border-lightgray" />
     </div>
   )
 }

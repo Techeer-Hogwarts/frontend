@@ -27,7 +27,6 @@ export default function AddProfile({
   onDeleteOldMainImage,
 }: AddProfileProps) {
   const [imgSrc, setImgSrc] = useState<string>('') // 미리보기용
-  const [projectType, setProjectType] = useState<null | string>(null)
   const fileInput = useRef<HTMLInputElement>(null)
 
   // 만약 새로 업로드한 File이 없고, 기존 URL이 있으면 → 그걸 보여주기
@@ -49,13 +48,6 @@ export default function AddProfile({
     onUpdate(name, value)
   }
 
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const storedProjectType = localStorage.getItem('projectType')
-      setProjectType(storedProjectType)
-    }
-  }, [])
-
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
@@ -74,18 +66,23 @@ export default function AddProfile({
   }
 
   return (
-    <div className="flex flex-col items-center bg-[url('/images/project/add/addProfile.png')] w-[19.1875rem] h-[46.6875rem] bg-cover ">
-      <div className="flex mt-[3.07rem] w-full" />
-      {projectType === 'study' && (
+    <div className="flex flex-col w-[19rem]">
+      {/* ====== 상단 탭 부분 ====== */}
+      <div className="flex items-end">
+        {/* 탭 직사각형 */}
+        <div className="w-[6rem] h-[1.5rem] flex items-center justify-center rounded-t-md shadow-cardtop text-sm font-semibold bg-lightgray" />
+        {/* 탭 삼각형 */}
         <div
-          onChange={handleInputChange}
-          className="flex w-[15.875rem] h-[15.875rem] bg-gradient-to-b from-[#FF8B20] to-[#FFC14F] rounded-2xl text-white justify-center text-center items-center text-[1.5rem] font-bold"
-        >
-          {projectData.name}
-        </div>
-      )}
+          className="w-1 h-[1.2rem] shadow-md bg-lightgray"
+          style={{
+            clipPath: 'polygon(0 100%, 0 0, 100% 100%)',
+          }}
+        />
+      </div>
 
-      {projectType === 'project' && (
+      {/* ====== 메인 본체 ====== */}
+      <div className="w-[19rem] min-h-[28rem] rounded-b-lg rounded-tr-lg shadow-card flex flex-col items-center p-[1.438rem]">
+        {/* ==== 메인 콘텐츠 ==== */}
         <div className="relative w-[254px] h-[254px] min-w-[254px] min-h-[254px]flex justify-center items-center">
           {/* 업로드된 이미지 미리보기 */}
           {imgSrc ? (
@@ -128,67 +125,58 @@ export default function AddProfile({
             onChange={handleImageChange}
           />
         </div>
-      )}
 
-      <div className="flex w-[15.875rem] justify-between items-center mt-[0.94rem] mb-[1.44rem]">
-        <div>
-          <p className="text-sm mb-1 text-gray">프로젝트 이름을 입력해주세요</p>
-          <input
-            name="name"
-            value={projectData.name}
-            onChange={handleInputChange}
-            className="font-medium w-[15.8125rem] h-[1.875rem] p-2 border border-gray rounded-[0.25rem] focus:outline-none"
-            placeholder="프로젝트 이름"
-          />
-        </div>
-      </div>
-
-      <div className="w-[15.875rem] flex flex-col gap-2">
-        <p className="text-sm mb-1 text-gray">관련 링크를 입력해주세요</p>
-
-        <div className="flex gap-2 flex-col">
-          <div className="flex justify-between items-center gap-1">
-            <div className="w-[4.41919rem] h-[1.5625rem] border border-primary rounded-[0.19rem] text-primary text-center">
-              깃허브
-            </div>
+        <div className="flex w-[15.875rem] justify-between items-center mt-[1rem] mb-[1.5rem]">
+          <div>
+            <p className="text-sm mb-1 text-gray">
+              프로젝트 이름을 입력해주세요{' '}
+              <span className="text-primary">*</span>
+            </p>
             <input
-              name="githubLink"
-              value={projectData.githubLink}
+              name="name"
+              value={projectData.name}
               onChange={handleInputChange}
-              className="w-[11.1875rem] h-[1.5625rem] p-2 border border-gray rounded-[0.25rem] focus:outline-none"
-              placeholder="레포지토리 주소"
-            />
-          </div>
-
-          <div className="flex justify-between items-center gap-3">
-            <div className="w-[4.41919rem] h-[1.5625rem] border border-primary rounded-[0.19rem] text-primary text-center">
-              노션
-            </div>
-            <input
-              name="notionLink"
-              value={projectData.notionLink}
-              onChange={handleInputChange}
-              className="w-[11.1875rem] h-[1.5625rem] p-2 border border-gray rounded-[0.25rem] focus:outline-none"
-              placeholder="노션 주소"
+              className="font-medium w-[15.8125rem] h-[1.875rem] p-2 border border-gray rounded-[0.25rem] focus:outline-none"
+              placeholder="프로젝트 이름"
             />
           </div>
         </div>
-      </div>
 
-      <div className="w-[15.875rem] mt-4">
-        <p className="text-sm mb-1 text-gray">프로젝트 설명을 입력해주세요</p>
-        {projectType === 'study' && (
-          <textarea
-            name="studyExplain"
-            value={projectData.studyExplain}
-            onChange={handleInputChange}
-            maxLength={200}
-            className="w-full p-2 border border-gray rounded-lg focus:outline-none resize-none
-"
-            rows={7}
-          />
-        )}
-        {projectType === 'project' && (
+        <div className="w-[15.875rem] flex flex-col gap-2">
+          <p className="text-sm mb-1 text-gray">관련 링크를 입력해주세요</p>
+
+          <div className="flex gap-2 flex-col">
+            <div className="flex justify-between items-center gap-1">
+              <div className="w-[4.41919rem] h-[1.5625rem] border border-primary rounded-[0.19rem] text-primary text-center">
+                깃허브
+              </div>
+              <input
+                name="githubLink"
+                value={projectData.githubLink}
+                onChange={handleInputChange}
+                className="w-[11.1875rem] h-[1.5625rem] p-2 border border-gray rounded-[0.25rem] focus:outline-none"
+                placeholder="레포지토리 주소"
+              />
+            </div>
+
+            <div className="flex justify-between items-center gap-1">
+              <div className="w-[4.41919rem] h-[1.5625rem] border border-primary rounded-[0.19rem] text-primary text-center">
+                노션
+              </div>
+              <input
+                name="notionLink"
+                value={projectData.notionLink}
+                onChange={handleInputChange}
+                className="w-[11.1875rem] h-[1.5625rem] p-2 border border-gray rounded-[0.25rem] focus:outline-none"
+                placeholder="노션 주소"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="w-[15.875rem] mt-4">
+          <p className="text-sm mb-1 text-gray">프로젝트 설명을 입력해주세요</p>
+
           <textarea
             name="projectExplain"
             value={projectData.projectExplain}
@@ -198,10 +186,10 @@ export default function AddProfile({
 "
             rows={7}
           />
-        )}
-        <p className="text-right text-xs mt-1 whitespace-pre-wrap">
-          {projectData?.projectExplain?.length}/200
-        </p>
+          <p className="text-right text-xs mt-1 whitespace-pre-wrap">
+            {projectData?.projectExplain?.length}/200
+          </p>
+        </div>
       </div>
     </div>
   )

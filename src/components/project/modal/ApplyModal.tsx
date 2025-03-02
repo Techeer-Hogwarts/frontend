@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
-import { useRouter } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import { useQueryClient } from '@tanstack/react-query'
 import { handleApplyStudy } from '@/api/project/study/study'
 import { handleApplyProject } from '@/api/project/project/project'
@@ -11,19 +11,11 @@ import { getPositionStyle } from '@/styles/positionStyles'
 export default function ApplyModal() {
   const [apply, setApply] = useState('')
   const [position, setPosition] = useState('')
-  const [projectType, setProjectType] = useState<null | string>(null)
   const router = useRouter()
+  const params = useParams()
+  const projectId = Number(params.id)
+
   const queryClient = useQueryClient()
-
-  // 로컬 스토리지에서 projectId 가져오기
-  const projectId = Number(localStorage.getItem('projectId'))
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const storedProjectType = localStorage.getItem('projectType')
-      setProjectType(storedProjectType)
-    }
-  }, [])
 
   // 지원동기(요약) 입력 핸들러
   const handleApply = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -37,36 +29,20 @@ export default function ApplyModal() {
         alert('지원 동기를 입력해주세요.')
         return
       }
-
-      // 1) 스터디 지원 로직
-      if (projectType === 'study') {
-        const data = {
-          studyTeamId: projectId,
-          summary: apply,
-        }
-        const result = await handleApplyStudy(data)
-        queryClient.invalidateQueries({
-          queryKey: ['getStudyDetails', projectId],
-        })
-        router.back()
-
-        // 2) 프로젝트 지원 로직
-      } else if (projectType === 'project') {
-        if (!position) {
-          alert('지원하고자 하는 포지션을 선택해주세요.')
-          return
-        }
-        const data = {
-          projectTeamId: projectId,
-          teamRole: position,
-          summary: apply,
-        }
-        const result = await handleApplyProject(data)
-        queryClient.invalidateQueries({
-          queryKey: ['getStudyApplicants', projectId],
-        })
-        router.back()
+      if (!position) {
+        alert('지원하고자 하는 포지션을 선택해주세요.')
+        return
       }
+      const data = {
+        projectTeamId: projectId,
+        teamRole: position,
+        summary: apply,
+      }
+      const result = await handleApplyProject(data)
+      queryClient.invalidateQueries({
+        queryKey: ['getStudyApplicants', projectId],
+      })
+      router.back()
     } catch (error) {
       alert('지원에 실패했습니다. 모집하지 않는 포지션입니다.')
     }
@@ -86,17 +62,11 @@ export default function ApplyModal() {
         </div>
 
         {/* (A) 프로젝트일 경우 → 포지션 선택 */}
-        {projectType === 'project' && (
-          <div className="mb-4">
-            <p className="text-left mb-2">지원하고자하는 포지션을 선택주세요</p>
-            <div className="w-full flex justify-between mb-[2.5rem] gap-2">
-              {[
-                'Frontend',
-                'Backend',
-                'DevOps',
-                'FullStack',
-                'DataEngineer',
-              ].map((el) => {
+        <div className="mb-4">
+          <p className="text-left mb-2">지원하고자하는 포지션을 선택주세요</p>
+          <div className="w-full flex justify-between mb-[2.5rem] gap-2">
+            {['Frontend', 'Backend', 'DevOps', 'FullStack', 'DataEngineer'].map(
+              (el) => {
                 const { bg, textColor } = getPositionStyle(el)
                 return (
                   <button
@@ -113,10 +83,10 @@ export default function ApplyModal() {
                     {el}
                   </button>
                 )
-              })}
-            </div>
+              },
+            )}
           </div>
-        )}
+        </div>
 
         {/* (B) 지원동기(요약) 입력 */}
         <div className="mb-4">

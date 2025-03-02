@@ -41,7 +41,7 @@ function Box({
   return (
     <div
       onClick={onClick}
-      className="flex items-center justify-between w-[19rem] h-[2.75rem] p-2 bg-gray-100 hover:bg-[#F5F5F5] cursor-pointer"
+      className="flex items-center justify-between w-[19rem] h-[2.75rem] p-2 hover:bg-[#F5F5F5] cursor-pointer"
     >
       <div className="flex items-center">
         <Image
@@ -63,7 +63,11 @@ function Box({
   )
 }
 
-export default function Applicants({ projectType, applicants, onOpen }: any) {
+export default function Applicants({
+  projectType,
+  applicants,
+  onOpen,
+}: ApplicantsProps) {
   const [isOpen, setIsOpen] = useState(false)
 
   const toggleDropdown = () => {

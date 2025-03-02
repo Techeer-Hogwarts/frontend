@@ -31,7 +31,6 @@ const MemberModal = ({
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const [name, setName] = useState('')
   const [members, setMembers] = useState<Member[]>([])
-  const userId = localStorage.getItem('userId')
 
   //모든 사용자 목록
   const { data: allUsers } = useQuery({
@@ -52,7 +51,7 @@ const MemberModal = ({
   //컴포넌트에 입력자 자동 추가
   useEffect(() => {
     if (user) {
-      const alreadyExists = existingMembers.some(
+      const alreadyExists = existingMembers?.some(
         (m) => m.userId === user.id || m.id === user.id,
       )
       if (!alreadyExists) {
@@ -85,7 +84,7 @@ const MemberModal = ({
     if (inModal) return false
 
     // 2) 이미 상위에 존재(existingMembers)하면 제외
-    const inExisting = existingMembers.some(
+    const inExisting = existingMembers?.some(
       (em) => em.userId === u.id || em.id === u.id,
     )
     if (inExisting) return false
@@ -207,13 +206,13 @@ const MemberModal = ({
           <button
             type="button"
             onClick={onClose}
-            className="w-[200px] rounded-md text-sm h-[34px] bg-white text-gray border border-lightgray"
+            className="w-full rounded-md text-sm h-[34px] bg-white text-gray border border-lightgray"
           >
             취소
           </button>
           <button
             type="submit"
-            className={`w-[200px] rounded-md text-sm h-[34px] text-white ${members.length > 0 ? 'bg-primary text-white' : 'bg-lightgray'}`}
+            className={`w-full rounded-md text-sm h-[34px] text-white ${members.length > 0 ? 'bg-primary text-white' : 'bg-lightgray'}`}
             onClick={() => onSave(members)}
           >
             저장하기

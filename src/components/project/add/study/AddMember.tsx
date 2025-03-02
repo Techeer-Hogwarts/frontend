@@ -39,15 +39,7 @@ export default function AddMember({
   onDeleteMember,
   onRestoreMember,
 }: AddMemberProps) {
-  const [projectType, setProjectType] = useState<string | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const storedProjectType = localStorage.getItem('projectType')
-      setProjectType(storedProjectType)
-    }
-  }, [])
 
   // 모달 열기
   const handleAddMember = () => {
@@ -104,12 +96,12 @@ export default function AddMember({
           팀원을 입력해주세요<span className="text-primary">*</span>
         </div>
       </div>
-      <div className="flex items-start pt-[1.5rem] pb-[1.5rem] gap-3 w-[52.5rem] px-[1.25rem] rounded-2xl border border-gray">
+      <div className="grid grid-cols-9 items-start gap-3 w-[52.5rem] px-[1.875rem] py-[1.5rem] rounded-2xl border border-gray">
         {/* 멤버 카드 렌더링 */}
         {projectMember.map((member) => (
           <div
             key={member.id}
-            className="relative w-[4.75rem] flex flex-col items-center"
+            className="relative flex flex-col items-center"
           >
             {/* 삭제 버튼 */}
             <button
@@ -132,13 +124,6 @@ export default function AddMember({
               </div>
             )}
             <div>{member.name}</div>
-            {projectType === 'project' && member.role && (
-              <div className="flex flex-col gap-1">
-                {member.role.map((position) => (
-                  <Tag key={position} position={position} />
-                ))}
-              </div>
-            )}
           </div>
         ))}
         {/* 멤버 추가 버튼 */}

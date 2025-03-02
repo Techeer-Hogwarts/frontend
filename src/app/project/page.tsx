@@ -55,7 +55,6 @@ interface TeamsResponse {
 }
 
 export default function Project() {
-  const [projectId, setProjectId] = useState<number | null>(null)
   // TapBar 관련 (모집 중이면 isRecruited=true)
   const [selectedTab, setSelectedTab] = useState<string>('전체보기')
   const [inputValue, setInputValue] = useState('')
@@ -75,11 +74,6 @@ export default function Project() {
     sessionStorage.setItem('searchQuery', query)
     setInputValue(query)
   }
-
-  useEffect(() => {
-    const id = Number(localStorage.getItem('projectId'))
-    setProjectId(id)
-  }, [])
 
   // API 호출 시 사용할 필터 객체를 구성합니다.
   // 탭 선택에 따라 isRecruited 적용
@@ -253,7 +247,7 @@ export default function Project() {
         <div className="grid grid-cols-4 gap-4">
           {allTeams?.allTeams?.map((team) =>
             team.type === 'project' ? (
-              <ProjectCard key={'project' + team.id} team={team} />
+              <ProjectCard key={team.id} team={team} />
             ) : (
               <StudyCard key={team.id} team={team} />
             ),

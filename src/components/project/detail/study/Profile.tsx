@@ -1,3 +1,5 @@
+'use client'
+
 import Image from 'next/image'
 
 interface MainImage {
@@ -35,70 +37,82 @@ interface ProfileProps {
     resultImages: ResultImages[]
     studyMember: StudyMember[]
     mainImages?: MainImage
-    // studyMember: { name: string; leader: boolean }[] // 추후 수정 필요
   }
 }
 
 export default function Profile({ projectDetail }: ProfileProps) {
-  const projectType = localStorage.getItem('projectType')
+  const isFinished = projectDetail?.isFinished
 
   return (
-    <div
-      className={`flex flex-col items-center ${
-        projectDetail?.isFinished
-          ? "bg-[url('/images/project/finishProfile.png')]"
-          : "bg-[url('/images/project/profile.png')]"
-      } w-[19.1875rem] h-[30.29606rem] bg-cover`}
-    >
+    <div className="flex flex-col w-[19rem]">
+      {/* ====== 상단 탭 부분 ====== */}
+      <div className="flex items-end">
+        {/* 탭 직사각형 */}
+        <div
+          className={`
+            w-[6rem] h-[1.5rem] flex items-center justify-center rounded-t-md
+            shadow-cardtop text-sm font-semibold
+            ${isFinished ? 'bg-lightblue text-blue' : 'bg-lightprimary text-pink'}
+          `}
+        >
+          {isFinished ? '완료' : '진행중'}
+        </div>
+
+        {/* 탭 삼각형 */}
+        <div
+          className={`w-1 h-[1.2rem] shadow-md ${isFinished ? 'bg-lightblue' : 'bg-lightprimary'}`}
+          style={{
+            clipPath: 'polygon(0 100%, 0 0, 100% 100%)',
+          }}
+        />
+      </div>
+
+      {/* ====== 메인 본체 ====== */}
       <div
-        className={`flex pt-[0.35rem] pl-7 mb-[1.56rem] w-full h-[1.56813rem] text-[0.9375rem] font-semibold`}
+        className="
+          w-[19rem] min-h-[28rem]
+          rounded-b-lg rounded-tr-lg shadow-card
+          flex flex-col items-center p-[1.438rem]
+        "
       >
-        {projectDetail?.isFinished ? (
-          <div className=" text-blue ">완료</div>
-        ) : (
-          <div className=" text-pink ">진행중</div>
-        )}
-      </div>
-      {
-        projectDetail && (
-          <div className="flex w-[15.875rem] h-[15.875rem] bg-gradient-to-b from-[#FF8B20] to-[#FFC14F] rounded-2xl text-white justify-center text-center items-center text-[1.5rem] font-bold">
-            {projectDetail?.name}
-          </div>
-        )
-        // <Image
-        //   src={projectDetail?.resultImages[0].imageUrl}
-        //   width={254}
-        //   height={254}
-        //   alt="Picture"
-        //   className=" rounded-2xl"
-        // />
-      }
-
-      <div className="flex w-[15.875rem] justify-between items-center mt-[0.94rem] mb-[1.44rem] ">
-        <div className="text-[1.25rem] font-bold  flex items-center justify-center">
-          {projectDetail?.name}
-        </div>
-
-        <div className="flex gap-2">
-          {projectDetail?.notionLink && (
-            <button
-              type="button"
-              onClick={() => (window.location.href = projectDetail?.notionLink)}
-            >
-              <Image
-                src="/images/project/notion.svg"
-                width={20}
-                height={20}
-                alt="notion"
-              />
-            </button>
+        {/* ==== 메인 콘텐츠 ==== */}
+        <div className="flex flex-col items-center">
+          {/* 1) 상단 큰 박스 (프로젝트 이름 등) */}
+          {projectDetail && (
+            <div className="flex w-[15.875rem] h-[15.875rem] bg-gradient-to-b from-[#FF8B20] to-[#FFC14F] rounded-2xl text-white text-center justify-center items-center text-[1.5rem] font-bold">
+              {projectDetail.name}
+            </div>
           )}
+
+          {/* 2) 상태/노션 링크 등 */}
+          <div className="flex w-[15.875rem] justify-between items-center mt-[1rem] mb-[1.5rem]">
+            <div className="max-w-[12.25rem] text-[1.25rem] font-bold flex items-center truncate">
+              {projectDetail?.name}
+            </div>
+            <div className="flex gap-2">
+              {projectDetail?.notionLink && (
+                <button
+                  type="button"
+                  onClick={() =>
+                    (window.location.href = projectDetail.notionLink)
+                  }
+                >
+                  <Image
+                    src="/images/project/notion.svg"
+                    width={20}
+                    height={20}
+                    alt="notion"
+                  />
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* 3) 설명 부분 */}
+          <div className="w-[15.875rem] whitespace-pre-wrap break-words">
+            {projectDetail?.studyExplain || '설명이 없습니다.'}
+          </div>
         </div>
-      </div>
-      <div className="w-[15.875rem] whitespace-pre-wrap">
-        {projectType === 'study'
-          ? projectDetail?.studyExplain
-          : projectDetail?.projectExplain}
       </div>
     </div>
   )

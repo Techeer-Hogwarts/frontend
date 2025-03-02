@@ -23,8 +23,8 @@ export default function AddProjectPage() {
     devopsNum: 0,
     fullStackNum: 0,
     dataEngineerNum: 0,
-    isRecruited: false,
-    isFinished: true,
+    isRecruited: true,
+    isFinished: false,
     recruitExplain: '',
     githubLink: '',
     notionLink: '',
@@ -37,7 +37,6 @@ export default function AddProjectPage() {
   })
 
   const handleUpdate = (key: string, value: any) => {
-
     setProjectData((prev) => ({ ...prev, [key]: value }))
   }
 
@@ -70,12 +69,10 @@ export default function AddProjectPage() {
       })
     }
 
-
     // (C) 수정된 데이터(dataToSend)를 전송
     const response = await handleAddProject(dataToSend)
     if (response) {
       router.push(`/project/detail/project/${response.id}`)
-      localStorage.setItem('projectId', response.id)
     } else {
       alert('등록에 실패하였습니다. 다시 시도해주세요.')
     }

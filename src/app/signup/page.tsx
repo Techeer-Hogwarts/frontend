@@ -26,6 +26,7 @@ const Signup = () => {
     isVerified: false,
 
     school: '',
+    customSchool: '', // “해당 없음” 선택 시, 직접 입력한 학교명
     classYear: '',
     selectedBatch: '',
     resumeTitle: '',
@@ -97,7 +98,7 @@ const Signup = () => {
     const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&]).{8,}$/
     if (!passwordRegex.test(formData.password)) {
       alert(
-        '비밀번호 양식에 맞지 않습니다. 영어, 숫자, 특수문자를 각각 최소 한 개 이상 포함해주세요.',
+        '비밀번호 양식에 맞지 않습니다.\n 영어, 숫자, 특수문자를 각각 최소 한 개 이상 포함해주세요.\n 비밀번호는 8자 이상이어야 합니다.',
       )
       return
     }
@@ -131,6 +132,10 @@ const Signup = () => {
 
     if (!formData.school.trim()) {
       alert('대학교를 선택해주세요.')
+      return
+    }
+    if (formData.school === '해당 없음' && !formData.customSchool.trim()) {
+      alert('학교명을 직접 입력해주세요.')
       return
     }
     if (!formData.classYear.trim()) {
@@ -189,16 +194,6 @@ const Signup = () => {
       return
     }
 
-    // if (!formData.isVerified) {
-    //   setSignupError('이메일 인증을 완료해주세요.')
-    //   return
-    // }
-
-    // if (!passwordsMatch) {
-    //   setSignupError('비밀번호가 일치하지 않습니다.')
-    //   return
-    // }
-
     // 모든 검증 통과 후 로딩 시작
     setIsLoading(true)
 
@@ -235,13 +230,18 @@ const Signup = () => {
       )
     }
 
+    const finalSchool =
+      formData.school === '해당 없음'
+        ? formData.customSchool.trim()
+        : formData.school
+
     const createUserRequest: any = {
       mainPosition: formData.selectedPositions[0] || '',
       subPosition: formData.selectedPositions[1] || '',
       name: formData.name,
       githubUrl: formData.githubUrl,
       isLft: formData.recommendation === 'yes',
-      school: formData.school,
+      school: finalSchool,
       grade: formData.classYear,
       password: formData.password,
       email: formData.email,
@@ -290,24 +290,24 @@ const Signup = () => {
         const errorData = await response.json().catch(() => null)
 
         if (response.status === 400) {
-          setSignupError('필수 항목을 모두 입력해주세요.')
+          alert('필수 항목을 모두 입력해주세요.')
           return
         }
 
         if (response.status === 500) {
-          setSignupError('이미 등록된 이메일입니다.')
+          alert('이미 등록된 이메일입니다.')
           return
         }
 
         if (response.status === 401) {
-          setSignupError(errorData.message)
+          alert(errorData.message)
           return
         }
       }
 
       router.push('/login?form=signup')
     } catch (err: any) {
-      setSignupError('네트워크 오류가 발생했습니다.')
+      alert('네트워크 오류가 발생했습니다.')
     } finally {
       setIsLoading(false)
     }
@@ -439,86 +439,78 @@ const Signup = () => {
                 <span className="text-primary">*</span>
               </p>
               <div className="flex justify-between space-x-5">
-                <Select
-                  title="대학교"
-                  options={[
-                    '강원대학교',
-                    '가톨릭대학교',
-                    '가천대학교',
-                    '광운대학교',
-                    '단국대학교',
-                    '대구가톨릭대학교',
-                    '덕성여자대학교',
-                    '동덕여자대학교',
-                    '서강대학교',
-                    '성결대학교',
-                    '세종대학교',
-                    '안양대학교',
-                    '연세대학교',
-                    '이화여자대학교',
-                    '인천대학교',
-                    '인하대학교',
-                    '중앙대학교',
-                    '창원대학교',
-                    '충남대학교',
-                    '충북대학교',
-                    '평택대학교',
-                    '부산대학교',
-                    '한국공학대학교',
-                    '한서대학교',
-                    '한성대학교',
-                    '호서대학교',
-                    '해당 없음',
-                  ]}
-                  value={formData.school}
-                  onChange={(value) =>
-                    setFormData((prev) => ({ ...prev, school: value }))
-                  }
-                />
-                <Select
-                  title="학년"
-                  options={[
-                    '1학년',
-                    '2학년',
-                    '3학년',
-                    '4학년',
-                    '졸업',
-                    '해당 없음',
-                  ]}
-                  value={formData.classYear}
-                  onChange={(value) =>
-                    setFormData((prev) => ({ ...prev, classYear: value }))
-                  }
-                />
-              </div>
-            </div>
+                <div className="w-1/2">
+                  <Select
+                    title="대학교"
+                    options={[
+                      '강원대학교',
+                      '가톨릭대학교',
+                      '가천대학교',
+                      '광운대학교',
+                      '단국대학교',
+                      '대구가톨릭대학교',
+                      '덕성여자대학교',
+                      '동덕여자대학교',
+                      '서강대학교',
+                      '성결대학교',
+                      '세종대학교',
+                      '안양대학교',
+                      '연세대학교',
+                      '이화여자대학교',
+                      '인천대학교',
+                      '인하대학교',
+                      '중앙대학교',
+                      '창원대학교',
+                      '충남대학교',
+                      '충북대학교',
+                      '평택대학교',
+                      '부산대학교',
+                      '한국공학대학교',
+                      '한서대학교',
+                      '한성대학교',
+                      '호서대학교',
+                      '해당 없음',
+                    ]}
+                    value={formData.school}
+                    onChange={(value) =>
+                      setFormData((prev) => ({ ...prev, school: value }))
+                    }
+                  />
 
-            <div className="flex justify-between items-center">
-              <p className="text-lg ">
-                기수를 선택해주세요 <span className="text-primary">*</span>
-              </p>
-              <div className="w-[9.5rem]">
-                <Select
-                  title="기수"
-                  options={[
-                    '1기',
-                    '2기',
-                    '3기',
-                    '4기',
-                    '5기',
-                    '6기',
-                    '7기',
-                    '8기',
-                    '9기',
-                  ]}
-                  value={formData.selectedBatch}
-                  onChange={(value) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      selectedBatch: value.replace('기', ''),
-                    }))
-                  }
-                />
+                  {/* “해당 없음”을 선택했다면 직접 입력할 수 있는 필드 노출 */}
+                  {formData.school === '해당 없음' && (
+                    <input
+                      type="text"
+                      placeholder="직접 입력"
+                      className="mt-2 w-full h-10 px-4 border border-gray rounded-[0.25rem] focus:outline-none focus:border-primary"
+                      value={formData.customSchool}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          customSchool: e.target.value,
+                        }))
+                      }
+                    />
+                  )}
+                </div>
+
+                <div className="w-1/2">
+                  <Select
+                    title="학년"
+                    options={[
+                      '1학년',
+                      '2학년',
+                      '3학년',
+                      '4학년',
+                      '졸업',
+                      '해당 없음',
+                    ]}
+                    value={formData.classYear}
+                    onChange={(value) =>
+                      setFormData((prev) => ({ ...prev, classYear: value }))
+                    }
+                  />
+                </div>
               </div>
             </div>
 
@@ -754,9 +746,6 @@ const Signup = () => {
         )}
 
         <div className="flex flex-col my-10">
-          {signupError && (
-            <p className="text-sm text-red-500 mb-2">{signupError}</p>
-          )}
           {step === 1 ? (
             <button
               type="button"

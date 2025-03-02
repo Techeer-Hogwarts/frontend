@@ -73,6 +73,7 @@ export default function AddStack({
 }: AddStackProps) {
   const [frontendStack, setFrontendStack] = useState<string[]>([])
   const [backendStack, setBackendStack] = useState<string[]>([])
+  const [databaseStack, setDatabaseStack] = useState<string[]>([])
   const [devopsStack, setDevopsStack] = useState<string[]>([])
   const [otherStack, setOtherStack] = useState<string[]>([])
 
@@ -99,6 +100,7 @@ export default function AddStack({
     const catMap: Record<string, string[]> = {
       FRONTEND: [],
       BACKEND: [],
+      DATABASE: [],
       DEVOPS: [],
       OTHER: [],
     }
@@ -111,6 +113,7 @@ export default function AddStack({
     setCategories([
       { name: 'FRONTEND', options: catMap.FRONTEND },
       { name: 'BACKEND', options: catMap.BACKEND },
+      { name: 'DATABASE', options: catMap.DATABASE },
       { name: 'DEVOPS', options: catMap.DEVOPS },
       { name: 'OTHER', options: catMap.OTHER },
     ])
@@ -136,6 +139,7 @@ export default function AddStack({
     // ...이제 초기화 로직
     const frontArr: string[] = []
     const backArr: string[] = []
+    const dataArr: string[] = []
     const devopsArr: string[] = []
     const otherArr: string[] = []
     const selectedArr: string[] = []
@@ -146,6 +150,8 @@ export default function AddStack({
         frontArr.push(stack)
       } else if (cat === 'BACKEND') {
         backArr.push(stack)
+      } else if (cat === 'DATABASE') {
+        dataArr.push(stack)
       } else if (cat === 'DEVOPS') {
         devopsArr.push(stack)
       } else {
@@ -158,6 +164,7 @@ export default function AddStack({
     // setState
     setFrontendStack(frontArr)
     setBackendStack(backArr)
+    setDatabaseStack(dataArr)
     setDevopsStack(devopsArr)
     setOtherStack(otherArr)
     setSelectedOptions(selectedArr)
@@ -178,6 +185,7 @@ export default function AddStack({
       const cat = stackCategoryMap[name]
       if (cat === 'FRONTEND') setFrontendStack((prev) => [...prev, name])
       else if (cat === 'BACKEND') setBackendStack((prev) => [...prev, name])
+      else if (cat === 'DATABASE') setDatabaseStack((prev) => [...prev, name])
       else if (cat === 'DEVOPS') setDevopsStack((prev) => [...prev, name])
       else setOtherStack((prev) => [...prev, name])
     })
@@ -189,6 +197,8 @@ export default function AddStack({
         setFrontendStack((prev) => prev.filter((x) => x !== name))
       } else if (cat === 'BACKEND') {
         setBackendStack((prev) => prev.filter((x) => x !== name))
+      } else if (cat === 'DATABASE') {
+        setDatabaseStack((prev) => prev.filter((x) => x !== name))
       } else if (cat === 'DEVOPS') {
         setDevopsStack((prev) => prev.filter((x) => x !== name))
       } else {
@@ -205,6 +215,8 @@ export default function AddStack({
       setFrontendStack((prev) => prev.filter((item) => item !== stackName))
     } else if (category === 'Backend') {
       setBackendStack((prev) => prev.filter((item) => item !== stackName))
+    } else if (category === 'Database') {
+      setDatabaseStack((prev) => prev.filter((item) => item !== stackName))
     } else if (category === 'DevOps') {
       setDevopsStack((prev) => prev.filter((item) => item !== stackName))
     } else {
@@ -224,6 +236,9 @@ export default function AddStack({
     backendStack.forEach((s, idx) => {
       result.push({ stack: s, isMain: idx === 0 })
     })
+    databaseStack.forEach((s, idx) => {
+      result.push({ stack: s, isMain: idx === 0 })
+    })
     devopsStack.forEach((s, idx) => {
       result.push({ stack: s, isMain: idx === 0 })
     })
@@ -238,7 +253,7 @@ export default function AddStack({
     // didInitialize가 true든 false든, 매번 최신화
     const newTeamStacks = buildTeamStacks()
     onUpdateStacks(newTeamStacks)
-  }, [frontendStack, backendStack, devopsStack, otherStack])
+  }, [frontendStack, backendStack, databaseStack, devopsStack, otherStack])
 
   return (
     <div>
@@ -269,6 +284,13 @@ export default function AddStack({
           title="Backend"
           stack={backendStack}
           onDeleteStack={(tech) => handleRemoveStack('Backend', tech)}
+        />
+        <div className="border-lightgray border-t"></div>
+
+        <StackCategory
+          title="Database"
+          stack={databaseStack}
+          onDeleteStack={(tech) => handleRemoveStack('Database', tech)}
         />
         <div className="border-lightgray border-t"></div>
 

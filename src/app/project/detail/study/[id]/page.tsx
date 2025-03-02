@@ -5,7 +5,7 @@ import Member from '@/components/project/detail/study/Member'
 import FindMember from '@/components/project/detail/study/FindMember'
 import StudyGoal from '@/components/project/detail/study/StudyGoal'
 import StudyPlan from '@/components/project/detail/study/StudyPlan'
-import Results from '@/components/project/detail/study/Results'
+import Results from '@/components/project/detail/Results'
 import BaseModal from '@/components/project/modal/BaseModal'
 import Applicants from '@/components/project/detail/study/Applicants'
 import ApplicantModal from '@/components/project/modal/study/ApplicantModal'
@@ -26,7 +26,6 @@ import {
 } from '@/api/project/study/study'
 import ProjectDetailSkeleton from '@/components/project/detail/ProjectDetailSkeleton'
 
-
 const MODAL_TEXT_MAP = {
   delete: '스터디를 삭제하시겠습니까?',
   close: '스터디를 마감하시겠습니까?',
@@ -41,12 +40,8 @@ const MODAL_BTN_TEXT_MAP = {
 
 export default function ProjectDetailpage() {
   const router = useRouter()
-  // const projectId = Number(localStorage.getItem('projectId'))
   const params = useParams()
   const projectId = Number(params.id)
-  // console.log('a', params)
-  // console.log('b', projectId)
-  const projectType = localStorage.getItem('projectType')
 
   const [isStudyMember, setIsStudyMember] = useState<null | boolean>(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -56,7 +51,7 @@ export default function ProjectDetailpage() {
   const [modalType, setModalType] = useState<
     'delete' | 'close' | 'cancel' | null
   >(null)
-  
+
   const { user, checkAuth } = useAuthStore()
 
   useEffect(() => {
@@ -198,9 +193,13 @@ export default function ProjectDetailpage() {
         <StudyGoal goal={studyDetails?.goal} />
         <StudyPlan rule={studyDetails?.rule} />
         {studyDetails?.isRecruited && (
-          <FindMember projectDetail={studyDetails} projectType={projectType} />
+          <FindMember projectDetail={studyDetails} projectType={'study'} />
         )}
-        <Results resultImages={studyDetails?.resultImages} />
+        <Results
+          resultImages={
+            studyDetails?.resultImages.map((img) => img.imageUrl) || []
+          }
+        />
 
         {studyDetails?.isRecruited && (
           <>
