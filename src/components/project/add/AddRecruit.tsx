@@ -28,7 +28,18 @@ export default function AddRecruit({
   onUpdate,
 }: AddRecruitProps) {
   const handleRecruitStatusChange = (status) => {
-    onUpdate('isRecruited', status === '모집')
+    const isRecruit = status === '모집'
+    onUpdate('isRecruited', isRecruit)
+
+    // "모집하지 않음"일 때 기존 입력값 초기화
+    if (!isRecruit) {
+      onUpdate('frontendNum', null)
+      onUpdate('backendNum', null)
+      onUpdate('devopsNum', null)
+      onUpdate('fullStackNum', null)
+      onUpdate('dataEngineerNum', null)
+      onUpdate('recruitExplain', '')
+    }
   }
 
   // const handleRecruitNumChange = (event) => {
