@@ -44,7 +44,7 @@ export default function ProfileCard({
         ></div>
       </div>
 
-      <div className="flex flex-col p-[0.8rem] justify-center w-full h-[10.275rem] rounded-b-lg rounded-tr-lg shadow-card">
+      <div className="flex flex-col p-[0.8rem] justify-center w-[18rem] h-[10.275rem] rounded-b-lg rounded-tr-lg shadow-card">
         <div className="flex w-full gap-2">
           {profileImage && (
             <Image

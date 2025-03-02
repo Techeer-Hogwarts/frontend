@@ -15,7 +15,7 @@ export default function StudyCard({ team }: { team: Team }) {
   return (
     <Link
       href={`/project/detail/study/${team.id}`}
-      className="inline-block group w-[17.5rem] h-[11.375rem] relative"
+      className="inline-block group w-[18rem] h-[11.375rem] relative"
     >
       {/* 탭 부분 (직사각형 + 삼각형) */}
       <div className="flex items-end">
