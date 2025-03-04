@@ -31,7 +31,7 @@ export default function AddRecruit({
 
     // "모집하지 않음"일 때 기존 입력값 초기화
     if (!isRecruit) {
-      onUpdate('recruitNum', null)
+      onUpdate('recruitNum', 0)
       onUpdate('recruitExplain', '')
     }
   }

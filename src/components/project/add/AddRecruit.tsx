@@ -33,11 +33,11 @@ export default function AddRecruit({
 
     // "모집하지 않음"일 때 기존 입력값 초기화
     if (!isRecruit) {
-      onUpdate('frontendNum', null)
-      onUpdate('backendNum', null)
-      onUpdate('devopsNum', null)
-      onUpdate('fullStackNum', null)
-      onUpdate('dataEngineerNum', null)
+      onUpdate('frontendNum', 0)
+      onUpdate('backendNum', 0)
+      onUpdate('devopsNum', 0)
+      onUpdate('fullStackNum', 0)
+      onUpdate('dataEngineerNum', 0)
       onUpdate('recruitExplain', '')
     }
   }
