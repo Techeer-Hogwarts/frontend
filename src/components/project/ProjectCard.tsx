@@ -133,7 +133,7 @@ export default function ProjectCard({ team }: { team: ProjectTeam }) {
       {/* ====== 오버레이 (hover 시 표시) ====== */}
       <div
         // 부모와 같은 크기/위치, 클릭 이벤트 막지 않도록 pointer-events-none
-        className="pointer-events-none absolute top-0 left-0 w-[17.5rem] h-[11.375rem]
+        className="pointer-events-none absolute top-0 left-0 w-[18rem] h-[11.375rem]
                    opacity-0 group-hover:opacity-100 transition-opacity duration-300"
       >
         {/* 탭 부분 (오버레이) */}

@@ -62,7 +62,7 @@ export default function StudyCard({ team }: { team: Team }) {
         className="
           pointer-events-none
           absolute top-0 left-0
-          w-[17.5rem] h-[11.375rem]
+          w-[18rem] h-[11.375rem]
           opacity-0 group-hover:opacity-100
           transition-opacity duration-300
         "
