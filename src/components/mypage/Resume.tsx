@@ -69,11 +69,8 @@ export default function Resume({ userId }) {
       setIsError(false)
       const result = await fetchUserResumes(userId)
       setData(result.data || [])
-
-      console.log('API 응답:', result) // 응답 확인
-
-      // 응답 데이터 구조 확인 후 401 처리
-      if (result?.status === 401 || result?.response?.status === 401) {
+      if (result.status === 401) {
+        // 401이면 로그인 모달 오픈
         setAuthModalOpen(true)
         return
       }
