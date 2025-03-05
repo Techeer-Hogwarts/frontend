@@ -53,6 +53,15 @@ export default function Resume({ userId }) {
 
   const isMyPage = pathname === '/mypage'
 
+  useEffect(() => {
+    // 로그인 여부 확인 후 인증 모달 표시
+    checkAuth().then(() => {
+      if (!user) {
+        setAuthModalOpen(true)
+      }
+    })
+  }, [checkAuth, user])
+
   // API 호출
   const fetchData = async () => {
     try {
@@ -60,6 +69,14 @@ export default function Resume({ userId }) {
       setIsError(false)
       const result = await fetchUserResumes(userId)
       setData(result.data || [])
+
+      console.log('API 응답:', result) // 응답 확인
+
+      // 응답 데이터 구조 확인 후 401 처리
+      if (result?.status === 401 || result?.response?.status === 401) {
+        setAuthModalOpen(true)
+        return
+      }
     } catch (error) {
       setIsError(true)
     } finally {
@@ -165,27 +182,23 @@ export default function Resume({ userId }) {
         )}
         {modal && <AddResume setModal={setModal} fetchData={fetchData} />}
       </div>
-      {data.length === 0 ? (
-        // (A) 이력서 데이터가 없을 때
-        <div className="text-center text-gray">등록된 이력서가 없습니다.</div>
-      ) : (
-        // (B) 이력서 데이터가 있을 때
-        <Link href={`/resume/$[resume.id]`}>
-          <div className="grid grid-cols-3 gap-8">
-            {resumes.map((resume) => (
-              <ResumeFolder
-                key={resume.id}
-                likeCount={resume.likeCount}
-                resume={resume}
-                likeList={likeList}
-                onLikeUpdate={handleLikeUpdate}
-                bookmarkList={bookmarkList}
-                onBookmarkUpdate={handleBookmarkUpdate}
-              />
-            ))}
-          </div>
-        </Link>
-      )}
+
+      <Link href={`/resume/$[resume.id]`}>
+        <div className="grid grid-cols-3 gap-8">
+          {resumes.map((resume) => (
+            <ResumeFolder
+              key={resume.id}
+              likeCount={resume.likeCount}
+              resume={resume}
+              likeList={likeList}
+              onLikeUpdate={handleLikeUpdate}
+              bookmarkList={bookmarkList}
+              onBookmarkUpdate={handleBookmarkUpdate}
+            />
+          ))}
+        </div>
+      </Link>
+      {/* )} */}
     </div>
   )
 }

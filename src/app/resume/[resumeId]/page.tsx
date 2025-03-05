@@ -69,6 +69,7 @@ export default function Detail() {
         setResume(data)
         setProfileData(data.user)
       } catch (err: any) {
+        console.error('이력서 가져오기 실패:', err)
         setError(err.message || '이력서 불러오기 실패')
       } finally {
         setIsLoading(false)
