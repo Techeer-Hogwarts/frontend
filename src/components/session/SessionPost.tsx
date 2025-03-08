@@ -93,6 +93,9 @@ export default function SessionPost({
               height={199}
               className="w-full h-[155px] z-1 object-cover"
               onError={() => setIsError(true)}
+              onClick={() => {
+                router.push(`/session/video/${id}`)
+              }}
             />
           ) : (
             <div
