@@ -44,6 +44,7 @@ export default function BlogPost({
   const [likeCount, setLikeCount] = useState(initialLikeCount)
   const [modalOpen, setModalOpen] = useState(false)
   const [modalMessage, setModalMessage] = useState('')
+  const [isLikeProcessing, setIsLikeProcessing] = useState(false) // 여러 번 클릭 방지를 위한 상태 추가
   const profile =
     category === 'TECHEER'
       ? { image: userImage, name: userName }
@@ -52,6 +53,7 @@ export default function BlogPost({
   const clickModal = () => {
     setShowModal(!showModal)
   }
+
   const fetchViews = async () => {
     try {
       const response = await fetch(`/api/v1/blogs/${id}`, {
@@ -63,6 +65,7 @@ export default function BlogPost({
       }
     } catch (err) {}
   }
+
   const formattedDate = new Date(date)
     .toLocaleDateString('ko-KR', {
       year: 'numeric',
@@ -70,27 +73,38 @@ export default function BlogPost({
       day: '2-digit',
     })
     .replace(/\.$/, '')
-  const clickLike = async () => {
-    setIsLike(!isLike)
-    try {
-      const data = await fetchLikes('BLOG', 0, 20)
-      const isAlreadyLiked = data.some((bookmark: any) => bookmark.id === id)
 
-      if (isAlreadyLiked) {
-        postLike(Number(id), 'BLOG', false)
-        setIsLike(false)
-        setLikeCount((prev) => Math.max(0, prev - 1))
-      } else {
-        postLike(Number(id), 'BLOG', true)
-        setIsLike(true)
-        setLikeCount((prev) => prev + 1)
-      }
-    } catch (err) {}
+  const clickLike = async () => {
+    // 처리 중일 때 추가 클릭 방지
+    if (isLikeProcessing) return
+
+    setIsLikeProcessing(true)
+
+    try {
+      // UI 즉시 업데이트를 위해 상태 변경
+      const newLikeState = !isLike
+      setIsLike(newLikeState)
+
+      // 새로운 상태에 따라 좋아요 수 업데이트
+      setLikeCount((prev) => (newLikeState ? prev + 1 : Math.max(0, prev - 1)))
+
+      // 추가 fetch 없이 API 호출만 수행
+      await postLike(Number(id), 'BLOG', newLikeState)
+    } catch (err) {
+      // API 호출 실패 시 UI 상태 되돌리기
+      setIsLike(!isLike)
+      setLikeCount((prev) => (isLike ? prev + 1 : Math.max(0, prev - 1)))
+      console.error('좋아요 상태 업데이트 실패:', err)
+    } finally {
+      setIsLikeProcessing(false)
+    }
   }
+
   const handleClickUrl = () => {
     window.open(url, '_blank')
     fetchViews()
   }
+
   useEffect(() => {
     if (Array.isArray(likeList)) {
       setIsLike(likeList.some((bookmark: any) => bookmark.id === id))
@@ -162,7 +176,11 @@ export default function BlogPost({
 
             <div className="flex mr-2">
               <span className="mr-1">{likeCount}</span>
-              <button type="button" onClick={clickLike}>
+              <button
+                type="button"
+                onClick={clickLike}
+                disabled={isLikeProcessing}
+              >
                 {isLike ? (
                   <Image
                     src="/images/like-on.svg"

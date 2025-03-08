@@ -24,6 +24,7 @@ export default function Page() {
   const [isRequesting, setIsRequesting] = useState(false)
   const [ref, inView] = useInView({ threshold: 0.5 })
   const { fetchLikes } = useLike()
+
   const handleCategoryChange = (selectedCategory: string) => {
     setBlog([])
     setLikeList([])
@@ -32,26 +33,26 @@ export default function Page() {
     setIsLoading(true)
     setActiveOption(selectedCategory)
   }
+
   const handleDeleteSession = (id: string) => {
     setBlog((prevBlogs) => prevBlogs.filter((blog) => blog.id !== id))
     setMessage('블로그 글이 삭제되었습니다.')
     setTimeout(() => setMessage(null), 2000)
   }
+
   const fetchMore = async () => {
     const newLimit = limit + 12
     try {
       const newBlogs = await fetchBlogs(newLimit, activeOption)
       const newLikeList = await checkLike()
-      const updatedBlogs = newBlogs.map((b: BlogProps) => ({
-        ...b,
-        likeCount: newLikeList.some((like) => like.id === b.id)
-          ? b.likeCount + 1
-          : b.likeCount,
-      }))
-      setBlog(updatedBlogs)
+      setBlog(newBlogs)
+      setLikeList(newLikeList)
       setLimit(newLimit)
-    } catch (err) {}
+    } catch (err) {
+      console.error('추가 블로그 로딩 실패:', err)
+    }
   }
+
   const fetchBlogs = useCallback(async (newLimit: number, category: string) => {
     if (category === '금주의 블로그') {
       let url = `/api/v1/blogs/best?offset=0&limit=${newLimit}`
@@ -70,13 +71,16 @@ export default function Page() {
       throw new Error('블로그 데이터를 불러오는데 실패했습니다.')
     return response.json()
   }, [])
+
   const checkLike = async () => {
     try {
       return await fetchLikes('BLOG', 0, 50)
-    } catch {
+    } catch (err) {
+      console.error('좋아요 정보 로딩 실패:', err)
       return []
     }
   }
+
   const fetchData = async () => {
     setIsLoading(true)
     setHasFetched(false)
@@ -86,21 +90,18 @@ export default function Page() {
     try {
       const newBlogs = await fetchBlogs(limit, activeOption)
       const newLikeList = await checkLike()
-      const updatedBlogs = newBlogs.map((b: BlogProps) => ({
-        ...b,
-        likeCount: newLikeList.some((like) => like.id === b.id)
-          ? b.likeCount + 1
-          : b.likeCount,
-      }))
 
-      setBlog(updatedBlogs)
+      // likeCount를 수정하지 않고 API 응답 그대로 사용합니다
+      setBlog(newBlogs)
       setLikeList(newLikeList)
     } catch (err) {
+      console.error('블로그 데이터 로딩 실패:', err)
     } finally {
       setIsLoading(false)
       setHasFetched(true)
     }
   }
+
   useEffect(() => {
     if (!category.includes(activeOption)) {
       setActiveOption('전체보기')
@@ -112,12 +113,13 @@ export default function Page() {
   }, [activeOption])
 
   useEffect(() => {
-    if (!inView || isLoading) return
-    if (inView) {
-      setIsRequesting(true)
-      fetchMore()
-    }
-  }, [inView, isLoading, isRequesting, activeOption])
+    if (!inView || isLoading || isRequesting) return
+
+    setIsRequesting(true)
+    fetchMore().finally(() => {
+      setIsRequesting(false)
+    })
+  }, [inView, isLoading, activeOption])
 
   return (
     <div className="flex justify-center h-auto min-h-screen">
