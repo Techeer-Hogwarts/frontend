@@ -3,6 +3,7 @@ export interface BlogProps {
   id: string
   date: string
   url: string
+  category: string
   likeCount: number
   thumbnail: string
   user: User
@@ -11,6 +12,7 @@ export interface BlogProps {
 
 interface User {
   name: string
+  profileImage: string
 }
 
 interface Author {

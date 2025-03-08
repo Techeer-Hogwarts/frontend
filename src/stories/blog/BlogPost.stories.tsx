@@ -13,14 +13,16 @@ const meta = {
 export default meta
 
 type Story = StoryObj<typeof meta>
-const onDelete = (id: string) => {
-}
+const onDelete = (id: string) => {}
 const likeList = ['테스트']
 export const Default: Story = {
   args: {
     title: '동계 부트캠프 회고록',
     date: '2024년 8월',
-    name: '김아파트',
+    authorName: '김아파트',
+    userName: '주영준',
+    userImage: 'https://miro.medium.com/v2/0*3PiUZ2c3GwLKvnya',
+    category: 'TECHEER',
     id: '2',
     likeCount: 0,
     url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
@@ -36,7 +38,10 @@ export const LongTitle: Story = {
     title:
       '토스 SLASH24 프론트엔드 트랙 - 토스가 오프라인 결제를 빠르고 안정적으로 혁신하는 방법',
     date: '2023년 12월',
-    name: '주영준',
+    authorName: '김아파트',
+    userName: '주영준',
+    userImage: 'https://miro.medium.com/v2/0*3PiUZ2c3GwLKvnya',
+    category: 'SHARED',
     id: '2',
     likeCount: 0,
     url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',

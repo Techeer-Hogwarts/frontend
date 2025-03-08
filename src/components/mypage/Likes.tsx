@@ -154,10 +154,13 @@ export default function Likes() {
                   key={like.id}
                   title={like.title}
                   id={like.id}
+                  category={like.category}
                   date={like.date}
                   url={like.url}
                   likeCount={like.likeCount}
-                  name={like.author?.authorName || ''}
+                  userName={like.user.name}
+                  userImage={like.user.profileImage}
+                  authorName={like.author.authorName}
                   authorImage={like.author?.authorImage}
                   image={like.thumbnail}
                   onDelete={like}

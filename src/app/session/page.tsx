@@ -39,22 +39,18 @@ export default function Page() {
   const [selectedPeriodsPo, setSelectedPeriodsPo] = useState<string[]>([])
   const [likeList, setLikeList] = useState([])
   const [message, setMessage] = useState<string | null>(null)
-
   // 탭 상태
-  const { activeOption, setActiveOption } = useTapBarStore()
-
+  const { activeOption } = useTapBarStore()
   // 검색어, limit
   const [inputValue, setInputValue] = useState('')
   const [limit, setLimit] = useState(12)
-
   // 세션 목록
   const [allSessions, setAllSessions] = useState<Session[]>([])
   // 로그인 모달
   const [authModalOpen, setAuthModalOpen] = useState(false)
-
   // 무한 스크롤
   const [ref, inView] = useInView({ triggerOnce: false, threshold: 0.5 })
-
+  const [isRequesting, setIsRequesting] = useState(false)
   // 좋아요 API
   const { fetchLikes } = useLike()
 
@@ -136,15 +132,12 @@ export default function Page() {
     checkLike()
     refetch()
   }, [activeOption, selectedPeriodsP, selectedPeriodsPo, selectedPeriodsB])
-
-  // 무한 스크롤
   useEffect(() => {
-    if (!inView || isLoading) return
-    setLimit((prev) => prev + 12)
-    if (activeOption === '금주의 세션') {
-      refetch()
+    if (inView) {
+      setIsRequesting(true)
+      setLimit((prev) => prev + 8) // 새로운 데이터를 요청하려면 limit을 증가
     }
-  }, [inView, isLoading])
+  }, [inView, isRequesting])
 
   // 검색 결과
   const [searchResults, setSearchResults] = useState<any>(null)
@@ -314,53 +307,46 @@ export default function Page() {
               ))}
             </div>
           )}
-
+        {allSessions.length === 0 && isLoading && (
+          <div className="grid grid-cols-4 gap-8 mt-[2.84rem] ">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <BlogPostSkeleton key={i} />
+            ))}
+          </div>
+        )}
         {/* 메인 렌더 로직 */}
-        {authModalOpen ? (
-          <div className="flex justify-center">
+        <div className="flex justify-center">
+          {authModalOpen && (
             <EmptyLottie
               text="세션 데이터가 없습니다."
               text2="로그인 후 다시 시도해주세요."
             />
-          </div>
-        ) : // ) : isLoading ? (
-        //   // 로딩 중 → 스켈레톤 (예: 8개)
-        //   <div className="grid grid-cols-4 gap-8 mt-[2.84rem] ">
-        //     {Array.from({ length: 8 }).map((_, i) => (
-        //       <BlogPostSkeleton key={i} />
-        //     ))}
-        //   </div>
-        error || (newSessions && allSessions.length === 0) ? (
-          // 에러 or 빈 배열
-          <div className="flex justify-center">
-            <EmptyLottie
-              text="세션 데이터가 없습니다."
-              text2="다시 조회해주세요"
-            />
-          </div>
-        ) : (
-          // 정상 목록
-          <div className="grid flex-col grid-cols-4 gap-8 mt-[2.84rem]">
-            {allSessions.map((data: Session) => (
-              <SessionPost
-                key={data.id}
-                likeCount={data.likeCount}
-                id={data.id}
-                thumbnail={data.thumbnail}
-                title={data.title}
-                date={data.date}
-                presenter={data.presenter}
-                fileUrl={data.fileUrl}
-                userImage={data.user.profileImage}
-                showMessage={showMessage}
-                likeList={likeList}
-                onLikeUpdate={handleLikeUpdate}
-              />
-            ))}
-            <div ref={ref} />
-          </div>
-        )}
+          )}
 
+          {!authModalOpen &&
+            (error || (newSessions && allSessions.length === 0)) && (
+              <EmptyLottie
+                text="세션 데이터가 없습니다."
+                text2="다시 조회해주세요."
+              />
+            )}
+
+          {!authModalOpen && !error && allSessions.length > 0 && (
+            <div className="grid grid-cols-4 gap-8 mt-[2.84rem]">
+              {allSessions.map((data: Session) => (
+                <SessionPost
+                  key={data.id}
+                  {...data} // 모든 props를 한 번에 전달
+                  userImage={data.user.profileImage}
+                  showMessage={showMessage}
+                  likeList={likeList}
+                  onLikeUpdate={handleLikeUpdate}
+                />
+              ))}
+              <div ref={ref} className="h-1" />
+            </div>
+          )}
+        </div>
         <AddBtn />
       </div>
     </div>
