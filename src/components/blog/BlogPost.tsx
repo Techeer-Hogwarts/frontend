@@ -58,7 +58,6 @@ export default function BlogPost({
         method: 'PUT',
         credentials: 'include',
       })
-      // console.log('response:', response)
       if (!response.ok) {
         throw new Error('블로그 조회수를 업데이트하는 데 실패했습니다.')
       }
@@ -106,15 +105,21 @@ export default function BlogPost({
         onClose={() => setModalOpen(false)}
       />
       <div className="flex flex-col w-full relative rounded-b-lg shadow-[0px_5px_8px_#e5e5e5] overflow-hidden transition-transform transform hover:-translate-y-2 cursor-pointer">
-        <img
-          src={image}
-          alt="testIMG"
-          className="w-full h-[155px] z-1 object-cover"
-          onClick={handleClickUrl}
-          onError={(e: any) => {
-            e.target.src = '/images/session/thumbnail.png'
-          }}
-        />
+        {image ? (
+          <img
+            src={image}
+            alt="testIMG"
+            className="w-full h-[155px] z-1 object-cover"
+            onClick={handleClickUrl}
+          />
+        ) : (
+          <div
+            onClick={handleClickUrl}
+            className="w-full flex items-center justify-center px-5 h-[155px] text-white bg-gradient-to-b from-[#FF8B20] to-[#FFC14F]"
+          >
+            {title}
+          </div>
+        )}
         <div className="w-full min-h-[100px] h-auto py-2 bg-white">
           <div className="relative flex justify-between">
             <p className="w-full px-5 mr-1 mb-1 text-base truncate whitespace-nowrap overflow-hidden">
