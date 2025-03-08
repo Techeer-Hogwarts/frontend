@@ -81,17 +81,13 @@ export default function BlogPost({
     setIsLikeProcessing(true)
 
     try {
-      // UI 즉시 업데이트를 위해 상태 변경
+      // UI 즉시 업데이트
       const newLikeState = !isLike
       setIsLike(newLikeState)
-
       // 새로운 상태에 따라 좋아요 수 업데이트
       setLikeCount((prev) => (newLikeState ? prev + 1 : Math.max(0, prev - 1)))
-
-      // 추가 fetch 없이 API 호출만 수행
       await postLike(Number(id), 'BLOG', newLikeState)
     } catch (err) {
-      // API 호출 실패 시 UI 상태 되돌리기
       setIsLike(!isLike)
       setLikeCount((prev) => (isLike ? prev + 1 : Math.max(0, prev - 1)))
       console.error('좋아요 상태 업데이트 실패:', err)
