@@ -15,7 +15,7 @@ export default function Login() {
   const [message, setMessage] = useState('')
   const [isError, setIsError] = useState(false)
 
-  const { setIsLoggedIn } = useAuthStore()
+  const { setIsLoggedIn, checkAuth } = useAuthStore()
   const router = useRouter()
 
   const [redirectPath, setRedirectPath] = useState<string | null>(null)
@@ -35,8 +35,6 @@ export default function Login() {
       setMessage('이메일과 비밀번호를 모두 입력해주세요.')
       return
     }
-
-    setIsLoggingIn(true)
 
     try {
       // fetch로 로그인 요청
@@ -66,6 +64,7 @@ export default function Login() {
           setIsLoggedIn(true)
           setMessage('로그인이 완료되었습니다.')
           setIsError(false)
+          checkAuth()
           if (redirectPath) {
             router.replace(redirectPath)
           } else if (form === 'signup') {
