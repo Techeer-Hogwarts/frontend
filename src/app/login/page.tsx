@@ -87,6 +87,11 @@ export default function Login() {
     }
   }
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleLogin()
+    }
+  }
   return (
     <div className="flex min-h-[calc(100vh-61px)] items-center justify-between">
       {/* 왼쪽 배너 */}
@@ -118,6 +123,7 @@ export default function Login() {
               placeholder="이메일을 입력해주세요"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              onKeyDown={(e) => handleKeyDown(e)}
             />
             <InputField
               label="비밀번호"
@@ -126,6 +132,7 @@ export default function Login() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              onKeyDown={(e) => handleKeyDown(e)}
             />
           </div>
           <div className="flex items-center justify-end mt-12 mb-3">
@@ -136,7 +143,7 @@ export default function Login() {
 
           <button
             type="button"
-            className="w-full h-10 text-xl border border-gray text-gray rounded-full focus:border-primary focus:text-primary"
+            className="w-full h-10 text-xl border border-gray text-gray rounded-full hover:border-primary hover:text-primary"
             onClick={handleLogin}
             disabled={isLoggingIn}
           >
