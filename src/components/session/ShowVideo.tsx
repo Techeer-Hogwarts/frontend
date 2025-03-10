@@ -5,10 +5,8 @@ import { useParams, useRouter } from 'next/navigation'
 import AuthModal from '@/components/common/AuthModal'
 import { useAuthStore } from '@/store/authStore'
 import { getSingleSession } from '@/app/session/_lib/getSingleSession'
-import Link from 'next/link'
 
 export default function ShowVideo() {
-  const router = useRouter()
   const params = useParams()
   const sessionId = params.id as string
   const [sessionUrl, setSessionUrl] = useState('')

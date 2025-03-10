@@ -98,14 +98,14 @@ export default function SessionPost({
               }}
             />
           ) : (
-            <div
+            <button
               onClick={() => {
                 router.push(`/session/video/${id}`)
               }}
               className="w-full flex items-center justify-center px-5 h-[155px] truncate text-white bg-gradient-to-b from-[#FF8B20] to-[#FFC14F]"
             >
               {title}
-            </div>
+            </button>
           )}
 
           <div className="w-full min-h-[100px] h-auto py-2 bg-white">

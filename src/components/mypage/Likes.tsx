@@ -26,15 +26,15 @@ export default function Likes() {
   const [bookmarkList, setBookmarkList] = useState<string[]>([])
 
   const [inputValue, setInputValue] = useState('')
-  const { activeOption, setActiveOption } = useTapBarStore()
+  const { activeOption } = useTapBarStore()
   const [isLoading, setIsLoading] = useState(true)
   const [ref, inView] = useInView()
   const [limit, setLimit] = useState(6)
 
-  const handleSearch = (query: string) => {
-    sessionStorage.setItem('searchQuery', query)
-    setInputValue(query)
-  }
+  // const handleSearch = (query: string) => {
+  //   sessionStorage.setItem('searchQuery', query)
+  //   setInputValue(query)
+  // }
 
   const checkLike = async () => {
     const category =

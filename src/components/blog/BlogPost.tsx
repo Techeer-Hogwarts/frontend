@@ -40,7 +40,7 @@ export default function BlogPost({
 }: BlogPostProps) {
   const [showModal, setShowModal] = useState(false)
   const [isLike, setIsLike] = useState(false)
-  const { fetchLikes, postLike } = useLike()
+  const { postLike } = useLike()
   const [likeCount, setLikeCount] = useState(initialLikeCount)
   const [modalOpen, setModalOpen] = useState(false)
   const [modalMessage, setModalMessage] = useState('')
@@ -123,12 +123,12 @@ export default function BlogPost({
             onClick={handleClickUrl}
           />
         ) : (
-          <div
+          <button
             onClick={handleClickUrl}
             className="w-full flex items-center justify-center px-5 h-[155px] text-white bg-gradient-to-b from-[#FF8B20] to-[#FFC14F]"
           >
             {title}
-          </div>
+          </button>
         )}
         <div className="w-full min-h-[100px] h-auto py-2 bg-white">
           <div className="relative flex justify-between">
