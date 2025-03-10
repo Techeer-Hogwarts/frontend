@@ -44,11 +44,7 @@ export default function ProjectDetailpage() {
   const queryClient = useQueryClient()
 
   const [authModalOpen, setAuthModalOpen] = useState(false)
-  const { user, checkAuth } = useAuthStore()
-
-  useEffect(() => {
-    checkAuth()
-  }, [])
+  const { user } = useAuthStore()
 
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [modalType, setModalType] = useState<
