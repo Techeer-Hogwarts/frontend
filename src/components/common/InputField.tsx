@@ -7,6 +7,7 @@ export interface InputFieldProps {
   placeholder: string
   type?: string
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
+  onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void
   value?: string
   required?: boolean // 필수 여부 (*)
 
@@ -27,6 +28,7 @@ const InputField: React.FC<InputFieldProps> = ({
   showIcon = false,
   isChecked = false,
   onChange,
+  onKeyDown,
   value,
 }) => {
   return (
@@ -50,6 +52,7 @@ const InputField: React.FC<InputFieldProps> = ({
         name={name}
         placeholder={placeholder}
         onChange={onChange}
+        onKeyDown={onKeyDown}
         value={value}
         className="w-full h-10 px-4 border border-gray rounded-[0.25rem] focus:outline-none focus:border-primary"
       />
