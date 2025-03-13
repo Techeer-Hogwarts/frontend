@@ -3,6 +3,7 @@ import localFont from 'next/font/local'
 import NavBar from '@/components/common/NavBar'
 import Footer from '@/components/common/Footer'
 import Providers from '@/utils/provider'
+import GoogleAnalytics from '@/lib/GoogleAnalytics'
 
 const pretendard = localFont({
   src: '../../public/fonts/PretendardVariable.ttf',
@@ -31,6 +32,9 @@ export default function RootLayout({
       <body
         className={`${pretendard.className} min-h-screen flex flex-col justify-center items-center`}
       >
+        {process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS ? (
+          <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS} />
+        ) : null}
         <NavBar />
         <Providers>
           <main className="flex-1">{children}</main>
