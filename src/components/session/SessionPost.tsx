@@ -41,6 +41,7 @@ export default function SessionPost({
   const [likeCount, setLikeCount] = useState(initialLikeCount)
   const [modalOpen, setModalOpen] = useState(false)
   const [modalMessage, setModalMessage] = useState('')
+  const [isError, setIsError] = useState(false)
   const clickLike = async () => {
     try {
       const newIsLike = !isLike
@@ -63,32 +64,52 @@ export default function SessionPost({
     }
   }, [likeList, id])
   return (
-    <div>
+    <div className={`relative ${showModal ? 'z-50' : 'z-0'}`}>
       <BookmarkModal
         isOpen={modalOpen}
         message={modalMessage}
         onClose={() => setModalOpen(false)}
       />
-      <div
-        className="flex transition-transform transform hover:-translate-y-2 cursor-pointer "
-      >
+
+      <div className="flex transition-transform transform hover:-translate-y-2 cursor-pointer relative z-0 ">
+        {showModal && (
+          <div className="absolute top-40 right-1 z-50 mt-2">
+            <SessionMenu
+              id={id}
+              fileUrl={fileUrl}
+              showMessage={showMessage}
+              setModalOpen={setModalOpen}
+              setModalMessage={setModalMessage}
+            />
+          </div>
+        )}
         <div className="flex flex-col w-full relativ rounded-b-lg shadow-[0px_5px_8px_#e5e5e5] overflow-hidden">
-          <Image
-            src={thumbnail}
-            alt="img"
-            unoptimized
-            width={379}
-            height={199}
-            className="w-full h-[155px] z-1 object-cover"
-            onClick={() => {
-              router.push(`/session/video/${id}`)
-            }}
-            onError={(e: any) => {
-              e.target.src = '/images/session/thumbnail.png' // 대체 이미지 경로
-            }}
-          />
+          {!isError ? (
+            <Image
+              src={thumbnail}
+              alt="img"
+              unoptimized
+              width={379}
+              height={199}
+              className="w-full h-[155px] z-1 object-cover"
+              onError={() => setIsError(true)}
+              onClick={() => {
+                router.push(`/session/video/${id}`)
+              }}
+            />
+          ) : (
+            <button
+              onClick={() => {
+                router.push(`/session/video/${id}`)
+              }}
+              className="w-full flex items-center justify-center px-5 h-[155px] truncate text-white bg-gradient-to-b from-[#FF8B20] to-[#FFC14F]"
+            >
+              {title}
+            </button>
+          )}
+
           <div className="w-full min-h-[100px] h-auto py-2 bg-white">
-            <div className="relative flex justify-between">
+            <div className="relative flex justify-between z-0">
               <p className="w-full px-5 mr-1 mb-1 text-base truncate whitespace-nowrap overflow-hidden">
                 {title}
               </p>
@@ -97,22 +118,11 @@ export default function SessionPost({
                 alt="seesionmenu"
                 width={24}
                 height={24}
-                className="absolute top-0 right-0"
+                className="absolute top-0 right-0 z-10"
                 onClick={() => {
                   setShowModal(!showModal)
                 }}
               />
-              {showModal && (
-                <div className="absolute top-[-5%] right-0 z-10">
-                  <SessionMenu
-                    id={id}
-                    fileUrl={fileUrl}
-                    showMessage={showMessage}
-                    setModalOpen={setModalOpen}
-                    setModalMessage={setModalMessage}
-                  />
-                </div>
-              )}
             </div>
             <p className="ml-5 text-sm text-black/30">{date}</p>
             <div className="flex justify-between mt-3 ml-5">

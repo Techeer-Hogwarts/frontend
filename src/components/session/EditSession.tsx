@@ -51,6 +51,7 @@ const BOOTCAMP_OPTIONS = {
     '2023년 여름',
     '2023년 겨울',
     '2024년 여름',
+    '2024년 겨울',
   ],
   values: [
     'SUMMER_2022',
@@ -58,6 +59,7 @@ const BOOTCAMP_OPTIONS = {
     'SUMMER_2023',
     'WINTER_2023',
     'SUMMER_2024',
+    'WINTER_2024',
   ],
 }
 const PARTNERS_OPTIONS = {
@@ -132,8 +134,7 @@ export default function EditSession() {
         return
       }
       setSelectedCategory(singleVideo.category)
-    } catch (err) {
-    }
+    } catch (err) {}
   }
   const getUser = async () => {
     try {
@@ -149,8 +150,7 @@ export default function EditSession() {
       }
       const data = await response.json()
       fetchSignleSession(data.name)
-    } catch (err) {
-    }
+    } catch (err) {}
   }
 
   useEffect(() => {

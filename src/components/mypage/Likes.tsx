@@ -26,15 +26,15 @@ export default function Likes() {
   const [bookmarkList, setBookmarkList] = useState<string[]>([])
 
   const [inputValue, setInputValue] = useState('')
-  const { activeOption, setActiveOption } = useTapBarStore()
+  const { activeOption } = useTapBarStore()
   const [isLoading, setIsLoading] = useState(true)
   const [ref, inView] = useInView()
   const [limit, setLimit] = useState(6)
 
-  const handleSearch = (query: string) => {
-    sessionStorage.setItem('searchQuery', query)
-    setInputValue(query)
-  }
+  // const handleSearch = (query: string) => {
+  //   sessionStorage.setItem('searchQuery', query)
+  //   setInputValue(query)
+  // }
 
   const checkLike = async () => {
     const category =
@@ -154,10 +154,13 @@ export default function Likes() {
                   key={like.id}
                   title={like.title}
                   id={like.id}
+                  category={like.category}
                   date={like.date}
                   url={like.url}
                   likeCount={like.likeCount}
-                  name={like.author?.authorName || ''}
+                  userName={like.user.name}
+                  userImage={like.user.profileImage}
+                  authorName={like.author.authorName}
                   authorImage={like.author?.authorImage}
                   image={like.thumbnail}
                   onDelete={like}

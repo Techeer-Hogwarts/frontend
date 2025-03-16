@@ -168,10 +168,13 @@ export default function Bookmark() {
                   key={bookmark.id}
                   title={bookmark.title}
                   id={bookmark.id}
+                  category={bookmark.category}
                   date={bookmark.date}
                   url={bookmark.url}
                   likeCount={bookmark.likeCount}
-                  name={bookmark.author?.authorName || ''}
+                  userName={bookmark.user.name}
+                  userImage={bookmark.user.profileImage}
+                  authorName={bookmark.author.authorName}
                   image={bookmark.thumbnail}
                   authorImage={bookmark.author?.authorImage}
                   onDelete={bookmark}
