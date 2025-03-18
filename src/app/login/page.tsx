@@ -1,15 +1,24 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useAuthStore } from '@/store/authStore'
 import InputField from '@/components/common/InputField'
+import { useForm } from 'react-hook-form'
 
 export default function Login() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const {
+    handleSubmit,
+    register,
+    watch,
+    formState: { errors },
+  } = useForm()
+
   const [isLoggingIn, setIsLoggingIn] = useState(false)
+
+  const email = watch('email')
+  const password = watch('password')
 
   // 메시지 상태
   const [message, setMessage] = useState('')
@@ -28,6 +37,9 @@ export default function Login() {
       setForm(params.get('form'))
     }
   }, [])
+  const handleLogins = (data) => {
+    console.log(data) // 제대로 된 값이 출력되어야 합니다.
+  }
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -110,22 +122,23 @@ export default function Login() {
         <h2 className="text-4xl font-extrabold text-center my-8 text-primary">
           Sign in
         </h2>
-        <div className="flex flex-col w-[30.25rem] justify-center my-auto">
+        <form
+          className="flex flex-col w-[30.25rem] justify-center my-auto"
+          onSubmit={handleSubmit(handleLogins)}
+        >
           <div className="space-y-4">
             <InputField
               label="이메일"
               name="email"
               placeholder="이메일을 입력해주세요"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              {...register('email')}
             />
             <InputField
               label="비밀번호"
               name="password"
               placeholder="비밀번호를 입력해주세요"
               type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              {...register('password')}
             />
           </div>
           <div className="flex items-center justify-end mt-12 mb-3">
@@ -135,10 +148,8 @@ export default function Login() {
           </div>
 
           <button
-            type="button"
+            type="submit"
             className="w-full h-10 text-xl border border-gray text-gray rounded-full focus:border-primary focus:text-primary"
-            onClick={handleLogin}
-            disabled={isLoggingIn}
           >
             로그인
           </button>
@@ -153,7 +164,7 @@ export default function Login() {
               {message}
             </p>
           )}
-        </div>
+        </form>
       </div>
     </div>
   )
