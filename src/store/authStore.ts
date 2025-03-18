@@ -52,13 +52,10 @@ interface AuthState {
 export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
-      isLoggedIn: false,
+      isLoggedIn: null, // 초기 상태를 null로 설정해서 Hydration mismatch 방지
       user: null,
-
       setIsLoggedIn: (status: boolean) => set({ isLoggedIn: status }),
       setUser: (user: User | null) => set({ user }),
-
-      // 쿠키의 유효성을 서버 API로 확인
       checkAuth: async () => {
         try {
           const response = await fetch('/api/v1/users', {
@@ -76,8 +73,6 @@ export const useAuthStore = create<AuthState>()(
           set({ isLoggedIn: false, user: null })
         }
       },
-
-      // 로그아웃 API 호출 후 쿠키 삭제 처리
       logout: async () => {
         try {
           const response = await fetch('/api/v1/auth/logout', {
@@ -91,7 +86,6 @@ export const useAuthStore = create<AuthState>()(
               `Logout request failed with status ${response.status}`,
             )
           }
-          // 로그아웃 성공 시 상태 초기화
           set({ isLoggedIn: false, user: null })
         } catch (error) {
           console.error(error)
@@ -99,12 +93,23 @@ export const useAuthStore = create<AuthState>()(
       },
     }),
     {
-      name: 'auth-storage', // 로컬 스토리지에 저장될 키 이름
-      getStorage: () => localStorage, // 저장 방식 (localStorage 사용)
+      name: 'auth-storage',
+      storage:
+        typeof window !== 'undefined'
+          ? {
+              getItem: (name: string) => {
+                const item = localStorage.getItem(name)
+                return item ? JSON.parse(item) : null
+              },
+              setItem: (name: string, value: unknown) =>
+                localStorage.setItem(name, JSON.stringify(value)),
+              removeItem: (name: string) => localStorage.removeItem(name),
+            }
+          : undefined, // ✅ getStorage 대신 storage 사용
       partialize: (state) => ({
         isLoggedIn: state.isLoggedIn,
         user: state.user,
-      }), // 저장할 데이터 필터링
+      }),
     },
   ),
 )
