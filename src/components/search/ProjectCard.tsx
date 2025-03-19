@@ -28,10 +28,10 @@ interface ProjectTeam extends TeamBase {
 export default function ProjectCard({ team }: { team: ProjectTeam }) {
   const mainImageUrl = team.mainImages[0]
 
-  console.log('img:', team.mainImages)
+  // console.log('img:', team.mainImages)
   // 인원표시 제한을 위해 count 변수 사용
   let count = 0
-  console.log('team stack', team.teamStacks)
+  // console.log('team stack', team.teamStacks)
 
   return (
     <Link
@@ -54,13 +54,13 @@ export default function ProjectCard({ team }: { team: ProjectTeam }) {
       {/* 폴더 본체 */}
       <div className="flex items-center p-[1rem] gap-3 justify-center w-full h-[10.125rem] rounded-b-lg rounded-tr-lg shadow-card">
         {/* 메인 이미지 */}
-        <div className="w-[7.8125rem] h-[7.8125rem] min-w-[7.8125rem] rounded-2xl">
+        <div className="w-[8.125rem] h-[8.125rem] rounded-2xl">
           <Image
             src={mainImageUrl}
             alt="프로젝트 이미지"
-            width={125}
-            height={125}
-            className="object-cover w-[125px] h-[125px] rounded-lg border bg-pink-300"
+            width={130}
+            height={130}
+            className="rounded-lg object-cover w-[8.125rem] h-[8.125rem]"
           />
         </div>
 
