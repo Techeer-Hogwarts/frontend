@@ -14,6 +14,7 @@ import SkeletonProjectCard from '@/components/project/SkeletonProjectCard'
 import SearchBar from '@/components/common/SearchBar'
 import { getAllTeams } from '@/api/project/common'
 import Star from '../../../public/star.svg'
+import { useTapBarStore } from '@/store/tapBarStore'
 
 interface TeamBase {
   id: number
@@ -53,10 +54,10 @@ type Team = ProjectTeam | StudyTeam
 interface TeamsResponse {
   allTeams: Team[]
 }
-
+const category = ['전체보기', '모집 중']
 export default function Project() {
   // TapBar 관련 (모집 중이면 isRecruited=true)
-  const [selectedTab, setSelectedTab] = useState<string>('전체보기')
+  const { activeOption } = useTapBarStore()
   const [inputValue, setInputValue] = useState('')
 
   // 드롭다운 필터 관련 상태 (초기엔 빈 배열로 설정)
@@ -64,10 +65,6 @@ export default function Project() {
   const [selectedTeamType, setSelectedTeamType] = useState<string[]>([]) // 구분: ['프로젝트', '스터디']
   const [selectedPosition, setSelectedPosition] = useState<string[]>([]) // 포지션: ['Frontend', 'Backend', 'DevOps', 'FullStack', 'DataEngineer']
   const [searchResults, setSearchResults] = useState<any>(null)
-  // 탭 선택 핸들러: TapBar에서 선택 시 호출 (모집 중이면 selectedTab이 '모집 중'이 됨)
-  const handleTabSelect = (option: string) => {
-    setSelectedTab(option)
-  }
 
   // 검색 핸들러 (추후 검색 로직과 탭 필터를 분리할 수 있음)
   const handleSearch = (query: string) => {
@@ -78,7 +75,7 @@ export default function Project() {
   // API 호출 시 사용할 필터 객체를 구성합니다.
   // 탭 선택에 따라 isRecruited 적용
   const teamFilter: any = {}
-  if (selectedTab === '모집 중') {
+  if (activeOption === '모집 중') {
     teamFilter.isRecruited = true
   }
   // 진행여부 드롭다운: '진행 중'이면 isFinished=false, '완료'이면 isFinished=true
@@ -102,7 +99,7 @@ export default function Project() {
   const { data: allTeams, isLoading } = useQuery({
     queryKey: [
       'getAllTeams',
-      selectedTab,
+      activeOption,
       selectedProgress,
       selectedTeamType,
       selectedPosition,
@@ -162,7 +159,7 @@ export default function Project() {
 
       {/* 탭바: onSelect 핸들러로 탭 변경을 처리 */}
       <div className="flex justify-between">
-        <TapBar options={['전체보기', '모집 중']} onSelect={handleTabSelect} />
+        <TapBar options={category} />
         <SearchBar
           placeholder="이름 또는 키워드로 검색해보세요"
           index=""
