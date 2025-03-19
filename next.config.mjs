@@ -36,7 +36,8 @@ const nextConfig = {
     return [
       {
         source: '/api/v1/:path*',
-        destination: 'https://api.techeerzip.cloud/api/v1/:path*',
+        // destination: 'https://api.techeerzip.cloud/api/v1/:path*',
+        destination: 'https://api.yje.kr/api/v1/docs/:path*', //테스트
       },
       {
         source: '/api/v2/:path*',

@@ -11,18 +11,14 @@ export default function Login() {
   const {
     handleSubmit,
     register,
-    watch,
+    setError,
     formState: { errors },
   } = useForm()
 
   const [isLoggingIn, setIsLoggingIn] = useState(false)
 
-  const email = watch('email')
-  const password = watch('password')
-
   // 메시지 상태
-  const [message, setMessage] = useState('')
-  const [isError, setIsError] = useState(false)
+  // const [isError, setIsError] = useState(false)
 
   const { setIsLoggedIn } = useAuthStore()
   const router = useRouter()
@@ -41,37 +37,35 @@ export default function Login() {
     console.log(data) // 제대로 된 값이 출력되어야 합니다.
   }
 
-  const handleLogin = async () => {
+  const handleLogin = async (data) => {
     setIsLoggingIn(true)
-
     try {
       // fetch로 로그인 요청
       const response = await fetch('/api/v1/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({
-          email,
-          password,
-        }),
+        body: JSON.stringify(data),
       })
 
       // 응답 상태 확인
       if (!response.ok) {
         // 실패
         if (response.status === 401) {
-          setIsError(true)
-          setMessage('이메일 또는 비밀번호가 올바르지 않습니다.')
+          setError('password', {
+            message: '비밀번호가 올바르지 않습니다.',
+          })
+        } else if (response.status === 404) {
+          setError('email', {
+            message: '가입되지 않은 사용자입니다.',
+          })
         } else {
-          setIsError(true)
-          setMessage('로그인에 실패하였습니다.')
+          setError('root', { message: '로그인에 실패하였습니다.' })
         }
       } else {
         // 201 Created 가정
         if (response.status === 201) {
           setIsLoggedIn(true)
-          setMessage('로그인이 완료되었습니다.')
-          setIsError(false)
           if (redirectPath) {
             router.replace(redirectPath)
           } else if (form === 'signup') {
@@ -80,14 +74,12 @@ export default function Login() {
             router.back()
           }
         } else {
-          setIsError(true)
-          setMessage('로그인 응답이 예상과 다릅니다.')
+          setError('root', { message: '로그인 응답이 예상과 다릅니다.' })
         }
       }
     } catch (error) {
       // 네트워크 에러, CORS 문제 등
-      setIsError(true)
-      setMessage('네트워크 오류가 발생했습니다.')
+      setError('root', { message: '네트워크 오류가 발생했습니다.' })
     } finally {
       setIsLoggingIn(false)
     }
@@ -118,7 +110,7 @@ export default function Login() {
         </h2>
         <form
           className="flex flex-col w-[30.25rem] justify-center my-auto"
-          onSubmit={handleSubmit(handleLogins)}
+          onSubmit={handleSubmit(handleLogin)}
         >
           <div className="space-y-4">
             <InputField
@@ -161,6 +153,7 @@ export default function Login() {
           <div className={`mt-3 text-sm  text-red-500 flex flex-col`}>
             <p>{errors.email && String(errors.email.message)}</p>
             <p>{errors.password && String(errors.password.message)}</p>
+            <p>{errors.root && String(errors.root.message)}</p>
           </div>
         </form>
       </div>
