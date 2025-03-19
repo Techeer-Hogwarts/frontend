@@ -13,12 +13,8 @@ export default function Login() {
     register,
     setError,
     formState: { errors },
-  } = useForm()
-
+  } = useForm() //react-hook-form 생성
   const [isLoggingIn, setIsLoggingIn] = useState(false)
-
-  // 메시지 상태
-  // const [isError, setIsError] = useState(false)
 
   const { setIsLoggedIn } = useAuthStore()
   const router = useRouter()
@@ -33,11 +29,9 @@ export default function Login() {
       setForm(params.get('form'))
     }
   }, [])
-  const handleLogins = (data) => {
-    console.log(data) // 제대로 된 값이 출력되어야 합니다.
-  }
 
   const handleLogin = async (data) => {
+    console.log(data)
     setIsLoggingIn(true)
     try {
       // fetch로 로그인 요청
@@ -148,8 +142,7 @@ export default function Login() {
             로그인
           </button>
 
-          {/* 에러/성공 메시지 표시 영역 */}
-
+          {/* 에러 메시지 표시 영역 */}
           <div className={`mt-3 text-sm  text-red-500 flex flex-col`}>
             <p>{errors.email && String(errors.email.message)}</p>
             <p>{errors.password && String(errors.password.message)}</p>
