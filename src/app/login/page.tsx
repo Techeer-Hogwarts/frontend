@@ -42,12 +42,6 @@ export default function Login() {
   }
 
   const handleLogin = async () => {
-    if (!email || !password) {
-      setIsError(true)
-      setMessage('이메일과 비밀번호를 모두 입력해주세요.')
-      return
-    }
-
     setIsLoggingIn(true)
 
     try {
@@ -131,14 +125,22 @@ export default function Login() {
               label="이메일"
               name="email"
               placeholder="이메일을 입력해주세요"
-              {...register('email')}
+              {...register('email', {
+                required: '이메일을 입력해주세요.',
+                pattern: {
+                  value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                  message: '올바른 이메일 형식이 아닙니다.',
+                },
+              })}
             />
             <InputField
               label="비밀번호"
               name="password"
               placeholder="비밀번호를 입력해주세요"
               type="password"
-              {...register('password')}
+              {...register('password', {
+                required: '비밀번호를 입력해주세요.',
+              })}
             />
           </div>
           <div className="flex items-center justify-end mt-12 mb-3">
@@ -155,15 +157,11 @@ export default function Login() {
           </button>
 
           {/* 에러/성공 메시지 표시 영역 */}
-          {message && (
-            <p
-              className={`mt-3 text-sm ${
-                isError ? 'text-red-500' : 'text-green'
-              }`}
-            >
-              {message}
-            </p>
-          )}
+
+          <div className={`mt-3 text-sm  text-red-500 flex flex-col`}>
+            <p>{errors.email && String(errors.email.message)}</p>
+            <p>{errors.password && String(errors.password.message)}</p>
+          </div>
         </form>
       </div>
     </div>
