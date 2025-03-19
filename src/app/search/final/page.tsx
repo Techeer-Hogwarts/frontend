@@ -7,7 +7,7 @@ import ResumeSection from '@/components/search/ResumeSection'
 import SessionSection from '@/components/search/SessionSection'
 import { useEffect, useState } from 'react'
 import { getSearchList } from '../api/getSearchList'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import SkeletonCardItem from '@/components/search/SkeletonCard'
 import EmptyLottie from '@/components/common/EmptyLottie'
 
@@ -26,14 +26,18 @@ export default function Search() {
     session: [],
   })
   const [isLoading, setIsLoading] = useState(true)
-  const searchParams = useSearchParams()
-  const [query, setQuery] = useState('')
+  const [query, setQuery] = useState<string>('')
 
-  // ✅ useEffect 안에서만 searchParams 사용 → 서버에서 실행 방지
+  // const searchParams = useSearchParams()
+
+  // URL에서 query 파라미터를 가져오는 useEffect
   useEffect(() => {
-    const q = searchParams.get('query') || ''
-    setQuery(q)
-  }, [searchParams])
+    const searchParams = new URLSearchParams(window.location.search)
+    const queryParam = searchParams.get('query')
+    if (queryParam) {
+      setQuery(queryParam)
+    }
+  }, []) // searchParams가 바뀔 때마다 실행
 
   useEffect(() => {
     if (query) {
@@ -66,12 +70,8 @@ export default function Search() {
       {/* 검색 결과 헤더 */}
       <div className="mb-6">
         <h2 className="text-2xl font-semibold">
-          검색어{' '}
-          <span className="text-primary">
-            {' '}
-            {query ? <span>&apos;{query}&apos;</span> : <span>&nbsp;</span>}
-          </span>
-          에 대한 전체
+          검색어 <span className="text-primary">&apos;{query}&apos;</span>에
+          대한 전체
           <span className="text-amber-400">
             <span></span> &apos;
             {results.project.length +
