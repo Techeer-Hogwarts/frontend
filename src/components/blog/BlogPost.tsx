@@ -4,8 +4,8 @@
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import BlogMenu from './BlogMenu'
-import { useLike } from '@/app/blog/_lib/useLike'
 import BookmarkModal from '../common/BookmarkModal'
+import { usePostLikeAPI } from '@/api/likes/likes' // 좋아요 mutation 훅 import
 
 export interface BlogPostProps {
   title: string
@@ -40,15 +40,15 @@ export default function BlogPost({
 }: BlogPostProps) {
   const [showModal, setShowModal] = useState(false)
   const [isLike, setIsLike] = useState(false)
-  const { postLike } = useLike()
   const [likeCount, setLikeCount] = useState(initialLikeCount)
   const [modalOpen, setModalOpen] = useState(false)
   const [modalMessage, setModalMessage] = useState('')
-  const [isLikeProcessing, setIsLikeProcessing] = useState(false) // 여러 번 클릭 방지를 위한 상태 추가
+  const [isLikeProcessing, setIsLikeProcessing] = useState(false)
   const profile =
     category === 'TECHEER'
       ? { image: userImage, name: userName }
       : { image: authorImage, name: authorName }
+  const postLikeMutation = usePostLikeAPI() // 좋아요 mutation 훅 사용
 
   const clickModal = () => {
     setShowModal(!showModal)
@@ -75,18 +75,19 @@ export default function BlogPost({
     .replace(/\.$/, '')
 
   const clickLike = async () => {
-    // 처리 중일 때 추가 클릭 방지
     if (isLikeProcessing) return
 
     setIsLikeProcessing(true)
 
     try {
-      // UI 즉시 업데이트
       const newLikeState = !isLike
       setIsLike(newLikeState)
-      // 새로운 상태에 따라 좋아요 수 업데이트
       setLikeCount((prev) => (newLikeState ? prev + 1 : Math.max(0, prev - 1)))
-      await postLike(Number(id), 'BLOG', newLikeState)
+      await postLikeMutation.mutateAsync({
+        contentId: Number(id),
+        category: 'BLOG',
+        likeStatus: newLikeState,
+      })
     } catch (err) {
       setIsLike(!isLike)
       setLikeCount((prev) => (isLike ? prev + 1 : Math.max(0, prev - 1)))
@@ -162,7 +163,7 @@ export default function BlogPost({
                 alt="img"
                 className="w-5 h-5 mr-1 rounded-full"
                 onError={(e: any) => {
-                  e.target.src = '/images/session/thumbnail.png' // 대체 이미지 경로
+                  e.target.src = '/images/session/thumbnail.png'
                 }}
               />
               <span className="font-semibold text-black text-md">
