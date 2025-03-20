@@ -49,7 +49,7 @@ export default function Resume({ userId }) {
 
   const pathname = usePathname()
   const [authModalOpen, setAuthModalOpen] = useState(false)
-  const { user, checkAuth } = useAuthStore()
+  const { user } = useAuthStore()
 
   const isMyPage = pathname === '/mypage'
 
@@ -110,10 +110,6 @@ export default function Resume({ userId }) {
       ),
     )
   }
-
-  useEffect(() => {
-    checkAuth()
-  }, [checkAuth])
 
   useEffect(() => {
     // 로그인 상태가 바뀔 때마다 데이터를 다시 불러옴
