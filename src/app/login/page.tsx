@@ -2,82 +2,12 @@
 
 import React, { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import { useAuthStore } from '@/store/authStore'
 import InputField from '@/components/common/InputField'
-import { useForm } from 'react-hook-form'
+import { useLogin } from '@/hooks/auth/useLogin'
 
 export default function Login() {
-  const {
-    handleSubmit,
-    register,
-    setError,
-    formState: { errors },
-  } = useForm() //react-hook-form 생성
-  const [isLoggingIn, setIsLoggingIn] = useState(false)
-
-  const { setIsLoggedIn } = useAuthStore()
-  const router = useRouter()
-
-  const [redirectPath, setRedirectPath] = useState<string | null>(null)
-  const [form, setForm] = useState<string | null>(null)
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const params = new URLSearchParams(window.location.search)
-      setRedirectPath(params.get('redirect'))
-      setForm(params.get('form'))
-    }
-  }, [])
-
-  const handleLogin = async (data) => {
-    console.log(data)
-    setIsLoggingIn(true)
-    try {
-      // fetch로 로그인 요청
-      const response = await fetch('/api/v1/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify(data),
-      })
-
-      // 응답 상태 확인
-      if (!response.ok) {
-        // 실패
-        if (response.status === 401) {
-          setError('password', {
-            message: '비밀번호가 올바르지 않습니다.',
-          })
-        } else if (response.status === 404) {
-          setError('email', {
-            message: '가입되지 않은 사용자입니다.',
-          })
-        } else {
-          setError('root', { message: '로그인에 실패하였습니다.' })
-        }
-      } else {
-        // 201 Created 가정
-        if (response.status === 201) {
-          setIsLoggedIn(true)
-          if (redirectPath) {
-            router.replace(redirectPath)
-          } else if (form === 'signup') {
-            router.replace('/')
-          } else {
-            router.back()
-          }
-        } else {
-          setError('root', { message: '로그인 응답이 예상과 다릅니다.' })
-        }
-      }
-    } catch (error) {
-      // 네트워크 에러, CORS 문제 등
-      setError('root', { message: '네트워크 오류가 발생했습니다.' })
-    } finally {
-      setIsLoggingIn(false)
-    }
-  }
+  const { handleSubmit, register, handleLogin, isLoggingIn, errors } =
+    useLogin()
 
   return (
     <div className="flex min-h-[calc(100vh-61px)] items-center justify-between">

@@ -1,4 +1,4 @@
-const loginUser = async (data) => {
+export const loginUser = async (data: { email: string; password: string }) => {
   const response = await fetch('api/v1/auth/login', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -7,7 +7,7 @@ const loginUser = async (data) => {
   })
   if (!response.ok) {
     const error = await response.json()
-    throw new Error(error.message || '로그인 실패')
+    throw new Error(error.status)
   }
 
   return response.json
