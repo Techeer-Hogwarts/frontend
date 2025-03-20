@@ -49,11 +49,11 @@ export const useLogin = () => {
     } catch (error) {
       console.log(error.message)
       if (error.message == 404) {
-        setError('email', {
+        setError('root', {
           message: '가입되지 않은 사용자입니다.',
         })
       } else if (error.message == 401) {
-        setError('password', {
+        setError('root', {
           message: '비밀번호가 틀렸습니다.',
         })
       } else {

@@ -39,7 +39,7 @@ export default function Login() {
               name="email"
               placeholder="이메일을 입력해주세요"
               {...register('email', {
-                required: '이메일을 입력해주세요.',
+                required: true,
                 pattern: {
                   value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
                   message: '올바른 이메일 형식이 아닙니다.',
@@ -52,7 +52,7 @@ export default function Login() {
               placeholder="비밀번호를 입력해주세요"
               type="password"
               {...register('password', {
-                required: '비밀번호를 입력해주세요.',
+                required: true,
               })}
             />
           </div>
@@ -65,16 +65,19 @@ export default function Login() {
           <button
             type="submit"
             className={`w-full h-10 text-xl border ${isFormValid ? 'border-primary text-primary hover:border-2' : 'border-gray text-gray'} rounded-full `}
+            disabled={!isFormValid}
           >
             로그인
           </button>
           {/* 에러 메시지 표시 영역 */}
-          <div className={`mt-3 text-sm  text-red-500 flex flex-col`}>
-            <p>{errors.email && String(errors.email.message)}</p>
-            <p>{errors.password && String(errors.password.message)}</p>
-            <p>{errors.root && String(errors.root.message)}</p>
-          </div>
         </form>
+        <div
+          className={`mt-3 text-sm  text-red-500 flex flex-col min-h-5 justify-center`}
+        >
+          <p>{errors.email && String(errors.email.message)}</p>
+          <p>{errors.password && String(errors.password.message)}</p>
+          <p>{errors.root && String(errors.root.message)}</p>
+        </div>
       </div>
     </div>
   )
