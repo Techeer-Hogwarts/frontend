@@ -9,5 +9,6 @@ export const loginUser = async (data: { email: string; password: string }) => {
     const error = await response.json()
     throw new Error(error.statusCode)
   }
-  return response.json
+  const result = await response.json()
+  return result
 }
