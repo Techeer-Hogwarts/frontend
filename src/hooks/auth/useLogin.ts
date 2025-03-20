@@ -47,7 +47,6 @@ export const useLogin = () => {
         router.back()
       }
     } catch (error) {
-      console.log(error.message)
       if (error.message == 404) {
         setError('root', {
           message: '가입되지 않은 사용자입니다.',

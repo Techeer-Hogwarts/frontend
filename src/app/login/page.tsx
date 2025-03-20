@@ -41,7 +41,7 @@ export default function Login() {
               {...register('email', {
                 required: true,
                 pattern: {
-                  value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                  value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/,
                   message: '올바른 이메일 형식이 아닙니다.',
                 },
               })}
@@ -72,7 +72,7 @@ export default function Login() {
           {/* 에러 메시지 표시 영역 */}
         </form>
         <div
-          className={`mt-2 text-sm  text-red-500 flex flex-col min-h-10 justify-center`}
+          className={`mt-3 text-sm  text-red-500 flex flex-col min-h-10 justify-center`}
         >
           <p>{errors.email && String(errors.email.message)}</p>
           <p>{errors.root && String(errors.root.message)}</p>
