@@ -72,10 +72,9 @@ export default function Login() {
           {/* 에러 메시지 표시 영역 */}
         </form>
         <div
-          className={`mt-3 text-sm  text-red-500 flex flex-col min-h-5 justify-center`}
+          className={`mt-2 text-sm  text-red-500 flex flex-col min-h-10 justify-center`}
         >
           <p>{errors.email && String(errors.email.message)}</p>
-          <p>{errors.password && String(errors.password.message)}</p>
           <p>{errors.root && String(errors.root.message)}</p>
         </div>
       </div>
