@@ -36,9 +36,9 @@ export const useLogin = () => {
   }, [])
 
   const handleLogin = async (data: { email: string; password: string }) => {
-    setIsLoggedIn(true)
     try {
       await loginUser(data)
+      setIsLoggedIn(true)
       if (redirectPath) {
         router.replace(redirectPath)
       } else if (form === 'signup') {
@@ -72,5 +72,6 @@ export const useLogin = () => {
     handleLogin,
     errors,
     isFormValid,
+    isLoggingIn,
   }
 }
