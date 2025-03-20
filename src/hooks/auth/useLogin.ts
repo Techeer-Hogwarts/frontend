@@ -11,6 +11,7 @@ export const useLogin = () => {
     handleSubmit,
     register,
     setError,
+    watch,
     formState: { errors },
   } = useForm()
 
@@ -20,6 +21,11 @@ export const useLogin = () => {
 
   const [redirectPath, setRedirectPath] = useState<string | null>(null)
   const [form, setForm] = useState<string | null>(null)
+
+  const password = watch('password')
+  const email = watch('email')
+
+  const isFormValid = password != '' && email != ''
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -60,5 +66,11 @@ export const useLogin = () => {
     }
   }
 
-  return { handleSubmit, register, handleLogin, isLoggingIn, errors }
+  return {
+    handleSubmit,
+    register,
+    handleLogin,
+    errors,
+    isFormValid,
+  }
 }
