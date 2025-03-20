@@ -1,14 +1,11 @@
 'use client'
-
 import React, { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import InputField from '@/components/common/InputField'
 import { useLogin } from '@/hooks/auth/useLogin'
-
 export default function Login() {
   const { handleSubmit, register, handleLogin, isLoggingIn, errors } =
     useLogin()
-
   return (
     <div className="flex min-h-[calc(100vh-61px)] items-center justify-between">
       {/* 왼쪽 배너 */}
@@ -26,7 +23,6 @@ export default function Login() {
           회원가입 하러가기
         </Link>
       </div>
-
       {/* 로그인 폼 */}
       <div className="flex flex-col w-[44.75rem] h-full px-[7.25rem]">
         <h2 className="text-4xl font-extrabold text-center my-8 text-primary">
@@ -64,14 +60,12 @@ export default function Login() {
               비밀번호 찾기
             </Link>
           </div>
-
           <button
             type="submit"
             className="w-full h-10 text-xl border border-gray text-gray rounded-full focus:border-primary focus:text-primary"
           >
             로그인
           </button>
-
           {/* 에러 메시지 표시 영역 */}
           <div className={`mt-3 text-sm  text-red-500 flex flex-col`}>
             <p>{errors.email && String(errors.email.message)}</p>

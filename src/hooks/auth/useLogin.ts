@@ -41,7 +41,20 @@ export const useLogin = () => {
         router.back()
       }
     } catch (error) {
-      console.log(error)
+      console.log(error.message)
+      if (error.message == 404) {
+        setError('email', {
+          message: '가입되지 않은 사용자입니다.',
+        })
+      } else if (error.message == 401) {
+        setError('password', {
+          message: '비밀번호가 틀렸습니다.',
+        })
+      } else {
+        setError('root', {
+          message: '로그인에 실패했습니다. 잠시 후 다시 시도해주세요.',
+        })
+      }
     } finally {
       setIsLoggingIn(false)
     }

@@ -7,8 +7,8 @@ export const loginUser = async (data: { email: string; password: string }) => {
   })
   if (!response.ok) {
     const error = await response.json()
-    throw new Error(error.status)
+    throw new Error(error.statusCode)
   }
-
+  console.log(response.json)
   return response.json
 }
