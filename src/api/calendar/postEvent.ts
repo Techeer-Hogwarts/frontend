@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 export interface EventData {
   category: string
@@ -7,7 +7,7 @@ export interface EventData {
   endDate: string
   url: string
 }
-  
+
 const postEvent = async (eventData: EventData): Promise<void> => {
   const response = await fetch('/api/v1/events', {
     method: 'POST',
@@ -28,9 +28,8 @@ const usePostEvent = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['events'] })
     },
-    onError: (error) => {
-    },
+    onError: (error) => {},
   })
 }
-  
+
 export default usePostEvent

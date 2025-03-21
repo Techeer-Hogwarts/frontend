@@ -7,9 +7,9 @@ import { MdOutlineCalendarMonth } from 'react-icons/md'
 import { IoIosLink } from 'react-icons/io'
 import CategoryBtn from './CategoryBtn'
 import { useEffect, useState } from 'react'
-import usePostEvent from '@/app/calendar/api/postEvent'
-import usePatchEvent from '@/app/calendar/api/patchEvent'
-import useGetEvent from '@/app/calendar/api/getEvent'
+import usePostEvent from '@/api/calendar/postEvent'
+import usePatchEvent from '@/api/calendar/patchEvent'
+import useGetEvent from '@/api/calendar/getEvent'
 
 export default function AddCalenderModal({
   handleBack,
@@ -79,8 +79,7 @@ export default function AddCalenderModal({
         onSuccess: () => {
           handleBack()
         },
-        onError: (error) => {
-        },
+        onError: (error) => {},
       })
     } else if (mode === 'edit' && eventId) {
       editEvent(
@@ -89,8 +88,7 @@ export default function AddCalenderModal({
           onSuccess: () => {
             handleBack()
           },
-          onError: (error) => {
-          },
+          onError: (error) => {},
         },
       )
     }
@@ -196,7 +194,7 @@ export default function AddCalenderModal({
                 <div className="absolute z-10 mt-1">
                   <DatePicker
                     selected={formData.endDate}
-                    onChange={(date:any) => {
+                    onChange={(date: any) => {
                       setFormData({ ...formData, endDate: date })
                       setEndDateOpen(false)
                     }}
