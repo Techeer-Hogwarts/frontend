@@ -1,4 +1,4 @@
-// 'use client'
+'use client'
 
 import { useState, useEffect, useMemo } from 'react'
 import { useGetBlogsAPI } from '@/api/blog/blog'
