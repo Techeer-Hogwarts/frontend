@@ -9,7 +9,7 @@ import BestResume from '@/components/resume/BestResume'
 import FilterBtn from '@/components/session/FilterBtn'
 import SearchBar from '@/components/common/SearchBar'
 import AuthModal from '@/components/common/AuthModal'
-import ResumeList from './@ResumeList'
+import ResumeList from './@resumeList'
 
 export default function Resume() {
   const router = useRouter() // Resume 페이지에서 useRouter 사용
@@ -49,12 +49,6 @@ export default function Resume() {
   const handleCategoryChange = (category: string) => {
     setSelectedCategory(category)
   }
-
-  // // 검색어 저장 및 이력서 목록 업데이트
-  // const handleSearch = (query: string) => {
-  //   setSearchResults(query)
-  //   sessionStorage.setItem('searchQuery', query)
-  // }
 
   // 마이페이지로 이동
   const openMyPage = () => {

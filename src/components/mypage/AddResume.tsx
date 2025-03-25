@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Select from '../signup/Select'
 import InputField from '../common/InputField'
+import Loading from '../common/Loading'
 
 interface AddResumeProps {
   readonly setModal: (value: boolean) => void
@@ -15,6 +16,7 @@ export default function AddResume({ setModal, fetchData }: AddResumeProps) {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [fileName, setFileName] = useState<string>('')
   const [addError, setAddError] = useState<string>('')
+  const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -46,6 +48,7 @@ export default function AddResume({ setModal, fetchData }: AddResumeProps) {
   }
 
   const handleAddResume = async () => {
+    setIsLoading(true)
     const requestPayload = {
       createResumeRequest: {
         category: formData.resumeCategory,
@@ -102,6 +105,8 @@ export default function AddResume({ setModal, fetchData }: AddResumeProps) {
       setModal(false)
     } catch (err: any) {
       setAddError('네트워크 오류가 발생했습니다.')
+    } finally {
+      setIsLoading(false) // 로딩 끝
     }
   }
 
@@ -110,7 +115,7 @@ export default function AddResume({ setModal, fetchData }: AddResumeProps) {
   return (
     <div
       ref={formRef}
-      className="w-screen h-screen flex items-center justify-center bg-black/50 fixed inset-0"
+      className="w-screen h-screen flex items-center justify-center bg-black/50 fixed inset-0 z-10"
     >
       <div className="w-[30rem] h-[35rem] flex flex-col items-center bg-white rounded-lg">
         <div>
@@ -124,6 +129,11 @@ export default function AddResume({ setModal, fetchData }: AddResumeProps) {
             height={100}
           />
         </div>
+        {isLoading && ( // 로딩 상태일 때 로딩 화면 표시
+          <div className="absolute inset-0 flex justify-center items-center bg-[#0000006f] z-20">
+            <Loading />
+          </div>
+        )}
         <div className="relative mx-5 mt-4 flex flex-col justify-between gap-4">
           <InputField
             label="이력서 제목"
@@ -214,7 +224,7 @@ export default function AddResume({ setModal, fetchData }: AddResumeProps) {
             onClick={() => {
               setModal(false)
             }}
-            className="w-[12.5rem] rounded-md text-sm h-[2.125rem] bg-white text-gray border border-lightgray "
+            className="w-[12.5rem] rounded-md text-sm h-[2.125rem] bg-white text-gray border border-lightgray hover:bg-lightprimary hover:text-primary hover:border-primary hover:scale-105"
           >
             취소
           </button>

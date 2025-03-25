@@ -8,6 +8,7 @@ import EmptyLottie from '../common/EmptyLottie'
 import { useLike } from '@/app/blog/_lib/useLike'
 import { useBookmark } from '@/app/blog/_lib/useBookmark'
 import { ResumeProps } from '@/types/resume'
+import ResumeMenu from './ResumeMenu'
 
 export default function ResumeFolder({
   likeCount: initialLikeCount,
@@ -27,6 +28,8 @@ export default function ResumeFolder({
 
   const [likeCount, setLikeCount] = useState(initialLikeCount)
   const [bookmarkCount, setBookmarkCount] = useState(initialBookCount)
+
+  const [showModal, setShowModal] = useState(false)
 
   useEffect(() => {
     if (Array.isArray(likeList)) {
@@ -109,6 +112,11 @@ export default function ResumeFolder({
     ) // 로딩 중일 때나 resume이 없을 때 기본 UI
   }
 
+  const clickModal = (event: React.MouseEvent) => {
+    event.preventDefault()
+    setShowModal(!showModal)
+  }
+
   const formattedDate = new Date(resume.createdAt)
     .toLocaleDateString('ko-KR', {
       year: 'numeric',
@@ -130,8 +138,21 @@ export default function ResumeFolder({
         className="flex flex-col w-[16.5rem] h-[10.25rem] gap-2 px-5 border-t-[0.4rem] border-darkgray shadow-lg"
       >
         {/** 이름/기수 */}
-        <div className="flex flex-row justify-between mt-3 mx-1">
+        <div className="relative flex flex-row justify-between mt-3 mx-1">
           <span className="font-semibold text-[1.25rem]">{truncatedTitle}</span>
+          <Image
+            src="/images/session/session-menu.svg"
+            alt="seesionmenu"
+            width={24}
+            height={24}
+            className="absolute top-0 -right-2"
+            onClick={clickModal}
+          />
+          {showModal && (
+            <div className="absolute top-[-5%] right-0 z-10">
+              <ResumeMenu resumeId={resume.id} />
+            </div>
+          )}
         </div>
         <span className="flex w-[14rem] border-t border-darkgray"></span>
         {/** 포지션/경력 */}
