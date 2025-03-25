@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { getProfileList } from '../api/getProfileList'
+import { getProfileList } from '@/api/profile/getProfileList'
 import { ProfileQueryParams } from '@/types/queryParams'
 
 export function useGetProfileQuery({

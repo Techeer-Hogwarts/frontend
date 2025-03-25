@@ -7,25 +7,7 @@ import { useEffect, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { useLike } from '../blog/_lib/useLike'
 import { useBookmark } from '../blog/_lib/useBookmark'
-
-interface Resume {
-  id: string
-  createdAt: number
-  title: string
-  category: string
-  position: string
-  likeCount: number
-  year: string
-  user: {
-    id: number
-    name: string
-    profileImage: string
-    year: number
-    mainPosition: string
-  }
-  likeList: string[]
-  bookmarkList: string[]
-}
+import { Resume } from '@/types/resume'
 
 export default function ResumeList({
   position = [],
@@ -43,8 +25,11 @@ export default function ResumeList({
   const { fetchLikes } = useLike()
   const { fetchBookmarks } = useBookmark()
 
+  const [likeCount, setLikeCount] = useState(0)
+  const [bookmarkCount, setBookmarkCount] = useState(0)
+
   const {
-    data: nesResumes,
+    data: newResume,
     isLoading,
     isError,
     refetch,
@@ -86,6 +71,7 @@ export default function ResumeList({
           : resume,
       ),
     )
+    setLikeCount(newLikeCount)
 
     // 탭 변경 시에도 좋아요 상태 유지를 위해 서버 데이터 갱신
     setTimeout(() => {
@@ -103,6 +89,7 @@ export default function ResumeList({
           : resume,
       ),
     )
+    setBookmarkCount(newBookmarkCount)
 
     // 탭 변경 시에도 좋아요 상태 유지를 위해 서버 데이터 갱신
     setTimeout(() => {
@@ -120,14 +107,14 @@ export default function ResumeList({
   }, [position, year, category])
 
   useEffect(() => {
-    if (nesResumes && Array.isArray(nesResumes)) {
+    if (newResume && Array.isArray(newResume)) {
       setResumes((prev) => {
         const existingIds = new Set(prev.map((p) => p.id))
-        const newResumes = nesResumes.filter((p) => !existingIds.has(p.id)) // 중복 제거
+        const newResumes = newResume.filter((p) => !existingIds.has(p.id)) // 중복 제거
         return [...prev, ...newResumes]
       })
     }
-  }, [nesResumes])
+  }, [newResume])
 
   useEffect(() => {
     if (inView) {
@@ -145,7 +132,7 @@ export default function ResumeList({
     )
   }
 
-  if (isError || (nesResumes && resumes.length === 0)) {
+  if (isError || (newResume && resumes.length === 0)) {
     return (
       <div className="flex justify-center">
         <EmptyLottie
@@ -162,6 +149,7 @@ export default function ResumeList({
         <ResumeFolder
           key={resume.id}
           likeCount={resume.likeCount}
+          bookCount={resume.bookCount}
           resume={resume}
           likeList={likeList}
           onLikeUpdate={handleLikeUpdate}

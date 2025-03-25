@@ -7,20 +7,7 @@ import { ProfileQueryParams } from '@/types/queryParams'
 import { useEffect, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 import SkeletonProfileCard from '@/components/profile/SkeletonProfileCard'
-
-interface Profile {
-  id: number
-  profileImage: string
-  name: string
-  school: string
-  grade: string
-  mainPosition: string
-  year: number
-  stack: string[]
-  projectTeams: {
-    mainImage: string
-  }[]
-}
+import { Profile } from '@/types/profile'
 
 export default function ProfileList({
   position = [],

@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Dropdown from '@/components/common/Dropdown'
 import FilterBtn from '@/components/session/FilterBtn'
-import ProfileList from './@profiletList'
+import ProfileList from './@ProfiletList'
 import TapBar from '@/components/common/TapBar'
 import Search from '@/components/common/SearchBar'
 import SearchBar from '@/components/common/SearchBar'

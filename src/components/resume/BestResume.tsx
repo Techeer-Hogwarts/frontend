@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import { fetchBestResumes } from '@/app/resume/api/getBestResume'
+import { fetchBestResumes } from '@/api/resume/getBestResume'
 
 interface ResumeData {
   id: number
@@ -20,9 +20,13 @@ interface ResumeData {
 interface ResumeFolderProps {
   offset: number
   limit: number
-  setAuthModalOpen: (open: boolean) => void 
+  setAuthModalOpen: (open: boolean) => void
 }
-export default function BestResume({ offset, limit, setAuthModalOpen }: ResumeFolderProps) {
+export default function BestResume({
+  offset,
+  limit,
+  setAuthModalOpen,
+}: ResumeFolderProps) {
   const [resumes, setResumes] = useState<ResumeData[]>([]) // 빈 배열로 초기화
   const router = useRouter() // useRouter 훅 추가
 
@@ -32,11 +36,14 @@ export default function BestResume({ offset, limit, setAuthModalOpen }: ResumeFo
   useEffect(() => {
     async function loadBestResumes() {
       try {
-        const bestResumes = await fetchBestResumes(offset, limit, setAuthModalOpen) // 예시로 0번째부터 10개 가져오기
+        const bestResumes = await fetchBestResumes(
+          offset,
+          limit,
+          setAuthModalOpen,
+        ) // 예시로 0번째부터 10개 가져오기
         // console.log('Best resumes:', bestResumes)
         setResumes(bestResumes.data || []) // 가져온 데이터를 상태에 저장
-      } catch (error) {
-      }
+      } catch (error) {}
     }
     loadBestResumes()
   }, [offset, limit, setAuthModalOpen])

@@ -7,22 +7,14 @@ import Image from 'next/image'
 import EmptyLottie from '../common/EmptyLottie'
 import { useLike } from '@/app/blog/_lib/useLike'
 import { useBookmark } from '@/app/blog/_lib/useBookmark'
+import { ResumeProps } from '@/types/resume'
 
-interface ResumeProps {
-  likeCount: number
-  resume: Resume
-  likeList: string[] // 좋아요 리스트
-  onLikeUpdate: (resumeId: string, newLikeCount: number) => void
-  bookmarkList: string[] // 북마크 리스트
-  onBookmarkUpdate: (resumeId: string, newBookmarkCount: number) => void
-}
 export default function ResumeFolder({
   likeCount: initialLikeCount,
+  bookCount: initialBookCount,
   resume,
   likeList,
-  onLikeUpdate,
   bookmarkList,
-  onBookmarkUpdate,
 }: ResumeProps) {
   // resume이 undefined일 경우 기본값을 설정합니다.
   const { postLike } = useLike()
@@ -34,7 +26,7 @@ export default function ResumeFolder({
   const [isBookmark, setIsBookmark] = useState(false)
 
   const [likeCount, setLikeCount] = useState(initialLikeCount)
-  const [bookmarkCount, setBookmarkCount] = useState(initialLikeCount)
+  const [bookmarkCount, setBookmarkCount] = useState(initialBookCount)
 
   useEffect(() => {
     if (Array.isArray(likeList)) {
@@ -49,44 +41,64 @@ export default function ResumeFolder({
 
   const clickLike = async (event: React.MouseEvent) => {
     event.preventDefault()
+    // try {
+    //   const newIsLike = !isLike
+    //   const newLikeCount = newIsLike ? likeCount + 1 : likeCount - 1
+    //   // 낙관적 업데이트
+    //   setIsLike(newIsLike)
+    //   setLikeCount(newLikeCount)
+
+    //   await postLike(Number(resume.id), 'RESUME', newIsLike)
+
+    //   if (resume.onLikeUpdate) {
+    //     onLikeUpdate(resume.id, newLikeCount)
+    //   }
+    // } catch (err) {
+    //   setIsLike(!isLike)
+    //   setLikeCount(isLike ? likeCount : likeCount - 1)
+    //   console.error(err)
+    // }
     try {
       const newIsLike = !isLike
-      const newLikeCount = newIsLike ? likeCount + 1 : likeCount - 1
-      // 낙관적 업데이트
       setIsLike(newIsLike)
-      setLikeCount(newLikeCount)
-
+      setLikeCount((prev) => (newIsLike ? prev + 1 : prev - 1))
       await postLike(Number(resume.id), 'RESUME', newIsLike)
-
-      if (resume.onLikeUpdate) {
-        onLikeUpdate(resume.id, newLikeCount)
-      }
     } catch (err) {
       setIsLike(!isLike)
-      setLikeCount(isLike ? likeCount : likeCount - 1)
+      setLikeCount((prev) => (isLike ? prev : prev - 1))
       console.error(err)
     }
   }
 
   const clickBookmark = async (event: React.MouseEvent) => {
     event.preventDefault()
+    // try {
+    //   const newIsBookmark = !isBookmark
+    //   const newBookmarkCount = newIsBookmark
+    //     ? bookmarkCount + 1
+    //     : bookmarkCount - 1
+    //   // 낙관적 업데이트
+    //   setIsBookmark(newIsBookmark)
+    //   setBookmarkCount(newBookmarkCount)
+
+    //   await postBookmark(Number(resume.id), 'RESUME', newIsBookmark)
+
+    //   if (resume.onBookmarkUpdate) {
+    //     onBookmarkUpdate(resume.id, newBookmarkCount)
+    //   }
+    // } catch (err) {
+    //   setIsBookmark(!isBookmark)
+    //   setBookmarkCount(isBookmark ? likeCount : likeCount - 1)
+    //   console.error(err)
+    // }
     try {
       const newIsBookmark = !isBookmark
-      const newBookmarkCount = newIsBookmark
-        ? bookmarkCount + 1
-        : bookmarkCount - 1
-      // 낙관적 업데이트
       setIsBookmark(newIsBookmark)
-      setBookmarkCount(newBookmarkCount)
-
+      setBookmarkCount((prev) => (newIsBookmark ? prev + 1 : prev - 1))
       await postBookmark(Number(resume.id), 'RESUME', newIsBookmark)
-
-      if (resume.onBookmarkUpdate) {
-        onBookmarkUpdate(resume.id, newBookmarkCount)
-      }
     } catch (err) {
       setIsBookmark(!isBookmark)
-      setBookmarkCount(isBookmark ? likeCount : likeCount - 1)
+      setBookmarkCount((prev) => (isBookmark ? prev : prev - 1))
       console.error(err)
     }
   }

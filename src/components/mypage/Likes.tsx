@@ -189,6 +189,7 @@ export default function Likes() {
                 <ResumeFolder
                   key={like.id}
                   likeCount={like.likeCount}
+                  bookCount={like.bookCount}
                   resume={like}
                   likeList={likeList}
                   onLikeUpdate={handleLikeUpdate}

@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { getResumeList } from '../api/getResumeList'
+import { getResumeList } from '@/api/resume/getResumeList'
 import { ResumeQueryParams } from '@/types/queryParams'
 
 export function useGetResumeQuery({

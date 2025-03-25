@@ -1,11 +1,12 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
+import type { Resume } from '@/types/resume'
 import ResumeFolder from './ResumeFolder'
 import AddResume from './AddResume'
 import Link from 'next/link'
 import { ResumeQueryParams } from '@/types/queryParams'
-import { fetchUserResumes } from '@/app/resume/api/getUserResume'
+import { fetchUserResumes } from '@/api/resume/getUserResume'
 import { useInView } from 'react-intersection-observer'
 import { useLike } from '@/app/blog/_lib/useLike'
 import { useBookmark } from '@/app/blog/_lib/useBookmark'
@@ -13,25 +14,6 @@ import SkeletonResumeFolder from '@/components/resume/SkeletonResume'
 import { usePathname } from 'next/navigation'
 import AuthModal from '@/components/common/AuthModal'
 import { useAuthStore } from '@/store/authStore'
-
-interface Resume {
-  id: string
-  createdAt: number
-  title: string
-  category: string
-  position: string
-  likeCount: number
-  year: string
-  user: {
-    id: number
-    name: string
-    profileImage: string
-    year: number
-    mainPosition: string
-  }
-  likeList: string[]
-  bookmarkList: string[]
-}
 
 export default function Resume({ userId }) {
   const [data, setData] = useState<Resume[]>([])
@@ -172,6 +154,7 @@ export default function Resume({ userId }) {
               <ResumeFolder
                 key={resume.id}
                 likeCount={resume.likeCount}
+                bookCount={resume.bookCount}
                 resume={resume}
                 likeList={likeList}
                 onLikeUpdate={handleLikeUpdate}

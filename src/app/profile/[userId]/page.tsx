@@ -6,7 +6,7 @@ import Resume from '@/components/mypage/Resume'
 import Profile from '@/components/mypage/Profile'
 import ProfileBox from '@/components/profile/ProfileBox'
 import ProfilepageTap from '@/components/profile/ProfilepageTap'
-import { fetchUserProfile } from '../api/getUserProfile'
+import { fetchUserProfile } from '@/api/profile/getUserProfile'
 import Skeleton from '@/components/profile/Skeleton'
 
 export default function Page({ params }: { params: { userId: string } }) {

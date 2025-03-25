@@ -6,29 +6,13 @@ import Image from 'next/image'
 
 import ProfileBox from '@/components/profile/ProfileBox'
 import Other from '@/components/resume/OtherResume'
-import { fetchResumeById } from '@/app/resume/api/getResume'
+import { fetchResumeById } from '@/api/resume/getResume'
 import EmptyLottie from '@/components/common/EmptyLottie'
 import AuthModal from '@/components/common/AuthModal'
 import { useAuthStore } from '@/store/authStore'
 
 import Skeleton from '@/components/resume/Skeleton'
-
-interface ResumeData {
-  id: number
-  createdAt: number
-  title: string
-  url: string
-  category: string
-  position: string
-  likeCount: number
-  user: {
-    id: number
-    name: string
-    profileImage: string
-    year: number
-    mainPosition: string
-  }
-}
+import { Resume } from '@/types/resume'
 
 export default function Detail() {
   const { resumeId } = useParams() as { resumeId: string }
@@ -41,7 +25,7 @@ export default function Detail() {
   const [authModalOpen, setAuthModalOpen] = useState(false)
 
   // 이력서 데이터
-  const [resume, setResume] = useState<ResumeData | null>(null)
+  const [resume, setResume] = useState<Resume | null>(null)
   const [profileData, setProfileData] = useState<any>(null)
 
   // OtherResume 표시

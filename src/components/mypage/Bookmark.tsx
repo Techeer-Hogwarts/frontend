@@ -203,6 +203,7 @@ export default function Bookmark() {
                 <ResumeFolder
                   key={bookmark.id}
                   likeCount={bookmark.likeCount}
+                  bookCount={bookmark.bookCount}
                   resume={bookmark}
                   likeList={likeList}
                   onLikeUpdate={handleLikeUpdate}
