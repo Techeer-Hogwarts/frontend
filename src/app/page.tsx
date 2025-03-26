@@ -31,7 +31,10 @@ export default function Onboarding() {
   }, [])
 
   return (
-    <div className="flex flex-col max-w-[1200px] w-[1200px] my-[50px] items-center gap-10">
+    <div
+      data-testid="banner"
+      className="flex flex-col max-w-[1200px] w-[1200px] my-[50px] items-center gap-10"
+    >
       {/* 배너 부분 */}
       <Banner />
       {/* 부드럽게 나타나는 이미지 */}
@@ -52,7 +55,7 @@ export default function Onboarding() {
         />
       </motion.div>
       {/***********************************************/}
-      <div className="flex flex-col">
+      <div data-testid="techeer" className="flex flex-col">
         {/* 테커 소개 */}
         <Techeer />
 
