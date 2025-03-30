@@ -38,7 +38,7 @@ export default function Resume({ userId }) {
   const [isLoading, setIsLoading] = useState(true)
   const [isError, setIsError] = useState(false)
   const [modal, setModal] = useState(false)
-
+  const { checkAuth } = useAuthStore()
   const [resumes, setResumes] = useState<Resume[]>([])
   const [limit, setLimit] = useState(6)
   const [ref, inView] = useInView({ threshold: 0.1 })

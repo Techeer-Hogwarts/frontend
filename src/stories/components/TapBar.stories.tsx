@@ -17,8 +17,6 @@ type Story = StoryObj<typeof TapBar>
 export const Default: Story = {
   args: {
     options: ['Option 1', 'Option 2', 'Option 3'],
-    // placeholder: '검색어를 입력하세요',
-    onSelect: (query: string) => console.log(''),
   },
 }
 
@@ -26,6 +24,5 @@ export const Default: Story = {
 export const MultipleOptions: Story = {
   args: {
     options: ['전체 보기', '모집 중'],
-    // placeholder: '프로젝트 명 혹은 이름으로 검색해보세요',
   },
 }

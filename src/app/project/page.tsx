@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
 import ProjectCard from '@/components/project/ProjectCard'
 import StudyCard from '@/components/project/StudyCard'
@@ -14,6 +14,7 @@ import SkeletonProjectCard from '@/components/project/SkeletonProjectCard'
 import SearchBar from '@/components/common/SearchBar'
 import { getAllTeams } from '@/api/project/common'
 import Star from '../../../public/star.svg'
+import { useTapBarStore } from '@/store/tapBarStore'
 
 interface TeamBase {
   id: number
@@ -53,35 +54,23 @@ type Team = ProjectTeam | StudyTeam
 interface TeamsResponse {
   allTeams: Team[]
 }
-
+const category = ['전체보기', '프로젝트', '스터디']
 export default function Project() {
   // TapBar 관련 (전체보기, 프로젝트, 스터디)
-  const [selectedTab, setSelectedTab] = useState<string>('전체보기')
-  const [inputValue, setInputValue] = useState('')
-
+  // const [selectedTab, setSelectedTab] = useState<string>('전체보기')
+  const { activeOption } = useTapBarStore()
   // 드롭다운 필터 관련 상태
   const [selectedRecruitment, setSelectedRecruitment] = useState<string[]>([]) // 모집여부: ['모집 중', '모집 완료']
   const [selectedProgress, setSelectedProgress] = useState<string[]>([]) // 진행여부: ['진행 중', '진행 완료']
   const [selectedPosition, setSelectedPosition] = useState<string[]>([]) // 포지션: ['Frontend', 'Backend', 'DevOps', 'FullStack', 'DataEngineer']
   const [searchResults, setSearchResults] = useState<any>(null)
 
-  // 탭 선택 핸들러: TapBar에서 선택 시 호출
-  const handleTabSelect = (option: string) => {
-    setSelectedTab(option)
-  }
-
-  // 검색 핸들러
-  const handleSearch = (query: string) => {
-    sessionStorage.setItem('searchQuery', query)
-    setInputValue(query)
-  }
-
   // API 호출 시 사용할 필터 객체 구성
   const teamFilter: any = {}
 
   // 탭 선택에 따른 필터링
-  if (selectedTab !== '전체보기') {
-    teamFilter.teamTypes = [selectedTab === '프로젝트' ? 'project' : 'study']
+  if (activeOption !== '전체보기') {
+    teamFilter.teamTypes = [activeOption === '프로젝트' ? 'project' : 'study']
   }
 
   // 모집여부 필터링
@@ -96,7 +85,7 @@ export default function Project() {
 
   // 포지션 필터링 (프로젝트 탭 또는 전체보기 탭일 때만 적용)
   if (
-    (selectedTab === '프로젝트' || selectedTab === '전체보기') &&
+    (activeOption === '프로젝트' || activeOption === '전체보기') &&
     selectedPosition.length > 0
   ) {
     teamFilter.positions = selectedPosition.map((item) => item)
@@ -106,7 +95,7 @@ export default function Project() {
   const { data: allTeams, isLoading } = useQuery({
     queryKey: [
       'getAllTeams',
-      selectedTab,
+      activeOption,
       selectedRecruitment,
       selectedProgress,
       selectedPosition,
@@ -164,10 +153,7 @@ export default function Project() {
 
       {/* 탭바: 전체보기, 프로젝트, 스터디 옵션 */}
       <div className="flex justify-between">
-        <TapBar
-          options={['전체보기', '프로젝트', '스터디']}
-          onSelect={handleTabSelect}
-        />
+        <TapBar options={category} />
         <SearchBar
           placeholder="이름 또는 키워드로 검색해보세요"
           index=""
@@ -193,7 +179,7 @@ export default function Project() {
           singleSelect={true}
         />
         {/* 프로젝트 관련 탭이 선택되었을 때만 포지션 드롭다운 노출 */}
-        {selectedTab === '프로젝트' && (
+        {activeOption === '프로젝트' && (
           <Dropdown
             title="포지션"
             options={[

@@ -10,6 +10,7 @@ import FilterBtn from '@/components/session/FilterBtn'
 import ResumeList from './@resumeList'
 import SearchBar from '@/components/common/SearchBar'
 import AuthModal from '@/components/common/AuthModal'
+import { useTapBarStore } from '@/store/tapBarStore'
 
 export default function Resume() {
   const router = useRouter() // Resume 페이지에서 useRouter 사용
@@ -44,11 +45,7 @@ export default function Resume() {
       setSelectedYear(selectedYear.filter((item) => item !== filter))
     }
   }
-
-  // 카테고리 변경
-  const handleCategoryChange = (category: string) => {
-    setSelectedCategory(category)
-  }
+  const { activeOption } = useTapBarStore()
 
   // 마이페이지로 이동
   const openMyPage = () => {
@@ -84,7 +81,7 @@ export default function Resume() {
       <div className="flex flex-col">
         <div className="flex justify-between">
           {/** 기수 탭 */}
-          <TapBar options={category} onSelect={handleCategoryChange} />
+          <TapBar options={category} />
           {/** 검색창 */}
           <SearchBar
             placeholder="이름 또는 키워드로 검색해보세요"
@@ -138,7 +135,7 @@ export default function Resume() {
         <ResumeList
           position={selectedPosition}
           year={selectedYear}
-          category={selectedCategory}
+          category={activeOption}
         />
       </div>
     </div>
