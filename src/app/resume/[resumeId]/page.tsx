@@ -48,15 +48,7 @@ export default function Detail() {
   const [showOther, setShowOther] = useState(false)
 
   // 사용자 인증
-  const { user, checkAuth } = useAuthStore()
-
-  // 1) 사용자 인증
-  useEffect(() => {
-    const doCheckAuth = async () => {
-      await checkAuth()
-    }
-    doCheckAuth()
-  }, [checkAuth])
+  const { user } = useAuthStore()
 
   // 2) 이력서 데이터 로드
   useEffect(() => {
@@ -69,6 +61,7 @@ export default function Detail() {
         setResume(data)
         setProfileData(data.user)
       } catch (err: any) {
+        console.error('이력서 가져오기 실패:', err)
         setError(err.message || '이력서 불러오기 실패')
       } finally {
         setIsLoading(false)
