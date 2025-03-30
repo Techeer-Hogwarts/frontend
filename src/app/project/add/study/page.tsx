@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 
-import AddMember from '@/components/project/add/study/AddMember'
+import AddMember from '@/components/project/add/AddMember'
 import AddProfile from '@/components/project/add/study/AddProfile'
 import AddResults from '@/components/project/add/study/AddResults'
 import NecessaryQuestions from '@/components/project/add/study/NecessaryQuestions'
@@ -36,43 +36,42 @@ export default function AddStudyPage() {
   }
 
   const handleSubmit = async () => {
-if (!studyData.name) {
-  alert('이름을 입력해주세요.')
-  return
-}
+    if (!studyData.name) {
+      alert('이름을 입력해주세요.')
+      return
+    }
 
-if ((studyData.studyExplain?.trim() ?? '') === '') {
-  alert('스터디 설명을 입력해주세요.')
-  return
-}
+    if ((studyData.studyExplain?.trim() ?? '') === '') {
+      alert('스터디 설명을 입력해주세요.')
+      return
+    }
 
-if (studyData.studyMember.length === 0) {
-  alert('스터디 멤버를 최소 1명 이상 추가해주세요.')
-  return
-}
+    if (studyData.studyMember.length === 0) {
+      alert('스터디 멤버를 최소 1명 이상 추가해주세요.')
+      return
+    }
 
-if ((studyData.goal?.trim() ?? '') === '') {
-  alert('스터디 목표를 입력해주세요.')
-  return
-}
+    if ((studyData.goal?.trim() ?? '') === '') {
+      alert('스터디 목표를 입력해주세요.')
+      return
+    }
 
-if ((studyData.rule?.trim() ?? '') === '') {
-  alert('스터디 규칙을 입력해주세요.')
-  return
-}
+    if ((studyData.rule?.trim() ?? '') === '') {
+      alert('스터디 규칙을 입력해주세요.')
+      return
+    }
 
-if (studyData.isRecruited) {
-  if (studyData.recruitNum <= 0) {
-    alert('모집 인원은 1명 이상이어야 합니다.')
-    return
-  }
+    if (studyData.isRecruited) {
+      if (studyData.recruitNum <= 0) {
+        alert('모집 인원은 1명 이상이어야 합니다.')
+        return
+      }
 
-  if ((studyData.recruitExplain?.trim() ?? '') === '') {
-    alert('모집 설명을 입력해주세요.')
-    return
-  }
-}
-
+      if ((studyData.recruitExplain?.trim() ?? '') === '') {
+        alert('모집 설명을 입력해주세요.')
+        return
+      }
+    }
 
     const formData = new FormData()
 
@@ -100,7 +99,8 @@ if (studyData.isRecruited) {
       </div>
       <div className="flex flex-col gap-7">
         <AddMember
-          projectMember={studyData.studyMember}
+          members={studyData.studyMember}
+          type="study"
           onUpdateMember={(newMembers) =>
             handleUpdate('studyMember', newMembers)
           }

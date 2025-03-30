@@ -86,7 +86,8 @@ export default function AddProjectPage() {
       <div className="flex flex-col gap-7">
         {/* 추후처리 */}
         <AddMember
-          projectMember={projectData.projectMember}
+          members={projectData.projectMember}
+          type="project"
           onUpdateMember={(newMembers) =>
             handleUpdate('projectMember', newMembers)
           }

@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
 
-import AddMember from '@/components/project/add/study/AddMember'
+import AddMember from '@/components/project/add/AddMember'
 import AddProfile from '@/components/project/add/study/AddProfile'
 import AddResults from '@/components/project/add/study/AddResults'
 import NecessaryQuestions from '@/components/project/add/study/NecessaryQuestions'
@@ -209,7 +209,8 @@ export default function AddStudyPage() {
           </div>
           <div className="flex flex-col gap-7">
             <AddMember
-              projectMember={studyData.studyMember}
+              members={studyData.studyMember}
+              type="study"
               onUpdateMember={(newMembers) =>
                 handleUpdate('studyMember', newMembers)
               }
@@ -220,6 +221,7 @@ export default function AddStudyPage() {
                 handleRestoreMember(memberId, userId)
               }
             />
+
             <AddGoal goal={studyData.goal} onUpdate={handleUpdate} />
             <AddPlan rule={studyData.rule} onUpdate={handleUpdate} />
             <NecessaryQuestions

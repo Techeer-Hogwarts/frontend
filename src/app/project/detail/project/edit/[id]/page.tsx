@@ -147,7 +147,6 @@ export default function EditProjectPage() {
       return
     }
 
-
     // (4) 삭제되지 않은 멤버만 골라서 최종 전송할 형태로 변환
     const finalMember = projectData.projectMember
       .filter((m: any) => {
@@ -194,7 +193,8 @@ export default function EditProjectPage() {
       </div>
       <div className="flex flex-col gap-7">
         <AddMember
-          projectMember={projectData.projectMember}
+          members={projectData.projectMember}
+          type="project"
           onUpdateMember={(newMembers) =>
             handleUpdate('projectMember', newMembers)
           }
