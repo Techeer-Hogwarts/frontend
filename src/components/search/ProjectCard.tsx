@@ -26,97 +26,138 @@ interface ProjectTeam extends TeamBase {
 }
 
 export default function ProjectCard({ team }: { team: ProjectTeam }) {
-  const mainImageUrl =
-    team.mainImages && team.mainImages.length > 0
-      ? team.mainImages[0] // 첫 번째 요소가 곧 URL
-      : '/images/project/example.png'
+  const mainImageUrl = team.mainImages[0]
 
-  // 팀 스택이 없으면 아무것도 출력하지 않도록 처리
-  const displayStacks =
-    team.teamStacks.length > 0
-      ? team.teamStacks.slice(0, 4).map((stack) => (
-          <div
-            key={stack.stackName}
-            className="bg-lightprimary text-pink max-h-[1.4181rem] px-[0.3rem] rounded-md text-[13px]"
-          >
-            {stack.stackName}
-          </div>
-        ))
-      : null
+  // console.log('img:', team.mainImages)
+  // 인원표시 제한을 위해 count 변수 사용
+  let count = 0
+  // console.log('team stack', team.teamStacks)
+
   return (
     <Link
       href={`/project/detail/project/${team.id}`}
-      // onClick={handleClick}
-      className="relative group bg-[url('/images/project/projectCard.png')] bg-cover w-[18rem] h-[11.375rem]"
+      className="inline-block group w-[18rem] h-[11.375rem] relative"
     >
-      <div className="text-pink w-[4.375rem] pt-2 text-[0.71181rem] text-center">
-        프로젝트
+      {/* 탭 부분 */}
+      <div className="flex items-end">
+        <div className="relative w-[4.5rem] h-[1.25rem] bg-lightprimary flex items-center justify-center rounded-t-md shadow-cardtop">
+          <span className="text-pink text-[0.75rem]">프로젝트</span>
+        </div>
+        <div
+          className="w-1 h-[0.95rem] bg-lightprimary"
+          style={{
+            clipPath: 'polygon(0 100%, 0 0, 100% 100%)',
+          }}
+        ></div>
       </div>
 
-      <div className="flex items-center pt-[1rem] px-[0.9rem] gap-3 justify-center">
-        {/* 이미지 */}
-        <div className="w-[7.8125rem] h-[7.8125rem] min-w-[7.8125rem] rounded-2xl">
+      {/* 폴더 본체 */}
+      <div className="flex items-center p-[1rem] gap-3 justify-center w-full h-[10.125rem] rounded-b-lg rounded-tr-lg shadow-card">
+        {/* 메인 이미지 */}
+        <div className="w-[8.125rem] h-[8.125rem] rounded-2xl">
           <Image
             src={mainImageUrl}
             alt="프로젝트 이미지"
-            width={125}
-            height={125}
-            className="object-cover w-[125px] h-[125px] rounded-lg border bg-pink-300"
+            width={130}
+            height={130}
+            className="rounded-lg object-cover w-[8.125rem] h-[8.125rem]"
           />
         </div>
 
-        <div className="h-[7rem] max-h-[7rem] min-h-[7rem] min-w-28 flex flex-col justify-start ">
-          <div className="mb-4 ">
-            {/* 프로젝트 제목 */}
-            <div className="max-w-28 truncate font-bold text-[1.01688rem] gap-[2.44rem]">
-              {team.name}
-            </div>
-
-            {team.frontendNum > 0 &&
-            team.backendNum > 0 &&
-            team.devopsNum > 0 ? (
-              <div className="h-5"></div>
-            ) : (
-              <p className="text-[0.75rem] max-w-28 max-h-8 truncate">
-                {team.projectExplain}
-              </p>
-            )}
+        <div className="w-[6.5rem] flex flex-col justify-between h-[125px]">
+          {/* 프로젝트 이름 */}
+          <div className="w-full truncate font-bold text-[1.01688rem]">
+            {team.name}
           </div>
 
-          <div className="flex max-h-14 min-h-14 h-14">
-            {/* 모집 여부에 따른 조건부 렌더링 */}
+          <div className="flex">
+            {/* 모집 중일 때 */}
             {team.isRecruited ? (
-              <>
-                {/* 인원모집 */}
-                <div className=" flex flex-col justify-end gap-2">
-                  {team.frontendNum > 0 && (
-                    <div className="bg-lightblue text-blue py-[0.1rem] px-[0.8rem] rounded-lg text-[13px]">
+              <div className="flex flex-col justify-end gap-2 w-full">
+                {team.frontendNum > 0 &&
+                  count < 3 &&
+                  (count++,
+                  (
+                    <div className="bg-lightblue text-blue py-[0.1rem] rounded-lg text-[13px] text-center">
                       Frontend : {team.frontendNum}명
                     </div>
-                  )}
-                  {team.backendNum > 0 && (
-                    <div className="bg-lightblue text-blue py-[0.1rem] px-[0.8rem] rounded-lg text-[13px]">
+                  ))}
+                {team.backendNum > 0 &&
+                  count < 3 &&
+                  (count++,
+                  (
+                    <div className="bg-lightgreen text-green py-[0.1rem] rounded-lg text-[13px] text-center">
                       Backend : {team.backendNum}명
                     </div>
-                  )}
-                  {team.devopsNum > 0 && (
-                    <div className="bg-lightblue text-blue py-[0.1rem] px-[0.8rem] rounded-lg text-[13px]">
-                      Devops : {team.devopsNum}명
+                  ))}
+                {team.devopsNum > 0 &&
+                  count < 3 &&
+                  (count++,
+                  (
+                    <div className="bg-lightpink text-pink py-[0.1rem] rounded-lg text-[13px] text-center">
+                      DevOps : {team.devopsNum}명
                     </div>
-                  )}
-                </div>
-              </>
+                  ))}
+                {team.fullStackNum > 0 &&
+                  count < 3 &&
+                  (count++,
+                  (
+                    <div className="bg-lightyellow text-yellow py-[0.1rem] rounded-lg text-[13px] text-center">
+                      FullStack : {team.fullStackNum}명
+                    </div>
+                  ))}
+                {team.dataEngineerNum > 0 &&
+                  count < 3 &&
+                  (count++,
+                  (
+                    <div className="bg-lightpurple text-purple py-[0.1rem] rounded-lg text-[13px] text-center">
+                      Data : {team.dataEngineerNum}명
+                    </div>
+                  ))}
+              </div>
             ) : (
-              <div className="flex gap-1">{displayStacks}</div>
+              // 모집 마감 시, 대표 스택 표시
+              <div className="flex flex-col gap-1 h-[6.25rem] items-start justify-end">
+                {team.teamStacks
+                  .filter((stack) => stack.stackName) // stackName이 있는 항목만 필터링
+                  .slice(0, 4)
+                  .map((stack) => (
+                    <div
+                      key={stack.stackName}
+                      className="bg-lightprimary text-pink py-[0.1rem] px-[0.3rem] rounded-md text-[13px] truncate max-w-[6.5rem]"
+                    >
+                      {stack.stackName}
+                    </div>
+                  ))}
+              </div>
             )}
           </div>
         </div>
       </div>
 
-      {/* 호버 시 표시되는 부분 */}
-      <div className="w-[17.3rem] h-[9.6rem] py-[3.25rem] px-[3rem] rounded-[0.63rem] absolute left-1 bottom-1 bg-black bg-opacity-75 flex items-center justify-center text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-        <div className="text-white">
-          <p className="mt-2 text-sm">{team.projectExplain}</p>
+      {/* ====== 오버레이 (hover 시 표시) ====== */}
+      <div
+        // 부모와 같은 크기/위치, 클릭 이벤트 막지 않도록 pointer-events-none
+        className="pointer-events-none absolute top-0 left-0 w-[18rem] h-[11.375rem]
+                   opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+      >
+        {/* 탭 부분 (오버레이) */}
+        <div className="flex items-end">
+          <div className="relative w-[4.5rem] h-[1.25rem] bg-black/70 flex items-center justify-center rounded-t-md"></div>
+          <div
+            className="w-1 h-[0.95rem] bg-black/70"
+            style={{
+              clipPath: 'polygon(0 100%, 0 0, 100% 100%)',
+            }}
+          />
+        </div>
+
+        {/* 폴더 본체 (오버레이) */}
+        <div className="flex items-center p-[1rem] gap-3 justify-center w-full h-[10.125rem] rounded-b-lg rounded-tr-lg bg-black/70">
+          {/* 오버레이 내용: 프로젝트 설명 등 */}
+          <div className="text-white mx-4 text-sm line-clamp-4 text-center">
+            {team.projectExplain || '설명이 없습니다'}
+          </div>
         </div>
       </div>
     </Link>

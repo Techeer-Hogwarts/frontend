@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
 import ProjectCard from '@/components/project/ProjectCard'
 import StudyCard from '@/components/project/StudyCard'
@@ -54,54 +54,50 @@ type Team = ProjectTeam | StudyTeam
 interface TeamsResponse {
   allTeams: Team[]
 }
-const category = ['전체보기', '모집 중']
+const category = ['전체보기', '프로젝트', '스터디']
 export default function Project() {
-  // TapBar 관련 (모집 중이면 isRecruited=true)
+  // TapBar 관련 (전체보기, 프로젝트, 스터디)
+  // const [selectedTab, setSelectedTab] = useState<string>('전체보기')
   const { activeOption } = useTapBarStore()
-  const [inputValue, setInputValue] = useState('')
-
-  // 드롭다운 필터 관련 상태 (초기엔 빈 배열로 설정)
-  const [selectedProgress, setSelectedProgress] = useState<string[]>([]) // 진행여부: ['진행 중', '완료']
-  const [selectedTeamType, setSelectedTeamType] = useState<string[]>([]) // 구분: ['프로젝트', '스터디']
+  // 드롭다운 필터 관련 상태
+  const [selectedRecruitment, setSelectedRecruitment] = useState<string[]>([]) // 모집여부: ['모집 중', '모집 완료']
+  const [selectedProgress, setSelectedProgress] = useState<string[]>([]) // 진행여부: ['진행 중', '진행 완료']
   const [selectedPosition, setSelectedPosition] = useState<string[]>([]) // 포지션: ['Frontend', 'Backend', 'DevOps', 'FullStack', 'DataEngineer']
   const [searchResults, setSearchResults] = useState<any>(null)
 
-  // 검색 핸들러 (추후 검색 로직과 탭 필터를 분리할 수 있음)
-  const handleSearch = (query: string) => {
-    sessionStorage.setItem('searchQuery', query)
-    setInputValue(query)
-  }
-
-  // API 호출 시 사용할 필터 객체를 구성합니다.
-  // 탭 선택에 따라 isRecruited 적용
+  // API 호출 시 사용할 필터 객체 구성
   const teamFilter: any = {}
-  if (activeOption === '모집 중') {
-    teamFilter.isRecruited = true
-  }
-  // 진행여부 드롭다운: '진행 중'이면 isFinished=false, '완료'이면 isFinished=true
-  // (한 가지만 선택된 경우에만 필터를 적용합니다.)
-  if (selectedProgress.length === 1) {
-    teamFilter.isFinished = selectedProgress[0] === '완료' ? true : false
-  }
-  // 구분 드롭다운: 프로젝트/스터디 선택 (API에서는 소문자 영문 값 사용)
-  if (selectedTeamType.length > 0) {
-    teamFilter.teamTypes = selectedTeamType.map((item) =>
-      item === '프로젝트' ? 'project' : 'study',
-    )
-  }
-  // 포지션 드롭다운: 구분에서 프로젝트가 선택되어 있을 때만 적용
-  if (selectedTeamType.includes('프로젝트') && selectedPosition.length > 0) {
-    // API에 전달할 때는 소문자로 변환 (예: frontend)
-    teamFilter.positions = selectedPosition.map((item) => item.toLowerCase())
+
+  // 탭 선택에 따른 필터링
+  if (activeOption !== '전체보기') {
+    teamFilter.teamTypes = [activeOption === '프로젝트' ? 'project' : 'study']
   }
 
-  // useQuery 의 의존성 배열에 모든 필터 상태를 추가하여 필터 변경 시 새롭게 호출
+  // 모집여부 필터링
+  if (selectedRecruitment.length === 1) {
+    teamFilter.isRecruited = selectedRecruitment[0] === '모집 중' ? true : false
+  }
+
+  // 진행여부 필터링
+  if (selectedProgress.length === 1) {
+    teamFilter.isFinished = selectedProgress[0] === '진행 완료' ? true : false
+  }
+
+  // 포지션 필터링 (프로젝트 탭 또는 전체보기 탭일 때만 적용)
+  if (
+    (activeOption === '프로젝트' || activeOption === '전체보기') &&
+    selectedPosition.length > 0
+  ) {
+    teamFilter.positions = selectedPosition.map((item) => item)
+  }
+
+  // useQuery 의존성 배열에 모든 필터 상태를 추가하여 필터 변경 시 새롭게 호출
   const { data: allTeams, isLoading } = useQuery({
     queryKey: [
       'getAllTeams',
       activeOption,
+      selectedRecruitment,
       selectedProgress,
-      selectedTeamType,
       selectedPosition,
     ],
     queryFn: () => getAllTeams(teamFilter),
@@ -110,15 +106,13 @@ export default function Project() {
   // 필터 버튼에서 제거할 때 사용하는 핸들러
   const handleRemoveFilter = (item: string, type: string) => {
     switch (type) {
+      case 'recruitment':
+        setSelectedRecruitment(
+          selectedRecruitment.filter((val) => val !== item),
+        )
+        break
       case 'progress':
         setSelectedProgress(selectedProgress.filter((val) => val !== item))
-        break
-      case 'teamType':
-        setSelectedTeamType(selectedTeamType.filter((val) => val !== item))
-        // 구분에서 프로젝트가 제거되면 포지션 필터도 초기화
-        if (item === '프로젝트') {
-          setSelectedPosition([])
-        }
         break
       case 'position':
         setSelectedPosition(selectedPosition.filter((val) => val !== item))
@@ -130,8 +124,8 @@ export default function Project() {
 
   // 하나 이상의 필터가 선택되었는지 확인
   const anyFilterSelected =
+    selectedRecruitment.length > 0 ||
     selectedProgress.length > 0 ||
-    selectedTeamType.length > 0 ||
     selectedPosition.length > 0
 
   return (
@@ -157,7 +151,7 @@ export default function Project() {
         </div>
       </div>
 
-      {/* 탭바: onSelect 핸들러로 탭 변경을 처리 */}
+      {/* 탭바: 전체보기, 프로젝트, 스터디 옵션 */}
       <div className="flex justify-between">
         <TapBar options={category} />
         <SearchBar
@@ -171,27 +165,29 @@ export default function Project() {
       {/* 드롭다운 필터 영역 */}
       <div className="flex justify-start gap-3 mb-[2.31rem]">
         <Dropdown
-          title="진행여부"
-          options={['진행 중', '완료']}
-          selectedOptions={selectedProgress}
-          setSelectedOptions={setSelectedProgress}
+          title="모집여부"
+          options={['모집 중', '모집 완료']}
+          selectedOptions={selectedRecruitment}
+          setSelectedOptions={setSelectedRecruitment}
+          singleSelect={true}
         />
         <Dropdown
-          title="구분"
-          options={['프로젝트', '스터디']}
-          selectedOptions={selectedTeamType}
-          setSelectedOptions={setSelectedTeamType}
+          title="진행여부"
+          options={['진행 중', '진행 완료']}
+          selectedOptions={selectedProgress}
+          setSelectedOptions={setSelectedProgress}
+          singleSelect={true}
         />
-        {/* 구분에서 프로젝트가 선택되어 있을 때에만 포지션 드롭다운 노출 */}
-        {selectedTeamType.includes('프로젝트') && (
+        {/* 프로젝트 관련 탭이 선택되었을 때만 포지션 드롭다운 노출 */}
+        {activeOption === '프로젝트' && (
           <Dropdown
             title="포지션"
             options={[
-              'Frontend',
-              'Backend',
-              'DevOps',
-              'FullStack',
-              'DataEngineer',
+              'frontend',
+              'backend',
+              'devops',
+              'fullstack',
+              'dataEngineer',
             ]}
             selectedOptions={selectedPosition}
             setSelectedOptions={setSelectedPosition}
@@ -202,18 +198,18 @@ export default function Project() {
       {/* 하나 이상의 필터가 선택된 경우 필터 버튼 패널 노출 */}
       {anyFilterSelected && (
         <div className="bg-filterbg flex items-center w-[75rem] h-[4.375rem] px-4 gap-4 my-6">
+          {selectedRecruitment.map((item) => (
+            <FilterBtn
+              key={item}
+              title={item}
+              onClick={() => handleRemoveFilter(item, 'recruitment')}
+            />
+          ))}
           {selectedProgress.map((item) => (
             <FilterBtn
               key={item}
               title={item}
               onClick={() => handleRemoveFilter(item, 'progress')}
-            />
-          ))}
-          {selectedTeamType.map((item) => (
-            <FilterBtn
-              key={item}
-              title={item}
-              onClick={() => handleRemoveFilter(item, 'teamType')}
             />
           ))}
           {selectedPosition.map((item) => (
@@ -242,11 +238,11 @@ export default function Project() {
         </div>
       ) : (
         <div className="grid grid-cols-4 gap-4">
-          {allTeams?.allTeams?.map((team) =>
+          {allTeams?.allTeams.map((team, index) =>
             team.type === 'project' ? (
-              <ProjectCard key={team.id} team={team} />
+              <ProjectCard key={index} team={team} />
             ) : (
-              <StudyCard key={team.id} team={team} />
+              <StudyCard key={index} team={team} />
             ),
           )}
         </div>
