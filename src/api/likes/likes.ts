@@ -3,21 +3,21 @@ import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query'
 const API_URL = '/api/v1/likes'
 
 // 좋아요 추가/제거 API
-const postLike = async ({
-  contentId,
-  category,
-  likeStatus,
-}: {
-  contentId: number
-  category: string
-  likeStatus: boolean
-}) => {
+export const postLike = async (
+  contentId: number,
+  category: string,
+  likeStatus: boolean,
+) => {
   const response = await fetch(API_URL, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ contentId, category, likeStatus }),
+    body: JSON.stringify({
+      contentId,
+      category,
+      likeStatus,
+    }),
     credentials: 'include',
   })
 
@@ -28,12 +28,42 @@ const postLike = async ({
 
   return response.json()
 }
-
-export function usePostLikeAPI() {
+export const usePostLikeAPI = () => {
   const queryClient = useQueryClient()
+
   return useMutation({
-    mutationFn: postLike,
-    onSuccess: () => {
+    mutationFn: ({
+      contentId,
+      category,
+      likeStatus,
+    }: {
+      contentId: number
+      category: string
+      likeStatus: boolean
+    }) => postLike(contentId, category, likeStatus),
+    onMutate: async (newLike) => {
+      await queryClient.cancelQueries({ queryKey: ['likes'] })
+
+      const previousLikes = queryClient.getQueryData(['likes'])
+
+      queryClient.setQueryData(['likes'], (old: any) =>
+        old
+          ? old.map((item: any) =>
+              item.id === newLike.contentId
+                ? { ...item, likeStatus: newLike.likeStatus }
+                : item,
+            )
+          : [],
+      )
+
+      return { previousLikes }
+    },
+    onError: (err, _, context) => {
+      if (context?.previousLikes) {
+        queryClient.setQueryData(['likes'], context.previousLikes)
+      }
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['likes'] })
     },
   })

@@ -1,11 +1,11 @@
-/* eslint-disable @next/next/no-img-element */
 'use client'
 
 import Image from 'next/image'
-import { useEffect, useState } from 'react'
-import BlogMenu from './BlogMenu'
 import BookmarkModal from '../common/BookmarkModal'
-import { usePostLikeAPI } from '@/api/likes/likes' // 좋아요 mutation 훅 import
+import useBookmarkModal from '@/hooks/blog/useBookmarkModal'
+import { useForm } from 'react-hook-form'
+import { usePutBlogAPI } from '@/api/blog/blog'
+import { usePostLikeAPI } from '@/api/likes/likes'
 
 export interface BlogPostProps {
   title: string
@@ -38,163 +38,107 @@ export default function BlogPost({
   authorImage,
   likeList,
 }: BlogPostProps) {
-  const [showModal, setShowModal] = useState(false)
-  const [isLike, setIsLike] = useState(false)
-  const [likeCount, setLikeCount] = useState(initialLikeCount)
-  const [modalOpen, setModalOpen] = useState(false)
-  const [modalMessage, setModalMessage] = useState('')
-  const [isLikeProcessing, setIsLikeProcessing] = useState(false)
+  const { register, setValue, watch } = useForm({
+    defaultValues: {
+      isLike: likeList.includes(id),
+      likeCount: initialLikeCount,
+    },
+  })
+
+  const isLike = watch('isLike')
+  const likeCount = watch('likeCount')
+
+  const postLikeMutation = usePostLikeAPI()
+  const putBlogMutation = usePutBlogAPI()
+  const { isOpen, message, openModal, closeModal } = useBookmarkModal()
+
   const profile =
     category === 'TECHEER'
       ? { image: userImage, name: userName }
       : { image: authorImage, name: authorName }
-  const postLikeMutation = usePostLikeAPI() // 좋아요 mutation 훅 사용
 
-  const clickModal = () => {
-    setShowModal(!showModal)
+  const handleClickUrl = () => {
+    window.open(url, '_blank')
+    putBlogMutation.mutate(Number(id))
   }
 
-  const fetchViews = async () => {
-    try {
-      const response = await fetch(`/api/v1/blogs/${id}`, {
-        method: 'PUT',
-        credentials: 'include',
-      })
-      if (!response.ok) {
-        throw new Error('블로그 조회수를 업데이트하는 데 실패했습니다.')
-      }
-    } catch (err) {}
-  }
-
-  const formattedDate = new Date(date)
-    .toLocaleDateString('ko-KR', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-    })
-    .replace(/\.$/, '')
+  const formattedDate = new Date(date).toLocaleDateString('ko-KR', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  })
 
   const clickLike = async () => {
-    if (isLikeProcessing) return
-
-    setIsLikeProcessing(true)
-
     try {
       const newLikeState = !isLike
-      setIsLike(newLikeState)
-      setLikeCount((prev) => (newLikeState ? prev + 1 : Math.max(0, prev - 1)))
+      setValue('isLike', newLikeState)
+      setValue(
+        'likeCount',
+        newLikeState ? likeCount + 1 : Math.max(0, likeCount - 1),
+      )
       await postLikeMutation.mutateAsync({
         contentId: Number(id),
         category: 'BLOG',
         likeStatus: newLikeState,
       })
     } catch (err) {
-      setIsLike(!isLike)
-      setLikeCount((prev) => (isLike ? prev + 1 : Math.max(0, prev - 1)))
       console.error('좋아요 상태 업데이트 실패:', err)
-    } finally {
-      setIsLikeProcessing(false)
     }
   }
-
-  const handleClickUrl = () => {
-    window.open(url, '_blank')
-    fetchViews()
-  }
-
-  useEffect(() => {
-    if (Array.isArray(likeList)) {
-      setIsLike(likeList.some((bookmark: any) => bookmark.id === id))
-    }
-  }, [likeList, id])
 
   return (
     <div>
-      <BookmarkModal
-        isOpen={modalOpen}
-        message={modalMessage}
-        onClose={() => setModalOpen(false)}
-      />
+      <BookmarkModal isOpen={isOpen} message={message} onClose={closeModal} />
       <div className="flex flex-col w-full relative rounded-b-lg shadow-[0px_5px_8px_#e5e5e5] overflow-hidden transition-transform transform hover:-translate-y-2 cursor-pointer">
         {image ? (
           <img
             src={image}
-            alt="testIMG"
-            className="w-full h-[155px] z-1 object-cover"
+            alt="blog"
+            className="w-full h-[155px] object-cover"
             onClick={handleClickUrl}
           />
         ) : (
           <button
+            type="button"
             onClick={handleClickUrl}
             className="w-full flex items-center justify-center px-5 h-[155px] text-white bg-gradient-to-b from-[#FF8B20] to-[#FFC14F]"
           >
             {title}
           </button>
         )}
-        <div className="w-full min-h-[100px] h-auto py-2 bg-white">
-          <div className="relative flex justify-between">
-            <p className="w-full px-5 mr-1 mb-1 text-base truncate whitespace-nowrap overflow-hidden">
-              {title}
-            </p>
+        <div className="p-3 bg-white">
+          <div className="flex justify-between">
+            <p className="truncate text-base">{title}</p>
             <Image
               src="/images/session/session-menu.svg"
-              alt="seesionmenu"
+              alt="menu"
               width={24}
               height={24}
-              className="absolute top-0 right-0"
-              onClick={clickModal}
+              onClick={() => openModal('옵션을 선택하세요')}
             />
-            {showModal && (
-              <div className="absolute top-[-5%] right-0 z-10">
-                <BlogMenu
-                  id={id}
-                  onDelete={onDelete}
-                  setModalOpen={setModalOpen}
-                  setModalMessage={setModalMessage}
-                />
-              </div>
-            )}
           </div>
-          <p className="ml-5 text-sm text-black/30">{formattedDate}</p>
-          <div className="flex justify-between mt-3 ml-5">
+          <p className="text-sm text-gray-500">{formattedDate}</p>
+          <div className="flex justify-between mt-2">
             <div className="flex items-center">
               <img
                 src={profile.image}
-                alt="img"
-                className="w-5 h-5 mr-1 rounded-full"
-                onError={(e: any) => {
-                  e.target.src = '/images/session/thumbnail.png'
-                }}
+                alt="profile"
+                className="w-6 h-6 rounded-full"
+                onError={(e: any) =>
+                  (e.target.src = '/images/session/thumbnail.png')
+                }
               />
-              <span className="font-semibold text-black text-md">
-                {profile.name}
-              </span>
+              <span className="ml-2 text-sm font-semibold">{profile.name}</span>
             </div>
-
-            <div className="flex mr-2">
-              <span className="mr-1">{likeCount}</span>
-              <button
-                type="button"
-                onClick={clickLike}
-                disabled={isLikeProcessing}
-              >
-                {isLike ? (
-                  <Image
-                    src="/images/like-on.svg"
-                    alt="like-on"
-                    width={24}
-                    height={24}
-                  />
-                ) : (
-                  <Image
-                    src="/images/like-off.svg"
-                    alt="like-off"
-                    width={24}
-                    height={24}
-                  />
-                )}
-              </button>
-            </div>
+            <button onClick={clickLike} className="flex items-center space-x-1">
+              <span>{likeCount}</span>
+              <Image
+                src={isLike ? '/images/like-on.svg' : '/images/like-off.svg'}
+                alt="like"
+                width={24}
+                height={24}
+              />
+            </button>
           </div>
         </div>
       </div>
