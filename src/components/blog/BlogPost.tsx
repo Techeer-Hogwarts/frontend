@@ -3,9 +3,9 @@
 import Image from 'next/image'
 import BookmarkModal from '../common/BookmarkModal'
 import useBookmarkModal from '@/hooks/blog/useBookmarkModal'
-import { useForm } from 'react-hook-form'
 import { usePutBlogAPI } from '@/api/blog/blog'
 import { usePostLikeAPI } from '@/api/likes/likes'
+import { useState, useEffect } from 'react'
 
 export interface BlogPostProps {
   title: string
@@ -38,19 +38,21 @@ export default function BlogPost({
   authorImage,
   likeList,
 }: BlogPostProps) {
-  const { register, setValue, watch } = useForm({
-    defaultValues: {
-      isLike: likeList.includes(id),
-      likeCount: initialLikeCount,
-    },
-  })
-
-  const isLike = watch('isLike')
-  const likeCount = watch('likeCount')
+  const [isLike, setIsLike] = useState(false)
+  const [currentLikeCount, setCurrentLikeCount] = useState(initialLikeCount)
 
   const postLikeMutation = usePostLikeAPI()
   const putBlogMutation = usePutBlogAPI()
-  const { isOpen, message, openModal, closeModal } = useBookmarkModal()
+  // const { isOpen, message, openModal, closeModal } = useBookmarkModal()
+  const [isOpen, setIsOpen] = useState(false)
+  const [message, setMessage] = useState('')
+
+  const openModal = (msg: string) => {
+    setIsOpen(true)
+    setMessage(msg)
+  }
+
+  const closeModal = () => setIsOpen(false)
 
   const profile =
     category === 'TECHEER'
@@ -71,11 +73,11 @@ export default function BlogPost({
   const clickLike = async () => {
     try {
       const newLikeState = !isLike
-      setValue('isLike', newLikeState)
-      setValue(
-        'likeCount',
-        newLikeState ? likeCount + 1 : Math.max(0, likeCount - 1),
+      setIsLike(newLikeState)
+      setCurrentLikeCount(
+        newLikeState ? currentLikeCount + 1 : Math.max(0, currentLikeCount - 1),
       )
+
       await postLikeMutation.mutateAsync({
         contentId: Number(id),
         category: 'BLOG',
@@ -85,6 +87,10 @@ export default function BlogPost({
       console.error('좋아요 상태 업데이트 실패:', err)
     }
   }
+
+  useEffect(() => {
+    setIsLike(likeList.includes(id))
+  }, [likeList, id])
 
   return (
     <div>
@@ -131,7 +137,7 @@ export default function BlogPost({
               <span className="ml-2 text-sm font-semibold">{profile.name}</span>
             </div>
             <button onClick={clickLike} className="flex items-center space-x-1">
-              <span>{likeCount}</span>
+              <span>{currentLikeCount}</span>
               <Image
                 src={isLike ? '/images/like-on.svg' : '/images/like-off.svg'}
                 alt="like"
