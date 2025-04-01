@@ -10,43 +10,7 @@ import Bookmark from '@/components/mypage/Bookmark'
 import MypageTap from '@/components/mypage/MypageTap'
 import ProfileBox from '@/components/profile/ProfileBox'
 import AuthModal from '@/components/common/AuthModal'
-
-interface Experience {
-  id?: number
-  position: string
-  companyName: string
-  startDate: string
-  endDate: string | null
-  category: string
-  isFinished: boolean
-}
-
-interface Team {
-  id: number
-  name: string
-  resultImages?: string[]
-  mainImage?: string
-}
-
-interface ProfileData {
-  id: number
-  profileImage: string
-  name: string
-  email: string
-  school: string
-  grade: string
-  year: number
-  mainPosition: string
-  subPosition: string
-  githubUrl: string
-  mediumUrl: string
-  velogUrl: string
-  tistoryUrl: string
-  isLft: boolean
-  projectTeams?: Team[]
-  studyTeams?: Team[]
-  experiences?: Experience[]
-}
+import { Experience, Team, ProfileData } from '@/types/mypage/mypage.types'
 
 export default function Mypage() {
   const [activeTab, setActiveTab] = useState<
