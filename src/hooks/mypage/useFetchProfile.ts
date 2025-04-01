@@ -7,7 +7,6 @@ import { useState, useEffect } from 'react'
 
 export const useFetchProfile = () => {
   const [authModalOpen, setAuthModalOpen] = useState(false)
-  const [userId, setUserId] = useState()
 
   const {
     data: profile,
@@ -26,9 +25,9 @@ export const useFetchProfile = () => {
   }, [error])
 
   useEffect(() => {
-    setUserId(profile?.id)
+    //   setUserId(profile?.id)
     console.log(profile)
   }, [profile])
 
-  return { authModalOpen, profile, loading, setAuthModalOpen, error, userId }
+  return { authModalOpen, profile, loading, setAuthModalOpen, error }
 }

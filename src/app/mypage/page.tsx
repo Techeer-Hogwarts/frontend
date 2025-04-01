@@ -18,7 +18,7 @@ export default function Mypage() {
     'home' | 'profile' | 'resume' | 'bookmark' | 'likes' | 'settings'
   >('home')
 
-  const { profile, authModalOpen, loading, setAuthModalOpen, error, userId } =
+  const { profile, authModalOpen, loading, setAuthModalOpen, error } =
     useFetchProfile()
 
   return (
@@ -46,7 +46,7 @@ export default function Mypage() {
         />
       )}
       {activeTab === 'profile' && <Profile profile={profile} />}
-      {activeTab === 'resume' && <Resume userId={Number(userId)} />}
+      {activeTab === 'resume' && <Resume userId={Number(profile.id)} />}
       {activeTab === 'bookmark' && <Bookmark />}
       {activeTab === 'likes' && <Likes />}
       {activeTab === 'settings' && <Settings />}
