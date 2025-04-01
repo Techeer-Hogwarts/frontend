@@ -6,10 +6,9 @@ import { useTapBarStore } from '@/store/tapBarStore'
 
 interface TapBarProps {
   readonly options: string[]
-  onSelect: (category: string) => void
 }
 
-export default function TapBar({ options, onSelect }: TapBarProps) {
+export default function TapBar({ options }: TapBarProps) {
   const { activeOption, setActiveOption } = useTapBarStore()
   useEffect(() => {
     setActiveOption(options[0])
@@ -23,7 +22,6 @@ export default function TapBar({ options, onSelect }: TapBarProps) {
             isActive={activeOption === option}
             onClick={() => {
               setActiveOption(option)
-              onSelect(option)
             }}
           >
             {option}

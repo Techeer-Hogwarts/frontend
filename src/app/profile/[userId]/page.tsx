@@ -8,8 +8,12 @@ import ProfileBox from '@/components/profile/ProfileBox'
 import ProfilepageTap from '@/components/profile/ProfilepageTap'
 import { fetchUserProfile } from '../api/getUserProfile'
 import Skeleton from '@/components/profile/Skeleton'
+import AuthModal from '@/components/common/AuthModal'
 
 export default function Page({ params }: { params: { userId: string } }) {
+  // 로그인 모달 상태 추가
+  const [authModalOpen, setAuthModalOpen] = useState(false)
+
   const [activeTab, setActiveTab] = useState<'home' | 'resume'>('home')
 
   const [profileData, setProfileData] = useState<any>(null)
@@ -34,6 +38,10 @@ export default function Page({ params }: { params: { userId: string } }) {
 
   return (
     <div className="flex gap-[4.375rem] mt-10">
+      <AuthModal
+        isOpen={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+      />
       {/** 좌측 영역 */}
       <div className="flex flex-col w-[15rem] gap-6 ">
         <ProfileBox profile={profileData} loading={false} error={''} />
