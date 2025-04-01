@@ -10,7 +10,6 @@ import Bookmark from '@/components/mypage/Bookmark'
 import MypageTap from '@/components/mypage/MypageTap'
 import ProfileBox from '@/components/profile/ProfileBox'
 import AuthModal from '@/components/common/AuthModal'
-import { Experience, Team, ProfileData } from '@/types/mypage/mypage.types'
 import { useFetchProfile } from '@/hooks/mypage/useFetchProfile'
 
 export default function Mypage() {
