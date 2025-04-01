@@ -11,8 +11,6 @@ import { useLike } from '@/app/blog/_lib/useLike'
 import { useBookmark } from '@/app/blog/_lib/useBookmark'
 import SkeletonResumeFolder from '@/components/resume/SkeletonResume'
 import { usePathname } from 'next/navigation'
-import AuthModal from '@/components/common/AuthModal'
-import { useAuthStore } from '@/store/authStore'
 
 interface Resume {
   id: string
@@ -154,6 +152,8 @@ export default function Resume({ userId }) {
 
       <Link href={`/resume/$[resume.id]`}>
         <div className="grid grid-cols-3 gap-8">
+          {isLoading && <SkeletonResumeFolder />}
+
           {resumes.map((resume) => (
             <ResumeFolder
               key={resume.id}

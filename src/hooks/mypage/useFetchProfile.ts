@@ -25,7 +25,6 @@ export const useFetchProfile = () => {
   }, [error])
 
   useEffect(() => {
-    //   setUserId(profile?.id)
     console.log(profile)
   }, [profile])
 
