@@ -174,7 +174,7 @@ export default function Bookmark() {
                   likeCount={bookmark.likeCount}
                   userName={bookmark.user.name}
                   userImage={bookmark.user.profileImage}
-                  authorName={bookmark.author.authorName}
+                  authorName={bookmark.author?.authorName}
                   image={bookmark.thumbnail}
                   authorImage={bookmark.author?.authorImage}
                   onDelete={bookmark}
