@@ -152,7 +152,13 @@ export default function Resume({ userId }) {
 
       <Link href={`/resume/$[resume.id]`}>
         <div className="grid grid-cols-3 gap-8">
-          {isLoading && <SkeletonResumeFolder />}
+          {isLoading && (
+            <div className="flex gap-10">
+              <SkeletonResumeFolder />
+              <SkeletonResumeFolder />
+              <SkeletonResumeFolder />
+            </div>
+          )}
 
           {resumes.map((resume) => (
             <ResumeFolder
