@@ -45,7 +45,7 @@ export default function Mypage() {
         />
       )}
       {activeTab === 'profile' && <Profile profile={profile} />}
-      {activeTab === 'resume' && <Resume userId={Number(profile.id)} />}
+      {activeTab === 'resume' && <Resume userId={Number(profile?.id)} />}
       {activeTab === 'bookmark' && <Bookmark />}
       {activeTab === 'likes' && <Likes />}
       {activeTab === 'settings' && <Settings />}
