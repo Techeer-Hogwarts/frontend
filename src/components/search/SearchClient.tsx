@@ -11,7 +11,6 @@ import { useSearchResults } from '@/hooks/search/useSearchResults'
 
 export default function Search() {
   const { query, results, isLoading } = useSearchResults()
-
   return (
     <div className="py-10">
       {/* 검색 결과 헤더 */}

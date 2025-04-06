@@ -3,18 +3,13 @@
 import { useState } from 'react'
 import Section from './Section'
 import ResumeFolder from '@/components/search/ResumeFolder'
+import { Resume } from '@/types/search'
 
 type ResumeProps = {
-  id: number
-  title: string
-  url: string
-  createdAt: number
-  userName: string
-  year: string
-  position: string
+  resumes: Resume[]
 }
 
-const ResumeSection: React.FC<{ resumes: ResumeProps[] }> = ({ resumes }) => {
+const ResumeSection: React.FC<ResumeProps> = ({ resumes }) => {
   const [showAll, setShowAll] = useState(false)
 
   // 처음에는 8개만 보여주고, 더보기 클릭 시 전체 데이터 보여주기
