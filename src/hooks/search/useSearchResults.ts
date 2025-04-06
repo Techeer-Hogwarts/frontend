@@ -1,14 +1,9 @@
 import { useEffect, useState } from 'react'
 import { getSearchList } from '@/api/search/getSearchList'
+import { SearchResults } from '@/types/search'
 
 export function useSearchResults() {
-  const [results, setResults] = useState<{
-    project: any[]
-    study: any[]
-    blog: any[]
-    resume: any[]
-    session: any[]
-  }>({
+  const [results, setResults] = useState<SearchResults>({
     project: [],
     study: [],
     blog: [],
