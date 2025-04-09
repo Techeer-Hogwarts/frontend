@@ -12,7 +12,7 @@ const putBlog = async (id: number) => {
     throw new Error(errorData.message || '블로그 업데이트 실패')
   }
 
-  return response.json()
+  return
 }
 
 export const usePutBlogAPI = () => {
@@ -64,7 +64,7 @@ export const postBlogAPI = async (url: string) => {
   })
   if (!response.ok) {
     const errorData = await response.json()
-    throw new Error(errorData.message || '블로그 데이터 업로드 실패')
+    throw new Error(errorData.message)
   }
   return response
 }

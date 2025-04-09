@@ -2,6 +2,7 @@
 
 'use client'
 
+import Link from 'next/link'
 import Image from 'next/image'
 import BlogMenu from './BlogMenu'
 import BookmarkModal from '../common/BookmarkModal'
