@@ -20,6 +20,7 @@ export const useLogin = () => {
 
   const [redirectPath, setRedirectPath] = useState<string | null>(null)
   const [form, setForm] = useState<string | null>(null)
+  const { checkAuth } = useAuthStore()
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -33,6 +34,7 @@ export const useLogin = () => {
     try {
       await loginUser(data)
       setIsLoggedIn(true)
+      await checkAuth()
       if (redirectPath) {
         router.replace(redirectPath)
       } else if (form === 'signup') {
