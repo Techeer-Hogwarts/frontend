@@ -80,12 +80,12 @@ export default function BlogPost({
         )}
         <div className="py-2 bg-white" onClick={handleClickUrl}>
           <div className="flex relative justify-between pl-5 pr-2">
-            <p className="truncate font-medium">{title}</p>
+            <p className="truncate font-medium text-sm">{title}</p>
             <Image
               src="/images/session/session-menu.svg"
               alt="menu"
-              width={24}
-              height={24}
+              width={20}
+              height={20}
               onClick={(e) => {
                 e.stopPropagation()
                 setShowMenu(!showMenu)
@@ -102,8 +102,8 @@ export default function BlogPost({
               </div>
             )}
           </div>
-          <p className="text-xs px-5 mb-2 text-black/30">{formattedDate}</p>
-          <div className="flex justify-between mt-5 pl-5 pr-2">
+          <p className="text-xs px-5 mb-1 text-black/30">{formattedDate}</p>
+          <div className="flex justify-between mt-3 pl-5 pr-2">
             <div className="flex items-center">
               <img
                 src={profile.image}
@@ -113,7 +113,7 @@ export default function BlogPost({
                   e.target.src = '/images/session/thumbnail.png'
                 }}
               />
-              <span className="ml-2 text-sm font-semibold">{profile.name}</span>
+              <span className="ml-2 text-xs font-semibold">{profile.name}</span>
             </div>
             <div className="flex items-center space-x-1">
               <span className="text-sm">{currentLikeCount}</span>

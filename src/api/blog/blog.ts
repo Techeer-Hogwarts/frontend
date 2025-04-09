@@ -54,3 +54,17 @@ export const useGetBlogsAPI = (newLimit: number, category: string) => {
     queryFn: () => getBlogs(newLimit, category),
   })
 }
+
+// 블로그 글 추가 API
+export const postBlogAPI = async (url: string) => {
+  const blogUrl = encodeURIComponent(url)
+  const response = await fetch(`/api/v1/blogs?url=${blogUrl}`, {
+    method: 'POST',
+    credentials: 'include',
+  })
+  if (!response.ok) {
+    const errorData = await response.json()
+    throw new Error(errorData.message || '블로그 데이터 업로드 실패')
+  }
+  return response
+}
