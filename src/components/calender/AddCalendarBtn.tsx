@@ -1,6 +1,7 @@
 'use client'
 
 import Image from 'next/image'
+import { AddCalendarBtnProps } from '@/types/calendar'
 
 export default function AddCalendarBtn({ onClick }: AddCalendarBtnProps) {
   return (
