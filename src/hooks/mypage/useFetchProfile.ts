@@ -25,9 +25,5 @@ export const useFetchProfile = () => {
     }
   }, [error])
 
-  useEffect(() => {
-    console.log(profile)
-  }, [profile])
-
   return { authModalOpen, profile, loading, setAuthModalOpen, error }
 }
