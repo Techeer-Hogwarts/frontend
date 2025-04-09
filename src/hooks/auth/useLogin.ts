@@ -11,7 +11,6 @@ export const useLogin = () => {
     handleSubmit,
     register,
     setError,
-    watch,
     formState: { errors },
   } = useForm()
 
@@ -21,11 +20,7 @@ export const useLogin = () => {
 
   const [redirectPath, setRedirectPath] = useState<string | null>(null)
   const [form, setForm] = useState<string | null>(null)
-
-  const password = watch('password')
-  const email = watch('email')
-
-  const isFormValid = password != '' && email != ''
+  const { checkAuth } = useAuthStore()
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -39,6 +34,7 @@ export const useLogin = () => {
     try {
       await loginUser(data)
       setIsLoggedIn(true)
+      await checkAuth()
       if (redirectPath) {
         router.replace(redirectPath)
       } else if (form === 'signup') {
@@ -70,7 +66,6 @@ export const useLogin = () => {
     register,
     handleLogin,
     errors,
-    isFormValid,
     isLoggingIn,
   }
 }

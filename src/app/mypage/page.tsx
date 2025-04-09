@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import Home from '@/components/mypage/Home'
 import Likes from '@/components/mypage/Likes'
 import Resume from '@/components/mypage/Resume'
@@ -10,86 +10,15 @@ import Bookmark from '@/components/mypage/Bookmark'
 import MypageTap from '@/components/mypage/MypageTap'
 import ProfileBox from '@/components/profile/ProfileBox'
 import AuthModal from '@/components/common/AuthModal'
-
-interface Experience {
-  id?: number
-  position: string
-  companyName: string
-  startDate: string
-  endDate: string | null
-  category: string
-  isFinished: boolean
-}
-
-interface Team {
-  id: number
-  name: string
-  resultImages?: string[]
-  mainImage?: string
-}
-
-interface ProfileData {
-  id: number
-  profileImage: string
-  name: string
-  email: string
-  school: string
-  grade: string
-  year: number
-  mainPosition: string
-  subPosition: string
-  githubUrl: string
-  mediumUrl: string
-  velogUrl: string
-  tistoryUrl: string
-  isLft: boolean
-  projectTeams?: Team[]
-  studyTeams?: Team[]
-  experiences?: Experience[]
-}
+import { useFetchProfile } from '@/hooks/mypage/useFetchProfile'
 
 export default function Mypage() {
   const [activeTab, setActiveTab] = useState<
     'home' | 'profile' | 'resume' | 'bookmark' | 'likes' | 'settings'
   >('home')
 
-  const [profile, setProfile] = useState<ProfileData | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
-  const [authModalOpen, setAuthModalOpen] = useState(false)
-  const [userId, setUserId] = useState()
-
-  useEffect(() => {
-    const fetchUserProfile = async () => {
-      try {
-        const response = await fetch('/api/v1/users', {
-          method: 'GET',
-          credentials: 'include',
-        })
-
-        if (response.status === 401) {
-          // 401이면 로그인 모달 오픈
-          setAuthModalOpen(true)
-          return
-        }
-
-        if (!response.ok) {
-          const errorData = await response.json().catch(() => null)
-          throw new Error(
-            errorData?.message || '유저 정보를 불러오지 못했습니다.',
-          )
-        }
-        const result = await response.json()
-        setProfile(result as ProfileData)
-        setUserId(result.id)
-      } catch (err: any) {
-        setError('유저 정보를 불러오지 못했습니다.')
-      } finally {
-        setLoading(false)
-      }
-    }
-    fetchUserProfile()
-  }, [])
+  const { profile, authModalOpen, loading, setAuthModalOpen, error } =
+    useFetchProfile()
 
   return (
     <div className="flex gap-[4.375rem] mt-10">
@@ -99,7 +28,11 @@ export default function Mypage() {
       />
       {/** 좌측 영역 */}
       <div className="flex flex-col w-[15rem] gap-6 ">
-        <ProfileBox profile={profile} loading={loading} error={error} />
+        <ProfileBox
+          profile={profile}
+          loading={loading}
+          error={error?.message}
+        />
         <MypageTap activeTab={activeTab} setActiveTab={setActiveTab} />
       </div>
 
@@ -112,7 +45,7 @@ export default function Mypage() {
         />
       )}
       {activeTab === 'profile' && <Profile profile={profile} />}
-      {activeTab === 'resume' && <Resume userId={Number(userId)} />}
+      {activeTab === 'resume' && <Resume userId={Number(profile?.id)} />}
       {activeTab === 'bookmark' && <Bookmark />}
       {activeTab === 'likes' && <Likes />}
       {activeTab === 'settings' && <Settings />}

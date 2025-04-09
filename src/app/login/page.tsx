@@ -4,8 +4,7 @@ import Link from 'next/link'
 import InputField from '@/components/common/InputField'
 import { useLogin } from '@/hooks/auth/useLogin'
 export default function Login() {
-  const { handleSubmit, register, handleLogin, errors, isFormValid } =
-    useLogin()
+  const { handleSubmit, register, handleLogin, errors } = useLogin()
 
   return (
     <div className="flex min-h-[calc(100vh-61px)] items-center justify-between">
@@ -64,8 +63,7 @@ export default function Login() {
 
           <button
             type="submit"
-            className={`w-full h-10 text-xl border ${isFormValid ? 'border-primary text-primary hover:border-2' : 'border-gray text-gray'} rounded-full `}
-            disabled={!isFormValid}
+            className={`w-full h-10 text-xl border border-primary text-primary hover:bg-primary hover:text-white transition-colors duration-300 rounded-full transition`}
           >
             로그인
           </button>
