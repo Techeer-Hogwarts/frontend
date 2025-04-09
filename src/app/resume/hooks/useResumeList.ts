@@ -20,10 +20,6 @@ export function useResumeList({
     refetch,
   } = useGetResumeQuery({ position, year, category, limit })
 
-  console.log('Fetched Data:', newResume)
-  console.log('Loading:', isLoading)
-  console.log('Error:', isError)
-
   useEffect(() => {
     setResumes([])
     setLimit(8)

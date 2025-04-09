@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import Star from '../../../public/star.svg'
 import Dropdown from '@/components/common/Dropdown'
 import TapBar from '@/components/common/TapBar'
@@ -105,12 +105,11 @@ export default function Resume() {
           />
           <Dropdown
             title="기수"
-            options={yearOptions} // Dropdown 컴포넌트에서 문자열로 처리
-            selectedOptions={selectedYear.map(String)} // 숫자를 문자열로 변환
+            options={yearOptions}
+            selectedOptions={selectedYear.map(String)}
             setSelectedOptions={setSelectedYear}
           />
         </div>
-        {/**  BestResume에서 setAuthModalOpen을 전달하도록 수정 */}
         <BestResume offset={0} limit={10} setAuthModalOpen={setAuthModalOpen} />
       </div>
       {[selectedPosition, selectedYear].some((arr) => arr.length > 0) && (
