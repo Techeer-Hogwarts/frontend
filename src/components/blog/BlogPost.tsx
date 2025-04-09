@@ -1,27 +1,14 @@
+/* eslint-disable @next/next/no-img-element */
+
 'use client'
 
 import Image from 'next/image'
+import BlogMenu from './BlogMenu'
 import BookmarkModal from '../common/BookmarkModal'
-import useBookmarkModal from '@/hooks/blog/useBookmarkModal'
+import { useState } from 'react'
+import { useLike } from '@/hooks/blog/uselike'
 import { usePutBlogAPI } from '@/api/blog/blog'
-import { usePostLikeAPI } from '@/api/likes/likes'
-import { useState, useEffect } from 'react'
-
-export interface BlogPostProps {
-  title: string
-  userName: string
-  userImage: string
-  date: string
-  id: string
-  url: string
-  likeCount: number
-  image: string
-  category: string
-  likeList: string[]
-  authorName: string
-  authorImage: string
-  onDelete: (id: string) => void
-}
+import { BlogPostProps } from '@/types/BlogProps'
 
 export default function BlogPost({
   title,
@@ -30,7 +17,7 @@ export default function BlogPost({
   userImage,
   id,
   category,
-  likeCount: initialLikeCount,
+  likeCount,
   url,
   image,
   onDelete,
@@ -38,63 +25,42 @@ export default function BlogPost({
   authorImage,
   likeList,
 }: BlogPostProps) {
-  const [isLike, setIsLike] = useState(false)
-  const [currentLikeCount, setCurrentLikeCount] = useState(initialLikeCount)
-
-  const postLikeMutation = usePostLikeAPI()
+  const [showMenu, setShowMenu] = useState(false)
+  const [modalOpen, setModalOpen] = useState(false)
+  const [modalMessage, setModalMessage] = useState('')
+  const {
+    isLike,
+    likeCount: currentLikeCount,
+    toggleLike,
+  } = useLike(id, likeList, likeCount, 'BLOG')
   const putBlogMutation = usePutBlogAPI()
-  // const { isOpen, message, openModal, closeModal } = useBookmarkModal()
-  const [isOpen, setIsOpen] = useState(false)
-  const [message, setMessage] = useState('')
-
-  const openModal = (msg: string) => {
-    setIsOpen(true)
-    setMessage(msg)
-  }
-
-  const closeModal = () => setIsOpen(false)
 
   const profile =
     category === 'TECHEER'
       ? { image: userImage, name: userName }
       : { image: authorImage, name: authorName }
 
+  const formattedDate = new Date(date)
+    .toLocaleDateString('ko-KR', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    })
+    .replace(/\.$/, '')
+
   const handleClickUrl = () => {
     window.open(url, '_blank')
     putBlogMutation.mutate(Number(id))
   }
 
-  const formattedDate = new Date(date).toLocaleDateString('ko-KR', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  })
-
-  const clickLike = async () => {
-    try {
-      const newLikeState = !isLike
-      setIsLike(newLikeState)
-      setCurrentLikeCount(
-        newLikeState ? currentLikeCount + 1 : Math.max(0, currentLikeCount - 1),
-      )
-
-      await postLikeMutation.mutateAsync({
-        contentId: Number(id),
-        category: 'BLOG',
-        likeStatus: newLikeState,
-      })
-    } catch (err) {
-      console.error('좋아요 상태 업데이트 실패:', err)
-    }
-  }
-
-  useEffect(() => {
-    setIsLike(likeList.includes(id))
-  }, [likeList, id])
-
   return (
     <div>
-      <BookmarkModal isOpen={isOpen} message={message} onClose={closeModal} />
+      <BookmarkModal
+        isOpen={modalOpen}
+        message={modalMessage}
+        onClose={() => setModalOpen(false)}
+      />
+
       <div className="flex flex-col w-full relative rounded-b-lg shadow-[0px_5px_8px_#e5e5e5] overflow-hidden transition-transform transform hover:-translate-y-2 cursor-pointer">
         {image ? (
           <img
@@ -112,39 +78,56 @@ export default function BlogPost({
             {title}
           </button>
         )}
-        <div className="p-3 bg-white">
-          <div className="flex justify-between">
-            <p className="truncate text-base">{title}</p>
+        <div className="py-2 bg-white" onClick={handleClickUrl}>
+          <div className="flex relative justify-between pl-5 pr-2">
+            <p className="truncate font-medium">{title}</p>
             <Image
               src="/images/session/session-menu.svg"
               alt="menu"
               width={24}
               height={24}
-              onClick={() => openModal('옵션을 선택하세요')}
+              onClick={(e) => {
+                e.stopPropagation()
+                setShowMenu(!showMenu)
+              }}
             />
+            {showMenu && (
+              <div className="absolute top-[-5%] right-0 z-10">
+                <BlogMenu
+                  id={id}
+                  onDelete={onDelete}
+                  setModalOpen={() => setModalOpen(true)}
+                  setModalMessage={setModalMessage}
+                />
+              </div>
+            )}
           </div>
-          <p className="text-sm text-gray-500">{formattedDate}</p>
-          <div className="flex justify-between mt-2">
+          <p className="text-xs px-5 mb-2 text-black/30">{formattedDate}</p>
+          <div className="flex justify-between mt-5 pl-5 pr-2">
             <div className="flex items-center">
               <img
                 src={profile.image}
                 alt="profile"
-                className="w-6 h-6 rounded-full"
-                onError={(e: any) =>
-                  (e.target.src = '/images/session/thumbnail.png')
-                }
+                className="w-5 h-5 rounded-full"
+                onError={(e: any) => {
+                  e.target.src = '/images/session/thumbnail.png'
+                }}
               />
               <span className="ml-2 text-sm font-semibold">{profile.name}</span>
             </div>
-            <button onClick={clickLike} className="flex items-center space-x-1">
-              <span>{currentLikeCount}</span>
+            <div className="flex items-center space-x-1">
+              <span className="text-sm">{currentLikeCount}</span>
               <Image
                 src={isLike ? '/images/like-on.svg' : '/images/like-off.svg'}
                 alt="like"
-                width={24}
-                height={24}
+                width={20}
+                height={20}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  toggleLike()
+                }}
               />
-            </button>
+            </div>
           </div>
         </div>
       </div>
