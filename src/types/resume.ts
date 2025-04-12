@@ -1,4 +1,4 @@
-interface Resume {
+export interface Resume {
   id: string
   createdAt: number
   title: string
