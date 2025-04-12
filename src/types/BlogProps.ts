@@ -1,21 +1,17 @@
-export interface BlogProps {
+import { LikeListItem } from './like/like'
+
+export interface BlogPostProps {
   title: string
-  id: string
+  userName: string
+  userImage: string
   date: string
+  id: string
   url: string
-  category: string
   likeCount: number
-  thumbnail: string
-  user: User
-  author: Author
-}
-
-interface User {
-  name: string
-  profileImage: string
-}
-
-interface Author {
+  image: string
+  category: string
+  likeList: LikeListItem[]
   authorName: string
   authorImage: string
+  onDelete: (id: string) => void
 }

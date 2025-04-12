@@ -10,12 +10,13 @@ import { useEffect, useState } from 'react'
 import usePostEvent from '@/api/calendar/postEvent'
 import usePatchEvent from '@/api/calendar/patchEvent'
 import useGetEvent from '@/api/calendar/getEvent'
+import { AddCalendarModalProps } from '@/types/calendar'
 
 export default function AddCalenderModal({
   handleBack,
   mode,
   eventId,
-}: AddCalenderModalProps) {
+}: AddCalendarModalProps) {
   const [formData, setFormData] = useState({
     category: '',
     title: '',

@@ -1,22 +1,13 @@
 import Section from './Section'
 import CardItem from './CardItem'
 import { useState } from 'react'
+import { Session } from '@/types/search'
 
 type SessionProps = {
-  id: string
-  userId: string
-  thumbnail: string
-  title: string
-  presenter: string
-  date: string
-  category: string
-  user: {
-    name: string
-    profileImage: string
-  }
+  session: Session[]
 }
 
-const SessionSection: React.FC<{ session: SessionProps[] }> = ({ session }) => {
+const SessionSection: React.FC<SessionProps> = ({ session }) => {
   const [showAll, setShowAll] = useState(false)
 
   // 처음에는 8개만 보여주고, 더보기 클릭 시 전체 데이터 보여주기

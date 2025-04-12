@@ -3,27 +3,7 @@ import { useQueries } from '@tanstack/react-query'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-
-interface TeamBase {
-  id: number
-  isDeleted: boolean
-  isRecruited: boolean
-  isFinished: boolean
-  name: string
-  createdAt: string
-}
-
-interface ProjectTeam extends TeamBase {
-  index: 'project'
-  frontendNum: number
-  backendNum: number
-  devopsNum: number
-  fullStackNum: number
-  dataEngineerNum: number
-  projectExplain: string
-  mainImages?: string[]
-  teamStacks: { stackName: string; isMain: boolean }[]
-}
+import { ProjectTeam } from '@/types/search'
 
 export default function ProjectCard({ team }: { team: ProjectTeam }) {
   const mainImageUrl = team.mainImages[0]

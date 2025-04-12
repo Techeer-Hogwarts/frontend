@@ -11,8 +11,6 @@ import { useLike } from '@/app/blog/_lib/useLike'
 import { useBookmark } from '@/app/blog/_lib/useBookmark'
 import SkeletonResumeFolder from '@/components/resume/SkeletonResume'
 import { usePathname } from 'next/navigation'
-import AuthModal from '@/components/common/AuthModal'
-import { useAuthStore } from '@/store/authStore'
 
 interface Resume {
   id: string
@@ -38,7 +36,6 @@ export default function Resume({ userId }) {
   const [isLoading, setIsLoading] = useState(true)
   const [isError, setIsError] = useState(false)
   const [modal, setModal] = useState(false)
-  const { checkAuth } = useAuthStore()
   const [resumes, setResumes] = useState<Resume[]>([])
   const [limit, setLimit] = useState(6)
   const [ref, inView] = useInView({ threshold: 0.1 })
@@ -48,19 +45,7 @@ export default function Resume({ userId }) {
   const { fetchBookmarks } = useBookmark()
 
   const pathname = usePathname()
-  const [authModalOpen, setAuthModalOpen] = useState(false)
-  const { user } = useAuthStore()
-
   const isMyPage = pathname === '/mypage'
-
-  useEffect(() => {
-    // 로그인 여부 확인 후 인증 모달 표시
-    checkAuth().then(() => {
-      if (!user) {
-        setAuthModalOpen(true)
-      }
-    })
-  }, [checkAuth, user])
 
   // API 호출
   const fetchData = async () => {
@@ -69,11 +54,6 @@ export default function Resume({ userId }) {
       setIsError(false)
       const result = await fetchUserResumes(userId)
       setData(result.data || [])
-      if (result.status === 401) {
-        // 401이면 로그인 모달 오픈
-        setAuthModalOpen(true)
-        return
-      }
     } catch (error) {
       setIsError(true)
     } finally {
@@ -157,12 +137,6 @@ export default function Resume({ userId }) {
   // 렌더
   return (
     <div>
-      {/* 인증 모달 */}
-      <AuthModal
-        isOpen={authModalOpen}
-        onClose={() => setAuthModalOpen(false)}
-      />
-
       {/* 상단 영역 */}
       <div className="flex w-[890px] justify-end mb-4">
         {isMyPage && (
@@ -178,6 +152,14 @@ export default function Resume({ userId }) {
 
       <Link href={`/resume/$[resume.id]`}>
         <div className="grid grid-cols-3 gap-8">
+          {isLoading && (
+            <div className="flex gap-10">
+              <SkeletonResumeFolder />
+              <SkeletonResumeFolder />
+              <SkeletonResumeFolder />
+            </div>
+          )}
+
           {resumes.map((resume) => (
             <ResumeFolder
               key={resume.id}
