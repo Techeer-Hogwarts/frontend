@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { forwardRef } from 'react'
 import Image from 'next/image'
 
 export interface InputFieldProps {
@@ -9,52 +9,55 @@ export interface InputFieldProps {
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
   value?: string
   required?: boolean // 필수 여부 (*)
-
-  /**
-   * showIcon이 true일 때, 체크 아이콘을 표시할지 여부
-   * true -> check-on.svg / false -> check-off.svg
-   */
   showIcon?: boolean
   isChecked?: boolean
 }
 
-const InputField: React.FC<InputFieldProps> = ({
-  label,
-  name,
-  placeholder,
-  type = 'text',
-  required = false,
-  showIcon = false,
-  isChecked = false,
-  onChange,
-  value,
-}) => {
-  return (
-    <div>
-      <div className="flex justify-between mb-2.5">
-        <label className="block text-lg">
-          {label}
-          {required && <span className="text-primary"> *</span>}
-        </label>
-        {showIcon && (
-          <Image
-            src={isChecked ? '/images/check-on.svg' : '/images/check-off.svg'}
-            alt="check"
-            width={20}
-            height={20}
-          />
-        )}
+const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
+  (
+    {
+      label,
+      name,
+      placeholder,
+      type = 'text',
+      required = false,
+      showIcon = false,
+      isChecked = false,
+      onChange,
+      value,
+    },
+    ref,
+  ) => {
+    return (
+      <div>
+        <div className="flex justify-between mb-2.5">
+          <label className="block text-lg">
+            {label}
+            {required && <span className="text-primary"> *</span>}
+          </label>
+          {showIcon && (
+            <Image
+              src={isChecked ? '/images/check-on.svg' : '/images/check-off.svg'}
+              alt="check"
+              width={20}
+              height={20}
+            />
+          )}
+        </div>
+        <input
+          type={type}
+          name={name}
+          placeholder={placeholder}
+          onChange={onChange}
+          value={value}
+          ref={ref} // forwardRef로 전달된 ref를 input에 연결
+          className="w-full h-10 px-4 border border-gray rounded-[0.25rem] focus:outline-none focus:border-primary"
+        />
       </div>
-      <input
-        type={type}
-        name={name}
-        placeholder={placeholder}
-        onChange={onChange}
-        value={value}
-        className="w-full h-10 px-4 border border-gray rounded-[0.25rem] focus:outline-none focus:border-primary"
-      />
-    </div>
-  )
-}
+    )
+  },
+)
+
+InputField.displayName = 'InputField' // 컴포넌트 이름 설정 (디버깅용)
 
 export default InputField

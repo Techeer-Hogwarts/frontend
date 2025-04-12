@@ -4,18 +4,12 @@ import CareerTag from '../common/CareerTag'
 import PositionTag from '../common/PositionTag'
 import Link from 'next/link'
 import Image from 'next/image'
+import { Resume } from '@/types/search'
 
 interface ResumeProps {
-  resume: {
-    id: number
-    title: string
-    url: string
-    createdAt: number
-    userName: string
-    year: string
-    position: string
-  }
+  resume: Resume
 }
+
 export default function ResumeFolder({ resume }: ResumeProps) {
   const formattedDate = new Date(resume.createdAt).toLocaleDateString('ko-KR', {
     year: 'numeric',

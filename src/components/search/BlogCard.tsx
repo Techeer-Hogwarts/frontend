@@ -3,19 +3,10 @@
 import Image from 'next/image'
 import { useState } from 'react'
 import BlogMenu from '../blog/BlogMenu'
+import { Blog } from '@/types/search'
 
 interface BlogPostProps {
-  blog: {
-    id: string
-    title: string
-    url: string
-    date: string
-    userID: string
-    userName: string
-    userProfileImage: string
-    thumbnail: string
-    stack: string[]
-  }
+  blog: Blog
   //   readonly title: string
   //   readonly name: string
   //   readonly date: string

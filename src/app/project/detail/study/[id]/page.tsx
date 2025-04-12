@@ -52,11 +52,7 @@ export default function ProjectDetailpage() {
     'delete' | 'close' | 'cancel' | null
   >(null)
 
-  const { user, checkAuth } = useAuthStore()
-
-  useEffect(() => {
-    checkAuth()
-  }, [])
+  const { user } = useAuthStore()
 
   const queryClient = useQueryClient()
 

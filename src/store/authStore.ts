@@ -1,6 +1,7 @@
 'use client'
 
 import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
 
 interface ProjectTeam {
   id: number
@@ -43,54 +44,72 @@ interface AuthState {
   isLoggedIn: boolean
   user: User | null
   setIsLoggedIn: (status: boolean) => void
+  setUser: (user: User | null) => void
   checkAuth: () => Promise<void>
   logout: () => Promise<void>
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
-  isLoggedIn: false,
-  user: null,
+export const useAuthStore = create<AuthState>()(
+  persist(
+    (set) => ({
+      isLoggedIn: null, // 초기 상태를 null로 설정해서 Hydration mismatch 방지
+      user: null,
+      setIsLoggedIn: (status: boolean) => set({ isLoggedIn: status }),
+      setUser: (user: User | null) => set({ user }),
+      checkAuth: async () => {
+        try {
+          const response = await fetch('/api/v1/users', {
+            method: 'GET',
+            credentials: 'include',
+          })
 
-  setIsLoggedIn: (status: boolean) => set({ isLoggedIn: status }),
-  setUser: (user: User | null) => set({ user }),
-
-  // 쿠키의 유효성을 서버 API로 확인
-  checkAuth: async () => {
-    try {
-      const response = await fetch('/api/v1/users', {
-        method: 'GET',
-        credentials: 'include',
-      })
-
-      if (response.ok) {
-        const data: User = await response.json()
-        set({ isLoggedIn: true, user: data })
-        set({ user: data })
-      } else {
-        set({ isLoggedIn: false })
-      }
-    } catch (error) {
-      set({ isLoggedIn: false })
-    }
-  },
-
-  // 로그아웃 API 호출 후 쿠키 삭제 처리 (백엔드에서 HttpOnly 쿠키 제거)
-  logout: async () => {
-    try {
-      const response = await fetch('/api/v1/auth/logout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({}),
-      })
-      if (!response.ok) {
-        throw new Error(`Logout request failed with status ${response.status}`)
-      }
-      // 로그아웃 성공 시 상태 업데이트
-      set({ isLoggedIn: false })
-      set({ user: null })
-    } catch (error) {
-      throw error
-    }
-  },
-}))
+          if (response.ok) {
+            const data: User = await response.json()
+            set({ isLoggedIn: true, user: data })
+          } else {
+            set({ isLoggedIn: false, user: null })
+          }
+        } catch (error) {
+          set({ isLoggedIn: false, user: null })
+        }
+      },
+      logout: async () => {
+        try {
+          const response = await fetch('/api/v1/auth/logout', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({}),
+          })
+          if (!response.ok) {
+            throw new Error(
+              `Logout request failed with status ${response.status}`,
+            )
+          }
+          set({ isLoggedIn: false, user: null })
+        } catch (error) {
+          console.error(error)
+        }
+      },
+    }),
+    {
+      name: 'auth-storage',
+      storage:
+        typeof window !== 'undefined'
+          ? {
+              getItem: (name: string) => {
+                const item = localStorage.getItem(name)
+                return item ? JSON.parse(item) : null
+              },
+              setItem: (name: string, value: unknown) =>
+                localStorage.setItem(name, JSON.stringify(value)),
+              removeItem: (name: string) => localStorage.removeItem(name),
+            }
+          : undefined, // ✅ getStorage 대신 storage 사용
+      partialize: (state) => ({
+        isLoggedIn: state.isLoggedIn,
+        user: state.user,
+      }),
+    },
+  ),
+)

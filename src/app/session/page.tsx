@@ -70,12 +70,6 @@ export default function Page() {
     setAuthModalOpen,
   })
 
-  // 탭 변경 시
-  const handleCategoryChange = () => {
-    setLimit(12)
-    refetch()
-  }
-
   // 삭제 메시지
   const showMessage = () => {
     setMessage('세션영상이 삭제되었습니다.')
@@ -174,7 +168,7 @@ export default function Page() {
           }}
         >
           <div className="flex justify-between">
-            <TapBar options={tapBarOptions} onSelect={handleCategoryChange} />
+            <TapBar options={tapBarOptions} />
             <SearchBar
               placeholder="이름 또는 키워드로 검색해보세요"
               index="session"

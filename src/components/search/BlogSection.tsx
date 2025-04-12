@@ -2,20 +2,13 @@ import Section from './Section'
 import CardItem from './CardItem'
 import { useState } from 'react'
 import BlogCard from './BlogCard'
+import { Blog } from '@/types/search'
 
-type BlogProps = {
-  id: string
-  title: string
-  url: string
-  date: string
-  userID: string
-  userName: string
-  userProfileImage: string
-  thumbnail: string
-  stack: string[]
+interface BlogProps {
+  blog: Blog[]
 }
 
-const BlogSection: React.FC<{ blog: BlogProps[] }> = ({ blog }) => {
+const BlogSection: React.FC<BlogProps> = ({ blog }) => {
   const [showAll, setShowAll] = useState(false)
 
   // 처음에는 8개만 보여주고, 더보기 클릭 시 전체 데이터 보여주기

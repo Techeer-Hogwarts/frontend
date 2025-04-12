@@ -4,7 +4,7 @@ import { useState } from 'react'
 import dayjs from 'dayjs'
 import { MdOutlineCalendarMonth } from 'react-icons/md'
 import CalendarEventCard, { CalendarEventCardProps } from './CalendarEventCard'
-import useGetEvents from '@/app/calendar/api/getEventList'
+import useGetEvents from '@/api/calendar/getEventList'
 import EventsDetailModal from './EventsDetailModal'
 import BookmarkModal from '../common/BookmarkModal'
 

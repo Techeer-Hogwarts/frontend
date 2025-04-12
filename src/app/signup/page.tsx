@@ -779,7 +779,7 @@ const Signup = () => {
             <button
               type="button"
               onClick={handleNext}
-              className="w-[30.25rem] h-10 text-xl border border-gray text-gray rounded-full focus:border-primary focus:text-primary"
+              className="w-[30.25rem] h-10 text-xl border border-gray text-gray rounded-full hover:border-primary hover:text-primary"
             >
               다음
             </button>
@@ -788,7 +788,7 @@ const Signup = () => {
               <button
                 type="button"
                 onClick={handleBack}
-                className="w-[30.25rem] h-10 text-xl border border-gray text-gray rounded-full focus:border-primary focus:text-primary"
+                className="w-[30.25rem] h-10 text-xl border border-gray text-gray rounded-full hover:border-primary hover:text-primary"
               >
                 이전
               </button>

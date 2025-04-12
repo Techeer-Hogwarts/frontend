@@ -42,7 +42,7 @@ export default function ProfileBox({
   loading,
   error,
 }: ProfileBoxProps) {
-  if (loading) {
+  if (loading || error) {
     return <SkeletonProfileBox />
   }
   if (error) {

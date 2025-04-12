@@ -120,7 +120,7 @@ export default function Likes() {
 
   return (
     <div className="w-[890px]">
-      <TapBar options={tapBarOptions} onSelect={handleCategoryChange} />
+      <TapBar options={tapBarOptions} />
       <div className="flex w-full h-[1px] mt-5 bg-gray" />
 
       {isLoading ? (
@@ -160,7 +160,7 @@ export default function Likes() {
                   likeCount={like.likeCount}
                   userName={like.user.name}
                   userImage={like.user.profileImage}
-                  authorName={like.author.authorName}
+                  authorName={like.author?.authorName}
                   authorImage={like.author?.authorImage}
                   image={like.thumbnail}
                   onDelete={like}

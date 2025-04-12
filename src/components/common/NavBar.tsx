@@ -43,7 +43,7 @@ export default function NavBar() {
   const [query, setQuery] = useState('')
   const [basicResults, setBasicResults] = useState<BasicResult[]>([])
   const [finalResults, setFinalResults] = useState([])
-  const { isLoggedIn, logout, checkAuth } = useAuthStore()
+  const { isLoggedIn, logout } = useAuthStore()
   const router = useRouter()
   const pathname = usePathname()
 
@@ -114,10 +114,6 @@ export default function NavBar() {
     return () => {
       document.removeEventListener('mouseup', handleClickOutside)
     }
-  }, [])
-
-  useEffect(() => {
-    checkAuth()
   }, [])
 
   const handleSelectResult = async (

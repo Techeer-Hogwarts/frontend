@@ -5,50 +5,14 @@ import { useEffect, useState } from 'react'
 import { useQueries } from '@tanstack/react-query'
 import { getAllTeams } from '@/api/project/common'
 import StudyCard from './StudyCard'
+import { ProjectTeam, StudyTeam } from '@/types/search'
 
-interface TeamBase {
-  id: number
-  isDeleted: boolean
-  isRecruited: boolean
-  isFinished: boolean
-  name: string
-  createdAt: string
-}
-
-interface MainImage {
-  id: number
-  isDeleted: boolean
-  imageUrl: string
-}
-
-interface ProjectTeam extends TeamBase {
-  index: 'project'
-  frontendNum: number
-  backendNum: number
-  devopsNum: number
-  fullStackNum: number
-  dataEngineerNum: number
-  projectExplain: string
-  mainImages?: string[]
-  teamStacks: { stackName: string; isMain: boolean }[]
-}
-
-interface StudyTeam extends TeamBase {
-  index: 'study'
-  recruitNum: number
-  studyExplain: string
-}
-
-type Team = ProjectTeam | StudyTeam
-
-interface TeamsResponse {
-  allTeams: Team[]
-}
-
-const ProjectSection: React.FC<{
+interface Props {
   project: ProjectTeam[]
   study: StudyTeam[]
-}> = ({ project, study }) => {
+}
+
+const ProjectSection: React.FC<Props> = ({ project, study }) => {
   const [projectId, setProjectId] = useState<number | null>(null)
   const [showAll, setShowAll] = useState(false)
 

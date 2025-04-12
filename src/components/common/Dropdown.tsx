@@ -7,6 +7,7 @@ export interface DropdownProps {
   options: string[] // 드롭다운 항목 리스트
   selectedOptions: string[] // 현재 선택된 항목 배열
   setSelectedOptions: (options: string[]) => void // 선택된 항목을 업데이트하는 함수
+  singleSelect?: boolean // 단일 선택 모드 여부 (optional)
 }
 
 const Dropdown: React.FC<DropdownProps> = ({
@@ -14,6 +15,7 @@ const Dropdown: React.FC<DropdownProps> = ({
   options,
   selectedOptions,
   setSelectedOptions,
+  singleSelect = false, // 기본값은 false (다중 선택)
 }) => {
   const [isOpen, setIsOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
@@ -22,8 +24,13 @@ const Dropdown: React.FC<DropdownProps> = ({
 
   const handleSelect = (option: string) => {
     if (selectedOptions.includes(option)) {
+      // 이미 선택된 항목 클릭 시 선택 해제
       setSelectedOptions(selectedOptions.filter((item) => item !== option))
+    } else if (singleSelect) {
+      // 단일 선택 모드에서는 새 항목만 선택
+      setSelectedOptions([option])
     } else {
+      // 다중 선택 모드에서는 기존 선택에 추가
       setSelectedOptions([...selectedOptions, option])
     }
   }
