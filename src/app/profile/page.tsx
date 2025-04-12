@@ -3,7 +3,13 @@
 import { useState } from 'react'
 import Dropdown from '@/components/common/Dropdown'
 import FilterBtn from '@/components/session/FilterBtn'
-import ProfileList from './@ProfiletList'
+import ProfileList from './@profiletList'
+import {
+  POSITION_OPTIONS,
+  YEAR_OPTIONS,
+  GRADE_OPTIONS,
+  UNIVERSITY_OPTIONS,
+} from '@/constants/profilefilter'
 import TapBar from '@/components/common/TapBar'
 import Search from '@/components/common/SearchBar'
 import SearchBar from '@/components/common/SearchBar'
@@ -17,44 +23,6 @@ export default function Page() {
   const [selectedUniversity, setSelectedUniversity] = useState<string[]>([])
   const [selectedGrade, setSelectedGrade] = useState<string[]>([])
 
-  const positionOptions = [
-    'FRONTEND',
-    'BACKEND',
-    'DEVOPS',
-    'FULL_STACK',
-    'DATA_ENGINEER',
-  ]
-  const yearOptions = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
-  const gradeOptions = ['1학년', '2학년', '3학년', '4학년', '졸업']
-  const universityOptions = [
-    '강원대',
-    '가톨릭대학교',
-    '가천대학교',
-    '광운대학교',
-    '단국대학교',
-    '대구가톨릭대학교',
-    '덕성여자대학교',
-    '동덕여자대학교',
-    '서강대학교',
-    '성결대학교',
-    '세종대학교',
-    '안양대학교',
-    '연세대학교',
-    '이화여자대학교',
-    '인천대학교',
-    '인하대학교',
-    '중앙대학교',
-    '창원대학교',
-    '충남대학교',
-    '충북대학교',
-    '평택대학교',
-    '부산대학교',
-    '한국공학대학교',
-    '한서대학교',
-    '한성대학교',
-    '호서대학교',
-    '해당 없음',
-  ]
   //기수 탭
   // const category = ['전체', '이력서', '포트폴리오', 'ICT', 'OTHER']
 
@@ -93,25 +61,25 @@ export default function Page() {
         <div className="flex justify-start gap-3">
           <Dropdown
             title="포지션"
-            options={positionOptions}
+            options={POSITION_OPTIONS}
             selectedOptions={selectedPosition}
             setSelectedOptions={setSelectedPosition}
           />
           <Dropdown
             title="기수"
-            options={yearOptions} // Dropdown 컴포넌트에서 문자열로 처리
+            options={YEAR_OPTIONS} // Dropdown 컴포넌트에서 문자열로 처리
             selectedOptions={selectedYear.map(String)} // 숫자를 문자열로 변환
             setSelectedOptions={setSelectedYear}
           />
           <Dropdown
             title="대학"
-            options={universityOptions}
+            options={UNIVERSITY_OPTIONS}
             selectedOptions={selectedUniversity}
             setSelectedOptions={setSelectedUniversity}
           />
           <Dropdown
             title="학년"
-            options={gradeOptions}
+            options={GRADE_OPTIONS}
             selectedOptions={selectedGrade}
             setSelectedOptions={setSelectedGrade}
           />
