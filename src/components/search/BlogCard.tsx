@@ -72,7 +72,7 @@ export default function BlogPost({ blog }: BlogPostProps) {
             {blog.title}
           </button>
         )}
-        <div className="rounded-b-lg w-[300px] min-h-[100px] h-auto py-2  bg-white shadow-[0px_5px_8px_#bfbfbf]">
+        <div className="rounded-b-lg w-[300px] min-h-[116px] h-auto py-2  bg-white shadow-[0px_5px_8px_#bfbfbf]">
           <div className="flex justify-between relative">
             <p className="text-base mx-5 mb-1 truncate">{truncatedTitle}</p>
           </div>
