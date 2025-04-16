@@ -2,18 +2,7 @@ import Section from './Section'
 import CardItem from './CardItem'
 import { useState } from 'react'
 import BlogCard from './BlogCard'
-
-type BlogProps = {
-  id: string
-  title: string
-  url: string
-  date: string
-  userID: string
-  userName: string
-  userProfileImage: string
-  thumbnail: string
-  stack: string[]
-}
+import { BlogProps } from '@/types/search'
 
 const BlogSection: React.FC<{ blog: BlogProps[] }> = ({ blog }) => {
   const [showAll, setShowAll] = useState(false)

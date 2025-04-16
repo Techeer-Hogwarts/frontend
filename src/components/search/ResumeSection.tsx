@@ -3,16 +3,7 @@
 import { useState } from 'react'
 import Section from './Section'
 import ResumeFolder from '@/components/search/ResumeFolder'
-
-type ResumeProps = {
-  id: number
-  title: string
-  url: string
-  createdAt: number
-  userName: string
-  year: string
-  position: string
-}
+import { ResumeProps } from '@/types/search'
 
 const ResumeSection: React.FC<{ resumes: ResumeProps[] }> = ({ resumes }) => {
   const [showAll, setShowAll] = useState(false)

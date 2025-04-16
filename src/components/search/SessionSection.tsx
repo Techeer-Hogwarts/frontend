@@ -1,20 +1,7 @@
 import Section from './Section'
 import CardItem from './CardItem'
 import { useState } from 'react'
-
-type SessionProps = {
-  id: string
-  userId: string
-  thumbnail: string
-  title: string
-  presenter: string
-  date: string
-  category: string
-  user: {
-    name: string
-    profileImage: string
-  }
-}
+import { SessionProps } from '@/types/search'
 
 const SessionSection: React.FC<{ session: SessionProps[] }> = ({ session }) => {
   const [showAll, setShowAll] = useState(false)
