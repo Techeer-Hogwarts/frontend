@@ -55,15 +55,23 @@ export default function BlogPost({ blog }: BlogPostProps) {
   return (
     <div className="flex flex-wrap gap-12">
       <div className="flex flex-col w-[300px] relative ">
-        <button onClick={handleClickUrl}>
+        {blog.thumbnail ? (
           <img
             src={blog.thumbnail}
-            alt="testIMG"
+            alt="thumbnail"
             width={379}
             height={199}
-            className="w-[300px] h-[199px] z-1"
+            className="w-full h-[155px] z-1 object-cover"
+            onClick={handleClickUrl}
           />
-        </button>
+        ) : (
+          <button
+            onClick={handleClickUrl}
+            className="w-full flex items-center justify-center px-5 h-[155px] text-white bg-gradient-to-b from-[#FF8B20] to-[#FFC14F]"
+          >
+            {blog.title}
+          </button>
+        )}
         <div className="rounded-b-lg w-[300px] min-h-[100px] h-auto py-2  bg-white shadow-[0px_5px_8px_#bfbfbf]">
           <div className="flex justify-between relative">
             <p className="text-base mx-5 mb-1 truncate">{truncatedTitle}</p>

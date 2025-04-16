@@ -29,6 +29,7 @@ const nextConfig = {
       'encore.cloud',
       'github.com',
       'cdn.discordapp.com',
+      'medium.com',
     ], // 허용할 외부 도메인 추가
   },
 

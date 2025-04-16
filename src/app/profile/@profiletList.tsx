@@ -8,44 +8,10 @@ import { useEffect, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 import SkeletonProfileCard from '@/components/profile/SkeletonProfileCard'
 import { Profile } from '@/types/profile'
+import { useProfiles } from '@/hooks/profile/useProfiles'
 
-export default function ProfileList({
-  position = [],
-  year = [],
-  university = [],
-  grade = [],
-}: ProfileQueryParams = {}) {
-  const [profiles, setProfiles] = useState<Profile[]>([])
-  const [limit, setLimit] = useState(12)
-  const [ref, inView] = useInView({ threshold: 0.5 })
-
-  const { data, isError, isLoading } = useGetProfileQuery({
-    position,
-    year,
-    university,
-    grade,
-    limit,
-  })
-  useEffect(() => {
-    setProfiles([])
-    setLimit(12)
-  }, [position, year, university, grade])
-
-  useEffect(() => {
-    if (data && Array.isArray(data)) {
-      setProfiles((prev) => {
-        const existingIds = new Set(prev.map((p) => p.id))
-        const newProfiles = data.filter((p) => !existingIds.has(p.id)) // 중복 제거
-        return [...prev, ...newProfiles]
-      })
-    }
-  }, [data])
-
-  useEffect(() => {
-    if (inView) {
-      setLimit((prev) => prev + 8)
-    }
-  }, [inView])
+export default function ProfileList(props: ProfileQueryParams = {}) {
+  const { profiles, isLoading, isError, ref } = useProfiles(props)
 
   if (isLoading && profiles.length === 0) {
     return (
@@ -57,7 +23,8 @@ export default function ProfileList({
     )
   }
 
-  if (isError || (data && profiles.length === 0)) {
+  // if (isError || (data && profiles.length === 0)) {
+  if (isError || profiles.length === 0) {
     return (
       <div className="flex justify-center">
         <EmptyLottie

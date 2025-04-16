@@ -95,7 +95,7 @@ export default function NavBar() {
     if (query) {
       const data = await getFinalSearchResults(query)
       setFinalResults(data)
-      router.push(`/search/final?query=${query}`)
+      router.push(`/search?query=${query}`)
     }
   }
 

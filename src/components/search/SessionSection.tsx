@@ -29,6 +29,7 @@ const SessionSection: React.FC<{ session: SessionProps[] }> = ({ session }) => {
           {visibleSessions.map((item) => (
             <CardItem
               key={item.id}
+              id={item.id}
               title={item.title}
               date={item.date}
               category="" // category 값을 고정하거나 다른 값으로 설정
