@@ -1,6 +1,5 @@
 'use client'
 import React, { useState, useRef, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
 import Select from '@/components/signup/Select'
 import PositionSelect from '@/components/signup/PositionSelect'
 import ExperienceSection from '@/components/signup/ExperienceSection'
@@ -11,6 +10,12 @@ import Link from 'next/link'
 import Lottie from 'lottie-react'
 import loading from '../../../public/loading.json'
 import { useSignupHandler } from '@/hooks/auth/useSignupHandler'
+import {
+  UNIVERSITIES,
+  GRADE,
+  GENERATION,
+  POSITION,
+} from '@/constants/signupInfo'
 
 const Signup = () => {
   const {
@@ -103,35 +108,7 @@ const Signup = () => {
                 <div className="w-1/2">
                   <Select
                     title="대학교"
-                    options={[
-                      '강원대학교',
-                      '가톨릭대학교',
-                      '가천대학교',
-                      '광운대학교',
-                      '단국대학교',
-                      '대구가톨릭대학교',
-                      '덕성여자대학교',
-                      '동덕여자대학교',
-                      '서강대학교',
-                      '성결대학교',
-                      '세종대학교',
-                      '안양대학교',
-                      '연세대학교',
-                      '이화여자대학교',
-                      '인천대학교',
-                      '인하대학교',
-                      '중앙대학교',
-                      '창원대학교',
-                      '충남대학교',
-                      '충북대학교',
-                      '평택대학교',
-                      '부산대학교',
-                      '한국공학대학교',
-                      '한서대학교',
-                      '한성대학교',
-                      '호서대학교',
-                      '해당 없음',
-                    ]}
+                    options={UNIVERSITIES}
                     value={formData.school}
                     onChange={(value) =>
                       setFormData((prev) => ({ ...prev, school: value }))
@@ -158,14 +135,7 @@ const Signup = () => {
                 <div className="w-1/2">
                   <Select
                     title="학년"
-                    options={[
-                      '1학년',
-                      '2학년',
-                      '3학년',
-                      '4학년',
-                      '졸업',
-                      '해당 없음',
-                    ]}
+                    options={GRADE}
                     value={formData.classYear}
                     onChange={(value) =>
                       setFormData((prev) => ({ ...prev, classYear: value }))
@@ -182,17 +152,7 @@ const Signup = () => {
               <div className="w-[9.5rem]">
                 <Select
                   title="기수"
-                  options={[
-                    '1기',
-                    '2기',
-                    '3기',
-                    '4기',
-                    '5기',
-                    '6기',
-                    '7기',
-                    '8기',
-                    '9기',
-                  ]}
+                  options={GENERATION}
                   value={formData.selectedBatch}
                   onChange={(value) =>
                     setFormData((prev) => ({
@@ -272,13 +232,7 @@ const Signup = () => {
                     </label>
                     <Select
                       title="포지션"
-                      options={[
-                        'FRONTEND',
-                        'BACKEND',
-                        'DEVOPS',
-                        'FULL_STACK',
-                        'DATA_ENGINEER',
-                      ]}
+                      options={POSITION}
                       value={formData.resumePosition}
                       onChange={(value) =>
                         setFormData((prev) => ({
