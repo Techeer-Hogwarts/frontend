@@ -16,6 +16,7 @@ import {
   GENERATION,
   POSITION,
 } from '@/constants/signupInfo'
+import BlogComponent from '@/components/signup/BlogComponent'
 
 const Signup = () => {
   const {
@@ -26,7 +27,6 @@ const Signup = () => {
     handleChange,
     handlePositionSelect,
     step,
-    setStep,
     isLoading,
     handleSignup,
     passwordsMatch,
@@ -295,55 +295,30 @@ const Signup = () => {
             <div>
               <p className="block text-lg mb-2.5">링크를 입력해주세요</p>
               <div className="flex flex-col space-y-2">
-                <div className="flex justify-between space-x-5">
-                  <div className="flex items-center justify-center w-[10rem] h-10 rounded-[0.25rem] text-primary border border-primary">
-                    깃허브<span className="text-primary">*</span>
-                  </div>
-                  <input
-                    type="text"
-                    name="githubUrl"
-                    placeholder="https://github.com/user"
-                    className="w-full h-10 px-4 border border-gray rounded-[0.25rem] focus:outline-none focus:border-primary"
-                    value={formData.githubUrl}
-                    onChange={handleChange}
-                  />
-                </div>
-                <div className="flex justify-between space-x-5">
-                  <div className="flex items-center justify-center w-[10rem] h-10 rounded-[0.25rem] text-primary border border-primary">
-                    미디엄
-                  </div>
-                  <input
-                    type="text"
-                    name="mediumUrl"
-                    className="w-full h-10 px-4 border border-gray rounded-[0.25rem] focus:outline-none focus:border-primary"
-                    value={formData.mediumUrl}
-                    onChange={handleChange}
-                  />
-                </div>
-                <div className="flex justify-between space-x-5">
-                  <div className="flex items-center justify-center w-[10rem] h-10 rounded-[0.25rem] text-primary border border-primary">
-                    벨로그
-                  </div>
-                  <input
-                    type="text"
-                    name="velogUrl"
-                    className="w-full h-10 px-4 border border-gray rounded-[0.25rem] focus:outline-none focus:border-primary"
-                    value={formData.velogUrl}
-                    onChange={handleChange}
-                  />
-                </div>
-                <div className="flex justify-between space-x-5">
-                  <div className="flex items-center justify-center w-[10rem] h-10 rounded-[0.25rem] text-primary border border-primary">
-                    티스토리
-                  </div>
-                  <input
-                    type="text"
-                    name="tistoryUrl"
-                    className="w-full h-10 px-4 border border-gray rounded-[0.25rem] focus:outline-none focus:border-primary"
-                    value={formData.tistoryUrl}
-                    onChange={handleChange}
-                  />
-                </div>
+                <BlogComponent
+                  label="깃허브"
+                  value={formData.githubUrl}
+                  handleChange={handleChange}
+                  placeholder={'https://github.com/user'}
+                />
+                <BlogComponent
+                  label="미디엄"
+                  value={formData.mediumUrl}
+                  handleChange={handleChange}
+                  placeholder={'https://medium.com/@user'}
+                />
+                <BlogComponent
+                  label="벨로그"
+                  value={formData.velogUrl}
+                  handleChange={handleChange}
+                  placeholder={'https://velog.io/@user'}
+                />
+                <BlogComponent
+                  label="티스토리"
+                  value={formData.tistoryUrl}
+                  handleChange={handleChange}
+                  placeholder={'https://user.tistory.com/'}
+                />
               </div>
             </div>
 
