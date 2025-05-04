@@ -1,14 +1,18 @@
 import { useState } from 'react'
-import { initialFormData } from '@/types/signup/signup.type'
+import {
+  fulltimesType,
+  initialFormData,
+  internshipsType,
+} from '@/types/signup/signup.type'
 
 export const useSignupForm = () => {
   const [formData, setFormData] = useState(initialFormData)
 
-  const setInternships = (internships: any[]) => {
+  const setInternships = (internships: internshipsType[]) => {
     setFormData((prev) => ({ ...prev, internships }))
   }
 
-  const setFullTimes = (fullTimes: any[]) => {
+  const setFullTimes = (fullTimes: fulltimesType[]) => {
     setFormData((prev) => ({ ...prev, fullTimes }))
   }
 

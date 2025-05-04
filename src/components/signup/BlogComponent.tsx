@@ -1,6 +1,13 @@
 import React from 'react'
+import { BlogType } from '@/types/signup/signup.type'
 
-const BlogComponent = ({ label, value, handleChange, placeholder, name }) => {
+const BlogComponent = ({
+  label,
+  value,
+  handleChange,
+  placeholder,
+  name,
+}: BlogType) => {
   return (
     <div className="flex justify-between space-x-5">
       <div className="flex items-center justify-center w-[10rem] h-10 rounded-[0.25rem] text-primary border border-primary">

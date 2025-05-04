@@ -47,3 +47,11 @@ export const initialFormData = {
   resumeIsMain: true,
   resumePosition: '',
 }
+
+export type BlogType = {
+  label: string
+  value: string
+  handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+  placeholder: string
+  name: string
+}
