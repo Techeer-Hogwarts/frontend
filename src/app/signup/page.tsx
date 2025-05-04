@@ -297,24 +297,28 @@ const Signup = () => {
               <div className="flex flex-col space-y-2">
                 <BlogComponent
                   label="깃허브"
+                  name="githubUrl"
                   value={formData.githubUrl}
                   handleChange={handleChange}
                   placeholder={'https://github.com/user'}
                 />
                 <BlogComponent
                   label="미디엄"
+                  name="mediumUrl"
                   value={formData.mediumUrl}
                   handleChange={handleChange}
                   placeholder={'https://medium.com/@user'}
                 />
                 <BlogComponent
                   label="벨로그"
+                  name="velogUrl"
                   value={formData.velogUrl}
                   handleChange={handleChange}
                   placeholder={'https://velog.io/@user'}
                 />
                 <BlogComponent
                   label="티스토리"
+                  name="tistoryUrl"
                   value={formData.tistoryUrl}
                   handleChange={handleChange}
                   placeholder={'https://user.tistory.com/'}
