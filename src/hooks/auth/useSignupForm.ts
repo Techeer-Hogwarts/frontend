@@ -6,7 +6,8 @@ import {
 } from '@/types/signup/signup.type'
 
 export const useSignupForm = () => {
-  const [formData, setFormData] = useState(initialFormData)
+  const [formData, setFormData] =
+    useState<typeof initialFormData>(initialFormData)
 
   const setInternships = (internships: internshipsType[]) => {
     setFormData((prev) => ({ ...prev, internships }))
