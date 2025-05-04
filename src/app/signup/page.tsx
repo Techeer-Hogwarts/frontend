@@ -296,7 +296,7 @@ const Signup = () => {
               <p className="block text-lg mb-2.5">링크를 입력해주세요</p>
               <div className="flex flex-col space-y-2">
                 <BlogComponent
-                  label="깃허브"
+                  label="깃허브*"
                   name="githubUrl"
                   value={formData.githubUrl}
                   handleChange={handleChange}
