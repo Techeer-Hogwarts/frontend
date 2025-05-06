@@ -109,8 +109,7 @@ export default function Calendar({
 
       daysArray.push(
         <div key={i} className="w-[138px] min-h-[183px] border-t-2">
-          <button
-            type="button"
+          <div
             className={`w-full h-full text-2xl font-bold p-3 cursor-pointer hover:bg-lightgray/50 flex flex-col items-start ${
               isToday ? 'border-primary bg-lightgray/30' : ''
             }`}
@@ -142,7 +141,7 @@ export default function Calendar({
                 )
               })}
             </div>
-          </button>
+          </div>
         </div>,
       )
     }
