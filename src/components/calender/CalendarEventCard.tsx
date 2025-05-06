@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-interface User {
+export interface User {
   id: number
   name: string
   nickname: string

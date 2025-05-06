@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { CalendarClientProps } from '@/types/calendar'
+import { User } from '@/components/calender/CalendarEventCard'
 import AddCalendarBtn from '@/components/calender/AddCalendarBtn'
 import AddCalenderModal from '@/components/calender/AddCalendarModal'
 import Calendar from '@/components/calender/Calendar'
@@ -17,9 +18,29 @@ export default function CalendarClient({
   const [selectedCategories, setSelectedCategories] = useState(['ALL'])
   const [authModalOpen, setAuthModalOpen] = useState(false)
   const [modalOpen, setModalOpen] = useState(false)
+  const [currentUser, setCurrentUser] = useState<User | null>(null)
 
-  const handleOpenModal = () => {
-    fetchUserProfile()
+  const handleOpenModal = async () => {
+    if (!currentUser) {
+      try {
+        const response = await fetch('/api/v1/users', {
+          method: 'GET',
+          credentials: 'include',
+        })
+        if (response.status === 401) {
+          setAuthModalOpen(true)
+          return
+        }
+        if (!response.ok) throw new Error()
+        const user = await response.json()
+        setCurrentUser(user)
+      } catch {
+        setAuthModalOpen(true)
+        return
+      }
+    }
+
+    setShowModal(true)
   }
 
   const handleCloseModal = () => setShowModal(false)
@@ -54,26 +75,6 @@ export default function CalendarClient({
   const displayCategories = selectedCategories.includes('ALL')
     ? allCategoryValues
     : selectedCategories
-
-  const fetchUserProfile = async () => {
-    try {
-      const response = await fetch('/api/v1/users', {
-        method: 'GET',
-        credentials: 'include',
-      })
-      if (response.status === 401) {
-        setAuthModalOpen(true)
-        return
-      }
-      setShowModal(true)
-      if (!response.ok) {
-        throw new Error('유저조회 실패')
-      }
-    } catch (err: any) {
-      setAuthModalOpen(true)
-      throw new Error(err)
-    }
-  }
 
   return (
     <div className="flex flex-col items-center">
