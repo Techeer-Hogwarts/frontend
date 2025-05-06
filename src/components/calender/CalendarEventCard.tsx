@@ -2,6 +2,7 @@
 
 import Image from 'next/image'
 interface User {
+  id: number
   name: string
   nickname: string
   profileImage: string
@@ -73,7 +74,7 @@ export default function CalendarEventCard({
           )}
         </div>
       </button>
-      {mode === 'modal' && (
+      {mode === 'modal' && onEdit && onDelete && (
         <div className="flex gap-3">
           <button onClick={onEdit}>
             <Image src="/pencil.svg" alt="edit" width={15} height={15} />

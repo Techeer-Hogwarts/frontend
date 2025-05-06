@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import dayjs from 'dayjs'
 import { MdOutlineCalendarMonth } from 'react-icons/md'
 import CalendarEventCard, { CalendarEventCardProps } from './CalendarEventCard'
@@ -18,34 +18,32 @@ export default function Calendar({
   setAuthModalOpen,
 }: CalendarProps) {
   const [currentDate, setCurrentDate] = useState(dayjs())
-  const [name, setName] = useState<string>('')
   const [selectedDate, setSelectedDate] = useState<string | null>(null)
+  const [currentUserId, setCurrentUserId] = useState<number | null>(null)
+
   const daysOfWeek = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']
   const startOfMonth = currentDate.startOf('month').day()
   const daysInMonth = currentDate.daysInMonth()
   const currentMonth = currentDate.month() + 1 // month는 0부터 시작하므로 1을 더함
   const today = dayjs()
-  const fetchUserProfile = async (date: string) => {
-    try {
-      const response = await fetch('/api/v1/users', {
-        method: 'GET',
-        credentials: 'include',
-      })
-      if (response.status === 401) {
-        // 401이면 로그인 모달 오픈
-        setAuthModalOpen()
-        return
+
+  useEffect(() => {
+    const fetchMe = async () => {
+      try {
+        const res = await fetch('/api/v1/users', {
+          method: 'GET',
+          credentials: 'include',
+        })
+        if (!res.ok) return
+        const user = await res.json()
+        setCurrentUserId(user.id)
+      } catch (err) {
+        console.error('유저 정보 가져오기 실패', err)
       }
-      if (!response.ok) {
-        throw new Error('유저조회 실패')
-      }
-      const user = await response.json()
-      setName(user.name)
-      setSelectedDate(date)
-    } catch (err: any) {
-      throw new Error(err)
     }
-  }
+    fetchMe()
+  }, [])
+
   const { data: events } = useGetEvents({
     category: selectedCategories.length > 0 ? selectedCategories : undefined,
   })
@@ -75,7 +73,7 @@ export default function Calendar({
   const expandedEvents = events ? expandEvents(events) : []
 
   const handleDayClick = (date: string) => {
-    fetchUserProfile(date)
+    setSelectedDate(date)
   }
 
   const handleCloseModal = () => {
@@ -131,6 +129,7 @@ export default function Calendar({
                     category={event.category}
                     url={event.url}
                     name={event.name}
+                    userId={event.userId}
                     className="mt-3"
                     displayDate={
                       isSameDate
@@ -189,12 +188,12 @@ export default function Calendar({
       {/* 일 */}
       <div className="grid grid-cols-7 gap-7">{renderDays()}</div>
 
-      {selectedDate && (
+      {selectedDate && currentUserId !== null && (
         <EventsDetailModal
-          name={name}
           date={dayjs(selectedDate).format('MM.DD')}
           events={eventsForSelectedDate}
           onClose={handleCloseModal}
+          currentUserId={currentUserId}
         />
       )}
     </div>

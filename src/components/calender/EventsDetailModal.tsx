@@ -2,45 +2,50 @@
 
 import Image from 'next/image'
 import CalendarEventCard, { CalendarEventCardProps } from './CalendarEventCard'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import AddCalendarModal from './AddCalendarModal'
 import EventDeleteModal from './EventDeleteModal'
-import BookmarkModal from '../common/BookmarkModal'
+import getCurrentUser from '@/api/calendar/getCurrentUser'
+// import BookmarkModal from '../common/BookmarkModal'
 
 interface EventsDetailModalProps {
   date: string
   events: CalendarEventCardProps[]
   onClose: () => void
-  name: string
+  currentUserId: number
 }
 
 export default function EventsDetailModal({
   date,
   events,
   onClose,
-  name,
 }: EventsDetailModalProps) {
   const [editEventId, setEditEventId] = useState<number | null>(null)
   const [deleteEventId, setDeleteEventId] = useState<number | null>(null)
-  const [modalOpen, setModalOpen] = useState(false)
-  const handleEdit = (eventId: number, eventName) => {
-    if (name !== eventName) {
-      setModalOpen(true)
-      return
+  const [currentUserId, setCurrentUserId] = useState<number | null>(null)
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const user = await getCurrentUser()
+        setCurrentUserId(user.id)
+      } catch (err) {
+        console.error('유저 정보를 불러오지 못했습니다: ', err)
+      }
     }
+    fetchUser()
+  }, [])
+  // const [modalOpen, setModalOpen] = useState(false)
+  const handleEdit = (eventId: number) => {
     setEditEventId(eventId)
+  }
+
+  const handleDelete = (eventId: number) => {
+    setDeleteEventId(eventId)
   }
 
   const handleCloseEdit = () => {
     setEditEventId(null)
-  }
-
-  const handleDelete = (eventId: number, eventName) => {
-    if (name !== eventName) {
-      setModalOpen(true)
-      return
-    }
-    setDeleteEventId(eventId)
   }
 
   const handleCloseDelete = () => {
@@ -49,11 +54,6 @@ export default function EventsDetailModal({
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50">
-      <BookmarkModal
-        isOpen={modalOpen}
-        message="본인이 만든 일정만 관리할 수 있습니다."
-        onClose={() => setModalOpen(false)}
-      />
       <div className="bg-white rounded-lg p-8 w-[486px] h-[576px]">
         <div className="flex justify-between items-center">
           <span className="text-2xl font-bold">{date} 일정</span>
@@ -63,15 +63,18 @@ export default function EventsDetailModal({
         </div>
         <div className="h-[400px] space-y-4 mt-10">
           {events.length > 0 ? (
-            events.map((event) => (
-              <CalendarEventCard
-                key={event.id}
-                {...event}
-                mode="modal"
-                onEdit={() => handleEdit(event.id!, event.user.name)}
-                onDelete={() => handleDelete(event.id!, event.user.name)}
-              />
-            ))
+            events.map((event) => {
+              const isOwner = event.userId === currentUserId //id가 없으면 undefined 반환
+              return (
+                <CalendarEventCard
+                  key={event.id}
+                  {...event}
+                  mode="modal"
+                  onEdit={isOwner ? () => handleEdit(event.id!) : undefined}
+                  onDelete={isOwner ? () => handleDelete(event.id!) : undefined}
+                />
+              )
+            })
           ) : (
             <div className="h-full flex items-center justify-center">
               <span className="text-[#757575]">
