@@ -10,6 +10,7 @@ import { useBookmark } from '@/app/blog/_lib/useBookmark'
 import { fetchUserProfile } from '@/api/mypage/myprofile'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 interface SessionMenuProps {
   id: string
@@ -18,6 +19,7 @@ interface SessionMenuProps {
   showMessage: () => void
   setModalOpen: (open: boolean) => void
   setModalMessage: (message: string) => void
+  setShowModal: (show: boolean) => void
 }
 
 export default function SessionMenu({
@@ -27,7 +29,9 @@ export default function SessionMenu({
   showMessage,
   setModalOpen,
   setModalMessage,
+  setShowModal,
 }: SessionMenuProps) {
+  const router = useRouter()
   const { postBookmark, fetchBookmarks } = useBookmark()
   const [isUserMe, setIsUserMe] = useState(false)
   const clickBookmark = async () => {
@@ -42,7 +46,10 @@ export default function SessionMenu({
     setModalOpen(true)
     setTimeout(() => setModalOpen(false), 2000)
   }
-
+  const clickEdit = () => {
+    setShowModal(false)
+    router.push(`/session/edit/${id}`)
+  }
   const { mutate } = useMutation({
     mutationFn: (id: string) => deleteSession(id),
     onSuccess: () => {
@@ -70,23 +77,15 @@ export default function SessionMenu({
           북마크
         </button>
         {isUserMe && (
-          <Link
-            href={`/session/edit/${id}`}
+          <button
+            onClick={clickEdit}
             className="flex items-center justify-start gap-1 py-1 pl-3 hover:bg-black/10"
           >
             <TbEdit className="w-4 h-4" />
             수정
-          </Link>
+          </button>
         )}
 
-        {/* <button
-          type="button"
-          // onClick={clickEdit}
-          className="flex items-center justify-start gap-1 py-1 pl-3 hover:bg-black/10"
-        >
-          <TbEdit className="w-4 h-4" />
-          수정
-        </button> */}
         <button
           onClick={() => window.open(fileUrl)}
           className="flex items-center justify-start gap-1 py-1 pl-3 hover:bg-black/10"

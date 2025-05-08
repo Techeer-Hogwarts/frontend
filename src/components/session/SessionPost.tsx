@@ -78,6 +78,7 @@ export default function SessionPost({
               id={id}
               userId={userId}
               fileUrl={fileUrl}
+              setShowModal={setShowModal}
               showMessage={showMessage}
               setModalOpen={setModalOpen}
               setModalMessage={setModalMessage}
