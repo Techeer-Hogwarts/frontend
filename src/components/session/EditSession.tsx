@@ -172,18 +172,21 @@ export default function EditSession() {
 
         <div className="relative flex flex-col mx-8 mt-4">
           <ModalInputField
+            name="title"
             title="세션 제목을 입력해주세요"
             placeholder="세션 제목"
             essential="*"
             registerProps={register('title', { required: true })}
           />
           <ModalInputField
+            name="presenter"
             title="발표자를 입력해주세요"
             placeholder="발표자"
             essential="*"
             registerProps={register('presenter', { required: true })}
           />
           <ModalInputField
+            name="thumbnail"
             title="썸네일을 입력해주세요"
             placeholder="썸네일"
             essential="*"
@@ -215,12 +218,14 @@ export default function EditSession() {
           </div>
 
           <ModalInputField
+            name="videoUrl"
             title="영상 링크를 첨부해 주세요"
             placeholder="www.세션 제목.com"
             essential="*"
             registerProps={register('videoUrl', { required: true })}
           />
           <ModalInputField
+            name="fileUrl"
             title="발표 자료 링크를 첨부해주세요"
             placeholder="www.발표 자료 링크.com"
             essential=""

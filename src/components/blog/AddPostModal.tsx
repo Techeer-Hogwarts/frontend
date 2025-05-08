@@ -26,10 +26,9 @@ export default function AddPostModal() {
           <ModalInputField
             title="블로그 링크를 입력해주세요"
             placeholder="www.TecheerBlog.com"
-            name="title"
             essential="*"
             value={blogLink}
-            handleInputChange={handleInputChange}
+            onChange={handleInputChange}
           />
         </div>
         <div className="flex gap-4 mt-6">

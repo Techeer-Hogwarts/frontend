@@ -1,32 +1,36 @@
-// 기존 Props
-import { ChangeHandler, RefCallBack } from 'react-hook-form'
-
 interface ModalInputFieldProps {
   title: string
+  name?: string
   placeholder: string
   essential?: string
   disabled?: boolean
-  registerProps: any
+  value?: string
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
+  registerProps?: any
 }
 
 export default function ModalInputField({
   title,
+  name,
   placeholder,
   essential,
   disabled,
   registerProps,
+  value,
+  onChange,
 }: ModalInputFieldProps) {
   return (
     <div className="flex flex-col mb-2">
-      <label htmlFor={registerProps.name} className="text-sm">
+      <label htmlFor={name} className="text-sm">
         {title}
         {essential && <span className="text-primary ml-1">{essential}</span>}
       </label>
       <input
-        id={registerProps.name}
+        id={name}
+        name={name}
         placeholder={placeholder}
         disabled={disabled}
-        {...registerProps}
+        {...(registerProps ?? { value, onChange })}
         className="w-[420px] pl-2 text-sm mt-1 outline-none h-[34px] border border-lightgray rounded-sm"
       />
     </div>
