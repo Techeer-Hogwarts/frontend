@@ -2,9 +2,12 @@
 'use client'
 
 import CategoryBtn from './CategoryBtn'
-import { useEffect, useState } from 'react'
 import SessionDropdown from './SessionDropdown'
 import ModalInputField from '../common/ModalInputField'
+import { useForm } from 'react-hook-form'
+import { useEffect, useState } from 'react'
+import { postSession } from '@/api/session/session'
+import { SessionFormData } from '@/types/\bsession/session'
 
 interface ModalProps {
   position: string
@@ -17,126 +20,87 @@ export default function AddSessionModal({
   modal,
   onClose,
 }: ModalProps) {
-  const [formData, setFormData] = useState({
-    thumbnail: '',
-    title: '',
-    presenter: '',
-    date: '',
-    position: '',
-    category: position,
-    videoUrl: '',
-    fileUrl: '',
+  const { register, handleSubmit, watch, setValue } = useForm<SessionFormData>({
+    defaultValues: {
+      thumbnail: '',
+      title: '',
+      presenter: '',
+      date: '',
+      position: '',
+      category: position,
+      videoUrl: '',
+      fileUrl: '',
+    },
   })
+
+  const thumbnail = watch('thumbnail')
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
-  const [debouncedThumbnail, setDebouncedThumbnail] = useState(
-    formData.thumbnail,
-  )
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedThumbnail(formData.thumbnail)
-    }, 1000)
+  const [debouncedThumbnail, setDebouncedThumbnail] = useState(thumbnail)
 
-    return () => {
-      clearTimeout(timer)
-    }
-  }, [formData.thumbnail])
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
-    setFormData({
-      ...formData,
-      [name]: value,
-    })
-  }
-  const handlePositionChange = (category: string) => {
-    setSelectedCategory(category)
-    setFormData({
-      ...formData,
-      position: category,
-    })
-  }
-  const handleDropdownChange = (value: string) => {
-    setFormData({
-      ...formData,
-      date: value,
-    })
-  }
-  const postSession = async () => {
+  const onSubmit = async (data: SessionFormData) => {
     try {
-      const payload = {
-        thumbnail: formData.thumbnail,
-        title: formData.title,
-        presenter: formData.presenter,
-        date: formData.date,
-        position: formData.position,
-        category: formData.category,
-        videoUrl: formData.videoUrl,
-        fileUrl: formData.fileUrl,
-      }
-
-      const response = await fetch('/api/v1/sessions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify(payload),
-      })
-      if (!response.ok) {
-        throw new Error('세션 데이터를 업로드하는 데 실패했습니다.')
-      }
-      const result = await response.json()
+      await postSession(data)
       window.location.href = '/session'
       onClose()
-    } catch (err) {
+    } catch (error) {
+      console.error('세션 등록 실패:', error)
     }
   }
+
+  const handleCategoryChange = (category: string) => {
+    setSelectedCategory(category)
+    setValue('position', category)
+  }
+
+  const handleDropdownChange = (value: string) => {
+    setValue('date', value)
+  }
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedThumbnail(thumbnail)
+    }, 1000)
+    return () => clearTimeout(timer)
+  }, [thumbnail])
 
   return (
     <div className="fixed inset-0 flex items-center justify-center w-screen h-screen bg-black/50">
       <div className="w-[486px] min-h-[750px] h-auto flex flex-col items-center bg-white rounded-lg">
-        <div>
-          <p className="mt-6 mb-3 text-2xl font-semibold text-center">
-            세션 영상 등록
-          </p>
-          <div className="relative mt-2 ">
-            <img
-              src={debouncedThumbnail}
-              alt="PDF First Page Preview"
-              className="object-cover w-[230px] h-[140px]"
-              onError={(e: any) => {
-                e.target.src = '/images/session/thumbnail.png' // 대체 이미지 경로
-              }}
-            />
-          </div>
+        <p className="mt-6 mb-3 text-2xl font-semibold text-center">
+          세션 영상 등록
+        </p>
+        <div className="relative mt-2">
+          <img
+            src={debouncedThumbnail}
+            alt="PDF First Page Preview"
+            className="object-cover w-[230px] h-[140px]"
+            onError={(e: any) => {
+              e.target.src = '/images/session/thumbnail.png'
+            }}
+          />
         </div>
-        <div className="relative flex flex-col mx-8 mt-4">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="relative flex flex-col mx-8 mt-4"
+        >
           <ModalInputField
             title="세션 제목을 입력해주세요"
             placeholder="세션 제목"
-            name="title"
             essential="*"
-            value={formData.title}
-            handleInputChange={handleInputChange}
+            registerProps={register('title', { required: true })}
           />
           <ModalInputField
             title="발표자를 입력해주세요"
             placeholder="발표자"
-            name="presenter"
             essential="*"
-            value={formData.presenter}
-            handleInputChange={handleInputChange}
+            registerProps={register('presenter', { required: true })}
           />
-          <div className="relative">
-            <ModalInputField
-              title="썸네일을 입력해주세요"
-              placeholder="썸네일"
-              name="thumbnail"
-              essential="*"
-              value={formData.thumbnail}
-              handleInputChange={handleInputChange}
-            />
-          </div>
+          <ModalInputField
+            title="썸네일을 입력해주세요"
+            placeholder="썸네일"
+            essential="*"
+            registerProps={register('thumbnail', { required: true })}
+          />
           <div className="flex items-start justify-between mt-1 mb-2">
             <span>
               기간을 입력해주세요 <span className="text-primary">*</span>
@@ -192,60 +156,43 @@ export default function AddSessionModal({
             카테고리를 선택해주세요 <span className="text-primary">*</span>
           </p>
           <div className="flex gap-3 mt-1 mb-2">
-            <CategoryBtn
-              title="Frontend"
-              isSelected={selectedCategory === 'FRONTEND'}
-              onSelect={() => handlePositionChange('FRONTEND')}
-            />
-            <CategoryBtn
-              title="Backend"
-              isSelected={selectedCategory === 'BACKEND'}
-              onSelect={() => handlePositionChange('BACKEND')}
-            />
-            <CategoryBtn
-              title="DevOps"
-              isSelected={selectedCategory === 'DEVOPS'}
-              onSelect={() => handlePositionChange('DEVOPS')}
-            />
-            <CategoryBtn
-              title="Others"
-              isSelected={selectedCategory === 'OTHERS'}
-              onSelect={() => handlePositionChange('OTHERS')}
-            />
+            {['FRONTEND', 'BACKEND', 'DEVOPS', 'OTHERS'].map((position) => (
+              <CategoryBtn
+                key={position}
+                title={position.charAt(0) + position.slice(1).toLowerCase()}
+                isSelected={selectedCategory === position}
+                onSelect={() => handleCategoryChange(position)}
+              />
+            ))}
           </div>
           <ModalInputField
             title="영상 링크를 첨부해 주세요"
             placeholder="www.세션 제목.com"
-            name="videoUrl"
-            essential=""
-            value={formData.videoUrl}
-            handleInputChange={handleInputChange}
+            essential="*"
+            registerProps={register('videoUrl', { required: true })}
           />
           <ModalInputField
             title="발표 자료 링크를 첨부해주세요"
             placeholder="www.발표 자료 링크.com"
-            name="fileUrl"
             essential=""
-            value={formData.fileUrl}
-            handleInputChange={handleInputChange}
+            registerProps={register('fileUrl', { required: true })}
           />
-        </div>
-        <div className="flex gap-4 mt-1">
-          <button
-            type="button"
-            onClick={onClose}
-            className="w-[202px] rounded-md text-sm h-[34px] bg-white text-gray border border-lightgray"
-          >
-            취소
-          </button>
-          <button
-            type="button"
-            onClick={postSession}
-            className="w-[202px] rounded-md text-sm h-[34px] bg-primary text-white"
-          >
-            등록
-          </button>
-        </div>
+          <div className="flex gap-4 mt-4 mb-6">
+            <button
+              type="button"
+              onClick={onClose}
+              className="w-[202px] rounded-md text-sm h-[34px] bg-white text-gray border border-lightgray"
+            >
+              취소
+            </button>
+            <button
+              type="submit"
+              className="w-[202px] rounded-md text-sm h-[34px] bg-primary text-white"
+            >
+              등록
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   )

@@ -2,11 +2,11 @@ import Image from 'next/image'
 
 export interface FilterBtnProps {
   title: string
-  onClick: () => void
+  onClick: (string) => void
 }
 
 export default function FilterBtn({
-  title, 
+  title,
   onClick,
 }: Readonly<FilterBtnProps>) {
   return (
