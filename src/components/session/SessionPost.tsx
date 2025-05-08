@@ -17,7 +17,7 @@ export interface SessionPostProps {
   fileUrl: string
   likeList: string[]
   userId: string
-  showMessage: () => void
+  showMessage?: () => void
   onLikeUpdate?: (id: string, newLikeCount: number) => void
 }
 

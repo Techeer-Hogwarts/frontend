@@ -185,15 +185,7 @@ export default function Bookmark() {
               return (
                 <SessionPost
                   key={bookmark.id}
-                  likeCount={bookmark.likeCount}
-                  id={bookmark.id}
-                  thumbnail={bookmark.thumbnail}
-                  title={bookmark.title}
-                  date={bookmark.date}
-                  presenter={bookmark.presenter}
-                  fileUrl={bookmark.fileUrl}
-                  showMessage={bookmark}
-                  userImage={bookmark.user.profileImage}
+                  {...bookmark}
                   likeList={likeList}
                   onLikeUpdate={bookmark}
                 />
