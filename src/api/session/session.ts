@@ -18,8 +18,6 @@ export const deleteSession = async (id: string) => {
   if (!response.ok) {
     throw new Error('세션 데이터를 삭제하는데 실패했습니다.')
   }
-
-  return response
 }
 
 // 세션 금주의 데이터 조회
