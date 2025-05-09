@@ -1,14 +1,14 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { CalendarClientProps } from '@/types/calendar'
-import { User } from '@/components/calender/CalendarEventCard'
 import AddCalendarBtn from '@/components/calender/AddCalendarBtn'
 import AddCalenderModal from '@/components/calender/AddCalendarModal'
 import Calendar from '@/components/calender/Calendar'
 import FilterBtn from '@/components/calender/FilterBtn'
 import AuthModal from '@/components/common/AuthModal'
 import BookmarkModal from '@/components/common/BookmarkModal'
+import getCurrentUser from '@/api/calendar/getCurrentUser'
 
 export default function CalendarClient({
   CATEGORIES,
@@ -18,28 +18,28 @@ export default function CalendarClient({
   const [selectedCategories, setSelectedCategories] = useState(['ALL'])
   const [authModalOpen, setAuthModalOpen] = useState(false)
   const [modalOpen, setModalOpen] = useState(false)
-  const [currentUser, setCurrentUser] = useState<User | null>(null)
+  const [currentUserId, setCurrentUserId] = useState<number | null>(null)
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const user = await getCurrentUser()
+        setCurrentUserId(user.id)
+      } catch {}
+    }
+    fetchUser()
+  }, [])
 
   const handleOpenModal = async () => {
-    if (!currentUser) {
+    if (!currentUserId) {
       try {
-        const response = await fetch('/api/v1/users', {
-          method: 'GET',
-          credentials: 'include',
-        })
-        if (response.status === 401) {
-          setAuthModalOpen(true)
-          return
-        }
-        if (!response.ok) throw new Error()
-        const user = await response.json()
-        setCurrentUser(user)
+        const user = await getCurrentUser()
+        setCurrentUserId(user.id)
       } catch {
         setAuthModalOpen(true)
         return
       }
     }
-
     setShowModal(true)
   }
 
@@ -108,6 +108,7 @@ export default function CalendarClient({
       <Calendar
         selectedCategories={displayCategories}
         setAuthModalOpen={() => setAuthModalOpen(true)}
+        currentUserId={currentUserId}
       />
       {showModal && (
         <AddCalenderModal handleBack={handleCloseModal} mode="create" />
