@@ -3,7 +3,7 @@
 import AddMember from '@/components/project/add/AddMember'
 import AddProfile from '@/components/project/add/AddProfile'
 import AddRecruit from '@/components/project/add/AddRecruit'
-import AddResults from '@/components/project/add/project/AddResults'
+import AddResults from '@/components/project/add/AddResults'
 import AddStack from '@/components/project/add/project/AddStack'
 import NecessaryQuestions from '@/components/project/add/NecessaryQuestions'
 

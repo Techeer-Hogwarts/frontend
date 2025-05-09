@@ -9,7 +9,7 @@ import AddProfile from '@/components/project/add/AddProfile'
 import AddMember from '@/components/project/add/AddMember'
 import AddRecruit from '@/components/project/add/AddRecruit'
 import AddStack from '@/components/project/add/project/AddStack'
-import AddResults from '@/components/project/add/project/AddResults'
+import AddResults from '@/components/project/add/AddResults'
 import NecessaryQuestions from '@/components/project/add/NecessaryQuestions'
 import Loading from '@/components/common/Loading'
 

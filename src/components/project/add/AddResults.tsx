@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import ExistingResultImgBox from '../ExistingResultImgBox'
-import ResultImgBox from '../ResultImgBox'
+import ExistingResultImgBox from './ExistingResultImgBox'
+import ResultImgBox from './ResultImgBox'
 import { IoAddCircleOutline } from 'react-icons/io5'
 
 interface ExistingImage {
