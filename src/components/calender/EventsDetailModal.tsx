@@ -5,8 +5,6 @@ import CalendarEventCard, { CalendarEventCardProps } from './CalendarEventCard'
 import { useState, useEffect } from 'react'
 import AddCalendarModal from './AddCalendarModal'
 import EventDeleteModal from './EventDeleteModal'
-import getCurrentUser from '@/api/calendar/getCurrentUser'
-// import BookmarkModal from '../common/BookmarkModal'
 
 interface EventsDetailModalProps {
   date: string
@@ -19,23 +17,11 @@ export default function EventsDetailModal({
   date,
   events,
   onClose,
+  currentUserId,
 }: EventsDetailModalProps) {
   const [editEventId, setEditEventId] = useState<number | null>(null)
   const [deleteEventId, setDeleteEventId] = useState<number | null>(null)
-  const [currentUserId, setCurrentUserId] = useState<number | null>(null)
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const user = await getCurrentUser()
-        setCurrentUserId(user.id)
-      } catch (err) {
-        console.error('유저 정보를 불러오지 못했습니다: ', err)
-      }
-    }
-    fetchUser()
-  }, [])
-  // const [modalOpen, setModalOpen] = useState(false)
   const handleEdit = (eventId: number) => {
     setEditEventId(eventId)
   }
