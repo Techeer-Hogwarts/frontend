@@ -211,6 +211,7 @@ export default function EditProjectPage() {
           onUpdate={handleUpdate}
         />
         <AddRecruit
+          variant="project"
           isRecruited={projectData.isRecruited}
           frontendNum={projectData.frontendNum}
           backendNum={projectData.backendNum}

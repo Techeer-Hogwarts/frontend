@@ -9,7 +9,7 @@ import AddResults from '@/components/project/add/study/AddResults'
 import NecessaryQuestions from '@/components/project/add/study/NecessaryQuestions'
 import AddGoal from '@/components/project/add/study/AddGoal'
 import AddPlan from '@/components/project/add/study/AddPlan'
-import AddRecruit from '@/components/project/add/study/AddRecruit'
+import AddRecruit from '@/components/project/add/AddRecruit'
 
 import { handleAddStudy } from '@/api/project/study/study'
 
@@ -116,6 +116,7 @@ export default function AddStudyPage() {
           onUpdate={handleUpdate}
         />
         <AddRecruit
+          variant="study"
           isRecruited={studyData.isRecruited}
           recruitNum={studyData.recruitNum}
           recruitExplain={studyData.recruitExplain}
