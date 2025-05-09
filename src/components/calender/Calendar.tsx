@@ -11,38 +11,22 @@ import BookmarkModal from '../common/BookmarkModal'
 interface CalendarProps {
   selectedCategories: string[]
   setAuthModalOpen: () => void
+  currentUserId: number | null
 }
 
 export default function Calendar({
   selectedCategories,
   setAuthModalOpen,
+  currentUserId,
 }: CalendarProps) {
   const [currentDate, setCurrentDate] = useState(dayjs())
   const [selectedDate, setSelectedDate] = useState<string | null>(null)
-  const [currentUserId, setCurrentUserId] = useState<number | null>(null)
 
   const daysOfWeek = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']
   const startOfMonth = currentDate.startOf('month').day()
   const daysInMonth = currentDate.daysInMonth()
   const currentMonth = currentDate.month() + 1 // month는 0부터 시작하므로 1을 더함
   const today = dayjs()
-
-  useEffect(() => {
-    const fetchMe = async () => {
-      try {
-        const res = await fetch('/api/v1/users', {
-          method: 'GET',
-          credentials: 'include',
-        })
-        if (!res.ok) return
-        const user = await res.json()
-        setCurrentUserId(user.id)
-      } catch (err) {
-        console.error('유저 정보 가져오기 실패', err)
-      }
-    }
-    fetchMe()
-  }, [])
 
   const { data: events } = useGetEvents({
     category: selectedCategories.length > 0 ? selectedCategories : undefined,
@@ -188,7 +172,7 @@ export default function Calendar({
       {/* 일 */}
       <div className="grid grid-cols-7 gap-7">{renderDays()}</div>
 
-      {selectedDate && currentUserId !== null && (
+      {selectedDate && typeof currentUserId === 'number' && (
         <EventsDetailModal
           date={dayjs(selectedDate).format('MM.DD')}
           events={eventsForSelectedDate}
