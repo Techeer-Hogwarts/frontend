@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 import AddMember from '@/components/project/add/AddMember'
 import AddProfile from '@/components/project/add/AddProfile'
 import AddResults from '@/components/project/add/AddResults'
-import NecessaryQuestions from '@/components/project/add/study/NecessaryQuestions'
+import NecessaryQuestions from '@/components/project/add/NecessaryQuestions'
 import AddGoal from '@/components/project/add/study/AddGoal'
 import AddPlan from '@/components/project/add/study/AddPlan'
 import AddRecruit from '@/components/project/add/AddRecruit'
@@ -112,6 +112,7 @@ export default function AddStudyPage() {
         <AddGoal goal={studyData.goal} onUpdate={handleUpdate} />
         <AddPlan rule={studyData.rule} onUpdate={handleUpdate} />
         <NecessaryQuestions
+          variant="study"
           isFinished={studyData.isFinished}
           onUpdate={handleUpdate}
         />

@@ -97,6 +97,7 @@ export default function AddProjectPage() {
           }
         />
         <NecessaryQuestions
+          variant="project"
           isFinished={projectData.isFinished}
           onUpdate={handleUpdate}
         />
