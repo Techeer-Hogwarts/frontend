@@ -2,7 +2,7 @@
 
 import Profile from '@/components/project/detail/study/Profile'
 import Member from '@/components/project/detail/study/Member'
-import FindMember from '@/components/project/detail/study/FindMember'
+import FindMember from '@/components/project/detail/FindMember'
 import StudyGoal from '@/components/project/detail/study/StudyGoal'
 import StudyPlan from '@/components/project/detail/study/StudyPlan'
 import Results from '@/components/project/detail/Results'
@@ -193,7 +193,7 @@ export default function ProjectDetailpage() {
         <StudyGoal goal={studyDetails?.goal} />
         <StudyPlan rule={studyDetails?.rule} />
         {studyDetails?.isRecruited && (
-          <FindMember projectDetail={studyDetails} projectType={'study'} />
+          <FindMember variant="study" projectDetail={studyDetails} />
         )}
         <Results
           resultImages={

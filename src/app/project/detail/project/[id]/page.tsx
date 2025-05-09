@@ -204,7 +204,7 @@ export default function ProjectDetailpage() {
         <Member members={projectDetails?.projectMember} />
         <Stack stacks={projectDetails?.teamStacks} />
         {isRecruited && (
-          <FindMember projectDetail={projectDetails} projectType={'project'} />
+          <FindMember variant="project" projectDetail={projectDetails} />
         )}
         <Results
           resultImages={
