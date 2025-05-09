@@ -183,6 +183,7 @@ export default function EditProjectPage() {
     <div className="relative flex justify-between mt-[2.75rem] gap-[3.188rem]">
       <div>
         <AddProfile
+          variant="project"
           projectData={projectData}
           onUpdate={handleUpdate}
           // 기존 메인이미지 URL, ID

@@ -5,7 +5,7 @@ import { useRouter, useParams } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
 
 import AddMember from '@/components/project/add/AddMember'
-import AddProfile from '@/components/project/add/study/AddProfile'
+import AddProfile from '@/components/project/add/AddProfile'
 import AddResults from '@/components/project/add/study/AddResults'
 import NecessaryQuestions from '@/components/project/add/study/NecessaryQuestions'
 import AddGoal from '@/components/project/add/study/AddGoal'
@@ -205,7 +205,11 @@ export default function AddStudyPage() {
       {studyData && (
         <>
           <div>
-            <AddProfile projectData={studyData} onUpdate={handleUpdate} />
+            <AddProfile
+              variant="study"
+              projectData={studyData}
+              onUpdate={handleUpdate}
+            />
           </div>
           <div className="flex flex-col gap-7">
             <AddMember
