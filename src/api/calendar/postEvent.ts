@@ -13,6 +13,7 @@ const postEvent = async (eventData: EventData): Promise<void> => {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(eventData),
+    credentials: 'include',
   })
 
   if (!response.ok) {

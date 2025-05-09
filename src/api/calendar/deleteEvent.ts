@@ -4,6 +4,7 @@ const deleteEvent = async (eventId: number) => {
   const response = await fetch(`/api/v1/events/${eventId}`, {
     method: 'DELETE',
     headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
   })
 
   if (!response.ok) {
