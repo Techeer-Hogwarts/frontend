@@ -187,7 +187,7 @@ export default function ProjectDetailpage() {
 
       {/* 왼쪽 영역 */}
       <div>
-        <Profile projectDetail={projectDetails} />
+        <Profile variant="project" projectDetail={projectDetails} />
 
         {/* 팀원 + isRecruited → 지원자 목록 */}
         {isTeamMember && isRecruited && (

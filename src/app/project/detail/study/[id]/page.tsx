@@ -1,6 +1,6 @@
 'use client'
 
-import Profile from '@/components/project/detail/study/Profile'
+import Profile from '@/components/project/detail/Profile'
 import Member from '@/components/project/detail/Member'
 import FindMember from '@/components/project/detail/FindMember'
 import StudyGoal from '@/components/project/detail/study/StudyGoal'
@@ -177,7 +177,7 @@ export default function ProjectDetailpage() {
       )}
 
       <div>
-        <Profile projectDetail={studyDetails} />
+        <Profile variant="study" projectDetail={studyDetails} />
         {/* Applicants 컴포넌트: 스터디 멤버일 경우만 렌더링 */}
         {isStudyMember && (
           <Applicants
