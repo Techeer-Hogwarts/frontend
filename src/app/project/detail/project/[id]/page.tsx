@@ -192,9 +192,9 @@ export default function ProjectDetailpage() {
         {/* 팀원 + isRecruited → 지원자 목록 */}
         {isTeamMember && isRecruited && (
           <Applicants
+            variant="project"
             applicants={studyApplicants || []}
             onOpen={handleModalOpen}
-            projectType="project"
           />
         )}
       </div>

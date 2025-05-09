@@ -7,7 +7,7 @@ import StudyGoal from '@/components/project/detail/study/StudyGoal'
 import StudyPlan from '@/components/project/detail/study/StudyPlan'
 import Results from '@/components/project/detail/Results'
 import BaseModal from '@/components/project/modal/BaseModal'
-import Applicants from '@/components/project/detail/study/Applicants'
+import Applicants from '@/components/project/detail/Applicants'
 import ApplicantModal from '@/components/project/modal/study/ApplicantModal'
 import { useAuthStore } from '@/store/authStore'
 import AuthModal from '@/components/common/AuthModal'
@@ -180,7 +180,11 @@ export default function ProjectDetailpage() {
         <Profile projectDetail={studyDetails} />
         {/* Applicants 컴포넌트: 스터디 멤버일 경우만 렌더링 */}
         {isStudyMember && (
-          <Applicants applicants={studyApplicants || []} onOpen={onOpen} />
+          <Applicants
+            variant="study"
+            applicants={studyApplicants || []}
+            onOpen={onOpen}
+          />
         )}
       </div>
 
