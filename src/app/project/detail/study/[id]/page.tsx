@@ -1,7 +1,7 @@
 'use client'
 
 import Profile from '@/components/project/detail/study/Profile'
-import Member from '@/components/project/detail/study/Member'
+import Member from '@/components/project/detail/Member'
 import FindMember from '@/components/project/detail/FindMember'
 import StudyGoal from '@/components/project/detail/study/StudyGoal'
 import StudyPlan from '@/components/project/detail/study/StudyPlan'
@@ -189,7 +189,7 @@ export default function ProjectDetailpage() {
       </div>
 
       <div className="flex flex-col gap-7">
-        <Member members={studyDetails?.studyMember || []} />
+        <Member variant="study" members={studyDetails?.studyMember || []} />
         <StudyGoal goal={studyDetails?.goal} />
         <StudyPlan rule={studyDetails?.rule} />
         {studyDetails?.isRecruited && (

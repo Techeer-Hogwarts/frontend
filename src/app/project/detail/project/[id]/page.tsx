@@ -201,7 +201,7 @@ export default function ProjectDetailpage() {
 
       {/* 오른쪽 영역 */}
       <div className="flex flex-col gap-7">
-        <Member members={projectDetails?.projectMember} />
+        <Member variant="project" members={projectDetails?.projectMember} />
         <Stack stacks={projectDetails?.teamStacks} />
         {isRecruited && (
           <FindMember variant="project" projectDetail={projectDetails} />
