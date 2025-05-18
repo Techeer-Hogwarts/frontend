@@ -1,7 +1,5 @@
 'use client'
-
 import React, { useState, useRef, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
 import Select from '@/components/signup/Select'
 import PositionSelect from '@/components/signup/PositionSelect'
 import ExperienceSection from '@/components/signup/ExperienceSection'
@@ -11,364 +9,32 @@ import EmailVerification from '@/components/common/EmailVerification'
 import Link from 'next/link'
 import Lottie from 'lottie-react'
 import loading from '../../../public/loading.json'
+import { useSignupHandler } from '@/hooks/auth/useSignupHandler'
+import {
+  UNIVERSITIES,
+  GRADE,
+  GENERATION,
+  POSITION,
+} from '@/constants/signupInfo'
+import BlogComponent from '@/components/signup/BlogComponent'
 
 const Signup = () => {
-  const [signupError, setSignupError] = useState<string>('')
-  const router = useRouter()
-
-  const [step, setStep] = useState(1)
-  const [isLoading, setIsLoading] = useState(false)
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    isVerified: false,
-
-    school: '',
-    customSchool: '', // “해당 없음” 선택 시, 직접 입력한 학교명
-    classYear: '',
-    selectedBatch: '',
-    resumeTitle: '',
-    githubUrl: '',
-    tistoryUrl: '',
-    mediumUrl: '',
-    velogUrl: '',
-    selectedPositions: [] as string[],
-    recommendation: null as string | null,
-    employmentStatus: null as string | null,
-    // CareerToggle에서 "있어요" 버튼을 누르면 'yes'로 저장됩니다.
-    internshipExperience: null as string | null,
-    jobExperience: null as string | null,
-
-    // 경험 정보: 기존의 키 대신 unified한 키로 관리
-    internships: [] as {
-      companyName: string
-      position: string
-      startDate: string
-      endDate: string
-      isCurrentJob: boolean
-    }[],
-    fullTimes: [] as {
-      companyName: string
-      position: string
-      startDate: string
-      endDate: string
-      isCurrentJob: boolean
-    }[],
-
-    // 이력서 추가 정보
-    resumeFile: null as File | null,
-    resumeCategory: 'RESUME',
-    resumeIsMain: true,
-    resumePosition: '',
-  })
-
-  const handleChange = (
-    e:
-      | React.ChangeEvent<HTMLInputElement>
-      | React.ChangeEvent<HTMLSelectElement>,
-  ) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }))
-  }
-
-  const passwordsMatch =
-    formData.password === formData.confirmPassword &&
-    formData.password.length > 0
-
-  const handleNext = () => {
-    setSignupError('')
-    // 스텝 1 필드 검증: 각 필드가 비어있거나, isVerified가 false면 alert 후 진행하지 않음
-    if (!formData.name.trim()) {
-      alert('이름을 입력해주세요.')
-      return
-    }
-    if (!formData.email.trim()) {
-      alert('이메일을 입력해주세요.')
-      return
-    }
-    if (!formData.password) {
-      alert('비밀번호를 입력해주세요.')
-      return
-    }
-    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&]).{8,}$/
-    if (!passwordRegex.test(formData.password)) {
-      alert(
-        '비밀번호 양식에 맞지 않습니다.\n 영어, 숫자, 특수문자를 각각 최소 한 개 이상 포함해주세요.\n 비밀번호는 8자 이상이어야 합니다.',
-      )
-      return
-    }
-    if (!formData.confirmPassword) {
-      alert('비밀번호 확인을 입력해주세요.')
-      return
-    }
-    if (!formData.isVerified) {
-      alert('이메일 인증을 완료해주세요.')
-      return
-    }
-    if (!passwordsMatch) {
-      alert('비밀번호가 일치하지 않습니다.')
-      return
-    }
-    // 모든 필드가 유효하면 스텝 진행
-    if (step < 2) {
-      setStep(step + 1)
-    }
-  }
-
-  const handleBack = () => {
-    setSignupError('')
-    if (step > 1) {
-      setStep(step - 1)
-    }
-  }
-
-  const handleSignup = async () => {
-    setSignupError('')
-
-    if (!formData.school.trim()) {
-      alert('대학교를 선택해주세요.')
-      return
-    }
-    if (formData.school === '해당 없음' && !formData.customSchool.trim()) {
-      alert('학교명을 직접 입력해주세요.')
-      return
-    }
-    if (!formData.classYear.trim()) {
-      alert('학년을 선택해주세요.')
-      return
-    }
-    if (!formData.selectedBatch.trim()) {
-      alert('기수를 선택해주세요.')
-      return
-    }
-    if (!formData.resumeTitle.trim()) {
-      alert('이력서 제목을 입력해주세요.')
-      return
-    }
-    if (!formData.resumeFile) {
-      alert('이력서 파일을 업로드해주세요.')
-      return
-    }
-    if (!formData.resumeCategory.trim()) {
-      alert('이력서 카테고리를 선택해주세요.')
-      return
-    }
-    if (!formData.resumePosition) {
-      alert('이력서 포지션을 선택해주세요.')
-      return
-    }
-    if (formData.selectedPositions.length === 0) {
-      alert('포지션을 선택해주세요.')
-      return
-    }
-    if (!formData.recommendation) {
-      alert('추천 여부를 선택해주세요.')
-      return
-    }
-    if (!formData.githubUrl.trim()) {
-      alert('깃허브 URL을 입력해주세요.')
-      return
-    }
-
-    if (!formData.employmentStatus) {
-      alert('경력 여부를 선택해주세요.')
-      return
-    }
-    if (formData.employmentStatus === 'yes') {
-      if (!formData.internshipExperience) {
-        alert('인턴 경험 여부를 선택해주세요.')
-        return
-      }
-      if (!formData.jobExperience) {
-        alert('정규직 경험 여부를 선택해주세요.')
-        return
-      }
-    }
-    if (!formData.isVerified) {
-      alert('이메일 인증을 완료해주세요.')
-      return
-    }
-
-    // 모든 검증 통과 후 로딩 시작
-    setIsLoading(true)
-
-    // 경험 데이터를 백엔드 형식으로 통합
-    const experiences: {
-      companyName: string
-      position: string
-      startDate: string
-      endDate: string
-      category: string
-    }[] = []
-
-    if (formData.internshipExperience === 'yes') {
-      experiences.push(
-        ...formData.internships.map((item) => ({
-          companyName: item.companyName || '',
-          position: item.position || formData.selectedPositions[0] || '',
-          startDate: item.startDate || '',
-          endDate: item.isCurrentJob ? '' : item.endDate || '',
-          category: '인턴',
-        })),
-      )
-    }
-
-    if (formData.jobExperience === 'yes') {
-      experiences.push(
-        ...formData.fullTimes.map((item) => ({
-          companyName: item.companyName || '',
-          position: item.position || formData.selectedPositions[0] || '',
-          startDate: item.startDate || '',
-          endDate: item.isCurrentJob ? '' : item.endDate || '',
-          category: '정규직',
-        })),
-      )
-    }
-
-    const finalSchool =
-      formData.school === '해당 없음'
-        ? formData.customSchool.trim()
-        : formData.school
-
-    const createUserRequest: any = {
-      mainPosition: formData.selectedPositions[0] || '',
-      subPosition: formData.selectedPositions[1] || '',
-      name: formData.name,
-      githubUrl: formData.githubUrl,
-      isLft: formData.recommendation === 'yes',
-      school: finalSchool,
-      grade: formData.classYear,
-      password: formData.password,
-      email: formData.email,
-      year: parseInt(formData.selectedBatch),
-    }
-
-    if (formData.tistoryUrl) {
-      createUserRequest.tistoryUrl = formData.tistoryUrl
-    }
-    if (formData.mediumUrl) {
-      createUserRequest.mediumUrl = formData.mediumUrl
-    }
-    if (formData.velogUrl) {
-      createUserRequest.velogUrl = formData.velogUrl
-    }
-
-    const requestPayload = {
-      createUserRequest,
-      createUserExperienceRequest: {
-        experiences,
-      },
-      createResumeRequest: {
-        category: formData.resumeCategory,
-        position: formData.resumePosition,
-        title: formData.resumeTitle,
-        isMain: formData.resumeIsMain,
-      },
-    }
-
-    try {
-      const formDataToSend = new FormData()
-      if (formData.resumeFile) {
-        formDataToSend.append('file', formData.resumeFile)
-      }
-      formDataToSend.append(
-        'createUserWithResumeRequest',
-        JSON.stringify(requestPayload),
-      )
-
-      const response = await fetch('/api/v1/users/signup', {
-        method: 'POST',
-        body: formDataToSend,
-      })
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => null)
-
-        if (response.status === 400) {
-          alert('필수 항목을 모두 입력해주세요.')
-          return
-        }
-
-        if (response.status === 500) {
-          alert('이미 등록된 이메일입니다.')
-          return
-        }
-
-        if (response.status === 401) {
-          alert(errorData.message)
-          return
-        }
-      }
-
-      router.push('/login?form=signup')
-    } catch (err: any) {
-      alert('네트워크 오류가 발생했습니다.')
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  const handlePositionSelect = (position: string) => {
-    if (formData.selectedPositions.includes(position)) {
-      setFormData((prev) => ({
-        ...prev,
-        selectedPositions: prev.selectedPositions.filter(
-          (item) => item !== position,
-        ),
-      }))
-    } else if (formData.selectedPositions.length < 2) {
-      setFormData((prev) => ({
-        ...prev,
-        selectedPositions: [...prev.selectedPositions, position],
-      }))
-    }
-  }
-
-  const setInternships = (internships: any[]) => {
-    setFormData((prev) => ({
-      ...prev,
-      internships,
-    }))
-  }
-
-  const setFullTimes = (fullTimes: any[]) => {
-    setFormData((prev) => ({
-      ...prev,
-      fullTimes,
-    }))
-  }
-
-  const formRef = useRef<HTMLDivElement>(null)
-  const bottomRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    const formElement = formRef.current
-    if (formElement && bottomRef.current) {
-      if (
-        formData.employmentStatus === 'yes' ||
-        formData.internshipExperience === 'yes' ||
-        formData.jobExperience === 'yes' ||
-        formData.internships.length > 0 ||
-        formData.fullTimes.length > 0
-      ) {
-        formElement.scrollTo({
-          top: bottomRef.current.offsetTop,
-          behavior: 'smooth',
-        })
-      }
-    }
-  }, [
-    formData.employmentStatus,
-    formData.internshipExperience,
-    formData.jobExperience,
-    formData.internships.length,
-    formData.fullTimes.length,
-  ])
+  const {
+    formData,
+    setFormData,
+    setInternships,
+    setFullTimes,
+    handleChange,
+    handlePositionSelect,
+    step,
+    isLoading,
+    handleSignup,
+    passwordsMatch,
+    formRef,
+    bottomRef,
+    handleNext,
+    handleBack,
+  } = useSignupHandler()
 
   return (
     <div className="flex min-h-[calc(100vh-61px)] items-center justify-between">
@@ -442,35 +108,7 @@ const Signup = () => {
                 <div className="w-1/2">
                   <Select
                     title="대학교"
-                    options={[
-                      '강원대학교',
-                      '가톨릭대학교',
-                      '가천대학교',
-                      '광운대학교',
-                      '단국대학교',
-                      '대구가톨릭대학교',
-                      '덕성여자대학교',
-                      '동덕여자대학교',
-                      '서강대학교',
-                      '성결대학교',
-                      '세종대학교',
-                      '안양대학교',
-                      '연세대학교',
-                      '이화여자대학교',
-                      '인천대학교',
-                      '인하대학교',
-                      '중앙대학교',
-                      '창원대학교',
-                      '충남대학교',
-                      '충북대학교',
-                      '평택대학교',
-                      '부산대학교',
-                      '한국공학대학교',
-                      '한서대학교',
-                      '한성대학교',
-                      '호서대학교',
-                      '해당 없음',
-                    ]}
+                    options={UNIVERSITIES}
                     value={formData.school}
                     onChange={(value) =>
                       setFormData((prev) => ({ ...prev, school: value }))
@@ -497,14 +135,7 @@ const Signup = () => {
                 <div className="w-1/2">
                   <Select
                     title="학년"
-                    options={[
-                      '1학년',
-                      '2학년',
-                      '3학년',
-                      '4학년',
-                      '졸업',
-                      '해당 없음',
-                    ]}
+                    options={GRADE}
                     value={formData.classYear}
                     onChange={(value) =>
                       setFormData((prev) => ({ ...prev, classYear: value }))
@@ -521,17 +152,7 @@ const Signup = () => {
               <div className="w-[9.5rem]">
                 <Select
                   title="기수"
-                  options={[
-                    '1기',
-                    '2기',
-                    '3기',
-                    '4기',
-                    '5기',
-                    '6기',
-                    '7기',
-                    '8기',
-                    '9기',
-                  ]}
+                  options={GENERATION}
                   value={formData.selectedBatch}
                   onChange={(value) =>
                     setFormData((prev) => ({
@@ -611,13 +232,7 @@ const Signup = () => {
                     </label>
                     <Select
                       title="포지션"
-                      options={[
-                        'FRONTEND',
-                        'BACKEND',
-                        'DEVOPS',
-                        'FULL_STACK',
-                        'DATA_ENGINEER',
-                      ]}
+                      options={POSITION}
                       value={formData.resumePosition}
                       onChange={(value) =>
                         setFormData((prev) => ({
@@ -680,55 +295,34 @@ const Signup = () => {
             <div>
               <p className="block text-lg mb-2.5">링크를 입력해주세요</p>
               <div className="flex flex-col space-y-2">
-                <div className="flex justify-between space-x-5">
-                  <div className="flex items-center justify-center w-[10rem] h-10 rounded-[0.25rem] text-primary border border-primary">
-                    깃허브<span className="text-primary">*</span>
-                  </div>
-                  <input
-                    type="text"
-                    name="githubUrl"
-                    placeholder="https://github.com/user"
-                    className="w-full h-10 px-4 border border-gray rounded-[0.25rem] focus:outline-none focus:border-primary"
-                    value={formData.githubUrl}
-                    onChange={handleChange}
-                  />
-                </div>
-                <div className="flex justify-between space-x-5">
-                  <div className="flex items-center justify-center w-[10rem] h-10 rounded-[0.25rem] text-primary border border-primary">
-                    미디엄
-                  </div>
-                  <input
-                    type="text"
-                    name="mediumUrl"
-                    className="w-full h-10 px-4 border border-gray rounded-[0.25rem] focus:outline-none focus:border-primary"
-                    value={formData.mediumUrl}
-                    onChange={handleChange}
-                  />
-                </div>
-                <div className="flex justify-between space-x-5">
-                  <div className="flex items-center justify-center w-[10rem] h-10 rounded-[0.25rem] text-primary border border-primary">
-                    벨로그
-                  </div>
-                  <input
-                    type="text"
-                    name="velogUrl"
-                    className="w-full h-10 px-4 border border-gray rounded-[0.25rem] focus:outline-none focus:border-primary"
-                    value={formData.velogUrl}
-                    onChange={handleChange}
-                  />
-                </div>
-                <div className="flex justify-between space-x-5">
-                  <div className="flex items-center justify-center w-[10rem] h-10 rounded-[0.25rem] text-primary border border-primary">
-                    티스토리
-                  </div>
-                  <input
-                    type="text"
-                    name="tistoryUrl"
-                    className="w-full h-10 px-4 border border-gray rounded-[0.25rem] focus:outline-none focus:border-primary"
-                    value={formData.tistoryUrl}
-                    onChange={handleChange}
-                  />
-                </div>
+                <BlogComponent
+                  label="깃허브*"
+                  name="githubUrl"
+                  value={formData.githubUrl}
+                  handleChange={handleChange}
+                  placeholder={'https://github.com/user'}
+                />
+                <BlogComponent
+                  label="미디엄"
+                  name="mediumUrl"
+                  value={formData.mediumUrl}
+                  handleChange={handleChange}
+                  placeholder={'https://medium.com/@user'}
+                />
+                <BlogComponent
+                  label="벨로그"
+                  name="velogUrl"
+                  value={formData.velogUrl}
+                  handleChange={handleChange}
+                  placeholder={'https://velog.io/@user'}
+                />
+                <BlogComponent
+                  label="티스토리"
+                  name="tistoryUrl"
+                  value={formData.tistoryUrl}
+                  handleChange={handleChange}
+                  placeholder={'https://user.tistory.com/'}
+                />
               </div>
             </div>
 
