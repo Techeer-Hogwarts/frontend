@@ -1,7 +1,7 @@
 import { withSentryConfig } from '@sentry/nextjs'
 /** @type {import('next').NextConfig} */
 
-const API_BASE_URL = process.env.API_BASE_URL || 'https://api.techeerzip.cloud';
+const API_BASE_URL = process.env.API_BASE_URL || 'https://api.techeerzip.cloud'
 
 const nextConfig = {
   images: {
@@ -19,6 +19,7 @@ const nextConfig = {
         pathname: '/**',
       },
     ],
+    transpilePackages: ['framer-motion'],
   },
 
   reactStrictMode: true,
