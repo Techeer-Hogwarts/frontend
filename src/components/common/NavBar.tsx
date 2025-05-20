@@ -165,7 +165,7 @@ export default function NavBar() {
   return (
     <div
       ref={searchRef}
-      className="flex items-center w-[1280px] max-w-[1280px] h-[4rem] justify-between"
+      className="flex items-center z-50 relative w-[1200px] max-w-[1200px] h-[4rem] justify-between"
     >
       <div className="flex">
         {/* 로고 */}
@@ -185,7 +185,7 @@ export default function NavBar() {
               <Link
                 key={item.key}
                 href={item.href}
-                className={`hover:text-primary cursor-pointer ${
+                className={`hover:text-primary cursor-pointer ${pathname == '/' ? 'text-white' : ''} ${
                   isActive ? 'text-primary' : ''
                 }`}
               >
@@ -199,12 +199,12 @@ export default function NavBar() {
         {/* 돋보기 및 기타 아이콘 */}
         <div className="flex items-center">
           {/* 검색 영역 */}
-          <div className="p-2 relative">
+          <div className="relative p-2">
             <form onSubmit={handleSubmit} className="flex items-center">
               <button
                 type="button"
                 aria-label="검색"
-                className="focus:outline-none flex items-center border rounded-full px-1 transition-all duration-300 ease-in-out"
+                className="flex items-center px-1 transition-all duration-300 ease-in-out border rounded-full focus:outline-none"
               >
                 <IoSearchOutline onClick={toggleSearch} />
                 <input
@@ -238,7 +238,7 @@ export default function NavBar() {
                         />
                         <li
                           key={index}
-                          className="p-1 cursor-pointer font-light"
+                          className="p-1 font-light cursor-pointer"
                           onClick={() =>
                             handleSelectResult(
                               result.title.split('-').slice(-1).join(' '),
@@ -248,7 +248,7 @@ export default function NavBar() {
                             )
                           }
                         >
-                          <span className=" text-primary text-sm">
+                          <span className="text-sm  text-primary">
                             {indexMap[result.index] || result.index}
                             <span className="text-gray"> &nbsp; | &nbsp;</span>
                           </span>
@@ -266,16 +266,22 @@ export default function NavBar() {
         </div>
         {/* 캘린더 아이콘 */}
         <Link href="/calendar" className="p-2 cursor-pointer">
-          <IoCalendarOutline size={24} />
+          <IoCalendarOutline
+            size={24}
+            className={`${pathname == '/' ? 'text-white' : ''}`}
+          />
         </Link>
         {/* 마이페이지 아이콘 */}
         <Link href="/mypage" className="p-[6px] cursor-pointer">
-          <IoPersonCircle size={28} />
+          <IoPersonCircle
+            size={28}
+            className={`${pathname == '/' ? 'text-white' : ''}`}
+          />
         </Link>
         {isLoggedIn ? (
           <button
             type="button"
-            className="ml-4 hover:text-primary cursor-pointer"
+            className={`ml-4 hover:text-primary cursor-pointer ${pathname == '/' ? 'text-white' : ''}`}
             onClick={handleLogout}
           >
             로그아웃
@@ -283,7 +289,7 @@ export default function NavBar() {
         ) : (
           <Link
             href="/login"
-            className="ml-4 hover:text-primary cursor-pointer"
+            className={`ml-4 hover:text-primary cursor-pointer ${pathname == '/' ? 'text-white' : ''}`}
           >
             로그인
           </Link>
