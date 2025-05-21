@@ -5,11 +5,23 @@ import Section4 from '@/components/onboarding/Section4'
 
 export default function Onboarding() {
   return (
-    <div className="relative flex flex-col gap-32">
-      <Section1 />
-      <Section2 />
-      <Section3 />
-      <Section4 />
-    </div>
+    <>
+      <style>{`
+      html::-webkit-scrollbar,
+      body::-webkit-scrollbar {
+        display: none;
+      }
+      html, body {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+    `}</style>
+      <div className="relative flex flex-col gap-32">
+        <Section1 />
+        <Section2 />
+        <Section3 />
+        <Section4 />
+      </div>
+    </>
   )
 }
