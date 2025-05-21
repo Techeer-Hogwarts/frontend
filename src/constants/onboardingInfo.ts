@@ -18,7 +18,7 @@ export const logos3 = [
 export const logos4 = [
   'kurly',
   'toss',
-  'karrot',
+  'Karrot',
   'coupang',
   'krafton',
   'uju',
