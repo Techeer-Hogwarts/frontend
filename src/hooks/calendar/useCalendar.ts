@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { CATEGORIES } from '@/constants/category'
+import getCurrentUser from '@/api/calendar/getCurrentUser'
 
 export function useCalendar() {
   const [showModal, setShowModal] = useState(false)
@@ -11,22 +12,10 @@ export function useCalendar() {
 
   const fetchUserProfile = async () => {
     try {
-      const response = await fetch('/api/v1/users', {
-        method: 'GET',
-        credentials: 'include',
-      })
-      if (response.status === 401) {
-        // 401이면 로그인 모달 오픈
-        setAuthModalOpen(true)
-        return
-      }
+      const user = await getCurrentUser()
       setShowModal(true)
-      if (!response.ok) {
-        throw new Error('유저조회 실패')
-      }
-    } catch (err: any) {
+    } catch (err) {
       setAuthModalOpen(true)
-      throw new Error(err)
     }
   }
 
