@@ -12,7 +12,7 @@ import { useAuthStore } from '@/store/authStore'
 import {
   getBasicSearchResults,
   getFinalSearchResults,
-} from '../search/api/getSearch'
+} from '../../api/search/getSearch'
 
 // Debounce 함수
 const useDebounce = (value: string, delay: number) => {
