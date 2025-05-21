@@ -1,11 +1,9 @@
 import { useQuery } from '@tanstack/react-query'
-import { getSessions } from '@/app/session/_lib/getSessions'
-import { getBestSessions } from '@/app/session/_lib/getBestSessions'
+import { getBestSessions, getSessions } from '@/api/session/session'
 
 interface UseSessionsQueryParams {
-  activeOption: string
-  inputValue: string
   limit: number
+  activeOption: string
   selectedPeriodsP: string[]
   selectedPeriodsB: string[]
   selectedPeriodsPo: string[]
@@ -14,7 +12,6 @@ interface UseSessionsQueryParams {
 
 export const useSessionsQuery = ({
   activeOption,
-  inputValue,
   limit,
   selectedPeriodsP,
   selectedPeriodsB,
@@ -33,23 +30,27 @@ export const useSessionsQuery = ({
       'sessions',
       {
         activeOption,
-        inputValue,
         limit,
-        selectedPeriodsP,
-        selectedPeriodsB,
-        selectedPeriodsPo,
+        selectedPeriodsB: Array.isArray(selectedPeriodsB)
+          ? [...selectedPeriodsB]
+          : [],
+        selectedPeriodsP: Array.isArray(selectedPeriodsP)
+          ? [...selectedPeriodsP]
+          : [],
+        selectedPeriodsPo: Array.isArray(selectedPeriodsPo)
+          ? [...selectedPeriodsPo]
+          : [],
+
         category,
       },
     ],
     queryFn: async () => {
       if (activeOption === '금주의 세션') {
         const data = await getBestSessions(limit)
-        // console.log('getBestSessions result:', data)
         return data ?? []
       }
       const date = [...selectedPeriodsP, ...selectedPeriodsB]
       const data = await getSessions(
-        inputValue,
         category,
         limit,
         date,
