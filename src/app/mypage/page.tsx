@@ -9,12 +9,19 @@ import Settings from '@/components/mypage/Settings'
 import Bookmark from '@/components/mypage/Bookmark'
 import MypageTap from '@/components/mypage/MypageTap'
 import ProfileBox from '@/components/profile/ProfileBox'
+import Feedback from '@/components/mypage/Feedback'
 import AuthModal from '@/components/common/AuthModal'
 import { useFetchProfile } from '@/hooks/mypage/useFetchProfile'
 
 export default function Mypage() {
   const [activeTab, setActiveTab] = useState<
-    'home' | 'profile' | 'resume' | 'bookmark' | 'likes' | 'settings'
+    | 'home'
+    | 'profile'
+    | 'resume'
+    | 'bookmark'
+    | 'likes'
+    | 'Feedback'
+    | 'settings'
   >('home')
 
   const { profile, authModalOpen, loading, setAuthModalOpen, error } =
@@ -47,6 +54,7 @@ export default function Mypage() {
       {activeTab === 'profile' && <Profile profile={profile} />}
       {activeTab === 'resume' && <Resume userId={Number(profile?.id)} />}
       {activeTab === 'bookmark' && <Bookmark />}
+      {activeTab === 'Feedback' && <Feedback />}
       {activeTab === 'likes' && <Likes />}
       {activeTab === 'settings' && <Settings />}
     </div>
