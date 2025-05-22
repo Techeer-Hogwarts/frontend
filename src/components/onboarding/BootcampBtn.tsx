@@ -22,7 +22,7 @@ export default function GradientButton() {
       href="https://forms.gle/7D9WvJDJgzG6KZdR9"
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="group relative overflow-hidden flex items-center justify-center w-60 h-14 rounded-3xl bg-[#F57601] text-white font-semibold transition-transform duration-200"
+      className="group relative overflow-hidden flex items-center justify-center w-52 h-14 rounded-3xl bg-[#F57601] text-white font-semibold transition-transform duration-200"
       style={{
         backgroundImage: `radial-gradient(circle at ${gradientPosition.x}% ${gradientPosition.y}%, rgba(0,0,0,0.15), transparent 60%)`,
       }}
