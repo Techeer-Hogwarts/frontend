@@ -1,17 +1,16 @@
-'use client'
-
-import Link from 'next/link'
+import Image from 'next/image'
 
 export default function Footer() {
   return (
-    <div className=" text-darkgray w-[1200px] h-[6rem] mt-[2rem] p-2">
-      {/* 가로선 */}
-      {/*<div className="border-t border-lightgray my-2 w-full" />*/}
+    <div className="text-darkgray h-24 mt-[2rem] p-4">
       <div className="flex items-center justify-between">
         {/* 로고 영역 */}
-        <div className="text-primary font-logo text-[1.5rem] mb-2 ">
-          TECHEER.ZIP
-        </div>
+        <Image
+          src="/images/techeerlogo.png"
+          alt="techeer"
+          width={160}
+          height={60}
+        />
 
         {/* 링크 영역 */}
         <div className="flex space-x-8 text-[0.8rem] ">
@@ -40,11 +39,6 @@ export default function Footer() {
             GITHUB
           </a>
         </div>
-      </div>
-
-      {/* 저작권 영역 */}
-      <div className="text-right text-[0.6rem] text-darkgray">
-        © 2025 Techeer. ALL RIGHTS RESERVED.
       </div>
     </div>
   )
