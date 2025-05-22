@@ -29,9 +29,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={pretendard.variable}>
-      <body
-        className={`${pretendard.className} min-h-screen flex flex-col items-cente`}
-      >
+      <body className={`${pretendard.className} min-h-screen flex flex-col`}>
         {process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS ? (
           <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS} />
         ) : null}

@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useState } from 'react'
 
-export default function GradientButton() {
+export default function BootcampBtn() {
   const [gradientPosition, setGradientPosition] = useState({ x: 50, y: 50 })
   const handleMouseMove = (e: React.MouseEvent<HTMLAnchorElement>) => {
     const rect = e.currentTarget.getBoundingClientRect()
