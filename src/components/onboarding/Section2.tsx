@@ -1,37 +1,9 @@
-'use client'
-import Image from 'next/image'
 import SectionItem from './SectionItem'
-import { useEffect, useState } from 'react'
-import { useInView } from 'react-intersection-observer'
-import { AnimatePresence, motion } from 'framer-motion'
-
-const fadeVariants = {
-  hidden: { opacity: 0, y: 0 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.8, ease: 'easeOut' },
-  },
-  exit: {
-    opacity: 0,
-    y: 0,
-    transition: { duration: 0.8, ease: 'easeIn' },
-  },
-}
 
 export default function Section2() {
-  const [hasEntered, setHasEntered] = useState(false)
-  const { ref, inView } = useInView({
-    threshold: 0.1,
-  })
-
-  useEffect(() => {
-    if (inView) setHasEntered(true)
-  }, [inView])
-
   return (
     <div className="relative min-w-[1200px] z-20 h-fit left-1/2 mt-20 mb-60 -translate-x-1/2">
-      <div className="sticky top-1/3 left-0 w-full h-[300px] pointer-events-none">
+      {/* <div className="sticky top-1/3 left-0 w-full h-[300px] pointer-events-none">
         <AnimatePresence>
           {hasEntered && inView && (
             <motion.div
@@ -58,8 +30,8 @@ export default function Section2() {
             </motion.div>
           )}
         </AnimatePresence>
-      </div>
-      <div className="gap-32 flex flex-col " ref={ref}>
+      </div> */}
+      <div className="gap-32 flex flex-col">
         <SectionItem
           title={['함께 몰입하고 함께 성장하는', '팀과 개인의 배움의 여정']}
           description={[
@@ -67,7 +39,7 @@ export default function Section2() {
             '집중도 높은 환경에서 실력을 키우고',
             '개인과 팀이 함께 성장하는 과정을 경험합니다.',
           ]}
-          imageSrc="/images/onboarding/section2Talk.png"
+          imageSrc="/images/onboarding/section2Meeting.png"
           reverse={true}
         />
 
@@ -78,7 +50,7 @@ export default function Section2() {
             '온라인에 머무르지 않고, 오프라인에서도 교류하며',
             '지속 가능한 성장을 함께 만들어갑니다.',
           ]}
-          imageSrc="/images/onboarding/section2Party.png"
+          imageSrc="/images/onboarding/section2Meeting.png"
           reverse={false}
         />
         <SectionItem
@@ -91,7 +63,7 @@ export default function Section2() {
             '현업에서 활동 중인 실무자 멘토와 함께 고민을 나누며',
             '혼자서가 아닌 방식으로 성장할 수 있습니다.',
           ]}
-          imageSrc="/images/onboarding/section2Meeting.png"
+          imageSrc="/images/onboarding/section2Party.png"
           reverse={true}
         />
       </div>

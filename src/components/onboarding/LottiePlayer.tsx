@@ -7,7 +7,7 @@ import lottie from '@/../public/images/onboarding/downLottie.json'
 export default function LottiePlayer() {
   const handleClick = useCallback(() => {
     window.scrollTo({
-      top: 1600,
+      top: 1200,
       behavior: 'smooth',
     })
   }, [])
@@ -16,7 +16,7 @@ export default function LottiePlayer() {
       loop
       animationData={lottie}
       play
-      className="w-24 mt-60 h-28 cursor-pointer"
+      className="w-24 mt-40 h-28 cursor-pointer"
       onClick={handleClick}
     />
   )

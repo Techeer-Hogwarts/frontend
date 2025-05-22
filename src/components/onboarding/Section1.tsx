@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import dynamic from 'next/dynamic'
+import BootcampBtn from './BootcampBtn'
 
 const LottiePlayer = dynamic(
   () => import('@/components/onboarding/LottiePlayer'),
@@ -23,16 +24,23 @@ export default function Section1() {
         />
       </div>
 
-      <div className="relative z-10 flex flex-col items-center justify-center overflow-x-hidden text-5xl font-semibold text-white pt-80">
-        <p>테커는 일회용 취업이 아닌</p>
-        <p className="mt-4">
-          <span className="text-primary">장기적인 커리어</span>를 만듭니다.
+      <div className="relative z-10 flex flex-col bottom-20 items-center justify-center overflow-x-hidden text-6xl font-bold text-white pt-80">
+        <p className="bg-gradient-to-r from-white to-[#cecece] text-transparent bg-clip-text">
+          일회용 취업이 아닌
         </p>
-        <p className="mt-6 text-2xl font-normal">
-          테커는 그 지속 가능성을 함께 만듭니다.
+        <p className="mt-4 mb-16 bg-gradient-to-r from-white to-[#cecece] text-transparent bg-clip-text">
+          <span className="text-[#F57601]">장기적인 커리어</span>를 만드는
+          사람들
         </p>
+
+        <BootcampBtn />
         <LottiePlayer />
       </div>
     </div>
   )
+}
+{
+  /* <p className="mt-6 text-2xl font-normal">
+          테커는 그 지속 가능성을 함께 만듭니다.
+        </p> */
 }

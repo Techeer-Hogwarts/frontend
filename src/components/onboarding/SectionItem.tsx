@@ -26,10 +26,13 @@ export default function SectionItem({
 }: SectionItemProps) {
   return (
     <motion.div
-      initial="hidden"
-      whileInView="visible"
-      variants={fadeInVariants}
-      viewport={{ amount: 0.01, once: false }}
+      initial={{ opacity: 0, y: 10 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{
+        ease: 'easeInOut',
+        duration: 1,
+      }}
     >
       <div
         className={`relative z-40 flex items-center px-32 gap-14 ${
@@ -40,9 +43,14 @@ export default function SectionItem({
           <Image src={imageSrc} alt="section" width={360} height={420} />
         )}
         <div>
-          <div className="mb-12 text-3xl font-semibold">
+          <div className="mb-12 text-3xl font-semibold border-r-">
             {title.map((line, idx) => (
-              <p key={idx}>{line}</p>
+              <p
+                key={idx}
+                className={`border-primary ${reverse ? 'border-r-[7px] pr-3' : 'border-l-[7px] pl-3'}`}
+              >
+                {line}
+              </p>
             ))}
           </div>
           <div className="font-normal text-md">
