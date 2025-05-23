@@ -15,7 +15,7 @@ export default function Section1() {
     <div className="relative min-w-[1200px] w-screen h-[calc(130vh+5rem)] -top-20 left-1/2 -translate-x-1/2 ">
       <div className="absolute inset-0 z-0 overflow-x-hidden">
         <Image
-          src="/images/onboarding/section1main.png"
+          src="/images/onboarding/section1main2.png"
           alt="section1"
           fill
           className="object-top"
