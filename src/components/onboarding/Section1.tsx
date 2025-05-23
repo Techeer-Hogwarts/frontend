@@ -12,13 +12,13 @@ const LottiePlayer = dynamic(
 
 export default function Section1() {
   return (
-    <div className="relative min-w-[1200px] w-screen h-[calc(130vh+5rem)] -top-20 left-1/2 -translate-x-1/2 ">
-      <div className="absolute inset-0 z-0 overflow-x-hidden">
+    <div className="relative  w-screen min-w-[1200px] min-h-fit -top-20 left-1/2 -translate-x-1/2 ">
+      <div className="absolute inset-0 z-0 overflow-x-hidden min-h-[1000px] h-fit">
         <Image
           src="/images/onboarding/section1main2.png"
           alt="section1"
           fill
-          className="object-top object-cover"
+          className="object-cover"
           priority
           unoptimized
         />
@@ -38,9 +38,4 @@ export default function Section1() {
       </div>
     </div>
   )
-}
-{
-  /* <p className="mt-6 text-2xl font-normal">
-          테커는 그 지속 가능성을 함께 만듭니다.
-        </p> */
 }

@@ -2,35 +2,7 @@ import SectionItem from './SectionItem'
 
 export default function Section2() {
   return (
-    <div className="relative min-w-[1200px] z-20 h-fit left-1/2 mt-20 mb-60 -translate-x-1/2">
-      {/* <div className="sticky top-1/3 left-0 w-full h-[300px] pointer-events-none">
-        <AnimatePresence>
-          {hasEntered && inView && (
-            <motion.div
-              key="sticky-images"
-              initial="hidden"
-              animate="visible"
-              exit="exit"
-              variants={fadeVariants}
-            >
-              <Image
-                src="/images/onboarding/right.png"
-                alt="right"
-                className="absolute right-0"
-                width={280}
-                height={300}
-              />
-              <Image
-                src="/images/onboarding/left.png"
-                alt="left"
-                className="absolute left-0"
-                width={280}
-                height={300}
-              />
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div> */}
+    <div className="relative min-w-[1200px] z-20 h-fit left-1/2  mb-60 -translate-x-1/2">
       <div className="gap-32 flex flex-col">
         <SectionItem
           title={['함께 몰입하고 함께 성장하는', '팀과 개인의 배움의 여정']}
@@ -42,7 +14,6 @@ export default function Section2() {
           imageSrc="/images/onboarding/section2Table.png"
           reverse={true}
         />
-
         <SectionItem
           title={['실무 기반 학습과 함께하는', '깊이 있는 네트워킹']}
           description={[
