@@ -18,7 +18,7 @@ export default function Section1() {
           src="/images/onboarding/section1main2.png"
           alt="section1"
           fill
-          className="object-top"
+          className="object-top object-cover"
           priority
           unoptimized
         />
