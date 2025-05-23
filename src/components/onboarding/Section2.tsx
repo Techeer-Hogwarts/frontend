@@ -39,7 +39,7 @@ export default function Section2() {
             '집중도 높은 환경에서 실력을 키우고',
             '개인과 팀이 함께 성장하는 과정을 경험합니다.',
           ]}
-          imageSrc="/images/onboarding/section2Meeting.png"
+          imageSrc="/images/onboarding/section2Table.png"
           reverse={true}
         />
 
