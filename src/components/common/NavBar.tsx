@@ -38,12 +38,19 @@ interface BasicResult {
   url?: string
 }
 
+const navItems: { key: string; href: string }[] = [
+  { key: 'project', href: '/project' },
+  { key: 'profile', href: '/profile' },
+  { key: 'resume', href: '/resume' },
+  { key: 'blog', href: '/blog' },
+  { key: 'session', href: '/session' },
+]
+
 export default function NavBar() {
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const [query, setQuery] = useState('')
   const [basicResults, setBasicResults] = useState<BasicResult[]>([])
-  const [finalResults, setFinalResults] = useState([])
-  const { isLoggedIn, logout } = useAuthStore()
+  const { isLoggedIn, logout, checkAuth } = useAuthStore()
   const router = useRouter()
   const pathname = usePathname()
 
@@ -62,60 +69,6 @@ export default function NavBar() {
     session: '세션',
     profile: '프로필',
   }
-
-  const toggleSearch = () => {
-    if (isSearchOpen) {
-      setIsSearchOpen(false)
-      setQuery('')
-      setBasicResults([])
-    } else {
-      setIsSearchOpen(true)
-    }
-  }
-
-  useEffect(() => {
-    // debouncedQuery가 바뀔 때마다 /api/v2/search/basic 호출
-    if (debouncedQuery) {
-      const fetchBasicResults = async () => {
-        const data = await getBasicSearchResults(debouncedQuery)
-        setBasicResults(data.results)
-      }
-      fetchBasicResults()
-    }
-  }, [debouncedQuery])
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-
-    // 자동완성창 닫기 및 검색어 초기화
-    setIsSearchOpen(false)
-    setQuery('')
-    setBasicResults([])
-
-    if (query) {
-      const data = await getFinalSearchResults(query)
-      setFinalResults(data)
-      router.push(`/search/final?query=${query}`)
-    }
-  }
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        searchRef.current &&
-        !searchRef.current.contains(event.target as Node)
-      ) {
-        setQuery('')
-        setIsSearchOpen(false) // 자동완성 창 닫기
-      }
-    }
-
-    document.addEventListener('mouseup', handleClickOutside)
-    return () => {
-      document.removeEventListener('mouseup', handleClickOutside)
-    }
-  }, [])
-
   const handleSelectResult = async (
     selectedTitle: string,
     section: string,
@@ -154,21 +107,68 @@ export default function NavBar() {
     }
   }
 
-  const navItems: { key: string; href: string }[] = [
-    { key: 'project', href: '/project' },
-    { key: 'profile', href: '/profile' },
-    { key: 'resume', href: '/resume' },
-    { key: 'blog', href: '/blog' },
-    { key: 'session', href: '/session' },
-  ]
+  const visibleNavItems = isLoggedIn
+    ? navItems
+    : navItems.filter((item) => item.key !== 'resume' && item.key !== 'session')
+  const toggleSearch = () => {
+    if (isSearchOpen) {
+      setIsSearchOpen(false)
+      setQuery('')
+      setBasicResults([])
+    } else {
+      setIsSearchOpen(true)
+    }
+  }
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    // 자동완성창 닫기 및 검색어 초기화
+    setIsSearchOpen(false)
+    setQuery('')
+    setBasicResults([])
+
+    if (query) {
+      await getFinalSearchResults(query)
+      router.push(`/search/final?query=${query}`)
+    }
+  }
+
+  useEffect(() => {
+    // 로그인 확인
+    checkAuth()
+    // debouncedQuery가 바뀔 때마다 /api/v2/search/basic 호출
+    if (debouncedQuery) {
+      const fetchBasicResults = async () => {
+        const data = await getBasicSearchResults(debouncedQuery)
+        setBasicResults(data.results)
+      }
+      fetchBasicResults()
+    }
+  }, [debouncedQuery])
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        searchRef.current &&
+        !searchRef.current.contains(event.target as Node)
+      ) {
+        setQuery('')
+        setIsSearchOpen(false) // 자동완성 창 닫기
+      }
+    }
+
+    document.addEventListener('mouseup', handleClickOutside)
+    return () => {
+      document.removeEventListener('mouseup', handleClickOutside)
+    }
+  }, [])
 
   return (
     <div
       ref={searchRef}
-      className="flex items-center w-[1280px] max-w-[1280px] h-[4rem] justify-between"
+      className="flex items-center z-50 relative w-[1200px] max-w-[1200px] h-[4rem] justify-between"
     >
       <div className="flex">
-        {/* 로고 */}
         <Link
           href="/"
           className="font-logo text-primary text-[2rem] font-extrabold mr-[2.12rem]"
@@ -178,14 +178,13 @@ export default function NavBar() {
 
         {/* 메뉴 */}
         <div className="flex items-center gap-[1.62rem]">
-          {navItems.map((item) => {
-            // (C) 현재 경로(pathname)가 item.href로 시작하면 active 스타일
+          {visibleNavItems.map((item) => {
             const isActive = pathname.startsWith(item.href)
             return (
               <Link
                 key={item.key}
                 href={item.href}
-                className={`hover:text-primary cursor-pointer ${
+                className={`hover:text-primary cursor-pointer ${pathname == '/' ? 'text-white' : ''} ${
                   isActive ? 'text-primary' : ''
                 }`}
               >
@@ -195,87 +194,105 @@ export default function NavBar() {
           })}
         </div>
       </div>
+      {/* 우측 메뉴 */}
       <div className="flex items-center cursor-pointer">
-        {/* 돋보기 및 기타 아이콘 */}
-        <div className="flex items-center">
-          {/* 검색 영역 */}
-          <div className="p-2 relative">
-            <form onSubmit={handleSubmit} className="flex items-center">
-              <button
-                type="button"
-                aria-label="검색"
-                className="focus:outline-none flex items-center border rounded-full px-1 transition-all duration-300 ease-in-out"
-              >
-                <IoSearchOutline onClick={toggleSearch} />
-                <input
-                  type="text"
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  placeholder="검색어를 입력하세요"
-                  className={`${
-                    isSearchOpen ? 'w-[18rem] rounded-xl px-2' : 'w-0  px-0'
-                  } transition-all duration-300 ease-in-out focus:outline-none`}
-                />
-              </button>
-            </form>
-            {/* 자동완성 결과 출력 */}
-            {debouncedQuery && (
-              <ul className="absolute bg-white border border-gray rounded-lg mt-1 w-[314px] max-h-[17rem] overflow-y-auto z-10">
-                {basicResults && basicResults.length > 0 ? (
-                  basicResults.map((result, index) => {
-                    const truncatedTitle =
-                      result.title.length > 16
-                        ? result.title.slice(0, 16) + '...'
-                        : result.title
-                    return (
-                      <div
-                        key={result.id}
-                        className="flex items-center pl-4 hover:bg-lightprimary"
-                      >
-                        <IoSearchOutline
-                          className="w-3"
-                          onClick={toggleSearch}
-                        />
-                        <li
-                          key={index}
-                          className="p-1 cursor-pointer font-light"
-                          onClick={() =>
-                            handleSelectResult(
-                              result.title.split('-').slice(-1).join(' '),
-                              result.index,
-                              result.id,
-                              result.url,
-                            )
-                          }
+        {isLoggedIn === true && pathname !== '/' && (
+          <div className="flex items-center">
+            {/* 검색 영역 */}
+            <div className="relative p-2">
+              <form onSubmit={handleSubmit} className="flex items-center">
+                <button
+                  type="button"
+                  aria-label="검색"
+                  className="flex items-center px-1 transition-all duration-300 ease-in-out border rounded-full focus:outline-none"
+                >
+                  <IoSearchOutline onClick={toggleSearch} />
+                  <input
+                    type="text"
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    placeholder="검색어를 입력하세요"
+                    className={`${
+                      isSearchOpen ? 'w-[18rem] rounded-xl px-2' : 'w-0  px-0'
+                    } transition-all duration-300 ease-in-out focus:outline-none`}
+                  />
+                </button>
+              </form>
+              {/* 자동완성 결과 출력 */}
+              {debouncedQuery && (
+                <ul className="absolute bg-white border border-gray rounded-lg mt-1 w-[314px] max-h-[17rem] overflow-y-auto z-10">
+                  {basicResults && basicResults.length > 0 ? (
+                    basicResults.map((result, index) => {
+                      const truncatedTitle =
+                        result.title.length > 16
+                          ? result.title.slice(0, 16) + '...'
+                          : result.title
+                      return (
+                        <div
+                          key={result.id}
+                          className="flex items-center pl-4 hover:bg-lightprimary"
                         >
-                          <span className=" text-primary text-sm">
-                            {indexMap[result.index] || result.index}
-                            <span className="text-gray"> &nbsp; | &nbsp;</span>
-                          </span>
-                          {truncatedTitle}
-                        </li>
-                      </div>
-                    )
-                  })
-                ) : (
-                  <li className="p-2 text-darkgray">검색 결과 없음</li>
-                )}
-              </ul>
-            )}
+                          <IoSearchOutline
+                            className="w-3"
+                            onClick={toggleSearch}
+                          />
+                          <li
+                            key={index}
+                            className="p-1 font-light cursor-pointer"
+                            onClick={() =>
+                              handleSelectResult(
+                                result.title.split('-').slice(-1).join(' '),
+                                result.index,
+                                result.id,
+                                result.url,
+                              )
+                            }
+                          >
+                            <span className="text-sm  text-primary">
+                              {indexMap[result.index] || result.index}
+                              <span className="text-gray">
+                                {' '}
+                                &nbsp; | &nbsp;
+                              </span>
+                            </span>
+                            {truncatedTitle}
+                          </li>
+                        </div>
+                      )
+                    })
+                  ) : (
+                    <li className="p-2 text-darkgray">검색 결과 없음</li>
+                  )}
+                </ul>
+              )}
+            </div>
           </div>
-        </div>
-        {/* 캘린더 아이콘 */}
-        <Link href="/calendar" className="p-2 cursor-pointer">
-          <IoCalendarOutline size={24} />
-        </Link>
-        {/* 마이페이지 아이콘 */}
-        <Link href="/mypage" className="p-[6px] cursor-pointer">
-          <IoPersonCircle size={28} />
-        </Link>
-        {isLoggedIn ? (
+        )}
+        {/* 돋보기 및 기타 아이콘 */}
+
+        {isLoggedIn === true && (
+          <>
+            {/* 캘린더 아이콘 */}
+            <Link href="/calendar" className="p-2 cursor-pointer">
+              <IoCalendarOutline
+                size={24}
+                className={`${pathname == '/' ? 'text-white' : ''}`}
+              />
+            </Link>
+            {/* 마이페이지 아이콘 */}
+            <Link href="/mypage" className="p-[6px] cursor-pointer">
+              <IoPersonCircle
+                size={28}
+                className={`${pathname == '/' ? 'text-white' : ''}`}
+              />
+            </Link>
+          </>
+        )}
+
+        {isLoggedIn === true ? (
           <button
             type="button"
-            className="ml-4 hover:text-primary cursor-pointer"
+            className={`ml-4 hover:text-primary cursor-pointer ${pathname == '/' ? 'text-white' : ''}`}
             onClick={handleLogout}
           >
             로그아웃
@@ -283,7 +300,7 @@ export default function NavBar() {
         ) : (
           <Link
             href="/login"
-            className="ml-4 hover:text-primary cursor-pointer"
+            className={`ml-4 hover:text-primary cursor-pointer ${pathname == '/' ? 'text-white' : ''}`}
           >
             로그인
           </Link>
