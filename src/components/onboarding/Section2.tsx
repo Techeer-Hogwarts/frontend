@@ -34,7 +34,7 @@ export default function Section2() {
             '현업에서 활동 중인 실무자 멘토와 함께 고민을 나누며',
             '혼자서가 아닌 방식으로 성장할 수 있습니다.',
           ]}
-          imageSrc="/images/onboarding/section2Party.png"
+          imageSrc="/images/onboarding/section2zoom.png"
           reverse={true}
         />
       </div>
