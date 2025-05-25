@@ -12,8 +12,8 @@ const LottiePlayer = dynamic(
 
 export default function Section1() {
   return (
-    <div className="relative  w-screen min-w-[1200px] min-h-fit -top-20 left-1/2 -translate-x-1/2 ">
-      <div className="absolute inset-0 z-0 overflow-x-hidden min-h-[1000px] h-fit">
+    <div className="relative  w-screen h-[100vh+10rem] min-w-[1200px] min-h-fit -top-20 left-1/2 -translate-x-1/2 mb-80">
+      <div className="absolute inset-0 z-0 overflow-x-hidden min-h-[1300px] h-[100vh+10rem]">
         <Image
           src="/images/onboarding/section1main2.png"
           alt="section1"
