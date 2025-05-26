@@ -1,26 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
-
-interface TeamBase {
-  id: number
-  isDeleted: boolean
-  isRecruited: boolean
-  isFinished: boolean
-  name: string
-  createdAt: string
-}
-
-interface ProjectTeam extends TeamBase {
-  type: 'project'
-  frontendNum: number
-  backendNum: number
-  devopsNum: number
-  fullStackNum: number
-  dataEngineerNum: number
-  projectExplain: string
-  mainImages?: string[]
-  teamStacks: { stackName: string; isMain: boolean }[]
-}
+import type { ProjectTeam } from '@/types/project/project'
 
 export default function ProjectCard({ team }: { team: ProjectTeam }) {
   const mainImageUrl = team.mainImages[0]
