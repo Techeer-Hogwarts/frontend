@@ -14,7 +14,7 @@ export default meta
 
 type Story = StoryObj<typeof meta>
 const onDelete = (id: string) => {}
-const likeList = ['테스트']
+const likeList = [{ id: 1 }, { id: 2 }, { id: 4 }]
 export const Default: Story = {
   args: {
     title: '동계 부트캠프 회고록',

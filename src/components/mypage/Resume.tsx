@@ -11,8 +11,6 @@ import { useLike } from '@/app/blog/_lib/useLike'
 import { useBookmark } from '@/app/blog/_lib/useBookmark'
 import SkeletonResumeFolder from '@/components/resume/SkeletonResume'
 import { usePathname } from 'next/navigation'
-import AuthModal from '@/components/common/AuthModal'
-import { useAuthStore } from '@/store/authStore'
 
 interface Resume {
   id: string
@@ -38,7 +36,6 @@ export default function Resume({ userId }) {
   const [isLoading, setIsLoading] = useState(true)
   const [isError, setIsError] = useState(false)
   const [modal, setModal] = useState(false)
-
   const [resumes, setResumes] = useState<Resume[]>([])
   const [limit, setLimit] = useState(6)
   const [ref, inView] = useInView({ threshold: 0.1 })
@@ -48,9 +45,6 @@ export default function Resume({ userId }) {
   const { fetchBookmarks } = useBookmark()
 
   const pathname = usePathname()
-  const [authModalOpen, setAuthModalOpen] = useState(false)
-  const { user } = useAuthStore()
-
   const isMyPage = pathname === '/mypage'
 
   // API 호출
@@ -143,12 +137,6 @@ export default function Resume({ userId }) {
   // 렌더
   return (
     <div>
-      {/* 인증 모달 */}
-      <AuthModal
-        isOpen={authModalOpen}
-        onClose={() => setAuthModalOpen(false)}
-      />
-
       {/* 상단 영역 */}
       <div className="flex w-[890px] justify-end mb-4">
         {isMyPage && (
@@ -161,27 +149,31 @@ export default function Resume({ userId }) {
         )}
         {modal && <AddResume setModal={setModal} fetchData={fetchData} />}
       </div>
-      {data.length === 0 ? (
-        // (A) 이력서 데이터가 없을 때
-        <div className="text-center text-gray">등록된 이력서가 없습니다.</div>
-      ) : (
-        // (B) 이력서 데이터가 있을 때
-        <Link href={`/resume/$[resume.id]`}>
-          <div className="grid grid-cols-3 gap-8">
-            {resumes.map((resume) => (
-              <ResumeFolder
-                key={resume.id}
-                likeCount={resume.likeCount}
-                resume={resume}
-                likeList={likeList}
-                onLikeUpdate={handleLikeUpdate}
-                bookmarkList={bookmarkList}
-                onBookmarkUpdate={handleBookmarkUpdate}
-              />
-            ))}
-          </div>
-        </Link>
-      )}
+
+      <Link href={`/resume/$[resume.id]`}>
+        <div className="grid grid-cols-3 gap-8">
+          {isLoading && (
+            <div className="flex gap-10">
+              <SkeletonResumeFolder />
+              <SkeletonResumeFolder />
+              <SkeletonResumeFolder />
+            </div>
+          )}
+
+          {resumes.map((resume) => (
+            <ResumeFolder
+              key={resume.id}
+              likeCount={resume.likeCount}
+              resume={resume}
+              likeList={likeList}
+              onLikeUpdate={handleLikeUpdate}
+              bookmarkList={bookmarkList}
+              onBookmarkUpdate={handleBookmarkUpdate}
+            />
+          ))}
+        </div>
+      </Link>
+      {/* )} */}
     </div>
   )
 }

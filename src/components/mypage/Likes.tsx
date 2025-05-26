@@ -120,7 +120,7 @@ export default function Likes() {
 
   return (
     <div className="w-[890px]">
-      <TapBar options={tapBarOptions} onSelect={handleCategoryChange} />
+      <TapBar options={tapBarOptions} />
       <div className="flex w-full h-[1px] mt-5 bg-gray" />
 
       {isLoading ? (
@@ -160,7 +160,7 @@ export default function Likes() {
                   likeCount={like.likeCount}
                   userName={like.user.name}
                   userImage={like.user.profileImage}
-                  authorName={like.author.authorName}
+                  authorName={like.author?.authorName}
                   authorImage={like.author?.authorImage}
                   image={like.thumbnail}
                   onDelete={like}
@@ -171,15 +171,7 @@ export default function Likes() {
               return (
                 <SessionPost
                   key={like.id}
-                  likeCount={like.likeCount}
-                  id={like.id}
-                  thumbnail={like.thumbnail}
-                  title={like.title}
-                  date={like.date}
-                  presenter={like.presenter}
-                  fileUrl={like.fileUrl}
-                  showMessage={like}
-                  userImage={like.user.profileImage}
+                  {...like}
                   likeList={likeList}
                   onLikeUpdate={like}
                 />

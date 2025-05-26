@@ -133,7 +133,7 @@ export default function Bookmark() {
   return (
     <div>
       <div className="w-[890px]">
-        <TapBar options={tapBarOptions} onSelect={handleCategoryChange} />
+        <TapBar options={tapBarOptions} />
         <div className="flex w-full h-[1px] mt-5 bg-gray" />
       </div>
       {isLoading ? (
@@ -174,7 +174,7 @@ export default function Bookmark() {
                   likeCount={bookmark.likeCount}
                   userName={bookmark.user.name}
                   userImage={bookmark.user.profileImage}
-                  authorName={bookmark.author.authorName}
+                  authorName={bookmark.author?.authorName}
                   image={bookmark.thumbnail}
                   authorImage={bookmark.author?.authorImage}
                   onDelete={bookmark}
@@ -185,15 +185,7 @@ export default function Bookmark() {
               return (
                 <SessionPost
                   key={bookmark.id}
-                  likeCount={bookmark.likeCount}
-                  id={bookmark.id}
-                  thumbnail={bookmark.thumbnail}
-                  title={bookmark.title}
-                  date={bookmark.date}
-                  presenter={bookmark.presenter}
-                  fileUrl={bookmark.fileUrl}
-                  showMessage={bookmark}
-                  userImage={bookmark.user.profileImage}
+                  {...bookmark}
                   likeList={likeList}
                   onLikeUpdate={bookmark}
                 />

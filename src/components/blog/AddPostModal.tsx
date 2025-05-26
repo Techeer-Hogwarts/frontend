@@ -1,37 +1,12 @@
 'use client'
 
 import Image from 'next/image'
-import { useRouter } from 'next/navigation'
-import { useState } from 'react'
 import ModalInputField from '../common/ModalInputField'
+import { usePostBlog } from '@/hooks/blog/usePostBlog'
 
 export default function AddPostModal() {
-  const router = useRouter()
-  const [blogLink, setBlogLink] = useState('')
-  const handleBack = () => {
-    router.back()
-  }
-
-  const handleInputChange = (e: any) => {
-    setBlogLink(e.target.value)
-  }
-
-  const PostBlog = async () => {
-    try {
-      const blogUrl = encodeURIComponent(blogLink)
-      const response = await fetch(`/api/v1/blogs?url=${blogUrl}`, {
-        method: 'POST',
-        credentials: 'include',
-      })
-      if (!response.ok) {
-        throw new Error('블로그 데이터를 업로드하는 데 실패했습니다.')
-      }
-      setBlogLink('')
-      alert('블로그 글을 추가하였습니다.')
-      window.location.href = '/blog'
-    } catch (err) {
-    }
-  }
+  const { blogLink, handleInputChange, handlePostBlog, handleBack } =
+    usePostBlog()
 
   return (
     <div className="w-screen h-screen flex items-center justify-center bg-black/50 fixed inset-0">
@@ -51,10 +26,9 @@ export default function AddPostModal() {
           <ModalInputField
             title="블로그 링크를 입력해주세요"
             placeholder="www.TecheerBlog.com"
-            name="title"
             essential="*"
             value={blogLink}
-            handleInputChange={handleInputChange}
+            onChange={handleInputChange}
           />
         </div>
         <div className="flex gap-4 mt-6">
@@ -67,7 +41,7 @@ export default function AddPostModal() {
           </button>
           <button
             type="button"
-            onClick={PostBlog}
+            onClick={handlePostBlog}
             className="w-[200px] rounded-md text-sm h-[34px] bg-primary text-white"
           >
             등록

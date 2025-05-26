@@ -4,11 +4,15 @@ import { MdDeleteOutline } from 'react-icons/md'
 import { MdBookmarkBorder } from 'react-icons/md'
 import { useBookmark } from '@/app/blog/_lib/useBookmark'
 
-interface blogMenuProps {
+interface BlogMenuProps {
   id: string
   onDelete: (id: string) => void
   setModalOpen: (open: boolean) => void
   setModalMessage: (message: string) => void
+}
+
+interface BookmarkProps {
+  id: string
 }
 
 export default function BlogMenu({
@@ -16,7 +20,7 @@ export default function BlogMenu({
   onDelete,
   setModalOpen,
   setModalMessage,
-}: blogMenuProps) {
+}: BlogMenuProps) {
   // const blogDelete = async () => {
   //   try {
   //     const response = await fetch(
@@ -47,14 +51,15 @@ export default function BlogMenu({
     try {
       await postBookmark(id, category, bookmarkStatus)
     } catch (err) {
+      console.error(err)
     }
   }
   const clickBookmark = async () => {
     try {
       const data = await fetchBookmarks('BLOG', 0, 50)
-      if (data.find((bookmark: any) => bookmark.id === id)) {
+      if (data.find((bookmark: BookmarkProps) => bookmark.id === id)) {
         await addCancelBookmark(id, 'BLOG', false)
-        setModalMessage('북마크에 취소하였습니다.')
+        setModalMessage('북마크를 취소하였습니다.')
       } else {
         await addCancelBookmark(id, 'BLOG', true)
         setModalMessage('북마크에 저장되었습니다.')
@@ -62,14 +67,21 @@ export default function BlogMenu({
       setModalOpen(true)
       setTimeout(() => setModalOpen(false), 2000)
     } catch (err) {
+      setModalMessage('오류가 발생했습니다.')
+      setModalOpen(true)
+      setTimeout(() => setModalOpen(false), 2000)
     }
   }
+
   return (
     <div className="absolute right-1 z-50 top-6 flex flex-col item-center justify-center w-[100px] text-sm h-auto border bg-white border-lightgray rounded-md">
       <button
         type="button"
         className="flex items-center justify-start gap-1 py-1 pl-3 hover:bg-black/10"
-        onClick={clickBookmark}
+        onClick={(e) => {
+          e.stopPropagation()
+          clickBookmark()
+        }}
       >
         <MdBookmarkBorder className="w-4 h-4" />
         북마크
