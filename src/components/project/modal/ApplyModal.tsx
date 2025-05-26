@@ -1,52 +1,76 @@
+// components/ApplyModal.tsx
+
 'use client'
 
-import { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import Image from 'next/image'
 import { useParams, useRouter } from 'next/navigation'
 import { useQueryClient } from '@tanstack/react-query'
-import { handleApplyStudy } from '@/api/project/study/study'
-import { handleApplyProject } from '@/api/project/project/project'
 import { getPositionStyle } from '@/styles/positionStyles'
 
-export default function ApplyModal() {
-  const [apply, setApply] = useState('')
+// 프로젝트 지원 API
+import { handleApplyProject } from '@/api/project/project/project'
+// 스터디 지원 API
+import { handleApplyStudy } from '@/api/project/study/study'
+
+interface ApplyModalProps {
+  /** 'project' 또는 'study' 모드 지정 */
+  variant: 'project' | 'study'
+}
+
+export default function ApplyModal({ variant }: ApplyModalProps) {
+  const [summary, setSummary] = useState('')
   const [position, setPosition] = useState('')
   const router = useRouter()
   const params = useParams()
-  const projectId = Number(params.id)
+  const teamId = Number(params.id)
 
   const queryClient = useQueryClient()
 
-  // 지원동기(요약) 입력 핸들러
-  const handleApply = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setApply(e.target.value)
+  // 지원 동기 입력 핸들러
+  const handleChangeSummary = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setSummary(e.target.value)
   }
 
   // 저장(지원) 버튼 클릭
   const handleSave = async () => {
+    if (!summary) {
+      alert('지원 동기를 입력해주세요.')
+      return
+    }
+    if (variant === 'project' && !position) {
+      alert('지원하고자 하는 포지션을 선택해주세요.')
+      return
+    }
+
     try {
-      if (!apply) {
-        alert('지원 동기를 입력해주세요.')
-        return
+      if (variant === 'project') {
+        await handleApplyProject({
+          projectTeamId: teamId,
+          teamRole: position,
+          summary,
+        })
+        queryClient.invalidateQueries({
+          queryKey: ['getProjectDetails', teamId],
+        })
+        queryClient.invalidateQueries({
+          queryKey: ['getProjectApplicants', teamId],
+        })
+      } else {
+        await handleApplyStudy({ studyTeamId: teamId, summary })
+        queryClient.invalidateQueries({ queryKey: ['getStudyDetails', teamId] })
+        queryClient.invalidateQueries({
+          queryKey: ['getStudyApplicants', teamId],
+        })
       }
-      if (!position) {
-        alert('지원하고자 하는 포지션을 선택해주세요.')
-        return
-      }
-      const data = {
-        projectTeamId: projectId,
-        teamRole: position,
-        summary: apply,
-      }
-      const result = await handleApplyProject(data)
-      queryClient.invalidateQueries({
-        queryKey: ['getStudyApplicants', projectId],
-      })
       router.back()
     } catch (error) {
-      alert('지원에 실패했습니다. 모집하지 않는 포지션입니다.')
+      alert('지원에 실패했습니다.')
     }
   }
+
+  // 프로젝트 모드에서만 포지션 선택
+  const roles = ['Frontend', 'Backend', 'DevOps', 'FullStack', 'DataEngineer']
 
   return (
     <div className="z-50 fixed inset-0 flex justify-center items-center bg-black bg-opacity-70 text-center">
@@ -57,63 +81,62 @@ export default function ApplyModal() {
             src="/images/project/modal/applyIcon.png"
             width={100}
             height={100}
-            alt="img"
+            alt="apply icon"
           />
         </div>
 
-        {/* (A) 프로젝트일 경우 → 포지션 선택 */}
-        <div className="mb-4">
-          <p className="text-left mb-2">지원하고자하는 포지션을 선택주세요</p>
-          <div className="w-full flex justify-between mb-[2.5rem] gap-2">
-            {['Frontend', 'Backend', 'DevOps', 'FullStack', 'DataEngineer'].map(
-              (el) => {
-                const { bg, textColor } = getPositionStyle(el)
+        {/* (A) 포지션 선택 (프로젝트만) */}
+        {variant === 'project' && (
+          <div className="mb-4">
+            <p className="text-left mb-2">
+              지원하고자 하는 포지션을 선택해주세요
+            </p>
+            <div className="w-full flex justify-between mb-[2.5rem] gap-2">
+              {roles.map((role) => {
+                const { bg, textColor } = getPositionStyle(role)
+                const selected = position === role
+                const cls = selected
+                  ? `${bg} ${textColor}`
+                  : 'bg-white border border-lightprimary'
                 return (
                   <button
-                    key={el}
-                    className={`px-2 h-[1.75rem]  rounded-md ${
-                      position === el
-                        ? `bg-${bg} ${textColor} mx-[1px]`
-                        : 'bg-white border border-lightprimary'
-                    } `}
-                    onClick={() => {
-                      setPosition(el)
-                    }}
+                    key={role}
+                    className={`${cls} px-2 h-[1.75rem] rounded-md`}
+                    onClick={() => setPosition(role)}
                   >
-                    {el}
+                    {role}
                   </button>
                 )
-              },
-            )}
+              })}
+            </div>
           </div>
-        </div>
+        )}
 
-        {/* (B) 지원동기(요약) 입력 */}
+        {/* (B) 지원 동기 입력 */}
         <div className="mb-4">
           <p className="text-left mb-2">
-            지원동기를 입력해주세요(30자 이내로 작성해주세요)
+            지원동기를 입력해주세요{variant === 'project' ? '(30자 이내)' : ''}
           </p>
           <textarea
             className="w-full h-[9.3125rem] border border-gray rounded-sm p-2 focus:outline-none"
-            value={apply}
-            onChange={handleApply}
+            value={summary}
+            onChange={handleChangeSummary}
+            maxLength={variant === 'project' ? 30 : undefined}
           />
         </div>
 
-        {/* (C) 하단 버튼 영역 */}
+        {/* (C) 버튼 영역 */}
         <div className="flex gap-4 mt-6 justify-between">
           <button
             type="button"
             onClick={() => router.back()}
-            className=" w-full rounded-md text-sm h-[34px] bg-white text-gray border border-lightgray"
+            className="w-full rounded-md text-sm h-[34px] bg-white text-gray border border-lightgray"
           >
             취소
           </button>
           <button
             type="button"
-            className={` w-full rounded-md text-sm h-[34px] ${
-              apply ? 'bg-primary text-white' : 'bg-lightgray'
-            }`}
+            className={`w-full rounded-md text-sm h-[34px] ${summary ? 'bg-primary text-white' : 'bg-lightgray'}`}
             onClick={handleSave}
           >
             저장

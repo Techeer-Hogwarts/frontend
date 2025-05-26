@@ -157,6 +157,7 @@ export default function ProjectDetailpage() {
       )}
       {isApplicantModalOpen && selectedApplicant && (
         <ApplicantModal
+          variant="project"
           applicant={selectedApplicant}
           onClose={handleModalClose}
         />

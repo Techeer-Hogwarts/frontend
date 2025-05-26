@@ -8,7 +8,7 @@ import StudyPlan from '@/components/project/detail/study/StudyPlan'
 import Results from '@/components/project/detail/Results'
 import BaseModal from '@/components/project/modal/BaseModal'
 import Applicants from '@/components/project/detail/Applicants'
-import ApplicantModal from '@/components/project/modal/study/ApplicantModal'
+import ApplicantModal from '@/components/project/modal/ApplicantModal'
 import { useAuthStore } from '@/store/authStore'
 import AuthModal from '@/components/common/AuthModal'
 
@@ -150,7 +150,11 @@ export default function ProjectDetailpage() {
         />
       )}
       {isApplicantModalOpen && (
-        <ApplicantModal applicant={selectedApplicant} onClose={onClose} />
+        <ApplicantModal
+          variant="study"
+          applicant={selectedApplicant}
+          onClose={onClose}
+        />
       )}
 
       {/* 편집하기 버튼 & 삭제 버튼: 사용자가 studyMember일 경우만 렌더링 */}
