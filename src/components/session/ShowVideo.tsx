@@ -1,10 +1,10 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { useParams, useRouter } from 'next/navigation'
 import AuthModal from '@/components/common/AuthModal'
+import { useParams } from 'next/navigation'
+import { useEffect, useState } from 'react'
 import { useAuthStore } from '@/store/authStore'
-import { getSingleSession } from '@/app/session/_lib/getSingleSession'
+import { getSingleSession } from '@/api/session/session'
 
 export default function ShowVideo() {
   const params = useParams()

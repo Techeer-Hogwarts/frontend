@@ -171,15 +171,7 @@ export default function Likes() {
               return (
                 <SessionPost
                   key={like.id}
-                  likeCount={like.likeCount}
-                  id={like.id}
-                  thumbnail={like.thumbnail}
-                  title={like.title}
-                  date={like.date}
-                  presenter={like.presenter}
-                  fileUrl={like.fileUrl}
-                  showMessage={like}
-                  userImage={like.user.profileImage}
+                  {...like}
                   likeList={likeList}
                   onLikeUpdate={like}
                 />

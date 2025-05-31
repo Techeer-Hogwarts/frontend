@@ -27,7 +27,7 @@
     "@types/react-datepicker": "^7.0.0",
     "dayjs": "^1.11.13",
     "eslint-config-airbnb": "^19.0.4",
-    "framer-motion": "^12.4.7",
+    "framer-motion": "9.0.4",
     "js-cookie": "^3.0.5",
     "lottie-react": "^2.4.1",
     "msw": "^2.7.0",

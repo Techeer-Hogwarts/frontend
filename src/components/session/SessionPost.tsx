@@ -16,9 +16,9 @@ export interface SessionPostProps {
   readonly presenter: string
   fileUrl: string
   likeList: string[]
-  showMessage: () => void
+  userId: string
+  showMessage?: () => void
   onLikeUpdate?: (id: string, newLikeCount: number) => void
-  userImage: string
 }
 
 export default function SessionPost({
@@ -26,13 +26,13 @@ export default function SessionPost({
   date,
   presenter,
   id,
+  userId,
   likeCount: initialLikeCount,
   thumbnail,
   fileUrl,
   showMessage,
   likeList,
   onLikeUpdate,
-  userImage,
 }: SessionPostProps) {
   const router = useRouter()
   const { postLike } = useLike()
@@ -76,7 +76,9 @@ export default function SessionPost({
           <div className="absolute top-40 right-1 z-50 mt-2">
             <SessionMenu
               id={id}
+              userId={userId}
               fileUrl={fileUrl}
+              setShowModal={setShowModal}
               showMessage={showMessage}
               setModalOpen={setModalOpen}
               setModalMessage={setModalMessage}
