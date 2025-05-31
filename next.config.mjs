@@ -40,7 +40,7 @@ const nextConfig = {
     return [
       {
         source: '/api/v1/:path*',
-        destination: `${API_BASE_URL}/api/v3/:path*`,
+        destination: `${API_BASE_URL}/api/v3/:path*`, // v1 API를 v3로 리다이렉트 (spring)
       },
       {
         source: '/api/v2/:path*',
