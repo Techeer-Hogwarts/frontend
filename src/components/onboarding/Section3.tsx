@@ -41,7 +41,7 @@ export default function Section3() {
             title="테커 SW 부트캠프"
             imageSrc="/images/onboarding/section3Talk.png"
             heading="테커 SW 부트캠프"
-            descriptions={['매년 2회 진행되는', '6주간의 End to End 부트캠프']}
+            descriptions={['매년 2회 진행되는', '5주간의 End to End 부트캠프']}
           />
         </motion.div>
         <motion.div
@@ -263,21 +263,18 @@ export default function Section3() {
           }}
         >
           <BootcampCard
-            week="6주차"
+            week="최종 발표 및 선발"
             title1="최종 발표"
             items1={[
               '팀 프로젝트 결과물 소개 및 기획부터 구현까지의 전 과정 발표',
               '현업 실무자들로부터 개발과 비즈니스 관점의 피드백 제공',
             ]}
             title2="테커 선발"
-            items2={['그동안의 참여도를 바탕으로 테커 활동 참여 인원 선발']}
+            items2={['그 동안의 참여도를 바탕으로 테커 활동 참여 인원 선발']}
           />
         </motion.div>
       </div>
       <div className="mt-96 flex flex-col items-center">
-        {/* <p className="text-3xl text-white text-center mb-16">
-          2024 부트캠프 수상작
-        </p> */}
         <span className="flex items-center mb-10 font-logo text-3xl justify-center text-white rounded-[2rem] w-[350px] h-[60px] mt-40 border-[3px] border-[#F57601]">
           AWARDS - WINTER 2024
         </span>
