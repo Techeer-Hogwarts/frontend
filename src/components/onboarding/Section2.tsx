@@ -21,7 +21,7 @@ export default function Section2() {
             '온라인에 머무르지 않고, 오프라인에서도 교류하며',
             '지속 가능한 성장을 함께 만들어갑니다.',
           ]}
-          imageSrc="/images/onboarding/section2Meeting.png"
+          imageSrc="/images/onboarding/zoommeeting.png"
           reverse={false}
         />
         <SectionItem
