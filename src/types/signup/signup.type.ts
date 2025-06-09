@@ -20,6 +20,7 @@ export const initialFormData = {
   password: '',
   confirmPassword: '',
   isVerified: false,
+  joinReason: '',
 
   school: '',
   customSchool: '', // “해당 없음” 선택 시, 직접 입력한 학교명

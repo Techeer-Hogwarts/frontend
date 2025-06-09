@@ -47,7 +47,7 @@ export default function EmailVerification({
     setTimeExpired(false)
 
     try {
-      const response = await fetch('/api/v1/auth/email', {
+      const response = await fetch('/api/v3/auth/email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),
@@ -59,7 +59,7 @@ export default function EmailVerification({
         return
       }
 
-      if (response.status === 201) {
+      if (response.status === 200) {
         setRequestIsError(false)
         setRequestMessage('인증 코드가 이메일로 전송되었습니다.')
       } else {
@@ -93,7 +93,7 @@ export default function EmailVerification({
 
     setIsVerifying(true)
     try {
-      const response = await fetch('/api/v1/auth/code', {
+      const response = await fetch('/api/v3/auth/code', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, code }),
@@ -105,7 +105,7 @@ export default function EmailVerification({
         return
       }
 
-      if (response.status === 201) {
+      if (response.status === 200) {
         // 부모에서 전달받은 setIsVerified 호출 → 인증 상태 유지됨
         setIsVerified(true)
         setTimerActive(false)
