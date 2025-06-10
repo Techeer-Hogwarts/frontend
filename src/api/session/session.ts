@@ -34,7 +34,8 @@ export const getBestSessions = async (limit: number) => {
     throw new Error('금주의 세션 데이터를 가져오는 데 실패했습니다.')
   }
 
-  return response.json()
+  const result = await response.json()
+  return result.content || result.data || result
 }
 
 // 세션 데이터 조회
@@ -44,12 +45,19 @@ export const getSessions = async (
   date: string[],
   position: string[],
   setAuthModalOpen: any,
+  cursor?: number,
+  createdAt?: string,
 ) => {
   const baseUrl = '/api/v1/sessions'
-  const params = {
+  const params: Record<string, string> = {
     category,
-    offset: '0',
-    limit: String(newLimit),
+    size: String(newLimit),
+  }
+
+  // 커서와 createdAt이 있으면 추가 (첫 요청은 없이)
+  if (cursor && createdAt) {
+    params.cursor = String(cursor)
+    params.createdAt = createdAt
   }
 
   // 파라미터 생성
@@ -69,7 +77,8 @@ export const getSessions = async (
   if (!response.ok) {
     throw new Error('세션 데이터를 가져오는 데 실패했습니다.')
   }
-  return response.json()
+  const result = await response.json()
+  return result
 }
 
 // 개별 세션 데이터 조회
@@ -82,7 +91,7 @@ export const getSingleSession = async (id: string) => {
     throw new Error('단일 세션 데이터를 가져오는 데 실패했습니다.')
   }
   const result = await response.json()
-  return result
+  return result.data || result
 }
 
 // 세션 데이터 수정

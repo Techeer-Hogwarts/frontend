@@ -60,6 +60,9 @@ export default function SessionList() {
     position: [] as string[],
   })
   const [limit, setLimit] = useState(12)
+  const [cursor, setCursor] = useState<number | undefined>(undefined)
+  const [createdAt, setCreatedAt] = useState<string | undefined>(undefined)
+  const [hasNext, setHasNext] = useState(true)
   const [likeList, setLikeList] = useState([])
   const [message, setMessage] = useState<string | null>(null)
   const [allSessions, setAllSessions] = useState<Session[]>([])
@@ -70,7 +73,7 @@ export default function SessionList() {
   }
 
   const {
-    data: newSessions,
+    data: sessionsResponse,
     isLoading,
     refetch,
     error,
@@ -81,6 +84,8 @@ export default function SessionList() {
     selectedPeriodsB: selectedFilters.bootcamp,
     selectedPeriodsPo: selectedFilters.position,
     setAuthModalOpen: openAuthModal,
+    cursor,
+    createdAt,
   })
 
   const showMessage = () => {
@@ -110,33 +115,76 @@ export default function SessionList() {
   }
 
   useEffect(() => {
-    if (!newSessions || isLoading) return
-    if (limit === 12) {
-      setAllSessions(newSessions)
+    if (!sessionsResponse || isLoading) return
+
+    console.log('Session Response:', {
+      cursor,
+      createdAt,
+      hasData: Array.isArray(sessionsResponse) || !!sessionsResponse.content,
+      nextCursor: sessionsResponse.nextCursor,
+      nextCreatedAt: sessionsResponse.nextCreatedAt,
+      hasNext: sessionsResponse.hasNext
+    })
+
+    // 응답에서 데이터와 메타정보 추출
+    const sessions = Array.isArray(sessionsResponse)
+      ? sessionsResponse
+      : sessionsResponse.content || sessionsResponse.data || []
+
+    // 커서 기반 메타정보 업데이트
+    if (sessionsResponse.hasNext !== undefined) {
+      setHasNext(sessionsResponse.hasNext)
+    }
+
+    // 첫 로드이거나 필터가 변경된 경우
+    if (!cursor) {
+      console.log('Initial load, setting sessions:', sessions.length)
+      setAllSessions(sessions)
     } else {
+      // 무한 스크롤로 데이터 추가
       setAllSessions((prev) => {
         const existingIds = new Set(prev.map((session) => session.id))
-        const newItems = newSessions.filter(
+        const newItems = sessions.filter(
           (session: any) => !existingIds.has(session.id),
         )
+        console.log('Adding new items:', newItems.length, 'to existing:', prev.length)
         return [...prev, ...newItems]
       })
     }
-  }, [newSessions, isLoading, limit])
+  }, [sessionsResponse, isLoading, cursor])
 
   useEffect(() => {
-    setLimit(12)
+    // 필터나 탭이 변경되면 초기화
+    setAllSessions([])
+    setCursor(undefined)
+    setCreatedAt(undefined)
+    setHasNext(true)
     checkLike()
     refetch()
   }, [activeOption, selectedFilters])
 
   useEffect(() => {
-    if (!newSessions) return
-    const reachedEnd = newSessions.length < limit
-    if (inView && !reachedEnd) {
-      setLimit((prev) => prev + 12)
+    // 무한 스크롤 트리거
+    console.log('Infinite scroll check:', {
+      inView,
+      hasNext,
+      isLoading,
+      nextCursor: sessionsResponse?.nextCursor,
+      nextCreatedAt: sessionsResponse?.nextCreatedAt,
+      currentCursor: cursor,
+      currentCreatedAt: createdAt
+    })
+
+    if (inView && hasNext && !isLoading) {
+      // 현재 응답에서 nextCursor와 nextCreatedAt이 있고, 현재와 다른 경우에만 업데이트
+      if (sessionsResponse?.nextCursor && sessionsResponse?.nextCreatedAt &&
+        (sessionsResponse.nextCursor !== cursor || sessionsResponse.nextCreatedAt !== createdAt)) {
+        console.log('Setting new cursor:', sessionsResponse.nextCursor, 'createdAt:', sessionsResponse.nextCreatedAt)
+        setCursor(sessionsResponse.nextCursor)
+        setCreatedAt(sessionsResponse.nextCreatedAt)
+      }
     }
-  }, [inView])
+  }, [inView, hasNext, isLoading, sessionsResponse, cursor, createdAt])
 
   return (
     <div>
@@ -241,7 +289,7 @@ export default function SessionList() {
           />
         )}
         {!authModalOpen &&
-          (error || (newSessions && allSessions.length === 0)) && (
+          (error || (sessionsResponse && !isLoading && allSessions.length === 0)) && (
             <EmptyLottie
               text="세션 데이터가 없습니다."
               text2="다시 조회해주세요."
