@@ -49,10 +49,10 @@ export const usePostLikeAPI = () => {
       queryClient.setQueryData(['likes'], (old: any) =>
         old
           ? old.map((item: any) =>
-              item.id === newLike.contentId
-                ? { ...item, likeStatus: newLike.likeStatus }
-                : item,
-            )
+            item.id === newLike.contentId
+              ? { ...item, likeStatus: newLike.likeStatus }
+              : item,
+          )
           : [],
       )
 
