@@ -3,7 +3,7 @@ import { usePostLikeAPI } from '@/api/likes/likes'
 
 export const useLike = (
   id: string,
-  likeList: { id: number }[],
+  likeList: { id: number }[] | null | undefined,
   initialCount: number,
   category: string,
 ) => {
@@ -12,7 +12,11 @@ export const useLike = (
   const postLikeMutation = usePostLikeAPI()
 
   useEffect(() => {
-    setIsLike(likeList.some((item) => String(item.id) === String(id)))
+    if (Array.isArray(likeList)) {
+      setIsLike(likeList.some((item) => String(item.id) === String(id)))
+    } else {
+      setIsLike(false)
+    }
   }, [likeList, id])
 
   const toggleLike = async () => {
