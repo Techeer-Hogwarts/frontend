@@ -1,4 +1,4 @@
-const API_URL = '/api/v1/bookmarks'
+const API_URL = '/api/v3/bookmarks'
 
 export function useBookmark() {
   const postBookmark = async (
@@ -39,12 +39,10 @@ export function useBookmark() {
       if (!response.ok) throw new Error('북마크 조회 중 오류 발생')
 
       const data = await response.json()
-      console.log('Bookmark API Response:', data)
 
       // 새로운 API 응답 구조에 맞게 처리
       return data?.data || data?.content || data || []
     } catch (err: any) {
-      console.error('Bookmark API Error:', err)
       throw err
     }
   }

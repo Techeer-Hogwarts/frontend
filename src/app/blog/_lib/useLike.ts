@@ -39,12 +39,10 @@ export function useLike() {
       if (!response.ok) throw new Error('좋아요 조회 중 오류 발생')
 
       const data = await response.json()
-      console.log('Like API Response:', data)
 
       // 새로운 API 응답 구조에 맞게 처리
       return data?.data || data?.content || data || []
     } catch (err: any) {
-      console.error('Like API Error:', err)
       throw err
     }
   }

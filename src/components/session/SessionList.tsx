@@ -89,7 +89,6 @@ export default function SessionList() {
   })
 
   const showMessage = () => {
-    console.log('세션영상 삭제')
     setMessage('세션영상이 삭제되었습니다.')
     setTimeout(() => setMessage(null), 2000)
     refetch()
@@ -117,14 +116,7 @@ export default function SessionList() {
   useEffect(() => {
     if (!sessionsResponse || isLoading) return
 
-    console.log('Session Response:', {
-      cursor,
-      createdAt,
-      hasData: Array.isArray(sessionsResponse) || !!sessionsResponse.content,
-      nextCursor: sessionsResponse.nextCursor,
-      nextCreatedAt: sessionsResponse.nextCreatedAt,
-      hasNext: sessionsResponse.hasNext
-    })
+
 
     // 응답에서 데이터와 메타정보 추출
     const sessions = Array.isArray(sessionsResponse)
@@ -138,7 +130,6 @@ export default function SessionList() {
 
     // 첫 로드이거나 필터가 변경된 경우
     if (!cursor) {
-      console.log('Initial load, setting sessions:', sessions.length)
       setAllSessions(sessions)
     } else {
       // 무한 스크롤로 데이터 추가
@@ -147,7 +138,6 @@ export default function SessionList() {
         const newItems = sessions.filter(
           (session: any) => !existingIds.has(session.id),
         )
-        console.log('Adding new items:', newItems.length, 'to existing:', prev.length)
         return [...prev, ...newItems]
       })
     }
@@ -165,21 +155,12 @@ export default function SessionList() {
 
   useEffect(() => {
     // 무한 스크롤 트리거
-    console.log('Infinite scroll check:', {
-      inView,
-      hasNext,
-      isLoading,
-      nextCursor: sessionsResponse?.nextCursor,
-      nextCreatedAt: sessionsResponse?.nextCreatedAt,
-      currentCursor: cursor,
-      currentCreatedAt: createdAt
-    })
+
 
     if (inView && hasNext && !isLoading) {
       // 현재 응답에서 nextCursor와 nextCreatedAt이 있고, 현재와 다른 경우에만 업데이트
       if (sessionsResponse?.nextCursor && sessionsResponse?.nextCreatedAt &&
         (sessionsResponse.nextCursor !== cursor || sessionsResponse.nextCreatedAt !== createdAt)) {
-        console.log('Setting new cursor:', sessionsResponse.nextCursor, 'createdAt:', sessionsResponse.nextCreatedAt)
         setCursor(sessionsResponse.nextCursor)
         setCreatedAt(sessionsResponse.nextCreatedAt)
       }

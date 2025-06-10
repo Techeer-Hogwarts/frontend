@@ -50,15 +50,12 @@ export default function Bookmark() {
           : 'SESSION'
     try {
       const checkData = await fetchBookmarks(category, 0, 50)
-      console.log('Bookmark checkData:', checkData)
       setBookmarkList(checkData)
 
       const data = await fetchBookmarks(category, 0, limit)
-      console.log('Bookmark data:', data)
       setBookmarks(data)
       return data
     } catch (err) {
-      console.error('Bookmark fetch error:', err)
       setBookmarks([])
       setBookmarkList([])
       return []
@@ -74,11 +71,9 @@ export default function Bookmark() {
           : 'SESSION'
     try {
       const checkData = await fetchLikes(category, 0, 50)
-      console.log('Like checkData:', checkData)
       setLikeList(checkData)
 
       const data = await fetchLikes(category, 0, limit)
-      console.log('Like data:', data)
       setLike(data)
       return data
     } catch (err) {

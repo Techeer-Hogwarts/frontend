@@ -35,13 +35,6 @@ export const useBlogList = () => {
   useEffect(() => {
     if (!blogResponse || isLoading) return
 
-    console.log('Blog Response:', {
-      cursor,
-      hasData: Array.isArray(blogResponse) || !!blogResponse.data,
-      nextCursor: blogResponse.nextCursor,
-      hasNext: blogResponse.hasNext
-    })
-
     // 응답에서 데이터와 메타정보 추출
     const blogs = Array.isArray(blogResponse)
       ? blogResponse
@@ -54,7 +47,6 @@ export const useBlogList = () => {
 
     // 첫 로드이거나 필터가 변경된 경우
     if (!cursor) {
-      console.log('Initial load, setting blogs:', blogs.length)
       setBlog(blogs)
     } else {
       // 무한 스크롤로 데이터 추가
@@ -63,7 +55,6 @@ export const useBlogList = () => {
         const newItems = blogs.filter(
           (blog: any) => !existingIds.has(blog.id),
         )
-        console.log('Adding new items:', newItems.length, 'to existing:', prev.length)
         return [...prev, ...newItems]
       })
     }
@@ -71,19 +62,11 @@ export const useBlogList = () => {
 
   useEffect(() => {
     // 무한 스크롤 트리거
-    console.log('Infinite scroll check:', {
-      inView,
-      hasNext,
-      isLoading,
-      isFetching,
-      nextCursor: blogResponse?.nextCursor,
-      currentCursor: cursor
-    })
+
 
     if (inView && hasNext && !isLoading && !isFetching) {
       // 현재 응답에서 nextCursor가 있고, 이미 설정된 cursor와 다른 경우에만 업데이트
       if (blogResponse?.nextCursor && blogResponse.nextCursor !== cursor) {
-        console.log('Setting new cursor:', blogResponse.nextCursor)
         setCursor(blogResponse.nextCursor)
       }
     }

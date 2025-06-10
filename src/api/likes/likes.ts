@@ -8,8 +8,6 @@ export const postLike = async (
   category: string,
   likeStatus: boolean,
 ) => {
-  console.log('postLike API 호출:', { contentId, category, likeStatus })
-
   const response = await fetch(API_URL, {
     method: 'POST',
     headers: {
@@ -23,17 +21,12 @@ export const postLike = async (
     credentials: 'include',
   })
 
-  console.log('postLike API 응답 상태:', response.status, response.ok)
-
   if (!response.ok) {
     const errorData = await response.json()
-    console.error('postLike API 에러:', errorData)
     throw new Error(errorData.message || '좋아요 처리 중 오류 발생')
   }
 
-  const result = await response.json()
-  console.log('postLike API 성공 응답:', result)
-  return result
+  return response.json()
 }
 
 export const usePostLikeAPI = () => {
@@ -93,7 +86,6 @@ const getLikes = async (category: string, cursorId: number, limit: number) => {
   }
 
   const result = await response.json()
-  console.log('getLikes API Response:', result)
 
   // 새로운 API 응답 구조에 맞게 처리
   return result?.data || result?.content || result || []
