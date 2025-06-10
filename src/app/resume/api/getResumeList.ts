@@ -4,8 +4,8 @@ export async function getResumeList({
   position = [],
   year = [],
   category = '',
-  // offset = 0,
-  limit: limit,
+  cursorId,
+  limit = 10,
 }: ResumeQueryParams) {
   try {
     // URLSearchParams를 사용하여 동적으로 쿼리 문자열 생성
@@ -26,18 +26,17 @@ export async function getResumeList({
     const mappedCategory = categoryMap[category]
     params.append('category', mappedCategory)
 
-    // params.append('offset', (offset ?? 0).toString()) // undefined 방지
-    params.append('limit', limit.toString()) // undefined 방지
+    if (cursorId != undefined) {
+      params.append('cursorId', cursorId.toString())
+    }
+    params.append('limit', limit.toString())
 
-    const response = await fetch(`/api/v1/resumes?${params.toString()}`, {
+    const response = await fetch(`/api/v3/resumes?${params.toString()}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
       },
     })
-
-    const result = await response.json()
-    const dataWithWrapper = { data: result } // Back에서 data 필드 없이 바로 반환하기 때문에
 
     if (!response.ok) {
       throw new Error(
@@ -45,7 +44,8 @@ export async function getResumeList({
       )
     }
 
-    return dataWithWrapper?.data || []
+    const result = await response.json()
+    return result
   } catch (error) {
     throw error // 에러를 호출한 함수에 다시 전달
   }

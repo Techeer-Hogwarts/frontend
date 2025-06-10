@@ -10,5 +10,6 @@ export interface ResumeQueryParams {
   position?: string[]
   year?: string[]
   category?: string
+  cursorId?: number
   limit?: number
 }
