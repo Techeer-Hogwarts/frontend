@@ -3,7 +3,7 @@ import { ResumeQueryParams } from '@/types/queryParams'
 export async function getResumeList({
   position = [],
   year = [],
-  category = '',
+  category = '전체',
   cursorId,
   limit = 10,
 }: ResumeQueryParams) {
@@ -23,8 +23,14 @@ export async function getResumeList({
       OTHER: 'OTHER',
     }
 
-    const mappedCategory = categoryMap[category]
-    params.append('category', mappedCategory)
+    // category가 undefined이거나 null일 때 기본값 처리
+    const safeCategory = category || '전체'
+    const mappedCategory = categoryMap[safeCategory] || ''
+
+    // 카테고리가 빈 문자열이 아닐 때만 파라미터에 추가
+    if (mappedCategory) {
+      params.append('category', mappedCategory)
+    }
 
     if (cursorId != undefined) {
       params.append('cursorId', cursorId.toString())

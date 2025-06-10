@@ -81,8 +81,8 @@ export default function ResumeList({
   } = useGetResumeQuery({
     position,
     year,
-    category,
-    cursorId: undefined, // 초기 로드는 cursorId 없이
+    category: category || '전체',
+    cursorId: undefined,
     limit: 10,
   })
 
@@ -171,7 +171,7 @@ export default function ResumeList({
       const response = await getResumeList({
         position,
         year,
-        category,
+        category: category || '전체',
         cursorId: currentCursor,
         limit: 10,
       })

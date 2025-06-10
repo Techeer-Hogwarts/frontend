@@ -126,7 +126,7 @@ export default function ResumeFolder({
           {/* <CareerTag career={userPosition} /> */}
           <div className="flex gap-2">
             <span className="ml-2 text-[1rem]">{resume.user.name}</span>
-            <span className="text-darkgray">{resume.user.year}기</span>
+            {/*<span className="text-darkgray">{resume.user.year}기</span>*/}
           </div>
         </div>
 
