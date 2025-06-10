@@ -50,11 +50,17 @@ export default function Bookmark() {
           : 'SESSION'
     try {
       const checkData = await fetchBookmarks(category, 0, 50)
+      console.log('Bookmark checkData:', checkData)
       setBookmarkList(checkData)
+
       const data = await fetchBookmarks(category, 0, limit)
+      console.log('Bookmark data:', data)
       setBookmarks(data)
       return data
     } catch (err) {
+      console.error('Bookmark fetch error:', err)
+      setBookmarks([])
+      setBookmarkList([])
       return []
     }
   }
@@ -68,12 +74,17 @@ export default function Bookmark() {
           : 'SESSION'
     try {
       const checkData = await fetchLikes(category, 0, 50)
+      console.log('Like checkData:', checkData)
       setLikeList(checkData)
+
       const data = await fetchLikes(category, 0, limit)
+      console.log('Like data:', data)
       setLike(data)
       return data
     } catch (err) {
-      // console.error(err)
+      console.error('Like fetch error:', err)
+      setLike([])
+      setLikeList([])
     }
   }
 
@@ -138,17 +149,16 @@ export default function Bookmark() {
       </div>
       {isLoading ? (
         <div
-          className={`grid gap-7 mt-5 ${
-            activeOption === '이력서' ? 'grid-cols-3' : 'grid-cols-2'
-          }`}
+          className={`grid gap-7 mt-5 ${activeOption === '이력서' ? 'grid-cols-3' : 'grid-cols-2'
+            }`}
         >
           {activeOption === '이력서'
             ? Array.from({ length: 6 }).map((_, index) => (
-                <SkeletonResumeFolder key={index} />
-              ))
+              <SkeletonResumeFolder key={index} />
+            ))
             : Array.from({ length: 4 }).map((_, index) => (
-                <Skeleton key={index} />
-              ))}
+              <Skeleton key={index} />
+            ))}
         </div>
       ) : bookmarks.length === 0 ? (
         // grid 외부에 빈 상태 컴포넌트를 flex 컨테이너로 중앙 정렬 처리
@@ -157,9 +167,8 @@ export default function Bookmark() {
         </div>
       ) : (
         <div
-          className={`grid gap-7 mt-5 ${
-            activeOption === '이력서' ? 'grid-cols-3' : 'grid-cols-2'
-          }`}
+          className={`grid gap-7 mt-5 ${activeOption === '이력서' ? 'grid-cols-3' : 'grid-cols-2'
+            }`}
         >
           {bookmarks.map((bookmark: any) => {
             if (activeOption === '블로그') {
