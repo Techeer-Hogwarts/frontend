@@ -13,7 +13,7 @@ export const handleBookmarkClick = async (
   // 북마크 상태 업데이트를 서버 응답 후로 변경
   try {
     const bookmarkStatus = !bookmarks[resumeId]?.isMarked
-    const response = await fetch('/api/v1/bookmarks', {
+    const response = await fetch('/api/v3/bookmarks', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -27,8 +27,7 @@ export const handleBookmarkClick = async (
     if (!response.ok) {
       throw new Error('Bookmark request failed')
     }
-  } catch (error) {
-  }
+  } catch (error) {}
 
   // 북마크 상태 업데이트
   setBookmarks((prevBookmarks) => {

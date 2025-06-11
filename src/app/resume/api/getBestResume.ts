@@ -1,11 +1,11 @@
 export const fetchBestResumes = async (
   offset: number,
   limit: number,
-  setAuthModalOpen: (open: boolean) => void, 
+  setAuthModalOpen: (open: boolean) => void,
 ): Promise<any> => {
   try {
     const response = await fetch(
-      `/api/v1/resumes/best?offset=${offset}&limit=${limit}`,
+      `/api/v3/resumes/best?offset=${offset}&limit=${limit}`,
       {
         method: 'GET',
         headers: {
@@ -19,7 +19,6 @@ export const fetchBestResumes = async (
       setAuthModalOpen(true) // ✅ 로그인 필요 → AuthModal 열기
       throw new Error('로그인이 필요합니다.') // 오류 던지기 (try-catch로 감지)
     }
-
 
     if (!response.ok) {
       throw new Error(`인기 이력서 조회 실패: ${response.status}`)
