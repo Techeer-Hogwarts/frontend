@@ -1,3 +1,5 @@
+'use client'
+
 import React, { useState, useEffect } from 'react'
 import ExistingResultImgBox from './ExistingResultImgBox'
 import ResultImgBox from './ResultImgBox'

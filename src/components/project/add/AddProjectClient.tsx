@@ -1,3 +1,5 @@
+'use client'
+
 import AddMember from '@/components/project/add/AddMember'
 import AddProfile from '@/components/project/add/AddProfile'
 import AddRecruit from '@/components/project/add/AddRecruit'
