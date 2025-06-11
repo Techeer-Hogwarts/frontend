@@ -28,6 +28,7 @@ export const postLike = async (
 
   return response.json()
 }
+
 export const usePostLikeAPI = () => {
   const queryClient = useQueryClient()
 
@@ -49,10 +50,10 @@ export const usePostLikeAPI = () => {
       queryClient.setQueryData(['likes'], (old: any) =>
         old
           ? old.map((item: any) =>
-              item.id === newLike.contentId
-                ? { ...item, likeStatus: newLike.likeStatus }
-                : item,
-            )
+            item.id === newLike.contentId
+              ? { ...item, likeStatus: newLike.likeStatus }
+              : item,
+          )
           : [],
       )
 
@@ -70,9 +71,9 @@ export const usePostLikeAPI = () => {
 }
 
 // 좋아요 목록 조회 API
-const getLikes = async (category: string, offset: number, limit: number) => {
+const getLikes = async (category: string, cursorId: number, limit: number) => {
   const response = await fetch(
-    `${API_URL}?category=${category}&offset=${offset}&limit=${limit}`,
+    `${API_URL}?category=${category}&cursorId=${cursorId}&limit=${limit}`,
     {
       method: 'GET',
       credentials: 'include',
@@ -84,16 +85,19 @@ const getLikes = async (category: string, offset: number, limit: number) => {
     throw new Error(errorData.message || '좋아요 조회 중 오류 발생')
   }
 
-  return response.json()
+  const result = await response.json()
+
+  // 새로운 API 응답 구조에 맞게 처리
+  return result?.data || result?.content || result || []
 }
 
 export function useGetLikesAPI(
   category: string,
-  offset: number,
+  cursorId: number,
   limit: number,
 ) {
   return useQuery({
-    queryKey: ['likes', category, offset, limit],
-    queryFn: () => getLikes(category, offset, limit),
+    queryKey: ['likes', category, cursorId, limit],
+    queryFn: () => getLikes(category, cursorId, limit),
   })
 }

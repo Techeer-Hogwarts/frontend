@@ -6,7 +6,12 @@ import EmptyLottie from '../common/EmptyLottie'
 import { useBlogList } from '@/hooks/blog/useBlogList'
 
 export default function BlogList() {
-  const { blog, isLoading, isInitialLoad, ref, likeDate } = useBlogList()
+  const { blog, isLoading, isInitialLoad, ref, likeDate, removeBlog } = useBlogList()
+
+  const handleDeleteBlog = (blogId: string) => {
+    removeBlog(blogId)
+  }
+
   return (
     <div>
       {isInitialLoad && (
@@ -40,7 +45,7 @@ export default function BlogList() {
               image={blog.thumbnail}
               authorImage={blog.author.authorImage}
               authorName={blog.author.authorName}
-              onDelete={() => null}
+              onDelete={handleDeleteBlog}
               likeList={likeDate || []}
             />
           ))}
