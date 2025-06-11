@@ -46,33 +46,23 @@ export default function AddResume({ setModal, fetchData }: AddResumeProps) {
   }
 
   const handleAddResume = async () => {
-    const requestPayload = {
-      createResumeRequest: {
-        category: formData.resumeCategory,
-        position: formData.resumePosition,
-        title: formData.resumeTitle,
-        isMain: formData.resumeIsMain,
-      },
-    }
-
     try {
       const formDataToSend = new FormData()
       if (formData.resumeFile) {
         formDataToSend.append('file', formData.resumeFile)
       }
 
-      // JSON.stringify() 대신 일반 데이터를 추가
-      formDataToSend.append('category', formData.resumeCategory)
-      formDataToSend.append('position', formData.resumePosition)
-      formDataToSend.append('title', formData.resumeTitle)
-      formDataToSend.append('isMain', formData.resumeIsMain.toString())
+      // 새로운 API v3 스펙에 맞춰 request 객체 구성
+      const requestData = {
+        category: formData.resumeCategory,
+        position: formData.resumePosition,
+        title: formData.resumeTitle,
+        isMain: formData.resumeIsMain,
+      }
 
-      formDataToSend.append(
-        'createUserWithResumeRequest',
-        JSON.stringify(requestPayload),
-      )
+      formDataToSend.append('request', JSON.stringify(requestData))
 
-      const response = await fetch('/api/v1/resumes', {
+      const response = await fetch('/api/v3/resumes', {
         method: 'POST',
         body: formDataToSend,
         credentials: 'include',
@@ -86,21 +76,21 @@ export default function AddResume({ setModal, fetchData }: AddResumeProps) {
           return
         }
 
-        // if (response.status === 500) {
-        //   setAddError('이미 등록된 이메일입니다.')
-        //   return
-        // }
-
         if (response.status === 401) {
-          setAddError(errorData.message)
+          setAddError(errorData?.message || '로그인이 필요합니다.')
           return
         }
+
+        throw new Error(`API 오류: ${response.status}`)
       }
 
-      // router.push('/mypage')
+      const result = await response.json()
+      console.log('이력서 생성 성공:', result)
+
       fetchData()
       setModal(false)
     } catch (err: any) {
+      console.error('이력서 생성 실패:', err)
       setAddError('네트워크 오류가 발생했습니다.')
     }
   }

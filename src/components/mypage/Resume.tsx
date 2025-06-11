@@ -32,12 +32,15 @@ interface Resume {
 }
 
 export default function Resume({ userId }) {
-  const [data, setData] = useState<Resume[]>([])
+  const [resumes, setResumes] = useState<Resume[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isError, setIsError] = useState(false)
   const [modal, setModal] = useState(false)
-  const [resumes, setResumes] = useState<Resume[]>([])
-  const [limit, setLimit] = useState(6)
+  const [currentCursor, setCurrentCursor] = useState<number | undefined>(
+    undefined,
+  )
+  const [hasNext, setHasNext] = useState(true)
+  const [isLoadingMore, setIsLoadingMore] = useState(false)
   const [ref, inView] = useInView({ threshold: 0.1 })
   const [likeList, setLikeList] = useState<string[]>([])
   const { fetchLikes } = useLike()
@@ -47,17 +50,65 @@ export default function Resume({ userId }) {
   const pathname = usePathname()
   const isMyPage = pathname === '/mypage'
 
-  // API 호출
-  const fetchData = async () => {
+  // API 호출 - 초기 데이터 로드
+  const fetchData = async (reset: boolean = false) => {
     try {
-      setIsLoading(true)
+      if (reset) {
+        setIsLoading(true)
+        setResumes([])
+        setCurrentCursor(undefined)
+        setHasNext(true)
+      } else {
+        setIsLoadingMore(true)
+      }
       setIsError(false)
-      const result = await fetchUserResumes(userId)
-      setData(result.data || [])
+
+      const result = await fetchUserResumes(
+        userId,
+        reset ? undefined : currentCursor,
+        10,
+      )
+
+      // 새로운 API 응답 구조에 맞춰 데이터 변환
+      const convertedResumes: Resume[] = result.data.map((item) => ({
+        id: item.id.toString(),
+        createdAt: new Date(item.createdAt).getTime(),
+        title: item.title,
+        category: item.category,
+        position: item.position,
+        likeCount: item.likeCount,
+        year: '', // API 응답에 year가 없으므로 빈 문자열로 설정
+        user: {
+          id: userId, // userId 사용
+          name: item.user.name,
+          profileImage: item.user.profileImage,
+          year: 0, // API 응답에 없으므로 기본값
+          mainPosition: item.position, // position을 mainPosition으로 사용
+        },
+        likeList: [],
+        bookmarkList: [],
+      }))
+
+      if (reset) {
+        setResumes(convertedResumes)
+      } else {
+        setResumes((prev) => {
+          const existingIds = new Set(prev.map((p) => p.id))
+          const newResumes = convertedResumes.filter(
+            (p) => !existingIds.has(p.id),
+          )
+          return [...prev, ...newResumes]
+        })
+      }
+
+      setCurrentCursor(result.nextCursor)
+      setHasNext(result.hasNext)
     } catch (error) {
       setIsError(true)
+      console.error('이력서 데이터 로드 실패:', error)
     } finally {
       setIsLoading(false)
+      setIsLoadingMore(false)
     }
   }
 
@@ -105,30 +156,19 @@ export default function Resume({ userId }) {
     )
   }
 
+  // 초기 데이터 로드
   useEffect(() => {
-    // 로그인 상태가 바뀔 때마다 데이터를 다시 불러옴
-    fetchData()
-    setResumes([])
-    setLimit(8)
+    fetchData(true)
     checkLike()
     checkBookmark()
-  }, [userId, limit])
+  }, [userId])
 
+  // 무한 스크롤 - 추가 데이터 로드
   useEffect(() => {
-    if (data && Array.isArray(data)) {
-      setResumes((prev) => {
-        const existingIds = new Set(prev.map((p) => p.id))
-        const newResumes = data.filter((p) => !existingIds.has(p.id)) // 중복 제거
-        return [...prev, ...newResumes]
-      })
+    if (inView && hasNext && !isLoadingMore && !isLoading) {
+      fetchData(false)
     }
-  }, [data])
-
-  useEffect(() => {
-    if (inView) {
-      setLimit((prev) => prev + 4)
-    }
-  }, [inView])
+  }, [inView, hasNext, isLoadingMore, isLoading])
 
   const handleClickAddResume = () => {
     setModal(!modal)
@@ -147,22 +187,23 @@ export default function Resume({ userId }) {
             이력서 추가
           </button>
         )}
-        {modal && <AddResume setModal={setModal} fetchData={fetchData} />}
+        {modal && (
+          <AddResume setModal={setModal} fetchData={() => fetchData(true)} />
+        )}
       </div>
 
-      <Link href={`/resume/$[resume.id]`}>
-        <div className="grid grid-cols-3 gap-8">
-          {isLoading && (
-            <div className="flex gap-10">
-              <SkeletonResumeFolder />
-              <SkeletonResumeFolder />
-              <SkeletonResumeFolder />
-            </div>
-          )}
+      <div className="grid grid-cols-3 gap-8">
+        {isLoading && resumes.length === 0 && (
+          <>
+            <SkeletonResumeFolder />
+            <SkeletonResumeFolder />
+            <SkeletonResumeFolder />
+          </>
+        )}
 
-          {resumes.map((resume) => (
+        {resumes.map((resume) => (
+          <Link key={resume.id} href={`/resume/${resume.id}`}>
             <ResumeFolder
-              key={resume.id}
               likeCount={resume.likeCount}
               resume={resume}
               likeList={likeList}
@@ -170,10 +211,35 @@ export default function Resume({ userId }) {
               bookmarkList={bookmarkList}
               onBookmarkUpdate={handleBookmarkUpdate}
             />
-          ))}
+          </Link>
+        ))}
+
+        {/* 추가 로딩 스켈레톤 */}
+        {isLoadingMore && (
+          <>
+            <SkeletonResumeFolder />
+            <SkeletonResumeFolder />
+            <SkeletonResumeFolder />
+          </>
+        )}
+      </div>
+
+      {/* 무한 스크롤 트리거 */}
+      {hasNext && <div ref={ref} className="h-1" />}
+
+      {/* 에러 상태 */}
+      {isError && (
+        <div className="text-center text-red-500 mt-4">
+          이력서를 불러오는 중 오류가 발생했습니다.
         </div>
-      </Link>
-      {/* )} */}
+      )}
+
+      {/* 빈 상태 */}
+      {!isLoading && !isError && resumes.length === 0 && (
+        <div className="text-center text-gray-500 mt-4">
+          등록된 이력서가 없습니다.
+        </div>
+      )}
     </div>
   )
 }
