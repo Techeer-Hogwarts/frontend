@@ -57,7 +57,7 @@ const ChangePassword = () => {
       }
 
       // 성공 (status === 201 가정)
-      if (response.status === 201) {
+      if (response.status === 200) {
         setRequestIsError(false)
         setRequestMessage('인증 코드가 이메일로 전송되었습니다.')
       } else {
@@ -97,7 +97,7 @@ const ChangePassword = () => {
     }
 
     try {
-      const response = await fetch('/api/v1/auth/findPwd', {
+      const response = await fetch('/api/v1/users/password/reset', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
