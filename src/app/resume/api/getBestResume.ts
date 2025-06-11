@@ -5,7 +5,7 @@ export const fetchBestResumes = async (
 ): Promise<any> => {
   try {
     const response = await fetch(
-      `/api/v3/resumes/best?offset=${offset}&limit=${limit}`,
+      `/api/v1/resumes/best?offset=${offset}&limit=${limit}`,
       {
         method: 'GET',
         headers: {

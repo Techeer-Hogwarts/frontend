@@ -37,7 +37,7 @@ export async function getResumeList({
     }
     params.append('limit', limit.toString())
 
-    const response = await fetch(`/api/v3/resumes?${params.toString()}`, {
+    const response = await fetch(`/api/v1/resumes?${params.toString()}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
