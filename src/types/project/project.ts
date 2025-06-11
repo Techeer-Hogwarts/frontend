@@ -79,3 +79,18 @@ export interface ProjectData {
   mainImageFile: File | null
   resultImages: File[]
 }
+
+export interface StudyData {
+  name: string
+  githubLink: string
+  notionLink: string
+  studyExplain: string
+  goal: string
+  rule: string
+  isFinished: boolean
+  isRecruited: boolean
+  recruitNum: number
+  recruitExplain: string
+  studyMember: any[]
+  resultImages: File[]
+}
