@@ -100,6 +100,7 @@ const Signup = () => {
               setIsVerified={(verified) =>
                 setFormData((prev) => ({ ...prev, isVerified: verified }))
               }
+              isTecheerSignup={ isTecheer ? true : false }
             />
             <InputField
               label="비밀번호"

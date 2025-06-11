@@ -8,6 +8,7 @@ interface EmailVerificationProps {
   isVerified: boolean
   setEmail: (email: string) => void
   setIsVerified: (verified: boolean) => void
+  isTecheerSignup: boolean
 }
 
 export default function EmailVerification({
@@ -15,6 +16,7 @@ export default function EmailVerification({
   isVerified,
   setEmail,
   setIsVerified,
+  isTecheerSignup,
 }: EmailVerificationProps) {
   const [code, setCode] = useState('')
   const [isRequesting, setIsRequesting] = useState(false)
@@ -50,7 +52,10 @@ export default function EmailVerification({
       const response = await fetch('/api/v1/auth/email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({
+          email,
+          techeer: isTecheerSignup
+        }),
       })
 
       if (!response.ok) {
