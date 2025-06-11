@@ -1,7 +1,7 @@
 import ProjectDetailClient from '@/components/project/detail/project/ProjectDetailClient'
-import { ProjectDetailPageProps } from '@/types/project/project'
+import { DetailPageProps } from '@/types/project/project'
 
-export default function ProjectDetailPage({ params }: ProjectDetailPageProps) {
+export default function ProjectDetailPage({ params }: DetailPageProps) {
   const projectId = Number(params.id)
 
   return <ProjectDetailClient projectId={projectId} />
