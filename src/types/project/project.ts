@@ -94,3 +94,23 @@ export interface StudyData {
   studyMember: any[]
   resultImages: File[]
 }
+
+export interface Applicant {
+  id: number
+  userId?: number
+  name: string
+  isLeader: boolean
+  teamRole: string
+  summary: string
+  status: string
+  profileImage: string
+  year: number | string
+}
+
+export type ModalType = 'delete' | 'close' | 'cancel' | null
+
+export interface ProjectDetailPageProps {
+  params: {
+    id: string
+  }
+}

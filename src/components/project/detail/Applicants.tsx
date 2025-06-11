@@ -7,17 +7,7 @@ import Image from 'next/image'
 import { IoChevronDownSharp, IoChevronUpSharp } from 'react-icons/io5'
 import { getPositionStyle } from '@/styles/positionStyles'
 
-interface Applicant {
-  id: number
-  userId?: number
-  name: string
-  isLeader: boolean
-  teamRole: string
-  summary: string
-  status: string
-  profileImage: string
-  year: number
-}
+import { Applicant } from '@/types/project/project'
 
 interface ApplicantsProps {
   /** 'project' 또는 'study' 모드 지정 */

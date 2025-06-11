@@ -8,6 +8,8 @@ import { useParams } from 'next/navigation'
 import { useQueryClient } from '@tanstack/react-query'
 import { getPositionStyle } from '@/styles/positionStyles'
 
+import { Applicant } from '@/types/project/project'
+
 // 프로젝트 API
 import {
   acceptProjectApplicant,
@@ -18,18 +20,6 @@ import {
   acceptStudyApplicant,
   denyStudyApplicant,
 } from '@/api/project/study/study'
-
-interface Applicant {
-  id: number
-  userId: number
-  name: string
-  isLeader: boolean
-  teamRole: string
-  summary: string
-  status: string
-  profileImage: string
-  year: number | string
-}
 
 interface ApplicantModalProps {
   /** 'project' 또는 'study' 지정 */
