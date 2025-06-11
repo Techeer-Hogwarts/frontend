@@ -152,6 +152,25 @@ export default function Profile({ profile }: ProfileProps) {
       return
     }
 
+    if (!year) {
+      alert('기수를 선택해주세요.')
+      return
+    }
+    if (!classYear) {
+      alert('학년을 선택해주세요.')
+      return
+    }
+    
+    if (!mainPosition) {
+      alert('메인 포지션을 선택해주세요.')
+      return
+    }
+
+    if (!githubUrl.trim()) {
+      alert('깃허브 주소를 입력해주세요.')
+      return
+    }
+
     const finalSchool = school === '해당 없음' ? customSchool.trim() : school
 
     // 경력 삭제
