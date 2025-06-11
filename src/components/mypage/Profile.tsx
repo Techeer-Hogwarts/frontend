@@ -17,6 +17,8 @@ interface Experience {
   endDate: string | null
   category?: string
   isCurrentJob?: boolean
+  description?: string
+  isFinished?: boolean
 }
 
 interface ProfileData {
@@ -231,7 +233,7 @@ export default function Profile({ profile }: ProfileProps) {
     }
 
     try {
-      const response = await fetch('/api/v1/users/update', {
+      const response = await fetch('/api/v1/users', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',

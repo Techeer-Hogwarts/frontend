@@ -173,7 +173,7 @@ export const useSignupHandler = () => {
         JSON.stringify(requestPayload),
       )
 
-      const response = await fetch('/api/v3/users/signup', {
+      const response = await fetch('/api/v1/users/signup', {
         method: 'POST',
         body: formDataToSend,
       })
@@ -208,7 +208,7 @@ export const useSignupHandler = () => {
     }
 
     try {
-      const response = await fetch('/api/v3/users/signup/external', {
+      const response = await fetch('/api/v1/users/signup/external', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
