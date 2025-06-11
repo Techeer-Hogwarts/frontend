@@ -10,7 +10,7 @@ export interface Experience {
   startDate: string
   endDate: string | null
   category?: string
-  isFinished?: boolean
+  finished?: boolean
   description?: string
 }
 
@@ -60,13 +60,13 @@ export default function ExperienceItem({
 
   // 재직중 체크박스 토글
   const handleIsFinishedToggle = () => {
-    const newIsFinished = !data.isFinished
+    const newIsFinished = !data.finished
     // 만약 새로 토글 후 재직중(false)이 되면 endDate=null 처리
     const newEndDate = newIsFinished ? data.endDate : null
 
     onChange({
       ...data,
-      isFinished: newIsFinished,
+      finished: newIsFinished,
       endDate: newEndDate,
     })
   }
@@ -77,7 +77,7 @@ export default function ExperienceItem({
       position: pos,
     })
   }
-  const isWorking = !data.isFinished
+  const isWorking = !data.finished
 
   return (
     <div className="relative p-4 bg-filterbg rounded-md mt-4">
@@ -138,7 +138,7 @@ export default function ExperienceItem({
         </div>
 
         {/* 포지션 버튼들 */}
-        <div className="flex justify-between text-pink text-[12px] mt-3">
+        <div className="flex justify-center flex-wrap gap-2 text-pink text-[12px] mt-5">
           {['FRONTEND', 'BACKEND', 'DEVOPS', 'FULL_STACK', 'DATA_ENGINEER'].map(
             (pos) => (
               <ExperienceBtn
