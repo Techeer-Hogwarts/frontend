@@ -95,6 +95,8 @@ export const useSignupHandler = () => {
       startDate: string
       endDate: string
       category: string
+      description?: string
+      isFinished?: boolean
     }[] = []
 
     if (formData.internshipExperience === 'yes') {
@@ -103,8 +105,10 @@ export const useSignupHandler = () => {
           companyName: item.companyName || '',
           position: item.position || formData.selectedPositions[0] || '',
           startDate: item.startDate || '',
-          endDate: item.isCurrentJob ? '' : item.endDate || '',
+          endDate: item.isFinished === false ? '' : item.endDate || '',
           category: '인턴',
+          description: item.description || '',
+          isFinished: item.isFinished ?? false,
         })),
       )
     }
@@ -115,8 +119,10 @@ export const useSignupHandler = () => {
           companyName: item.companyName || '',
           position: item.position || formData.selectedPositions[0] || '',
           startDate: item.startDate || '',
-          endDate: item.isCurrentJob ? '' : item.endDate || '',
+          endDate: item.isFinished === false ? '' : item.endDate || '',
           category: '정규직',
+          description: item.description || '',
+          isFinished: item.isFinished ?? false,
         })),
       )
     }

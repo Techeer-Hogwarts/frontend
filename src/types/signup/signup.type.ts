@@ -4,6 +4,8 @@ export type internshipsType = {
   startDate: string
   endDate: string
   isCurrentJob: boolean
+  description?: string
+  isFinished?: boolean
 }
 
 export type fulltimesType = {
@@ -12,6 +14,8 @@ export type fulltimesType = {
   startDate: string
   endDate: string
   isCurrentJob: boolean
+  description?: string
+  isFinished?: boolean
 }
 
 export const initialFormData = {
