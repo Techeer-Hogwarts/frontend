@@ -50,7 +50,7 @@ export default function NavBar() {
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const [query, setQuery] = useState('')
   const [basicResults, setBasicResults] = useState<BasicResult[]>([])
-  const { isLoggedIn, logout, checkAuth } = useAuthStore()
+  const { isLoggedIn, user, logout, checkAuth } = useAuthStore()
   const router = useRouter()
   const pathname = usePathname()
 
@@ -107,9 +107,33 @@ export default function NavBar() {
     }
   }
 
-  const visibleNavItems = isLoggedIn
-    ? navItems
-    : navItems.filter((item) => item.key !== 'resume' && item.key !== 'session')
+  const visibleNavItems = (() => {
+
+    if (isLoggedIn === null) {
+      return null // 아직 auth 체크 중
+    }
+
+    if (!isLoggedIn) {
+      return [{ key: 'blog', href: '/blog' }]
+    }
+
+    if (!user) {
+      return [{ key: 'blog', href: '/blog' }]
+    }
+
+    const roleId = user.roleId
+
+    if ([1, 2, 3].includes(roleId)) {
+      return navItems
+    } else if (roleId === 4) {
+      return navItems.filter((item) =>
+        ['profile', 'resume', 'blog'].includes(item.key),
+      )
+    } else {
+      return navItems.filter((item) => item.key === 'blog')
+    }
+  })()
+
   const toggleSearch = () => {
     if (isSearchOpen) {
       setIsSearchOpen(false)
@@ -178,7 +202,7 @@ export default function NavBar() {
 
         {/* 메뉴 */}
         <div className="flex items-center gap-[1.62rem]">
-          {visibleNavItems.map((item) => {
+          { visibleNavItems && visibleNavItems.map((item) => {
             const isActive = pathname.startsWith(item.href)
             return (
               <Link
@@ -196,7 +220,7 @@ export default function NavBar() {
       </div>
       {/* 우측 메뉴 */}
       <div className="flex items-center cursor-pointer">
-        {isLoggedIn === true && pathname !== '/' && (
+        {isLoggedIn === true && (user?.roleId === 1 || user?.roleId === 2 || user?.roleId === 3) && pathname !== '/' && (
           <div className="flex items-center">
             {/* 검색 영역 */}
             <div className="relative p-2">
@@ -279,13 +303,15 @@ export default function NavBar() {
                 className={`${pathname == '/' ? 'text-white' : ''}`}
               />
             </Link>
-            {/* 마이페이지 아이콘 */}
-            <Link href="/mypage" className="p-[6px] cursor-pointer">
-              <IoPersonCircle
-                size={28}
-                className={`${pathname == '/' ? 'text-white' : ''}`}
-              />
-            </Link>
+             {/* 마이페이지 아이콘 */}
+              {(user?.roleId === 1 || user?.roleId === 2 || user?.roleId === 3) && (
+                <Link href="/mypage" className="p-[6px] cursor-pointer">
+                  <IoPersonCircle
+                    size={28}
+                    className={`${pathname === '/' ? 'text-white' : ''}`}
+                  />
+                </Link>
+              )}
           </>
         )}
 
