@@ -60,3 +60,22 @@ export type Team = ProjectTeam | StudyTeam
 export interface TeamsResponse {
   allTeams: Team[]
 }
+
+export interface ProjectData {
+  name: string
+  projectExplain: string
+  frontendNum: number
+  backendNum: number
+  devopsNum: number
+  fullStackNum: number
+  dataEngineerNum: number
+  isRecruited: boolean
+  isFinished: boolean
+  recruitExplain: string
+  githubLink: string
+  notionLink: string
+  projectMember: any[]
+  teamStacks: any[]
+  mainImageFile: File | null
+  resultImages: File[]
+}
