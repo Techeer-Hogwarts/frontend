@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { useAllTeams } from '@/hooks/project/useAllTeams'
+import { useTeamsList } from '@/hooks/project/useTeamsList'
 import type { TeamFilter } from '@/types/project/project'
 import {
   TAB_OPTIONS,
@@ -24,18 +24,17 @@ import SkeletonProjectCard from '@/components/project/SkeletonProjectCard'
 import AddBtn from '@/components/project/add/AddBtn'
 
 export default function TeamsPage() {
-  // --- 1) 로컬 상태 ---
-  const { activeOption } = useTapBarStore() // '전체보기' | '프로젝트' | '스터디'
+  const { activeOption } = useTapBarStore()
   const [selectedRecruitment, setSelectedRecruitment] = useState<string[]>([])
   const [selectedProgress, setSelectedProgress] = useState<string[]>([])
   const [selectedPosition, setSelectedPosition] = useState<string[]>([])
   const [searchResults, setSearchResults] = useState<any>(null)
 
-  // --- 2) TeamFilter 조립 ---
+  // 필터 조립
   const filters: TeamFilter = {}
 
   if (activeOption !== '전체보기') {
-    filters.teamTypes = [activeOption === '프로젝트' ? 'project' : 'study']
+    filters.teamTypes = [activeOption === '프로젝트' ? 'PROJECT' : 'STUDY']
   }
   if (selectedRecruitment.length === 1) {
     filters.isRecruited = selectedRecruitment[0] === '모집 중'
@@ -50,11 +49,10 @@ export default function TeamsPage() {
     filters.positions = selectedPosition as any
   }
 
-  // --- 3) 데이터 조회 ---
-  const { data, isLoading } = useAllTeams(filters)
-  const teams = data?.allTeams || []
+  // 데이터 조회 (무한 스크롤 제거)
+  const { teams, isLoading, error } = useTeamsList(filters)
 
-  // --- 4) 필터 제거 ---
+  // 필터 제거
   const removeFilter = (
     item: string,
     type: 'recruitment' | 'progress' | 'position',
@@ -74,7 +72,6 @@ export default function TeamsPage() {
       selectedPosition.length >
     0
 
-  // --- 5) 렌더링 ---
   return (
     <div className="max-w-[1200px] mx-auto mt-[3.56rem]">
       {/* 헤더 */}
@@ -166,25 +163,39 @@ export default function TeamsPage() {
 
       {/* 팀 목록 */}
       {isLoading ? (
+        // 로딩 중일 때 스켈레톤 표시
         <div className="grid grid-cols-4 gap-4">
-          {Array.from({ length: 8 }).map((_, i) => (
+          {Array.from({ length: 12 }).map((_, i) => (
             <SkeletonProjectCard key={i} />
           ))}
         </div>
+      ) : error ? (
+        // 에러 상태
+        <div className="flex flex-col items-center w-full">
+          <div className="mb-4 p-3 bg-red-50 text-red-700 rounded">
+            에러: {error}
+          </div>
+          <EmptyLottie
+            text="데이터 로딩 실패"
+            text2="페이지를 새로고침해주세요"
+          />
+        </div>
       ) : teams.length === 0 ? (
+        // 데이터가 없을 때
         <div className="flex justify-center w-full">
           <EmptyLottie
-            text="프로젝트/스터디 데이터가 없습니다."
-            text2="다시 조회해주세요"
+            text="조건에 맞는 팀이 없습니다."
+            text2="필터를 조정해보세요."
           />
         </div>
       ) : (
+        // 정상 데이터 표시
         <div className="grid grid-cols-4 gap-4">
           {teams.map((team, idx) => {
-            if (team.type === 'project') {
-              return <ProjectCard key={idx} team={team} />
+            if (team.type === 'PROJECT') {
+              return <ProjectCard key={`${team.id}-${idx}`} team={team} />
             }
-            return <StudyCard key={idx} team={team} />
+            return <StudyCard key={`${team.id}-${idx}`} team={team} />
           })}
         </div>
       )}

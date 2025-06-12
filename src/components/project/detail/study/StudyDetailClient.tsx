@@ -108,7 +108,7 @@ export default function StudyDetailClient({ studyId }: StudyDetailClientProps) {
         <Profile variant="study" projectDetail={studyDetails} />
 
         {/* 스터디 멤버일 경우 지원자 목록 표시 */}
-        {isStudyMember && studyDetails.isRecruited && (
+        {isStudyMember && studyDetails.recruited && (
           <Applicants
             variant="study"
             applicants={studyApplicants || []}
@@ -119,11 +119,11 @@ export default function StudyDetailClient({ studyId }: StudyDetailClientProps) {
 
       {/* 오른쪽 영역 */}
       <div className="flex flex-col gap-7">
-        <Member variant="study" members={studyDetails?.studyMember || []} />
+        <Member variant="study" members={studyDetails?.studyMember} />
         <StudyGoal goal={studyDetails?.goal} />
         <StudyPlan rule={studyDetails?.rule} />
 
-        {studyDetails?.isRecruited && (
+        {studyDetails?.recruited && (
           <FindMember variant="study" projectDetail={studyDetails} />
         )}
 
@@ -134,7 +134,7 @@ export default function StudyDetailClient({ studyId }: StudyDetailClientProps) {
         />
 
         {/* 모집 중인 경우 지원/취소 버튼 */}
-        {studyDetails?.isRecruited && (
+        {studyDetails?.recruited && (
           <>
             {hasApplied ? (
               <button
@@ -157,7 +157,7 @@ export default function StudyDetailClient({ studyId }: StudyDetailClientProps) {
         )}
 
         {/* 스터디 멤버이면서 모집 중인 경우 마감 버튼 */}
-        {studyDetails?.isRecruited && isStudyMember && (
+        {studyDetails?.recruited && isStudyMember && (
           <button
             onClick={() => openModal('close')}
             className="w-full h-[2.16044rem] border border-primary text-primary rounded-md hover:shadow-md hover:bg-primary hover:text-white transition-all"

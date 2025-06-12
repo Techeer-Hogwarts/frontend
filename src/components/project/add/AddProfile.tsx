@@ -12,7 +12,7 @@ interface AddProfileProps {
   projectData: {
     name: string
     // project variant 용
-    mainImageFile?: File | null
+    mainImage?: File | null
     githubLink?: string
     notionLink?: string
     projectExplain?: string
@@ -44,15 +44,15 @@ export default function AddProfile({
   // project variant에서만 이미지 URL 업데이트 로직 실행
   useEffect(() => {
     if (variant === 'project') {
-      if (projectData.mainImageFile) {
-        setImgSrc(URL.createObjectURL(projectData.mainImageFile))
+      if (projectData.mainImage) {
+        setImgSrc(URL.createObjectURL(projectData.mainImage))
       } else if (existingMainImageUrl) {
         setImgSrc(existingMainImageUrl)
       } else {
         setImgSrc('')
       }
     }
-  }, [variant, projectData.mainImageFile, existingMainImageUrl])
+  }, [variant, projectData.mainImage, existingMainImageUrl])
 
   const handleInputChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -72,7 +72,7 @@ export default function AddProfile({
 
     // 미리보기 및 상위 state 업데이트
     setImgSrc(URL.createObjectURL(file))
-    onUpdate('mainImageFile', file)
+    onUpdate('mainImage', file)
   }
 
   return (

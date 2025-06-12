@@ -15,27 +15,73 @@ export type PositionOption =
   | 'fullstack'
   | 'dataEngineer'
 
+//프로젝트 페이지 불러오기
+export interface GetAllTeamsFilter {
+  // 커서 기반 페이지네이션 필드
+  id?: number // 커서 보조키
+  dateCursor?: string // UPDATE_AT_DESC용 커서
+  countCursor?: number // VIEW_COUNT_DESC, LIKE_COUNT_DESC용 커서
+
+  // 기본 조회 옵션
+  limit?: number // 기본값: 10
+  sortType?:
+    | 'UPDATE_AT_DESC'
+    | 'CREATE_AT_DESC'
+    | 'VIEW_COUNT_DESC'
+    | 'LIKE_COUNT_DESC' // 기본값: UPDATE_AT_DESC
+
+  // 필터링 옵션 (null이면 모든 팀 포함)
+  teamTypes?: ('PROJECT' | 'STUDY')[]
+  positions?: (
+    | 'FRONTEND'
+    | 'BACKEND'
+    | 'DEVOPS'
+    | 'FULLSTACK'
+    | 'DATA_ENGINEER'
+  )[]
+  isRecruited?: boolean | null
+  isFinished?: boolean | null
+}
+
 /** API 호출용 filter */
 export interface TeamFilter {
-  teamTypes?: Array<'project' | 'study'>
+  teamTypes?: ('PROJECT' | 'STUDY')[]
+  positions?: string[] // 프론트엔드에서는 기존 형식 유지
   isRecruited?: boolean
   isFinished?: boolean
-  positions?: PositionOption[]
+  limit?: number
+  sortType?:
+    | 'UPDATE_AT_DESC'
+    | 'CREATE_AT_DESC'
+    | 'VIEW_COUNT_DESC'
+    | 'LIKE_COUNT_DESC'
+}
+
+/** API 응답 형태 */
+export interface TeamsResponse {
+  allTeams: Team[]
+  nextInfo?: {
+    countCursor: number | null
+    dateCursor: string
+    hasNext: boolean // 다음 페이지 존재 여부
+    id: number
+    sortType: string
+  }
 }
 
 /** 공통 기본 필드 */
 export interface TeamBase {
   id: number
-  isDeleted: boolean
-  isRecruited: boolean
-  isFinished: boolean
+  deleted: boolean
+  recruited: boolean
+  finished: boolean
   name: string
   createdAt: string
 }
 
 /** 프로젝트 팀 상세 */
 export interface ProjectTeam extends TeamBase {
-  type: 'project'
+  type: 'PROJECT'
   frontendNum: number
   backendNum: number
   devopsNum: number
@@ -43,12 +89,12 @@ export interface ProjectTeam extends TeamBase {
   dataEngineerNum: number
   projectExplain: string
   mainImages?: string[]
-  teamStacks: { stackName: string; isMain: boolean }[]
+  teamStacks: { stack: string; isMain: boolean }[]
 }
 
 /** 스터디 팀 상세 */
 export interface StudyTeam extends TeamBase {
-  type: 'study'
+  type: 'STUDY'
   recruitNum: number
   studyExplain: string
 }
@@ -56,9 +102,41 @@ export interface StudyTeam extends TeamBase {
 /** 합쳐진 팀 타입 */
 export type Team = ProjectTeam | StudyTeam
 
-/** API 응답 형태 */
-export interface TeamsResponse {
-  allTeams: Team[]
+export interface ProjectTeam {
+  id: number
+  name: string
+  resultImages: string[]
+}
+
+export interface Experience {
+  id: number
+  position: string
+  companyName: string
+  startDate: string
+  endDate: string | null
+  category: string
+  isFinished: boolean
+}
+
+export interface UserProfile {
+  id: number
+  profileImage: string
+  name: string
+  nickname: string
+  email: string
+  school: string
+  grade: string
+  mainPosition: string
+  subPosition: string
+  githubUrl: string | null
+  mediumUrl: string | null
+  velogUrl: string | null
+  tistoryUrl: string | null
+  isLft: boolean
+  year: number
+  stack: string[]
+  projectTeams: ProjectTeam[]
+  experiences: Experience[]
 }
 
 export interface ProjectData {
@@ -76,7 +154,7 @@ export interface ProjectData {
   notionLink: string
   projectMember: any[]
   teamStacks: any[]
-  mainImageFile: File | null
+  mainImage: File | null
   resultImages: File[]
 }
 

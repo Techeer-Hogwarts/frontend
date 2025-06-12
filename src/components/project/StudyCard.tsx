@@ -39,7 +39,7 @@ export default function StudyCard({ team }: { team: StudyTeam }) {
           </div>
 
           {/* 모집 중이면 표시 */}
-          {team.isRecruited && (
+          {team.recruited && (
             <div className="bg-lightblue py-[0.1rem] text-blue rounded-lg text-[13px] text-center">
               모집인원 : {team.recruitNum} 명
             </div>

@@ -13,6 +13,11 @@ import { useAddStudy } from '@/hooks/project/useAddStudy'
 export default function AddStudyClient() {
   const { studyData, isSubmitting, handleUpdate, submitStudy } = useAddStudy()
 
+  // 등록 버튼 클릭 시 데이터 출력ㅁ
+  const handleSubmit = () => {
+    submitStudy()
+  }
+
   return (
     <div className="relative flex justify-between mt-[2.75rem] gap-[3.188rem]">
       <div>
@@ -51,7 +56,7 @@ export default function AddStudyClient() {
 
         <button
           type="button"
-          onClick={submitStudy}
+          onClick={handleSubmit}
           disabled={isSubmitting}
           className={`w-full h-[2.16044rem] rounded-[0.3125rem] text-primary border border-primary transition-all duration-200 ${
             isSubmitting

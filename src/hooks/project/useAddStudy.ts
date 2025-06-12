@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
-import { handleAddStudy } from '@/api/project/study/study' // 기존 함수 사용
+import { handleAddStudy } from '@/api/project/study/study'
 import { StudyData } from '@/types/project/project'
 
 export const useAddStudy = () => {
@@ -63,16 +63,30 @@ export const useAddStudy = () => {
   const prepareFormData = useCallback((data: StudyData): FormData => {
     const formData = new FormData()
 
+    // 결과 이미지들 추가
+    if (data.resultImages && Array.isArray(data.resultImages)) {
+      data.resultImages.forEach((file: File) => {
+        formData.append('resultImages', file)
+      })
+    }
+
+    // JSON 데이터 준비 (이미지 파일들 제외)
     const { resultImages, ...studyWithoutImages } = data
 
-    formData.append(
-      'createStudyTeamRequest',
-      JSON.stringify(studyWithoutImages),
-    )
+    // studyMember에서 불필요한 필드 제거
+    const cleanedStudyData = {
+      ...studyWithoutImages,
+      studyMember: studyWithoutImages.studyMember.map((member) => ({
+        userId: member.userId,
+        isLeader: member.isLeader,
+      })),
+    }
 
-    resultImages.forEach((file) => {
-      formData.append('files', file)
+    // JSON을 Blob으로 변환
+    const json = new Blob([JSON.stringify(cleanedStudyData)], {
+      type: 'application/json',
     })
+    formData.append('createStudyTeamRequest', json)
 
     return formData
   }, [])
@@ -90,16 +104,23 @@ export const useAddStudy = () => {
       }
 
       const formData = prepareFormData(studyData)
-      const response = await handleAddStudy(formData)
+      const response = await fetch('/api/v1/studyTeams', {
+        method: 'POST',
+        credentials: 'include',
+        body: formData,
+      })
 
-      if (response && response.id) {
-        router.push(`/project/detail/study/${response.id}`)
-      } else {
-        throw new Error('스터디 등록에 실패했습니다.')
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(
+          errorData.message || `HTTP ${response.status}: 서버 오류`,
+        )
       }
+
+      const responseData = await response.json()
+      router.push(`/project/detail/study/${responseData}`)
     } catch (error) {
-      console.error('스터디 등록 중 오류:', error)
-      alert('등록에 실패하였습니다. 다시 시도해주세요.')
+      alert(error.message || '등록에 실패하였습니다.')
     } finally {
       setIsSubmitting(false)
     }

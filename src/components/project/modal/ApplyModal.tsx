@@ -70,7 +70,7 @@ export default function ApplyModal({ variant }: ApplyModalProps) {
   }
 
   // 프로젝트 모드에서만 포지션 선택
-  const roles = ['Frontend', 'Backend', 'DevOps', 'FullStack', 'DataEngineer']
+  const roles = ['FRONTEND', 'BACKEND', 'DEVOPS', 'FULLSTACK', 'DATA_ENGINEER']
 
   return (
     <div className="z-50 fixed inset-0 flex justify-center items-center bg-black bg-opacity-70 text-center">
@@ -96,12 +96,12 @@ export default function ApplyModal({ variant }: ApplyModalProps) {
                 const { bg, textColor } = getPositionStyle(role)
                 const selected = position === role
                 const cls = selected
-                  ? `${bg} ${textColor}`
+                  ? `bg-${bg} ${textColor} border-${bg}`
                   : 'bg-white border border-lightprimary'
                 return (
                   <button
                     key={role}
-                    className={`${cls} px-2 h-[1.75rem] rounded-md`}
+                    className={`${cls} px-2 h-[1.75rem] rounded-md text-sm`}
                     onClick={() => setPosition(role)}
                   >
                     {role}

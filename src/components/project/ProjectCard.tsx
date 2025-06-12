@@ -4,7 +4,6 @@ import type { ProjectTeam } from '@/types/project/project'
 
 export default function ProjectCard({ team }: { team: ProjectTeam }) {
   const mainImageUrl = team.mainImages[0]
-
   // 인원표시 제한을 위해 count 변수 사용
   let count = 0
 
@@ -47,7 +46,7 @@ export default function ProjectCard({ team }: { team: ProjectTeam }) {
 
           <div className="flex">
             {/* 모집 중일 때 */}
-            {team.isRecruited ? (
+            {team.recruited ? (
               <div className="flex flex-col justify-end gap-2 w-full">
                 {team.frontendNum > 0 &&
                   count < 3 &&
@@ -98,10 +97,10 @@ export default function ProjectCard({ team }: { team: ProjectTeam }) {
                   .slice(0, 4)
                   .map((stack) => (
                     <div
-                      key={stack.stackName}
+                      key={stack.stack}
                       className="bg-lightprimary text-pink py-[0.1rem] px-[0.3rem] rounded-md text-[13px] truncate max-w-[6.5rem]"
                     >
-                      {stack.stackName}
+                      {stack.stack}
                     </div>
                   ))}
               </div>

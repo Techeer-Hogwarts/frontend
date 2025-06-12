@@ -58,7 +58,7 @@ export default function ProjectDetailClient({
     return <ProjectDetailSkeleton />
   }
 
-  const { isRecruited } = projectDetails
+  const { recruited } = projectDetails
 
   return (
     <div className="relative flex justify-between mt-[2.75rem] gap-[3.313rem]">
@@ -110,7 +110,7 @@ export default function ProjectDetailClient({
         <Profile variant="project" projectDetail={projectDetails} />
 
         {/* 팀원 + isRecruited → 지원자 목록 */}
-        {isTeamMember && isRecruited && (
+        {isTeamMember && recruited && (
           <Applicants
             variant="project"
             applicants={studyApplicants || []}
@@ -124,7 +124,7 @@ export default function ProjectDetailClient({
         <Member variant="project" members={projectDetails?.projectMember} />
         <Stack stacks={projectDetails?.teamStacks} />
 
-        {isRecruited && (
+        {recruited && (
           <FindMember variant="project" projectDetail={projectDetails} />
         )}
 
@@ -135,7 +135,7 @@ export default function ProjectDetailClient({
         />
 
         {/* 팀원이 아니고 모집 중인 경우 */}
-        {!isTeamMember && isRecruited && (
+        {!isTeamMember && recruited && (
           <>
             {isApplicant ? (
               <button
@@ -156,7 +156,7 @@ export default function ProjectDetailClient({
         )}
 
         {/* 팀원이면서 모집 중인 경우 */}
-        {isTeamMember && isRecruited && (
+        {isTeamMember && recruited && (
           <button
             onClick={() => openModal('close')}
             className="w-full h-[2.16044rem] border border-primary text-primary rounded-md hover:shadow-md hover:bg-primary hover:text-white transition-all"

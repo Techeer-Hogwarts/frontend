@@ -22,7 +22,7 @@ export const useAddProject = () => {
     notionLink: '',
     projectMember: [],
     teamStacks: [],
-    mainImageFile: null,
+    mainImage: null,
     resultImages: [],
   })
 
@@ -36,7 +36,7 @@ export const useAddProject = () => {
         return '프로젝트 이름을 입력해주세요.'
       }
 
-      if (!data.mainImageFile) {
+      if (!data.mainImage) {
         return '대표 이미지를 업로드해주세요.'
       }
 
@@ -74,7 +74,7 @@ export const useAddProject = () => {
       const response = await handleAddProject(dataToSend)
 
       if (response) {
-        router.push(`/project/detail/project/${response.id}`)
+        router.push(`/project/detail/project/${response}`)
       } else {
         throw new Error('프로젝트 등록에 실패했습니다.')
       }

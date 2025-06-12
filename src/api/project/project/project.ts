@@ -4,31 +4,47 @@ export const handleAddProject = async (data: any) => {
   try {
     const formData = new FormData()
 
-    // 1) 메인 이미지 (파일 1개)
-    if (data.mainImageFile) {
-      formData.append('files', data.mainImageFile) // 첫 번째 파일
+    // 1) 메인 이미지 (파일 1개) - mainImage 필드로 전송
+    if (data.mainImage) {
+      formData.append('mainImage', data.mainImage)
     }
 
-    // 2) 결과 이미지 (여러 개)
+    // 2) 결과 이미지들 (여러 개) - resultImages 필드로 전송
     if (data.resultImages && Array.isArray(data.resultImages)) {
       data.resultImages.forEach((file: File) => {
-        formData.append('files', file)
+        formData.append('resultImages', file)
       })
     }
 
-    // 3) JSON 직렬화
-    const { mainImageFile, resultImages, ...rest } = data
-    formData.append('createProjectTeamRequest', JSON.stringify(rest))
+    // 3) JSON 데이터 준비 (이미지 제외)
+    const { mainImage, resultImages, ...rest } = data
 
-    // 4) 전송
+    // projectMember 데이터 정리 (스터디와 동일하게)
+    const cleanedProjectData = {
+      ...rest,
+      projectMember:
+        rest.projectMember?.map((member) => ({
+          userId: member.userId || member.id,
+          isLeader: member.isLeader,
+          teamRole: member.teamRole,
+        })) || [],
+    }
+
+    // JSON을 Blob으로 변환하여 FormData에 추가
+    const json = new Blob([JSON.stringify(cleanedProjectData)], {
+      type: 'application/json',
+    })
+    formData.append('createProjectTeamRequest', json)
+
     const response = await fetch('/api/v1/projectTeams', {
       method: 'POST',
       credentials: 'include',
-      body: formData, // multipart/form-data
+      body: formData,
     })
 
     if (!response.ok) {
-      throw new Error(`POST 요청 실패: ${response.status}`)
+      const errorData = await response.json().catch(() => ({}))
+      throw new Error(errorData.message || `POST 요청 실패: ${response.status}`)
     }
 
     const result = await response.json()
@@ -105,8 +121,8 @@ export const handleEditProject = async (projectId: number, data: any) => {
     const formData = new FormData()
 
     // 1) 메인 이미지 (파일 1개) - 새로 업로드된 경우만
-    if (data.mainImageFile) {
-      formData.append('mainImages', data.mainImageFile)
+    if (data.mainImage) {
+      formData.append('mainImage', data.mainImage)
     }
 
     // 2) 결과 이미지 (여러 개) - 새로 업로드된 것만
@@ -117,8 +133,11 @@ export const handleEditProject = async (projectId: number, data: any) => {
     }
 
     // 3) JSON 직렬화
-    const { mainImageFile, resultImages, ...rest } = data
-    formData.append('updateProjectTeamRequest', JSON.stringify(rest))
+    const { mainImage, resultImages, ...rest } = data
+    const json = new Blob([JSON.stringify(rest)], {
+      type: 'application/json',
+    })
+    formData.append('updateProjectTeamRequest', json)
 
     // 4) PATCH 전송
     const response = await fetch(`/api/v1/projectTeams/${projectId}`, {
@@ -153,8 +172,7 @@ export const handleCloseProject = async (projectTeamId) => {
       throw new Error(`PATCH 요청 실패: ${response.status}`)
     }
 
-    const result = await response.json()
-    return result
+    return response
   } catch (error: any) {
     throw error
   }
@@ -172,8 +190,7 @@ export const deleteProjectTeam = async (projectId) => {
       throw new Error(`PATCH 요청 실패: ${response.status}`)
     }
 
-    const result = await response.json()
-    return result
+    return response
   } catch (error: any) {
     throw error
   }
@@ -195,8 +212,7 @@ export const handleApplyProject = async (data) => {
       throw new Error(`POST 요청 실패: ${response.status}`)
     }
 
-    const result = await response.json()
-    return result
+    return response
   } catch (error: any) {
     throw error
   }
@@ -214,8 +230,7 @@ export const handleDenyProject = async (projectId) => {
       throw new Error(`PATCH 요청 실패: ${response.status}`)
     }
 
-    const result = await response.json()
-    return result
+    return response
   } catch (error: any) {
     throw error
   }
@@ -246,7 +261,7 @@ export const getStudyApplicants = async (projectTeamId) => {
 // 프로젝트 지원자 수락
 export const acceptProjectApplicant = async (data) => {
   try {
-    const response = await fetch(`/api/v1/projectTeams/applicants/accept`, {
+    const response = await fetch(`/api/v1/projectTeams/accept`, {
       method: 'PATCH',
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
@@ -257,8 +272,7 @@ export const acceptProjectApplicant = async (data) => {
       throw new Error(`PATCH 요청 실패: ${response.status}`)
     }
 
-    const result = await response.json()
-    return result
+    return response
   } catch (error: any) {
     throw error
   }
@@ -267,7 +281,7 @@ export const acceptProjectApplicant = async (data) => {
 // 프로젝트 지원 거부
 export const denyProjectApplicant = async (data) => {
   try {
-    const response = await fetch(`/api/v1/projectTeams/applicants/reject`, {
+    const response = await fetch(`/api/v1/projectTeams/reject`, {
       method: 'PATCH',
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
@@ -278,8 +292,7 @@ export const denyProjectApplicant = async (data) => {
       throw new Error(`PATCH 요청 실패: ${response.status}`)
     }
 
-    const result = await response.json()
-    return result
+    return response
   } catch (error: any) {
     throw error
   }

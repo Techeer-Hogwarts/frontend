@@ -1,11 +1,10 @@
 'use client'
 interface StackItem {
   id: number
-  isMain: boolean
-  stackId: number
+  main: boolean
+  deleted: boolean
   projectTeamId: number
   stack: {
-    id: number
     name: string
     category: string
   }
@@ -19,16 +18,16 @@ export default function Stack({ stacks }: { stacks?: StackItem[] }) {
   // 카테고리별로 스택을 그룹화
   // 예: { FRONTEND: [{ name: "React.js", isMain: true }], BACKEND: [{ name: "Node.js", isMain: false }], ... }
   const categories = stacks.reduce<{
-    [key: string]: { name: string; isMain: boolean }[]
+    [key: string]: { name: string; main: boolean }[]
   }>((acc, curr) => {
     const category = curr.stack.category
     const name = curr.stack.name
-    const isMain = curr.isMain
+    const main = curr.main
 
     if (!acc[category]) {
       acc[category] = []
     }
-    acc[category].push({ name, isMain })
+    acc[category].push({ name, main })
     return acc
   }, {})
 
@@ -75,11 +74,11 @@ interface BoxProps {
   text: string
   isMain: boolean
 }
-function Box({ text, isMain }: BoxProps) {
+function Box({ text, main }: BoxProps) {
   return (
     <div
       className={`flex items-center justify-center px-4 rounded-md h-[1.6rem] text-[0.9375rem] text-pink
-        ${isMain ? 'bg-primary/60' : 'bg-lightprimary'}
+        ${main ? 'bg-primary/60' : 'bg-lightprimary'}
       `}
     >
       {text}
@@ -88,7 +87,7 @@ function Box({ text, isMain }: BoxProps) {
 }
 interface StackCategoryProps {
   title: string
-  stack: { name: string; isMain: boolean }[]
+  stack: { name: string; main: boolean }[]
 }
 function StackCategory({ title, stack }: StackCategoryProps) {
   return (
@@ -98,7 +97,7 @@ function StackCategory({ title, stack }: StackCategoryProps) {
       </div>
       <div className="flex flex-wrap gap-2 w-[712px]">
         {stack.map((item) => (
-          <Box key={item.name} text={item.name} isMain={item.isMain} />
+          <Box key={item.name} text={item.name} main={item.main} />
         ))}
       </div>
     </div>

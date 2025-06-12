@@ -43,7 +43,7 @@ export const useEditProject = (projectId: number) => {
     notionLink: '',
     projectMember: [],
     teamStacks: [],
-    mainImageFile: null,
+    mainImage: null,
     resultImages: [],
   })
 
@@ -51,9 +51,19 @@ export const useEditProject = (projectId: number) => {
   const [deleteMainImages, setDeleteMainImages] = useState<number[]>([])
   const [deleteResultImages, setDeleteResultImages] = useState<number[]>([])
 
+  // 기존 메인 이미지 ID 저장 (교체 시 삭제하기 위해)
+  const [originalMainImageId, setOriginalMainImageId] = useState<number | null>(
+    null,
+  )
+
   // 프로젝트 데이터 초기화
   useEffect(() => {
     if (!projectDetails) return
+
+    // 기존 메인 이미지 ID 저장
+    if (projectDetails.mainImages && projectDetails.mainImages.length > 0) {
+      setOriginalMainImageId(projectDetails.mainImages[0].id)
+    }
 
     setProjectData({
       name: projectDetails.name || '',
@@ -63,35 +73,81 @@ export const useEditProject = (projectId: number) => {
       devopsNum: projectDetails.devopsNum || 0,
       fullStackNum: projectDetails.fullStackNum || 0,
       dataEngineerNum: projectDetails.dataEngineerNum || 0,
-      isRecruited: projectDetails.isRecruited,
-      isFinished: projectDetails.isFinished,
+      isRecruited: projectDetails.recruited,
+      isFinished: projectDetails.finished,
       recruitExplain: projectDetails.recruitExplain || '',
       githubLink: projectDetails.githubLink || '',
       notionLink: projectDetails.notionLink || '',
-      projectMember: projectDetails.projectMember,
-      teamStacks:
-        projectDetails.teamStacks?.map((item: any) => ({
-          stack: item.stack.name,
-          isMain: item.isMain,
-        })) || [],
-      mainImageFile: null,
+      projectMember: projectDetails.projectMember
+        ? projectDetails.projectMember.map((member) => ({
+            ...member,
+            isLeader: member.leader,
+          }))
+        : [],
+      teamStacks: projectDetails.teamStacks
+        ? projectDetails.teamStacks.map((item: any) => ({
+            stack: item.stack.name,
+            isMain: item.main,
+          }))
+        : [],
+      mainImage: null,
       resultImages: [],
     })
   }, [projectDetails])
 
-  // 상태 업데이트 핸들러
-  const handleUpdate = useCallback((key: keyof EditProjectData, value: any) => {
-    setProjectData((prev) => ({ ...prev, [key]: value }))
-  }, [])
+  console.log('projectDetails', projectDetails)
+  console.log('projectData', projectData)
+  console.log('originalMainImageId', originalMainImageId)
+  console.log('deleteMainImages', deleteMainImages)
 
-  // 메인 이미지 삭제 핸들러
+  // 상태 업데이트 핸들러
+  const handleUpdate = useCallback(
+    (key: keyof EditProjectData, value: any) => {
+      // 메인 이미지 업데이트 시 기존 이미지 삭제 대상에 추가
+      if (key === 'mainImage' && value) {
+        console.log('🔄 메인 이미지 교체 감지')
+
+        // 기존 메인 이미지가 있고, 아직 삭제 대상에 없다면 추가
+        if (
+          originalMainImageId &&
+          !deleteMainImages.includes(originalMainImageId)
+        ) {
+          console.log(
+            '🗑️ 기존 메인 이미지를 삭제 대상에 추가:',
+            originalMainImageId,
+          )
+          setDeleteMainImages((prev) => [...prev, originalMainImageId])
+        }
+      }
+
+      setProjectData((prev) => ({ ...prev, [key]: value }))
+    },
+    [originalMainImageId, deleteMainImages],
+  )
+
+  // 메인 이미지 삭제 핸들러 (수동 삭제)
   const handleDeleteOldMainImage = useCallback((oldId: number) => {
-    setDeleteMainImages((prev) => [...prev, oldId])
+    console.log('🗑️ 메인 이미지 수동 삭제:', oldId)
+    setDeleteMainImages((prev) => {
+      if (!prev.includes(oldId)) {
+        return [...prev, oldId]
+      }
+      return prev
+    })
+
+    // 메인 이미지를 삭제하면 새 이미지도 제거
+    setProjectData((prev) => ({ ...prev, mainImage: null }))
   }, [])
 
   // 결과 이미지 삭제 핸들러
   const handleDeleteOldResultImage = useCallback((oldId: number) => {
-    setDeleteResultImages((prev) => [...prev, oldId])
+    console.log('🗑️ 결과 이미지 삭제:', oldId)
+    setDeleteResultImages((prev) => {
+      if (!prev.includes(oldId)) {
+        return [...prev, oldId]
+      }
+      return prev
+    })
   }, [])
 
   // 멤버 삭제 핸들러
@@ -120,7 +176,8 @@ export const useEditProject = (projectId: number) => {
         return '프로젝트 이름을 입력해주세요!'
       }
 
-      if (deleteMainImages.length > 0 && !data.mainImageFile) {
+      // 메인 이미지가 삭제되었는데 새 이미지가 없는 경우
+      if (deleteMainImages.length > 0 && !data.mainImage) {
         return '메인 이미지를 업로드해주세요!'
       }
 
@@ -151,6 +208,11 @@ export const useEditProject = (projectId: number) => {
 
       const deleteMembers = tempDeleted.map((td) => td.id)
 
+      console.log('📤 전송 데이터 준비:')
+      console.log('  - 새 메인 이미지:', data.mainImage?.name || '없음')
+      console.log('  - 삭제할 메인 이미지 ID들:', deleteMainImages)
+      console.log('  - 삭제할 결과 이미지 ID들:', deleteResultImages)
+
       return {
         ...data,
         projectMember: finalMember,
@@ -179,13 +241,13 @@ export const useEditProject = (projectId: number) => {
       const result = await handleEditProject(projectId, dataToSend)
 
       if (result) {
+        alert('프로젝트가 성공적으로 수정되었습니다!')
         router.push(`/project/detail/project/${projectId}`)
       } else {
         throw new Error('프로젝트 수정에 실패했습니다.')
       }
     } catch (error) {
-      console.error('프로젝트 수정 중 오류:', error)
-      alert('수정 실패')
+      alert(error.message || '수정에 실패했습니다.')
     } finally {
       setIsSubmitting(false)
     }

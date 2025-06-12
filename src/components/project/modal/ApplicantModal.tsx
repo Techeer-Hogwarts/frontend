@@ -43,7 +43,7 @@ export default function ApplicantModal({
     try {
       if (variant === 'project') {
         await acceptProjectApplicant({
-          projectTeamId: teamId,
+          teamId: teamId,
           applicantId: applicant.userId,
         })
         queryClient.invalidateQueries({
@@ -51,7 +51,7 @@ export default function ApplicantModal({
         })
       } else {
         await acceptStudyApplicant({
-          studyTeamId: teamId,
+          studyId: teamId,
           applicantId: applicant.userId,
         })
         queryClient.invalidateQueries({ queryKey: ['getStudyDetails', teamId] })
@@ -70,7 +70,7 @@ export default function ApplicantModal({
     try {
       if (variant === 'project') {
         await denyProjectApplicant({
-          projectTeamId: teamId,
+          teamId: teamId,
           applicantId: applicant.userId,
         })
         queryClient.invalidateQueries({
@@ -78,7 +78,7 @@ export default function ApplicantModal({
         })
       } else {
         await denyStudyApplicant({
-          studyTeamId: teamId,
+          studyId: teamId,
           applicantId: applicant.userId,
         })
         queryClient.invalidateQueries({ queryKey: ['getStudyDetails', teamId] })
@@ -96,7 +96,7 @@ export default function ApplicantModal({
   }
 
   // 스타일
-  const roles = ['Frontend', 'Backend', 'DevOps', 'FullStack', 'DataEngineer']
+  const roles = ['FRONTEND', 'BACKEND', 'DEVOPS', 'FULLSTACK', 'DATA_ENGINEER']
 
   return (
     <div className="z-50 fixed inset-0 flex justify-center items-center bg-black bg-opacity-70">
@@ -133,26 +133,28 @@ export default function ApplicantModal({
         </div>
 
         {/* 지원 포지션 */}
-        <div className="mb-4 text-left">
-          <p className="mb-2 font-medium">지원한 포지션</p>
-          <div className="flex justify-between">
-            {roles.map((role) => {
-              const { bg, textColor } = getPositionStyle(role)
-              const selected = applicant.teamRole === role
-              const cls = selected
-                ? `${bg} ${textColor}`
-                : 'bg-white text-gray border border-lightprimary'
-              return (
-                <div
-                  key={role}
-                  className={`${cls} px-1 h-[1.75rem] rounded-md mx-1 text-center text-sm`}
-                >
-                  {role}
-                </div>
-              )
-            })}
+        {variant === 'project' && (
+          <div className="mb-4 text-left">
+            <p className="mb-2 font-medium">지원한 포지션</p>
+            <div className="flex justify-between">
+              {roles.map((role) => {
+                const { bg, textColor } = getPositionStyle(role)
+                const selected = applicant.teamRole === role
+                const cls = selected
+                  ? `bg-${bg} ${textColor}`
+                  : 'bg-white text-gray border border-lightprimary justify-center items-center'
+                return (
+                  <div
+                    key={role}
+                    className={`${cls} px-1 rounded-md text-center text-[13px]`}
+                  >
+                    {role}
+                  </div>
+                )
+              })}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* 지원 동기 */}
         <div className="mb-6 text-left">

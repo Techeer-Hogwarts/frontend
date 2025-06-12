@@ -34,11 +34,17 @@ export const useEditStudy = (studyId: number) => {
         studyExplain: studyDetails.studyExplain || '',
         goal: studyDetails.goal || '',
         rule: studyDetails.rule || '',
-        isFinished: studyDetails.isFinished || false,
-        isRecruited: studyDetails.isRecruited || false,
+        isFinished: studyDetails.finished || false,
+        isRecruited: studyDetails.recruited || false,
         recruitNum: studyDetails.recruitNum || 0,
         recruitExplain: studyDetails.recruitExplain || '',
-        studyMember: studyDetails.studyMember || [],
+        // leader -> isLeader로 변환
+        studyMember: studyDetails.studyMember
+          ? studyDetails.studyMember.map((member) => ({
+              ...member,
+              isLeader: member.leader,
+            }))
+          : [],
         resultImages: [],
         deleteImages: [],
       })
@@ -119,13 +125,23 @@ export const useEditStudy = (studyId: number) => {
     [],
   )
 
-  // FormData 준비
+  // FormData 준비 (JSON Blob 방식)
   const prepareFormData = useCallback(
     (data: EditStudyData): FormData => {
       const formData = new FormData()
 
+      // 1) 결과 이미지들 추가 (새로 업로드하는 파일들)
+      if (data.resultImages && Array.isArray(data.resultImages)) {
+        data.resultImages.forEach((file: File) => {
+          formData.append('resultImages', file)
+        })
+      }
+
+      // 2) JSON 데이터 준비
+      const { resultImages, ...studyWithoutImages } = data
+
       // 삭제되지 않은 멤버만 골라서 최종 전송할 형태로 변환
-      const finalMember = data.studyMember
+      const finalMember = studyWithoutImages.studyMember
         .filter((m: EditStudyMember) => {
           return !tempDeleted.some((td) => td.id === m.id)
         })
@@ -136,24 +152,18 @@ export const useEditStudy = (studyId: number) => {
 
       const deleteMembers = tempDeleted.map((td) => td.id)
 
-      // resultImages를 분리하고 나머지 데이터 준비
-      const { resultImages, ...studyWithoutImages } = data
+      const cleanedStudyData = {
+        ...studyWithoutImages,
+        studyMember: finalMember,
+        deleteImages,
+        deleteMembers,
+      }
 
-      // JSON 데이터를 FormData에 추가
-      formData.append(
-        'updateStudyTeamRequest',
-        JSON.stringify({
-          ...studyWithoutImages,
-          studyMember: finalMember,
-          deleteImages,
-          deleteMembers,
-        }),
-      )
-
-      // 파일들을 FormData에 추가
-      resultImages.forEach((file: File) => {
-        formData.append('files', file)
+      // 3) JSON을 Blob으로 변환하여 FormData에 추가
+      const json = new Blob([JSON.stringify(cleanedStudyData)], {
+        type: 'application/json',
       })
+      formData.append('updateStudyTeamRequest', json)
 
       return formData
     },
@@ -176,14 +186,17 @@ export const useEditStudy = (studyId: number) => {
       const formData = prepareFormData(studyData)
       const response = await handleEditStudy(formData, studyId)
 
-      if (response && response.id) {
-        router.push(`/project/detail/study/${response.id}`)
+      // ID 찾기 및 페이지 이동
+      const actualId = response?.id || response?.data?.id || studyId
+
+      if (actualId) {
+        router.push(`/project/detail/study/${actualId}`)
       } else {
-        throw new Error('스터디 수정에 실패했습니다.')
+        alert('스터디가 성공적으로 수정되었습니다!')
+        router.push('/project')
       }
     } catch (error) {
-      console.error('스터디 수정 중 오류:', error)
-      alert('수정에 실패했습니다. 다시 시도해주세요.')
+      alert(error.message || '수정에 실패했습니다. 다시 시도해주세요.')
     } finally {
       setIsSubmitting(false)
     }

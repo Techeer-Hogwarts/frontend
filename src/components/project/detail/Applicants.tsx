@@ -34,7 +34,7 @@ export default function Applicants({
       <div
         role="button"
         onClick={toggleDropdown}
-        className="w-[19rem] gap-32 px-[1.63rem] h-[2.4375rem] flex items-center bg-white rounded-lg shadow-md border border-primary cursor-pointer"
+        className="w-[19rem] px-[1.63rem] h-[2.4375rem] flex items-center justify-between bg-white rounded-lg shadow-md border border-primary cursor-pointer"
       >
         {title}
         {isOpen ? <IoChevronUpSharp /> : <IoChevronDownSharp />}
@@ -79,7 +79,7 @@ function Box({ applicant, variant, onClick }: BoxProps) {
     variant === 'project'
       ? (() => {
           const { bg, textColor } = getPositionStyle(role)
-          return `${bg} ${textColor}`
+          return `bg-${bg} ${textColor}`
         })()
       : 'bg-lightblue text-blue'
 
@@ -101,9 +101,11 @@ function Box({ applicant, variant, onClick }: BoxProps) {
           <p className="text-[#7B7B7B] text-sm">{label}</p>
         </div>
       </div>
-      <div className={`${styleClasses} px-3 py-1 rounded-md text-sm`}>
-        {role}
-      </div>
+      {role !== '미지정' && (
+        <div className={`${styleClasses} px-3 py-1 rounded-md text-sm`}>
+          {role}
+        </div>
+      )}
     </div>
   )
 }

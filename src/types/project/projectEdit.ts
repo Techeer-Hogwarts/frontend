@@ -13,7 +13,7 @@ export interface EditProjectData {
   notionLink: string
   projectMember: EditProjectMember[]
   teamStacks: EditTeamStack[]
-  mainImageFile: File | null
+  mainImage: File | null
   resultImages: File[]
 }
 
@@ -62,7 +62,7 @@ export interface EditProjectFormData {
     teamRole: string
   }[]
   teamStacks: EditTeamStack[]
-  mainImageFile: File | null
+  mainImage: File | null
   resultImages: File[]
   deleteMembers: number[]
   deleteMainImages: number[]

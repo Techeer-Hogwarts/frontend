@@ -111,39 +111,40 @@ export const useStudyDetail = (studyId: number) => {
     if (!studyId || !modalType) return
 
     try {
-      let success = false
+      let response
 
       switch (modalType) {
         case 'delete':
-          success = await deleteStudyTeam(studyId)
-          if (success) {
+          response = await deleteStudyTeam(studyId)
+          if (response && (response.ok || response.status === 200)) {
             router.push('/project')
+          } else {
+            throw new Error('삭제에 실패했습니다.')
           }
           break
         case 'close':
-          success = await handleCloseStudy(studyId)
-          if (success) {
+          response = await handleCloseStudy(studyId)
+          if (response && (response.ok || response.status === 200)) {
             queryClient.invalidateQueries({
               queryKey: ['getStudyDetails', studyId],
             })
+          } else {
+            throw new Error('스터디 종료에 실패했습니다.')
           }
           break
         case 'cancel':
-          success = await handleDenyStudy(studyId)
-          if (success) {
+          response = await handleDenyStudy(studyId)
+          if (response && (response.ok || response.status === 200)) {
             queryClient.invalidateQueries({
               queryKey: ['getStudyApplicants', studyId],
             })
+          } else {
+            throw new Error('취소 처리에 실패했습니다.')
           }
           break
       }
-
-      if (!success) {
-        throw new Error('작업 실행에 실패했습니다.')
-      }
     } catch (error) {
-      console.error('모달 확인 처리 중 오류:', error)
-      alert('작업 실행에 실패했습니다. 다시 시도해주세요.')
+      alert(error.message || '작업 실행에 실패했습니다.')
     } finally {
       closeModal()
     }

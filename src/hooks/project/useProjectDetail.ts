@@ -8,9 +8,8 @@ import {
   getStudyApplicants,
   handleCloseProject,
   handleDenyProject,
-} from '@/api/project/project/project' // 기존 함수 사용
-import { ModalType, Applicant } from '@/types/project/project' // 타입 정의 가져오기
-
+} from '@/api/project/project/project'
+import { ModalType, Applicant } from '@/types/project/project'
 export const useProjectDetail = (projectId: number) => {
   const router = useRouter()
   const queryClient = useQueryClient()
@@ -42,9 +41,9 @@ export const useProjectDetail = (projectId: number) => {
   // 계산된 값들
   const isTeamMember = useMemo(() => {
     return projectDetails?.projectMember?.some(
-      (member) => member.email === user?.email,
+      (member) => member.userId === user?.id,
     )
-  }, [projectDetails?.projectMember, user?.email])
+  }, [projectDetails?.projectMember, user?.id])
 
   const isApplicant = useMemo(() => {
     return studyApplicants?.some((app) => app.userId === user?.id)

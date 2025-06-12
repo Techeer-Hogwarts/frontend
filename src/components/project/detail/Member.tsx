@@ -6,7 +6,7 @@ import { getPositionStyle } from '@/styles/positionStyles'
 
 interface MemberType {
   name: string
-  isLeader: boolean
+  leader: boolean
   teamRole?: string
   profileImage?: string
 }
@@ -40,10 +40,9 @@ export default function Member({ variant, members }: MemberProps) {
       <div className="text-[1.125rem] font-semibold mb-3">팀원</div>
       <div className={containerClass}>
         {members.map((member) => {
-          const { name, isLeader, teamRole, profileImage } = member
-          const displayRole = teamRole === 'DataEngineer' ? 'Data' : teamRole
+          const { name, leader, teamRole, profileImage } = member
+          const displayRole = teamRole === 'DATA_ENGINEER' ? 'DATA' : teamRole
           const { bg, textColor } = getPositionStyle(teamRole)
-          console.log(bg)
 
           return (
             <div key={name}>
@@ -55,7 +54,7 @@ export default function Member({ variant, members }: MemberProps) {
                   alt={name}
                   className="border rounded-md object-cover w-[76px] h-[76px]"
                 />
-                {isLeader && (
+                {leader && (
                   <div
                     className={`absolute ${
                       variant === 'project'
@@ -73,7 +72,7 @@ export default function Member({ variant, members }: MemberProps) {
                 <div className="mt-2 font-medium">{name}</div>
                 {variant === 'project' && teamRole && (
                   <div
-                    className={`bg-${bg} ${textColor} w-[4.5rem] rounded-md text-center text-sm`}
+                    className={`bg-${bg} ${textColor} w-[4.5rem] rounded-md text-center text-xs py-[0.1rem]`}
                   >
                     {displayRole}
                   </div>

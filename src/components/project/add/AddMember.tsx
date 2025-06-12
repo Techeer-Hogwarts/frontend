@@ -32,9 +32,9 @@ function Tag({ position }: TagProps) {
   const { bg, textColor } = getPositionStyle(position)
   return (
     <div
-      className={`flex items-center justify-center ${textColor} w-[4.5rem] bg-${bg} rounded-md`}
+      className={`flex items-center justify-center ${textColor} w-[4.5rem] bg-${bg} rounded-md text-center text-xs py-[0.1rem]`}
     >
-      {position === 'DataEngineer' ? 'Data' : position}
+      {position === 'DATA_ENGINEER' ? 'DATA' : position}
     </div>
   )
 }
