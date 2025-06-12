@@ -72,7 +72,7 @@ function convertCategoryName(category: string) {
 }
 interface BoxProps {
   text: string
-  isMain: boolean
+  main: boolean
 }
 function Box({ text, main }: BoxProps) {
   return (
