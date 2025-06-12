@@ -29,7 +29,7 @@ export default function StudyDetailClient({ studyId }: StudyDetailClientProps) {
 
     // 계산된 값들
     isStudyMember,
-    hasApplied,
+    isApplicant,
 
     // 모달 상태들
     authModalOpen,
@@ -136,7 +136,7 @@ export default function StudyDetailClient({ studyId }: StudyDetailClientProps) {
         {/* 모집 중인 경우 지원/취소 버튼 */}
         {studyDetails?.recruited && (
           <>
-            {hasApplied ? (
+            {isApplicant ? (
               <button
                 onClick={() => openModal('cancel')}
                 className="w-full h-[2.16044rem] border border-primary text-primary rounded-md hover:shadow-md hover:bg-primary hover:text-white transition-all"

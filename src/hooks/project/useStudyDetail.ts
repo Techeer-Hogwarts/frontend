@@ -35,7 +35,7 @@ export const useStudyDetail = (studyId: number) => {
   })
 
   // React Query: 스터디 지원자 목록
-  const { data: studyApplicants } = useQuery({
+  const { data: studyApplicants, error: applicantsError } = useQuery({
     queryKey: ['getStudyApplicants', studyId],
     queryFn: () => getStudyApplicants(studyId),
     enabled: !!studyId,
@@ -51,10 +51,27 @@ export const useStudyDetail = (studyId: number) => {
     }
   }, [studyDetails, user])
 
-  // 지원 여부 확인
-  const hasApplied = useMemo(() => {
-    return studyApplicants?.some((applicant) => applicant.userId === user?.id)
-  }, [studyApplicants, user?.id])
+  const isApplicant = useMemo(() => {
+    if (isStudyMember || !user) return false
+
+    // 지원자 목록이 성공적으로 조회된 경우
+    if (studyApplicants) {
+      return studyApplicants.some((app) => app.userId === user?.id)
+    }
+
+    // 에러가 발생한 경우 에러 메시지 확인
+    if (applicantsError) {
+      const errorMessage = applicantsError.message || ''
+
+      if (errorMessage.includes('404')) {
+        return false // 지원 가능 상태
+      } else if (errorMessage.includes('409')) {
+        return true // 이미 지원한 상태
+      }
+    }
+
+    return null // 아직 확인 중
+  }, [studyApplicants, applicantsError, isStudyMember, user])
 
   // 모달 텍스트 맵
   const MODAL_TEXT_MAP = {
@@ -158,7 +175,7 @@ export const useStudyDetail = (studyId: number) => {
 
     // 계산된 값들
     isStudyMember,
-    hasApplied,
+    isApplicant,
 
     // 모달 상태들
     authModalOpen,

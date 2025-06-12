@@ -236,28 +236,6 @@ export const handleDenyProject = async (projectId) => {
   }
 }
 
-//프로젝트 지원자 보기
-export const getStudyApplicants = async (projectTeamId) => {
-  try {
-    const response = await fetch(
-      `/api/v1/projectTeams/${projectTeamId}/applicants`,
-      {
-        method: 'GET',
-        credentials: 'include',
-      },
-    )
-
-    if (!response.ok) {
-      throw new Error(`GET 요청 실패: ${response.status}`)
-    }
-
-    const result = await response.json()
-    return result
-  } catch (error: any) {
-    throw error
-  }
-}
-
 // 프로젝트 지원자 수락
 export const acceptProjectApplicant = async (data) => {
   try {

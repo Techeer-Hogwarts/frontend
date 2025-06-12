@@ -24,7 +24,7 @@ export default function ProjectDetailClient({
   const {
     // 데이터
     projectDetails,
-    studyApplicants,
+    projectApplicants,
     isProjectLoading,
 
     // 계산된 값들
@@ -113,7 +113,7 @@ export default function ProjectDetailClient({
         {isTeamMember && recruited && (
           <Applicants
             variant="project"
-            applicants={studyApplicants || []}
+            applicants={projectApplicants || []}
             onOpen={handleApplicantModalOpen}
           />
         )}

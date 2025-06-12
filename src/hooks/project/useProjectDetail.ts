@@ -5,7 +5,7 @@ import { useAuthStore } from '@/store/authStore'
 import {
   getProjectDetail,
   deleteProjectTeam,
-  getStudyApplicants,
+  getProjectApplicants,
   handleCloseProject,
   handleDenyProject,
 } from '@/api/project/project/project'
@@ -32,9 +32,9 @@ export const useProjectDetail = (projectId: number) => {
   })
 
   // React Query: 프로젝트 지원자 목록
-  const { data: studyApplicants } = useQuery({
-    queryKey: ['getStudyApplicants', projectId],
-    queryFn: () => getStudyApplicants(projectId),
+  const { data: projectApplicants, error: applicantsError } = useQuery({
+    queryKey: ['getProjectApplicants', projectId],
+    queryFn: () => getProjectApplicants(projectId),
     enabled: projectId !== null,
   })
 
@@ -46,8 +46,26 @@ export const useProjectDetail = (projectId: number) => {
   }, [projectDetails?.projectMember, user?.id])
 
   const isApplicant = useMemo(() => {
-    return studyApplicants?.some((app) => app.userId === user?.id)
-  }, [studyApplicants, user?.id])
+    if (isTeamMember || !user) return false
+
+    // 지원자 목록이 성공적으로 조회된 경우
+    if (projectApplicants) {
+      return projectApplicants.some((app) => app.userId === user?.id)
+    }
+
+    // 에러가 발생한 경우 에러 메시지 확인
+    if (applicantsError) {
+      const errorMessage = applicantsError.message || ''
+
+      if (errorMessage.includes('404')) {
+        return false // 지원 가능 상태
+      } else if (errorMessage.includes('409')) {
+        return true // 이미 지원한 상태
+      }
+    }
+
+    return null // 아직 확인 중
+  }, [projectApplicants, applicantsError, isTeamMember, user])
 
   // 모달 텍스트 맵
   const MODAL_TEXT_MAP = {
@@ -108,13 +126,17 @@ export const useProjectDetail = (projectId: number) => {
 
       switch (modalType) {
         case 'delete':
-          success = await deleteProjectTeam(projectId)
-          if (success) {
-            router.push('/project')
+          {
+            const response = await deleteProjectTeam(projectId)
+            success = response.ok
+            if (success) {
+              router.push('/project')
+            }
           }
           break
-        case 'close':
-          success = await handleCloseProject(projectId)
+        case 'close': {
+          const response = await handleCloseProject(projectId)
+          success = response.ok
           if (success) {
             queryClient.invalidateQueries({
               queryKey: ['getProjectDetails', projectId],
@@ -122,15 +144,18 @@ export const useProjectDetail = (projectId: number) => {
             router.refresh()
           }
           break
-        case 'cancel':
-          success = await handleDenyProject(projectId)
+        }
+        case 'cancel': {
+          const response = await handleDenyProject(projectId)
+          success = response.ok
           if (success) {
             queryClient.invalidateQueries({
-              queryKey: ['getStudyApplicants', projectId],
+              queryKey: ['getProjectApplicants', projectId],
             })
             router.refresh()
           }
           break
+        }
       }
 
       if (!success) {
@@ -147,7 +172,7 @@ export const useProjectDetail = (projectId: number) => {
   return {
     // 데이터
     projectDetails,
-    studyApplicants,
+    projectApplicants,
     isProjectLoading,
 
     // 계산된 값들
