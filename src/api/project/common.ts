@@ -4,64 +4,57 @@ import {
   UserProfile,
 } from '@/types/project/project'
 
-// 프로젝트 팀 전체 조회
+// 통일된 팀 목록 조회 API 함수
 export const getAllTeams = async (
   filter?: GetAllTeamsFilter,
 ): Promise<TeamsResponse> => {
   try {
-    // 커서 기반 페이지네이션을 위한 request 객체 구성
-    const requestObject: any = {
-      limit: filter?.limit || 12,
-      sortType: filter?.sortType || 'UPDATE_AT_DESC',
-    }
+    const searchParams = new URLSearchParams()
 
-    // 커서 데이터 추가 (다음 페이지 조회 시)
+    // 기본 파라미터
+    searchParams.append('limit', (filter?.limit || 12).toString())
+    searchParams.append('sortType', filter?.sortType || 'UPDATE_AT_DESC')
+
+    // 커서 데이터 (다음 페이지 조회 시)
     if (filter?.id !== undefined) {
-      requestObject.id = filter.id
+      searchParams.append('id', filter.id.toString())
     }
 
-    // 정렬 방식에 따른 커서 필드 설정
-    if (filter?.sortType === 'UPDATE_AT_DESC') {
-      if (filter?.dateCursor) {
-        requestObject.dateCursor = filter.dateCursor
-      }
+    if (filter?.sortType === 'UPDATE_AT_DESC' && filter?.dateCursor) {
+      searchParams.append('dateCursor', filter.dateCursor)
     } else if (
-      filter?.sortType === 'VIEW_COUNT_DESC' ||
-      filter?.sortType === 'LIKE_COUNT_DESC'
+      (filter?.sortType === 'VIEW_COUNT_DESC' ||
+        filter?.sortType === 'LIKE_COUNT_DESC') &&
+      filter?.countCursor !== undefined
     ) {
-      if (filter?.countCursor !== undefined) {
-        requestObject.countCursor = filter.countCursor
-      }
+      searchParams.append('countCursor', filter.countCursor.toString())
     }
 
-    // 필터링 조건 추가 (null이면 모든 팀 포함)
+    // 필터링 조건
     if (filter?.teamTypes && filter.teamTypes.length > 0) {
-      requestObject.teamTypes = filter.teamTypes
+      filter.teamTypes.forEach((type) => {
+        searchParams.append('teamTypes', type)
+      })
     }
 
     if (filter?.positions && filter.positions.length > 0) {
-      requestObject.positions = filter.positions
+      filter.positions.forEach((position) => {
+        searchParams.append('positions', position)
+      })
     }
 
     if (filter?.isRecruited !== undefined && filter?.isRecruited !== null) {
-      requestObject.isRecruited = filter.isRecruited
+      searchParams.append('isRecruited', filter.isRecruited.toString())
     }
 
     if (filter?.isFinished !== undefined && filter?.isFinished !== null) {
-      requestObject.isFinished = filter.isFinished
+      searchParams.append('isFinished', filter.isFinished.toString())
     }
 
-    // JSON 객체를 쿼리 파라미터로 전달
-    const queryParams = new URLSearchParams({
-      request: JSON.stringify(requestObject),
-    })
+    const url = `/api/v1/projectTeams/allTeams?${searchParams.toString()}`
+    
+    console.log('🔄 API 요청:', url)
 
-    const url = `/api/v1/projectTeams/allTeams?${queryParams.toString()}`
-
-    console.log('Request URL:', url)
-    console.log('Request Object:', requestObject)
-
-    // GET 요청, 쿼리 파라미터 방식
     const response = await fetch(url, {
       method: 'GET',
       headers: {
@@ -70,56 +63,54 @@ export const getAllTeams = async (
       credentials: 'include',
     })
 
-    console.log('Response status:', response.status)
-
     if (!response.ok) {
       const errorText = await response.text()
-      console.error('에러 응답:', errorText)
       throw new Error(`GET 요청 실패: ${response.status} - ${errorText}`)
     }
 
     const result = await response.json()
-    console.log('API 응답:', result)
 
-    // 커서 기반 응답 구조 처리
+    // 응답 구조 정규화
     if (result.teams) {
       return {
         allTeams: result.teams,
-        nextInfo: result.nextInfo, // 다음 페이지를 위한 커서 정보
+        nextInfo: result.nextInfo,
       }
     }
 
     return result as TeamsResponse
   } catch (error: any) {
-    console.error('getAllTeams API 오류:', error)
     throw error
   }
 }
 
-// 첫 번째 로드를 위한 기본 조회 함수
+// 첫 번째 페이지 조회용 헬퍼 함수
 export const getInitialTeams = async (
   filters?: Omit<GetAllTeamsFilter, 'id' | 'dateCursor' | 'countCursor'>,
 ): Promise<TeamsResponse> => {
   return getAllTeams({
     ...filters,
-    // 첫 번째 조회이므로 커서 데이터 없음
+    limit: filters?.limit || 12,
+    // 커서 정보 없음 (첫 페이지)
     id: undefined,
     dateCursor: undefined,
     countCursor: undefined,
   })
 }
 
-// 다음 페이지 로드를 위한 함수
+// 다음 페이지 조회용 헬퍼 함수
 export const getNextTeams = async (
   nextInfo: TeamsResponse['nextInfo'],
   filters?: Omit<GetAllTeamsFilter, 'id' | 'dateCursor' | 'countCursor'>,
 ): Promise<TeamsResponse> => {
   if (!nextInfo || !nextInfo.hasNext) {
-    return { allTeams: [] }
+    return { allTeams: [], nextInfo: undefined }
   }
 
   return getAllTeams({
     ...filters,
+    limit: filters?.limit || 12,
+    // 커서 정보 설정
     id: nextInfo.id,
     dateCursor:
       nextInfo.sortType === 'UPDATE_AT_DESC' ? nextInfo.dateCursor : undefined,

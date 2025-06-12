@@ -1,6 +1,9 @@
 /** TapBar 옵션 */
 export type TabOption = '전체보기' | '프로젝트' | '스터디'
 
+/** 정렬 드롭다운 옵션 */
+export type SortOption = '최신 순' | '조회수 순' | '좋아요 순'
+
 /** 모집여부 드롭다운 옵션 */
 export type RecruitmentOption = '모집 중' | '모집 완료'
 
@@ -9,11 +12,11 @@ export type ProgressOption = '진행 중' | '진행 완료'
 
 /** 포지션 드롭다운 옵션 (API에 그대로 전달할 값) */
 export type PositionOption =
-  | 'frontend'
-  | 'backend'
-  | 'devops'
-  | 'fullstack'
-  | 'dataEngineer'
+  | 'FRONTEND'
+  | 'BACKEND'
+  | 'DEVOPS'
+  | 'FULLSTACK'
+  | 'DATA_ENGINEER'
 
 //프로젝트 페이지 불러오기
 export interface GetAllTeamsFilter {
@@ -24,11 +27,7 @@ export interface GetAllTeamsFilter {
 
   // 기본 조회 옵션
   limit?: number // 기본값: 10
-  sortType?:
-    | 'UPDATE_AT_DESC'
-    | 'CREATE_AT_DESC'
-    | 'VIEW_COUNT_DESC'
-    | 'LIKE_COUNT_DESC' // 기본값: UPDATE_AT_DESC
+  sortType?: 'UPDATE_AT_DESC' | 'VIEW_COUNT_DESC' | 'LIKE_COUNT_DESC' // 기본값: UPDATE_AT_DESC
 
   // 필터링 옵션 (null이면 모든 팀 포함)
   teamTypes?: ('PROJECT' | 'STUDY')[]
@@ -50,11 +49,7 @@ export interface TeamFilter {
   isRecruited?: boolean
   isFinished?: boolean
   limit?: number
-  sortType?:
-    | 'UPDATE_AT_DESC'
-    | 'CREATE_AT_DESC'
-    | 'VIEW_COUNT_DESC'
-    | 'LIKE_COUNT_DESC'
+  sortType?: 'UPDATE_AT_DESC' | 'VIEW_COUNT_DESC' | 'LIKE_COUNT_DESC'
 }
 
 /** API 응답 형태 */
