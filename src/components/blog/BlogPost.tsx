@@ -131,7 +131,7 @@ export default function BlogPost({
             <p className="text-xs px-5 mb-1 text-black/30">{formattedDate}</p>
           </div>
         
-          <div className="flex justify-between mt-3 pl-5 pr-2">
+          <div className="flex justify-between mt-3 pl-5 pr-2 pb-1">
             <div className="flex items-center">
               <img
                 src={profile.image}
