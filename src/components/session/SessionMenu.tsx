@@ -53,7 +53,6 @@ export default function SessionMenu({
   const { mutate } = useMutation({
     mutationFn: (id: string) => deleteSession(id),
     onSuccess: () => {
-      console.log('삭제 성공')
       showMessage()
     },
   })

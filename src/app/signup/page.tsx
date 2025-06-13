@@ -1,5 +1,4 @@
 'use client'
-import React, { useState, useRef, useEffect } from 'react'
 import Select from '@/components/signup/Select'
 import PositionSelect from '@/components/signup/PositionSelect'
 import ExperienceSection from '@/components/signup/ExperienceSection'
@@ -15,6 +14,7 @@ import {
   GRADE,
   GENERATION,
   POSITION,
+  joinReason,
 } from '@/constants/signupInfo'
 import BlogComponent from '@/components/signup/BlogComponent'
 
@@ -27,22 +27,63 @@ const Signup = () => {
     handleChange,
     handlePositionSelect,
     step,
+    isTecheer,
     isLoading,
     handleSignup,
+    handleSignupExternal,
     passwordsMatch,
     formRef,
     bottomRef,
     handleNext,
     handleBack,
+    handleSignupPurpose,
+    handleTecheerSelect,
   } = useSignupHandler()
 
   return (
     <div className="flex min-h-[calc(100vh-61px)] items-center justify-between">
       <div className="flex flex-col w-[44.75rem] h-full px-[7.25rem]">
-        <h2 className="text-4xl font-extrabold text-center my-8 text-primary">
+        <h2 className="text-4xl font-extrabold text-center my-10 text-primary">
           Sign up
         </h2>
-        {step === 1 ? (
+        
+        {step === 0 && (
+          <div>
+            <p className="block text-lg mb-6">
+              테커 소속이신가요? <span className="text-primary">*</span>
+            </p>
+            <div className="flex justify-between space-x-5">
+              <button
+                type="button"
+                onClick={() =>
+                  handleTecheerSelect(true)
+                }
+                className={`w-full h-10 border rounded-[0.25rem] ${
+                  isTecheer === true
+                    ? 'bg-primary text-white border-primary'
+                    : 'text-gray border-gray'
+                }`}
+              >
+                예, 테커 소속입니다
+              </button>
+              <button
+                type="button"
+                onClick={() =>
+                  handleTecheerSelect(false)
+                }
+                className={`w-full h-10 border rounded-[0.25rem] ${
+                  isTecheer === false
+                    ? 'bg-primary text-white border-primary'
+                    : 'text-gray border-gray'
+                }`}
+              >
+                아니요, 외부 사용자입니다
+              </button>
+            </div>
+          </div>
+        )}
+
+        {step === 1 && (
           <div className="flex flex-col w-[30.25rem] space-y-9 justify-center my-auto">
             <InputField
               label="이름"
@@ -59,6 +100,7 @@ const Signup = () => {
               setIsVerified={(verified) =>
                 setFormData((prev) => ({ ...prev, isVerified: verified }))
               }
+              isTecheerSignup={ isTecheer ? true : false }
             />
             <InputField
               label="비밀번호"
@@ -89,8 +131,35 @@ const Signup = () => {
                 </p>
               )}
             </div>
+            { !isTecheer && (
+                <div className="flex flex-col w-[30.25rem] space-y-9 justify-center my-auto">
+                  <div className="flex justify-between items-center">
+                    <label className="text-lg ">
+                    가입동기가 어떻게 되시나요?  <span className="text-primary"> *</span>
+                    </label>
+                    <div className="flex justify-between space-x-3 text-sm">
+                      {joinReason.map((reason) => (
+                        <button
+                          key={reason.value}
+                          onClick={() => handleSignupPurpose(reason.value)}
+                          className={`w-[6rem] h-10 border rounded-[0.25rem] ${
+                            formData.joinReason === reason.value
+                              ? 'bg-primary text-white border-primary'
+                              : 'text-gray border-gray'
+                          }`}
+                        >
+                          {reason.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
           </div>
-        ) : (
+        )}
+        
+
+        { step === 2 && (
           <div
             ref={formRef}
             className="flex flex-col w-[32.5rem] space-y-9 my-auto overflow-y-auto pr-6 h-[31.5rem]"
@@ -366,10 +435,10 @@ const Signup = () => {
             )}
             <div ref={bottomRef}></div>
           </div>
-        )}
+          )}
 
         <div className="flex flex-col my-10">
-          {step === 1 ? (
+          {step === 0 ? (
             <button
               type="button"
               onClick={handleNext}
@@ -378,6 +447,8 @@ const Signup = () => {
               다음
             </button>
           ) : (
+            <div>
+            { !isTecheer || step === 2 ? (
             <div className="flex flex-col space-y-2">
               <button
                 type="button"
@@ -388,7 +459,13 @@ const Signup = () => {
               </button>
               <button
                 type="button"
-                onClick={handleSignup}
+                onClick={() => {
+                  if (!isTecheer) {
+                    handleSignupExternal()
+                  } else if (step === 2) {
+                    handleSignup()
+                  }
+                }}
                 disabled={isLoading}
                 className="w-[30.25rem] h-10 text-xl border border-primary text-primary rounded-full hover:bg-primary hover:text-white flex items-center justify-center"
               >
@@ -401,6 +478,26 @@ const Signup = () => {
                   '회원가입'
                 )}
               </button>
+            </div>
+            ) : (
+              <div className="flex flex-col space-y-2">
+
+              <button
+                type="button"
+                onClick={handleBack}
+                className="w-[30.25rem] h-10 text-xl border border-gray text-gray rounded-full hover:border-primary hover:text-primary"
+              >
+                이전
+              </button>
+               <button
+              type="button"
+              onClick={handleNext}
+              className="w-[30.25rem] h-10 text-xl border border-gray text-gray rounded-full hover:border-primary hover:text-primary"
+            >
+              다음
+            </button>
+            </div>
+              )}
             </div>
           )}
         </div>

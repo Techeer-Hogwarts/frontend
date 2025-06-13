@@ -36,7 +36,7 @@ export default function Page() {
       setMessage('회원탈퇴가 완료되었습니다.')
       await logout()
       setTimeout(() => {
-        router.push('/')
+        window.location.href = '/'
       }, 1200)
     } catch (error: any) {
       setIsError(true)

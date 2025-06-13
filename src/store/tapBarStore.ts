@@ -6,7 +6,7 @@ interface TapBarState {
 }
 
 export const useTapBarStore = create<TapBarState>((set) => ({
-  activeOption: '',
+  activeOption: '전체보기', // 기본값 설정
   setActiveOption: (option) => {
     set({ activeOption: option })
   },

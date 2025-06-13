@@ -45,7 +45,7 @@ export function mapRoleToStyleKey(role: string) {
       return 'Backend'
     case 'DEVOPS':
       return 'DevOps'
-    case 'FULL_STACK':
+    case 'FULLSTACK':
       return 'FullStack'
     case 'DATA_ENGINEER':
       return 'DataEngineer'

@@ -1,8 +1,5 @@
-import { getAllTeams } from '@/api/project/common'
-import { useQueries } from '@tanstack/react-query'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
 import { ProjectTeam } from '@/types/search'
 
 export default function ProjectCard({ team }: { team: ProjectTeam }) {

@@ -17,6 +17,8 @@ interface Experience {
   endDate: string | null
   category?: string
   isCurrentJob?: boolean
+  description?: string
+  isFinished?: boolean
 }
 
 interface ProfileData {
@@ -150,6 +152,25 @@ export default function Profile({ profile }: ProfileProps) {
       return
     }
 
+    if (!year) {
+      alert('기수를 선택해주세요.')
+      return
+    }
+    if (!classYear) {
+      alert('학년을 선택해주세요.')
+      return
+    }
+    
+    if (!mainPosition) {
+      alert('메인 포지션을 선택해주세요.')
+      return
+    }
+
+    if (!githubUrl.trim()) {
+      alert('깃허브 주소를 입력해주세요.')
+      return
+    }
+
     const finalSchool = school === '해당 없음' ? customSchool.trim() : school
 
     // 경력 삭제
@@ -231,7 +252,7 @@ export default function Profile({ profile }: ProfileProps) {
     }
 
     try {
-      const response = await fetch('/api/v1/users/update', {
+      const response = await fetch('/api/v1/users', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',

@@ -4,6 +4,8 @@ export type internshipsType = {
   startDate: string
   endDate: string
   isCurrentJob: boolean
+  description?: string
+  isFinished?: boolean
 }
 
 export type fulltimesType = {
@@ -12,6 +14,8 @@ export type fulltimesType = {
   startDate: string
   endDate: string
   isCurrentJob: boolean
+  description?: string
+  isFinished?: boolean
 }
 
 export const initialFormData = {
@@ -20,6 +24,7 @@ export const initialFormData = {
   password: '',
   confirmPassword: '',
   isVerified: false,
+  joinReason: '',
 
   school: '',
   customSchool: '', // “해당 없음” 선택 시, 직접 입력한 학교명

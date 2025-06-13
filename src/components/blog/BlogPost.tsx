@@ -99,6 +99,7 @@ export default function BlogPost({
                   onDelete={onDelete}
                   setModalOpen={() => setModalOpen(true)}
                   setModalMessage={setModalMessage}
+                  setShowMenu={setShowMenu}
                 />
               </div>
             )}

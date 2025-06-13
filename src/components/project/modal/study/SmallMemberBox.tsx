@@ -53,7 +53,7 @@ const SmallMemberBox = ({
         alt="ProfileInfo Image"
         width={48}
         height={48}
-        className="w-[48px] h-[48px]  rounded-md"
+        className="w-[48px] h-[48px]  rounded-md object-cover object-center"
       />
       <div className="flex flex-col">
         <div className="flex items-center gap-1">

@@ -1,7 +1,7 @@
 export const fetchBestResumes = async (
   offset: number,
   limit: number,
-  setAuthModalOpen: (open: boolean) => void, 
+  setAuthModalOpen: (open: boolean) => void,
 ): Promise<any> => {
   try {
     const response = await fetch(
@@ -20,7 +20,6 @@ export const fetchBestResumes = async (
       throw new Error('로그인이 필요합니다.') // 오류 던지기 (try-catch로 감지)
     }
 
-
     if (!response.ok) {
       throw new Error(`인기 이력서 조회 실패: ${response.status}`)
     }
@@ -28,7 +27,6 @@ export const fetchBestResumes = async (
     const result = await response.json()
     const dataWithWrapper = { data: result } // Back에서 data 필드 없시 바로 반환하기 때문에
 
-    // console.log('인기 이력서 조회 성공', dataWithWrapper)
     return dataWithWrapper
   } catch (error: any) {
     throw error
