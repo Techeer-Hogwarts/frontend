@@ -13,6 +13,7 @@ import {
   getBasicSearchResults,
   getFinalSearchResults,
 } from '../../api/search/getSearch'
+import { deleteUser } from "@/api/auth/auth"
 
 // Debounce 함수
 const useDebounce = (value: string, delay: number) => {
@@ -53,6 +54,9 @@ export default function NavBar() {
   const { isLoggedIn, user, logout, checkAuth } = useAuthStore()
   const router = useRouter()
   const pathname = usePathname()
+
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+  const dropdownRef = useRef<HTMLDivElement>(null)
 
   const debouncedQuery = useDebounce(query, 300)
 
@@ -306,23 +310,57 @@ export default function NavBar() {
              {/* 마이페이지 아이콘 */}
               {(user?.roleId === 1 || user?.roleId === 2 || user?.roleId === 3) && (
                 <Link href="/mypage" className="p-[6px] cursor-pointer">
-                  <IoPersonCircle
-                    size={28}
-                    className={`${pathname === '/' ? 'text-white' : ''}`}
-                  />
+                  <IoPersonCircle size={28} className={`${pathname === '/' ? 'text-white' : ''}`} />
                 </Link>
               )}
-          </>
-        )}
+
+              {(user?.roleId === 4 || user?.roleId === 5) && (
+                <div className="relative" ref={dropdownRef}>
+                  <button
+                    onClick={() => setIsDropdownOpen((prev) => !prev)}
+                    className="p-[6px] cursor-pointer"
+                  >
+                    <IoPersonCircle size={28} className={`${pathname === '/' ? 'text-white' : ''}`} />
+                  </button>
+                  {isDropdownOpen && (
+                    <div className="absolute right-0 mt-2 w-40 bg-white rounded-md shadow-md z-50 border border-gray">
+                      {/* 테커 전환 아직 미구현 */}
+                      {user.roleId === 5 && (
+                        <button
+                          className="block w-full text-left px-3 py-[10px] text-[14px] hover:rounded-t-md hover:bg-lightgray"
+                        >
+                          테커 전환
+                        </button>
+                      )}
+                      <button
+                        onClick={handleLogout}
+                        className="block w-full text-left px-3 py-[10px] text-[14px] hover:bg-lightgray"
+                      >
+                        로그아웃
+                      </button>
+                      <Link
+                        href="/mypage/leave"
+                        className="block w-full text-left px-3 py-[10px] text-[14px] text-primary hover:rounded-b-md hover:bg-lightgray"
+                      >
+                        회원탈퇴
+                      </Link>
+                    </div>
+                  )}
+                </div>
+              )}
+              </>
+            )}
 
         {isLoggedIn === true ? (
-          <button
-            type="button"
-            className={`ml-4 hover:text-primary cursor-pointer ${pathname == '/' ? 'text-white' : ''}`}
-            onClick={handleLogout}
-          >
-            로그아웃
-          </button>
+          user?.roleId === 1 || user?.roleId === 2 || user?.roleId === 3 ? (
+            <button
+              type="button"
+              className={`ml-4 hover:text-primary cursor-pointer ${pathname == '/' ? 'text-white' : ''}`}
+              onClick={handleLogout}
+            >
+              로그아웃
+            </button>
+          ) : null
         ) : (
           <Link
             href="/login"
