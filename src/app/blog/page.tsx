@@ -4,6 +4,7 @@ import BlogList from '@/components/blog/BlogList'
 import SearchBar from '@/components/common/SearchBar'
 
 const category = ['전체보기', 'TECHEER', 'SHARED', '금주의 블로그']
+
 export default function Page() {
   return (
     <div className="flex justify-center h-auto min-h-screen">
