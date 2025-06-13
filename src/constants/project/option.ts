@@ -10,8 +10,8 @@ export const TAB_OPTIONS: TabOption[] = ['전체보기', '프로젝트', '스터
 
 /** 정렬 드롭다운 */
 export const SORT_OPTIONS = [
-  '최신 순', // UPDATE_AT_DESC
-  '조회수 순', // VIEW_COUNT_DESC
+  '최신순', // UPDATE_AT_DESC
+  '조회수순', // VIEW_COUNT_DESC
 ]
 
 /** 모집여부 드롭다운 */
