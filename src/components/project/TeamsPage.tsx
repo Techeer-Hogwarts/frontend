@@ -39,8 +39,6 @@ export default function TeamsPage() {
         return 'UPDATE_AT_DESC'
       case '조회수 순':
         return 'VIEW_COUNT_DESC'
-      case '좋아요 순':
-        return 'LIKE_COUNT_DESC'
       default:
         return 'UPDATE_AT_DESC'
     }

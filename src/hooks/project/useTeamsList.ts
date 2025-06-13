@@ -104,9 +104,7 @@ export const useTeamsList = (filters: TeamFilter) => {
             : nextInfo.sortType === 'UPDATE_AT_DESC'
               ? nextInfo.dateCursor
               : undefined,
-        countCursor: ['VIEW_COUNT_DESC', 'LIKE_COUNT_DESC'].includes(
-          nextInfo.sortType,
-        )
+        countCursor: ['VIEW_COUNT_DESC'].includes(nextInfo.sortType)
           ? nextInfo.countCursor
           : undefined,
         sortType: nextInfo.sortType,

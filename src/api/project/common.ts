@@ -25,10 +25,9 @@ export const getAllTeams = async (
       if (filter?.dateCursor) {
         searchParams.append('dateCursor', filter.dateCursor)
       }
-      // 조회수순, 좋아요순일 때 countCursor도 함께 사용
+      // 조회수순일 때 countCursor도 함께 사용
       if (
-        (filter?.sortType === 'VIEW_COUNT_DESC' ||
-          filter?.sortType === 'LIKE_COUNT_DESC') &&
+        filter?.sortType === 'VIEW_COUNT_DESC' &&
         filter?.countCursor !== undefined
       ) {
         searchParams.append('countCursor', filter.countCursor.toString())
@@ -39,8 +38,7 @@ export const getAllTeams = async (
       if (filter?.sortType === 'UPDATE_AT_DESC' && filter?.dateCursor) {
         searchParams.append('dateCursor', filter.dateCursor)
       } else if (
-        (filter?.sortType === 'VIEW_COUNT_DESC' ||
-          filter?.sortType === 'LIKE_COUNT_DESC') &&
+        filter?.sortType === 'VIEW_COUNT_DESC' &&
         filter?.countCursor !== undefined
       ) {
         searchParams.append('countCursor', filter.countCursor.toString())
@@ -69,8 +67,6 @@ export const getAllTeams = async (
     }
 
     const url = `/api/v1/projectTeams/allTeams?${searchParams.toString()}`
-
-    console.log('🔄 API 요청:', url)
 
     const response = await fetch(url, {
       method: 'GET',
@@ -137,9 +133,7 @@ export const getNextTeams = async (
         : nextInfo.sortType === 'UPDATE_AT_DESC'
           ? nextInfo.dateCursor
           : undefined,
-    countCursor: ['VIEW_COUNT_DESC', 'LIKE_COUNT_DESC'].includes(
-      nextInfo.sortType,
-    )
+    countCursor: ['VIEW_COUNT_DESC'].includes(nextInfo.sortType)
       ? nextInfo.countCursor
       : undefined,
     sortType: nextInfo.sortType as any,

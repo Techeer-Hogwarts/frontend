@@ -23,11 +23,11 @@ export interface GetAllTeamsFilter {
   // 커서 기반 페이지네이션 필드
   id?: number // 커서 보조키
   dateCursor?: string // UPDATE_AT_DESC용 커서
-  countCursor?: number // VIEW_COUNT_DESC, LIKE_COUNT_DESC용 커서
+  countCursor?: number // VIEW_COUNT_DESC용 커서
 
   // 기본 조회 옵션
   limit?: number // 기본값: 10
-  sortType?: 'UPDATE_AT_DESC' | 'VIEW_COUNT_DESC' | 'LIKE_COUNT_DESC' // 기본값: UPDATE_AT_DESC
+  sortType?: 'UPDATE_AT_DESC' | 'VIEW_COUNT_DESC' // 기본값: UPDATE_AT_DESC
 
   // 필터링 옵션 (null이면 모든 팀 포함)
   teamTypes?: ('PROJECT' | 'STUDY')[]
@@ -49,7 +49,7 @@ export interface TeamFilter {
   isRecruited?: boolean
   isFinished?: boolean
   limit?: number
-  sortType?: 'UPDATE_AT_DESC' | 'VIEW_COUNT_DESC' | 'LIKE_COUNT_DESC'
+  sortType?: 'UPDATE_AT_DESC' | 'VIEW_COUNT_DESC'
 }
 
 /** API 응답 형태 */
