@@ -15,19 +15,36 @@ export const getAllTeams = async (
     searchParams.append('limit', (filter?.limit || 12).toString())
     searchParams.append('sortType', filter?.sortType || 'UPDATE_AT_DESC')
 
-    // 커서 데이터 (다음 페이지 조회 시)
+    // 커서 데이터 처리 - 팀 타입 유무에 따라 다르게 처리
     if (filter?.id !== undefined) {
       searchParams.append('id', filter.id.toString())
     }
 
-    if (filter?.sortType === 'UPDATE_AT_DESC' && filter?.dateCursor) {
-      searchParams.append('dateCursor', filter.dateCursor)
-    } else if (
-      (filter?.sortType === 'VIEW_COUNT_DESC' ||
-        filter?.sortType === 'LIKE_COUNT_DESC') &&
-      filter?.countCursor !== undefined
-    ) {
-      searchParams.append('countCursor', filter.countCursor.toString())
+    // 팀 타입이 없는 경우 (전체보기): 모든 정렬에서 dateCursor 사용
+    if (!filter?.teamTypes || filter.teamTypes.length === 0) {
+      if (filter?.dateCursor) {
+        searchParams.append('dateCursor', filter.dateCursor)
+      }
+      // 조회수순, 좋아요순일 때 countCursor도 함께 사용
+      if (
+        (filter?.sortType === 'VIEW_COUNT_DESC' ||
+          filter?.sortType === 'LIKE_COUNT_DESC') &&
+        filter?.countCursor !== undefined
+      ) {
+        searchParams.append('countCursor', filter.countCursor.toString())
+      }
+    }
+    // 팀 타입이 있는 경우 (프로젝트/스터디): 기존 로직
+    else {
+      if (filter?.sortType === 'UPDATE_AT_DESC' && filter?.dateCursor) {
+        searchParams.append('dateCursor', filter.dateCursor)
+      } else if (
+        (filter?.sortType === 'VIEW_COUNT_DESC' ||
+          filter?.sortType === 'LIKE_COUNT_DESC') &&
+        filter?.countCursor !== undefined
+      ) {
+        searchParams.append('countCursor', filter.countCursor.toString())
+      }
     }
 
     // 필터링 조건
@@ -52,7 +69,7 @@ export const getAllTeams = async (
     }
 
     const url = `/api/v1/projectTeams/allTeams?${searchParams.toString()}`
-    
+
     console.log('🔄 API 요청:', url)
 
     const response = await fetch(url, {
@@ -110,10 +127,16 @@ export const getNextTeams = async (
   return getAllTeams({
     ...filters,
     limit: filters?.limit || 12,
-    // 커서 정보 설정
+    // 커서 정보 설정 - 팀 타입 유무에 따라 다르게 처리
     id: nextInfo.id,
+    // 전체보기: 모든 정렬에서 dateCursor 사용
+    // 팀 타입 있음: UPDATE_AT_DESC에서만 dateCursor 사용
     dateCursor:
-      nextInfo.sortType === 'UPDATE_AT_DESC' ? nextInfo.dateCursor : undefined,
+      !filters?.teamTypes || filters.teamTypes.length === 0
+        ? nextInfo.dateCursor
+        : nextInfo.sortType === 'UPDATE_AT_DESC'
+          ? nextInfo.dateCursor
+          : undefined,
     countCursor: ['VIEW_COUNT_DESC', 'LIKE_COUNT_DESC'].includes(
       nextInfo.sortType,
     )

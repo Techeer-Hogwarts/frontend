@@ -96,10 +96,14 @@ export const useTeamsList = (filters: TeamFilter) => {
       const apiFilters = buildApiFilters({
         // 커서 정보
         id: nextInfo.id,
+        // 전체보기: 모든 정렬에서 dateCursor 사용
+        // 팀 타입 있음: UPDATE_AT_DESC에서만 dateCursor 사용
         dateCursor:
-          nextInfo.sortType === 'UPDATE_AT_DESC'
+          !filters.teamTypes || filters.teamTypes.length === 0
             ? nextInfo.dateCursor
-            : undefined,
+            : nextInfo.sortType === 'UPDATE_AT_DESC'
+              ? nextInfo.dateCursor
+              : undefined,
         countCursor: ['VIEW_COUNT_DESC', 'LIKE_COUNT_DESC'].includes(
           nextInfo.sortType,
         )
