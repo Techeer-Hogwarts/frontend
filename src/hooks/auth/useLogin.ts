@@ -40,7 +40,7 @@ export const useLogin = () => {
       } else if (form === 'signup') {
         router.replace('/')
       } else {
-        router.back()
+        router.replace('/')
       }
     } catch (error) {
       if (error.status == 404) {
