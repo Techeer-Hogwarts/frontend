@@ -53,7 +53,7 @@ export default function ProfileBox({
   }
 
   const truncatedSchool =
-    profile.school.length > 12
+    profile.school && profile.school.length > 12
       ? profile.school.slice(0, 12) + '...'
       : profile.school
 
