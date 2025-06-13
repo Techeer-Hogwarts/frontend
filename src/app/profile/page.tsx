@@ -169,6 +169,7 @@ export default function Page() {
           </div>
         )}
         <ProfileList
+          key={`${selectedPosition.join(',')}_${selectedYear.join(',')}_${selectedUniversity.join(',')}_${selectedGrade.join(',')}_${selectedSortBy[0]}`}
           position={selectedPosition}
           year={selectedYear}
           university={selectedUniversity}

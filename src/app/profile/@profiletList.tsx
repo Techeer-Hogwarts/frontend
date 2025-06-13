@@ -52,7 +52,7 @@ export default function ProfileList({
     setProfiles([])
     setCursorId(undefined)
     setHasNext(true)
-  }, [position, year, university, grade, sortBy])
+  }, [position, year, university, grade, sortByValue])
 
   useEffect(() => {
     if (data && Array.isArray(data.profiles)) {
