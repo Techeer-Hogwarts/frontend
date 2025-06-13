@@ -6,10 +6,10 @@ import Link from 'next/link'
 import Image from 'next/image'
 import BlogMenu from './BlogMenu'
 import BookmarkModal from '../common/BookmarkModal'
-import { useState } from 'react'
-import { useLike } from '@/hooks/blog/uselike'
+import { useEffect, useState } from 'react'
 import { usePutBlogAPI } from '@/api/blog/blog'
 import { BlogPostProps } from '@/types/BlogProps'
+import { useLike } from '@/app/blog/_lib/useLike'
 
 export default function BlogPost({
   title,
@@ -18,22 +18,45 @@ export default function BlogPost({
   userImage,
   id,
   category,
-  likeCount,
+  likeCount: initialLikeCount,
   url,
   image,
   onDelete,
   authorName,
   authorImage,
   likeList,
+  onLikeUpdate,
 }: BlogPostProps) {
   const [showMenu, setShowMenu] = useState(false)
+  const { postLike } = useLike()
   const [modalOpen, setModalOpen] = useState(false)
   const [modalMessage, setModalMessage] = useState('')
-  const {
-    isLike,
-    likeCount: currentLikeCount,
-    toggleLike,
-  } = useLike(id, likeList, likeCount, 'BLOG')
+  const [isLike, setIsLike] = useState(false)
+  const [likeCount, setLikeCount] = useState(initialLikeCount)
+
+  const clickLike = async () => {
+     try {
+      const newIsLike = !isLike
+      const newLikeCount = newIsLike ? likeCount + 1 : likeCount - 1
+
+      setIsLike(newIsLike)
+      setLikeCount(newLikeCount)
+
+      await postLike(Number(id), 'BLOG', newIsLike)
+      if (typeof onLikeUpdate === 'function') {
+        onLikeUpdate(id, newLikeCount)
+      }
+    } catch (err) {
+      setIsLike(!isLike)
+      setLikeCount(isLike ? likeCount : likeCount - 1)
+    }
+
+  }
+  useEffect(() => {
+      if (Array.isArray(likeList)) {
+        setIsLike(likeList.some((bookmark: any) => bookmark.id === id))
+      }
+    }, [likeList, id])
   const putBlogMutation = usePutBlogAPI()
 
   const profile =
@@ -79,32 +102,35 @@ export default function BlogPost({
             {title}
           </button>
         )}
-        <div className="py-2 bg-white" onClick={handleClickUrl}>
-          <div className="flex relative justify-between pl-5 pr-2">
-            <p className="truncate font-medium text-sm">{title}</p>
-            <Image
-              src="/images/session/session-menu.svg"
-              alt="menu"
-              width={20}
-              height={20}
-              onClick={(e) => {
-                e.stopPropagation()
-                setShowMenu(!showMenu)
-              }}
-            />
-            {showMenu && (
-              <div className="absolute top-[-5%] right-0 z-10">
-                <BlogMenu
-                  id={id}
-                  onDelete={onDelete}
-                  setModalOpen={() => setModalOpen(true)}
-                  setModalMessage={setModalMessage}
-                  setShowMenu={setShowMenu}
-                />
-              </div>
-            )}
+        <div className="py-2 bg-white">
+          <div onClick={handleClickUrl}>
+            <div className="flex relative justify-between pl-5 pr-2">
+              <p className="truncate font-medium text-sm">{title}</p>
+              <Image
+                src="/images/session/session-menu.svg"
+                alt="menu"
+                width={20}
+                height={20}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setShowMenu(!showMenu)
+                }}
+              />
+              {showMenu && (
+                <div className="absolute top-[-5%] right-0 z-10">
+                  <BlogMenu
+                    id={id}
+                    onDelete={onDelete}
+                    setModalOpen={() => setModalOpen(true)}
+                    setModalMessage={setModalMessage}
+                    setShowMenu={setShowMenu}
+                  />
+                </div>
+              )}
+            </div>
+            <p className="text-xs px-5 mb-1 text-black/30">{formattedDate}</p>
           </div>
-          <p className="text-xs px-5 mb-1 text-black/30">{formattedDate}</p>
+        
           <div className="flex justify-between mt-3 pl-5 pr-2">
             <div className="flex items-center">
               <img
@@ -118,17 +144,24 @@ export default function BlogPost({
               <span className="ml-2 text-xs font-semibold">{profile.name}</span>
             </div>
             <div className="flex items-center space-x-1">
-              <span className="text-sm">{currentLikeCount}</span>
-              <Image
-                src={isLike ? '/images/like-on.svg' : '/images/like-off.svg'}
-                alt="like"
-                width={20}
-                height={20}
-                onClick={(e) => {
-                  e.stopPropagation()
-                  toggleLike()
-                }}
-              />
+              <span className="text-sm">{likeCount}</span>
+                <button type="button" onClick={clickLike}>
+                  {isLike ? (
+                    <Image
+                      src="/images/like-on.svg"
+                      alt="like-on"
+                      width={24}
+                      height={24}
+                    />
+                  ) : (
+                    <Image
+                      src="/images/like-off.svg"
+                      alt="like-off"
+                      width={24}
+                      height={24}
+                    />
+                  )}
+                </button>
             </div>
           </div>
         </div>
