@@ -1,26 +1,28 @@
 import { getPositionStyle } from '@/styles/positionStyles'
 
-export default function FindMember({ projectDetail, projectType }) {
+export default function FindMember({ variant, projectDetail }) {
   return (
     <div>
       <div className="text-[1.125rem] font-[600] mb-3">모집 정보</div>
       <div className="flex gap-3 mb-3">
-        {projectType === 'study' && (
-          <BlueBox role="모집인원" num={projectDetail.recruitNum} />
+        {variant === 'study' && (
+          <div className="px-3 h-[1.4955rem] rounded-md bg-lightblue text-blue flex items-center justify-center">
+            모집인원: {projectDetail.recruitNum}명
+          </div>
         )}
-        {projectType === 'project' && projectDetail.frontendNum > 0 && (
+        {variant === 'project' && projectDetail.frontendNum > 0 && (
           <BlueBox role="Frontend" num={projectDetail.frontendNum} />
         )}
-        {projectType === 'project' && projectDetail.backendNum > 0 && (
+        {variant === 'project' && projectDetail.backendNum > 0 && (
           <BlueBox role="Backend" num={projectDetail.backendNum} />
         )}
-        {projectType === 'project' && projectDetail.devopsNum > 0 && (
+        {variant === 'project' && projectDetail.devopsNum > 0 && (
           <BlueBox role="DevOps" num={projectDetail.devopsNum} />
         )}
-        {projectType === 'project' && projectDetail.fullStackNum > 0 && (
+        {variant === 'project' && projectDetail.fullStackNum > 0 && (
           <BlueBox role="FullStack" num={projectDetail.fullStackNum} />
         )}
-        {projectType === 'project' && projectDetail.dataEngineerNum > 0 && (
+        {variant === 'project' && projectDetail.dataEngineerNum > 0 && (
           <BlueBox role="DataEngineer" num={projectDetail.dataEngineerNum} />
         )}
       </div>
