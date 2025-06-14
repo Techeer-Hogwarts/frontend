@@ -108,7 +108,7 @@ export default function Resume() {
           />
         </div>
         {/** BestResume에서 setAuthModalOpen을 전달하도록 수정 */}
-        <BestResume offset={0} limit={10} setAuthModalOpen={setAuthModalOpen} />
+        <BestResume setAuthModalOpen={setAuthModalOpen} />
       </div>
       {[selectedPosition, selectedYear].some((arr) => arr.length > 0) && (
         <div className="bg-filterbg flex items-center w-[75rem] h-[4.375rem] px-4 gap-4 my-3">

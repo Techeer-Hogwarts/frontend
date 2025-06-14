@@ -53,7 +53,7 @@ export default function Page() {
         </p>
         <div className="w-full h-[87px] border mt-2 text-sm border-gray bg-lightgray/50 flex flex-col justify-center px-4 gap-1">
           <p>불편한 사항이 있으시면 언제든 TECHEER.ZIP에게 알려주세요.</p>
-          <p>Techeer.zip@gmail.com</p>
+          <p>techeerzip.cloud@gmail.com</p>
         </div>
         {/* 메시지 표시 영역 */}
         {message && (

@@ -14,4 +14,5 @@ export interface BlogPostProps {
   authorName: string
   authorImage: string
   onDelete: (id: string) => void
+  onLikeUpdate?: (id: string, newLikeCount: number) => void
 }

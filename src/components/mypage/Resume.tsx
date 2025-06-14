@@ -82,7 +82,7 @@ export default function Resume({ userId }) {
           id: userId, // userId 사용
           name: item.user.name,
           profileImage: item.user.profileImage,
-          year: 0, // API 응답에 없으므로 기본값
+          year: item.user.year,
           mainPosition: item.position, // position을 mainPosition으로 사용
         },
         likeList: [],

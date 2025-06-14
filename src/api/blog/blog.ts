@@ -54,7 +54,7 @@ export const useDeleteBlogAPI = () => {
 }
 
 // 블로그 인기글 조회와 목록 조회 API
-const getBlogs = async (newLimit: number, category: string, cursor?: number) => {
+const getBlogs = async (newLimit: number, category: string, cursor?: number, sortBy?: string) => {
   let url = '/api/v1/blogs'
   if (category === '금주의 블로그') {
     url = '/api/v1/blogs/best'
@@ -63,6 +63,7 @@ const getBlogs = async (newLimit: number, category: string, cursor?: number) => 
   const params: Record<string, string> = {
     limit: newLimit.toString(),
     ...(category !== '전체보기' && category ? { category } : {}),
+    ...(sortBy ? { sortBy } : {}),
   }
 
   // 커서가 있으면 cursorId 추가 (첫 요청은 cursorId 없이)
@@ -88,10 +89,10 @@ const getBlogs = async (newLimit: number, category: string, cursor?: number) => 
   return result
 }
 
-export const useGetBlogsAPI = (newLimit: number, category: string, cursor?: number) => {
+export const useGetBlogsAPI = (newLimit: number, category: string, cursor?: number, sortBy?: string) => {
   return useQuery({
-    queryKey: ['blogs', newLimit, category, cursor],
-    queryFn: () => getBlogs(newLimit, category, cursor),
+    queryKey: ['blogs', newLimit, category, cursor, sortBy],
+    queryFn: () => getBlogs(newLimit, category, cursor, sortBy),
     staleTime: 1000, // 1초 동안 캐시된 데이터 사용
   })
 }

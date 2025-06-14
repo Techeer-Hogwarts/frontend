@@ -17,6 +17,7 @@ export const fetchUserResumes = async (
     user: {
       name: string
       nickname: string
+      year: number
       profileImage: string
     }
   }>
