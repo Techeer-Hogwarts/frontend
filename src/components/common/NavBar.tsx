@@ -13,7 +13,6 @@ import {
   getBasicSearchResults,
   getFinalSearchResults,
 } from '../../api/search/getSearch'
-import { deleteUser } from "@/api/auth/auth"
 
 // Debounce 함수
 const useDebounce = (value: string, delay: number) => {
