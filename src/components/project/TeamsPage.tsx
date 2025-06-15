@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useTeamsList } from '@/hooks/project/useTeamsList'
@@ -29,15 +29,15 @@ export default function TeamsPage() {
   const [selectedRecruitment, setSelectedRecruitment] = useState<string[]>([])
   const [selectedProgress, setSelectedProgress] = useState<string[]>([])
   const [selectedPosition, setSelectedPosition] = useState<string[]>([])
-  const [selectedSort, setSelectedSort] = useState<string[]>(['최신 순']) // 기본값 필수
+  const [selectedSort, setSelectedSort] = useState<string[]>(['최신순']) // 기본값 필수
   const [searchResults, setSearchResults] = useState<any>(null)
 
   // 정렬 옵션을 API 형태로 변환하는 함수
   const getSortType = (sortOption: string) => {
     switch (sortOption) {
-      case '최신 순':
+      case '최신순':
         return 'UPDATE_AT_DESC'
-      case '조회수 순':
+      case '조회수순':
         return 'VIEW_COUNT_DESC'
       default:
         return 'UPDATE_AT_DESC'
@@ -67,7 +67,11 @@ export default function TeamsPage() {
   const safeActiveOption = activeOption || '전체보기'
 
   if (safeActiveOption !== '전체보기') {
-    filters.teamTypes = [safeActiveOption === '프로젝트' ? 'PROJECT' : 'STUDY']
+    if (safeActiveOption === '프로젝트') {
+      filters.teamTypes = ['PROJECT']
+    } else if (safeActiveOption === '스터디') {
+      filters.teamTypes = ['STUDY']
+    }
   }
   if (selectedRecruitment.length === 1) {
     filters.isRecruited = selectedRecruitment[0] === '모집 중'
@@ -147,36 +151,38 @@ export default function TeamsPage() {
       <div className="border-t my-5" />
 
       {/* 필터 드롭다운 */}
-      <div className="flex gap-3 mb-[2.31rem]">
+      <div className="flex justify-between mb-[2.31rem]">
+        <div className="flex gap-3">
+          <Dropdown
+            title="모집여부"
+            options={RECRUITMENT_OPTIONS}
+            selectedOptions={selectedRecruitment}
+            setSelectedOptions={setSelectedRecruitment}
+            singleSelect={true}
+          />
+          <Dropdown
+            title="진행여부"
+            options={PROGRESS_OPTIONS}
+            selectedOptions={selectedProgress}
+            setSelectedOptions={setSelectedProgress}
+            singleSelect={true}
+          />
+          {safeActiveOption === '프로젝트' && (
+            <Dropdown
+              title="포지션"
+              options={POSITION_OPTIONS}
+              selectedOptions={selectedPosition}
+              setSelectedOptions={setSelectedPosition}
+            />
+          )}
+        </div>
         <Dropdown
-          title={`정렬: ${selectedSort[0]}`} // 현재 선택된 정렬 표시
+          title={selectedSort[0]} // 현재 선택된 정렬 표시
           options={SORT_OPTIONS}
           selectedOptions={selectedSort}
           setSelectedOptions={handleSortChange} // 커스텀 핸들러 사용
           singleSelect={true}
         />
-        <Dropdown
-          title="모집여부"
-          options={RECRUITMENT_OPTIONS}
-          selectedOptions={selectedRecruitment}
-          setSelectedOptions={setSelectedRecruitment}
-          singleSelect={true}
-        />
-        <Dropdown
-          title="진행여부"
-          options={PROGRESS_OPTIONS}
-          selectedOptions={selectedProgress}
-          setSelectedOptions={setSelectedProgress}
-          singleSelect={true}
-        />
-        {safeActiveOption === '프로젝트' && (
-          <Dropdown
-            title="포지션"
-            options={POSITION_OPTIONS}
-            selectedOptions={selectedPosition}
-            setSelectedOptions={setSelectedPosition}
-          />
-        )}
       </div>
 
       {/* 선택된 필터 버튼 (정렬 제외) */}

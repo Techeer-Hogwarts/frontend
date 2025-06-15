@@ -35,13 +35,7 @@ export const useLogin = () => {
       await loginUser(data)
       setIsLoggedIn(true)
       await checkAuth()
-      if (redirectPath) {
-        router.replace(redirectPath)
-      } else if (form === 'signup') {
-        router.replace('/')
-      } else {
-        router.back()
-      }
+      router.replace('/')
     } catch (error) {
       if (error.status == 404) {
         setError('root', {

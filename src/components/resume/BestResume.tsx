@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { fetchBestResumes } from '@/app/resume/api/getBestResume'
+import { useInView } from 'react-intersection-observer'
 
 interface ResumeData {
   id: number
@@ -18,28 +19,49 @@ interface ResumeData {
 }
 
 interface ResumeFolderProps {
-  offset: number
-  limit: number
   setAuthModalOpen: (open: boolean) => void 
 }
-export default function BestResume({ offset, limit, setAuthModalOpen }: ResumeFolderProps) {
+export default function BestResume({ setAuthModalOpen }: ResumeFolderProps) {
   const [resumes, setResumes] = useState<ResumeData[]>([]) // 빈 배열로 초기화
-  const router = useRouter() // useRouter 훅 추가
+  const [cursorId, setCursorId] = useState<number | undefined>(undefined)
+  const [hasNext, setHasNext] = useState(true)
+  const [isLoadingMore, setIsLoadingMore] = useState(false)
 
+  const router = useRouter() // useRouter 훅 추가
   const [isOpen, setIsOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
+  const { ref, inView } = useInView({ threshold: 0.01 })
+  const limit = 12
+
+  const loadMoreResumes = useCallback(async () => {
+    if (!hasNext || isLoadingMore) return
+
+    try {
+      setIsLoadingMore(true)
+      const response = await fetchBestResumes(cursorId || undefined, limit, setAuthModalOpen)
+      const newResumes: ResumeData[] = response.data || []
+
+      setResumes((prev) => {
+        const existingIds = new Set(prev.map((r) => r.id))
+        const filtered = newResumes.filter((r) => !existingIds.has(r.id))
+        return [...prev, ...filtered]
+      })
+
+      if (response.hasNext !== undefined) setHasNext(response.hasNext)
+      if (response.nextCursor !== undefined) setCursorId(response.nextCursor)
+
+    } catch (error) {
+      console.error('인기 이력서 불러오기 실패:', error)
+    } finally {
+      setIsLoadingMore(false)
+    }
+  }, [cursorId, hasNext, isLoadingMore, setAuthModalOpen])
 
   useEffect(() => {
-    async function loadBestResumes() {
-      try {
-        const bestResumes = await fetchBestResumes(offset, limit, setAuthModalOpen) // 예시로 0번째부터 10개 가져오기
-        // console.log('Best resumes:', bestResumes)
-        setResumes(bestResumes.data || []) // 가져온 데이터를 상태에 저장
-      } catch (error) {
-      }
+    if (inView && hasNext && !isLoadingMore && isOpen) {
+      loadMoreResumes()
     }
-    loadBestResumes()
-  }, [offset, limit, setAuthModalOpen])
+  }, [inView, hasNext, isOpen, isLoadingMore, loadMoreResumes])
 
   const handleResumeClick = (id: number) => {
     router.push(`/resume/${id}`)
@@ -91,6 +113,7 @@ export default function BestResume({ offset, limit, setAuthModalOpen }: ResumeFo
                 </button>
               )
             })}
+           {hasNext && <div ref={ref} className="h-2" />}
         </div>
       )}
     </div>

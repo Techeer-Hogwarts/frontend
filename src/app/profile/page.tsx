@@ -28,7 +28,7 @@ export default function Page() {
   const yearOptions = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
   const gradeOptions = ['1학년', '2학년', '3학년', '4학년', '졸업']
   const universityOptions = [
-    '강원대',
+    '강원대학교',
     '가톨릭대학교',
     '가천대학교',
     '광운대학교',
@@ -169,6 +169,7 @@ export default function Page() {
           </div>
         )}
         <ProfileList
+          key={`${selectedPosition.join(',')}_${selectedYear.join(',')}_${selectedUniversity.join(',')}_${selectedGrade.join(',')}_${selectedSortBy[0]}`}
           position={selectedPosition}
           year={selectedYear}
           university={selectedUniversity}

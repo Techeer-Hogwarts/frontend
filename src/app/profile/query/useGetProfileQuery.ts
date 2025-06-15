@@ -9,7 +9,7 @@ export function useGetProfileQuery({
   grade = [],
   cursorId,
   limit,
-  sortBy = 'year',
+  sortBy,
 }: ProfileQueryParams) {
   return useQuery({
     queryKey: ['profiles', position, year, university, grade, sortBy, cursorId, limit], // 고유 쿼리 키에 파라미터 추가

@@ -3,7 +3,7 @@ import EmptyLottie from '@/components/common/EmptyLottie'
 import { ResumeQueryParams } from '@/types/queryParams'
 import ResumeFolder from '@/components/resume/ResumeFolder'
 import SkeletonResumeFolder from '@/components/resume/SkeletonResume'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { useLike } from '../blog/_lib/useLike'
 import { useBookmark } from '../blog/_lib/useBookmark'
@@ -163,7 +163,7 @@ export default function ResumeList({
   })
 
   // 더 많은 데이터 로드하기
-  const loadMoreResumes = async () => {
+  const loadMoreResumes = useCallback(async () => {
     if (!hasNext || isLoadingMore) return
 
     try {
@@ -173,7 +173,7 @@ export default function ResumeList({
         year,
         category: category || '전체',
         cursorId: currentCursor,
-        limit: 10,
+        limit: 12,
       })
 
       if (response.data && response.data.length > 0) {
@@ -192,7 +192,7 @@ export default function ResumeList({
     } finally {
       setIsLoadingMore(false)
     }
-  }
+  }, [hasNext, isLoadingMore, position, year, category, currentCursor])
 
   // 필터 변경 시 초기화
   useEffect(() => {
@@ -215,10 +215,10 @@ export default function ResumeList({
 
   // 무한 스크롤 트리거
   useEffect(() => {
-    if (inView && hasNext && !isLoadingMore) {
+     if (inView && hasNext && !isLoadingMore) {
       loadMoreResumes()
     }
-  }, [inView, hasNext, isLoadingMore])
+  }, [inView, hasNext, isLoadingMore, loadMoreResumes])
 
   if (isLoading && resumes.length === 0) {
     return (

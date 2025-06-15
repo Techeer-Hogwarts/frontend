@@ -82,10 +82,10 @@ export default function ProfileCard({
           </div>
         </div>
 
-        <hr className=" w-full my-[0.4rem] border-lightgray" />
+        <hr className="w-full my-[0.4rem] border-lightgray" />
         <div className="flex gap-2 h-[2.813rem]">
           {projectTeams && projectTeams.length > 0 ? (
-            projectTeams.map((team, idx) => (
+            projectTeams.slice(0, 5).map((team, idx) => (
               <Image
                 key={idx}
                 src={team.mainImage}
@@ -95,7 +95,7 @@ export default function ProfileCard({
                 className="w-[2.813rem] h-[2.813rem] bg-lightgray rounded-md object-cover"
               />
             ))
-          ) : (
+           ) : (
             <p className="flex justify-center items-center text-gray text-[0.7rem] w-full">
               프로젝트를 등록하세요.
             </p>

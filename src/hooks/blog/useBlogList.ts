@@ -6,7 +6,12 @@ import { useInView } from 'react-intersection-observer'
 import { useGetLikesAPI } from '@/api/likes/likes'
 import { useTapBarStore } from '@/store/tapBarStore'
 
-export const useBlogList = () => {
+export const useBlogList = (sortBy: string = '최신순') => {
+  const sortByValue =
+    sortBy === '조회순' ? 'viewCount'
+    : sortBy === '가나다순' ? 'name'
+    : 'latest'
+  
   const { activeOption } = useTapBarStore()
   const limit = 12 // 고정값으로 변경
   const [cursor, setCursor] = useState<number | undefined>(undefined)
@@ -17,7 +22,7 @@ export const useBlogList = () => {
     data: blogResponse,
     isLoading,
     isFetching,
-  } = useGetBlogsAPI(limit, activeOption, cursor)
+  } = useGetBlogsAPI(limit, activeOption, cursor, sortByValue)
   const { data: likeDate } = useGetLikesAPI('BLOG', 0, 50)
 
   const isInitialLoad = useMemo(
@@ -30,7 +35,7 @@ export const useBlogList = () => {
     setBlog([])
     setCursor(undefined)
     setHasNext(true)
-  }, [activeOption])
+  }, [activeOption, sortBy])
 
   useEffect(() => {
     if (!blogResponse || isLoading) return
