@@ -6,6 +6,7 @@ export async function getResumeList({
   category = '전체',
   cursorId,
   limit = 10,
+  sortBy = 'CREATEDAT',
 }: ResumeQueryParams) {
   try {
     // URLSearchParams를 사용하여 동적으로 쿼리 문자열 생성
@@ -36,6 +37,7 @@ export async function getResumeList({
       params.append('cursorId', cursorId.toString())
     }
     params.append('limit', limit.toString())
+    params.append('sortBy', sortBy)
 
     const response = await fetch(`/api/v1/resumes?${params.toString()}`, {
       method: 'GET',

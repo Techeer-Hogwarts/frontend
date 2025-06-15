@@ -25,8 +25,7 @@ export default function Resume() {
   const [selectedPosition, setSelectedPosition] = useState<string[]>([])
   const [selectedYear, setSelectedYear] = useState<string[]>([])
   const [selectedCategory, setSelectedCategory] = useState('전체')
-  const [selectedSortBy, setSelectedSortBy] = useState<string[]>(['최신순'])
-
+  const [selectedSortBy, setSelectedSortBy] = useState<string>('CREATEDAT')
 
   // 드롭다운 항목 리스트
   const positionOptions = [
@@ -38,7 +37,10 @@ export default function Resume() {
   ]
   const yearOptions = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
   const category = ['전체', '이력서', '포트폴리오', 'ICT', 'OTHER']
-  const sortByOptions = ['최신순', '조회순']
+  const sortByOptions = [
+    { label: '최신순', value: 'CREATEDAT' },
+    { label: '조회순', value: 'VIEWCOUNT' },
+  ]
 
   //필터 제거
   const handleRemoveFilter = (filter: string | number, type: string) => {
@@ -110,10 +112,21 @@ export default function Resume() {
             setSelectedOptions={setSelectedYear}
           />
           <Dropdown
-            title={selectedSortBy[0] || '최신순'} 
-            options={sortByOptions}
-            selectedOptions={selectedSortBy}
-            setSelectedOptions={setSelectedSortBy}
+            title={
+              sortByOptions.find((option) => option.value === selectedSortBy)
+                ?.label || '최신순'
+            }
+            options={sortByOptions.map((option) => option.label)}
+            selectedOptions={[
+              sortByOptions.find((option) => option.value === selectedSortBy)
+                ?.label || '최신순',
+            ]}
+            setSelectedOptions={(options) => {
+              const selectedOption = sortByOptions.find(
+                (option) => option.label === options[0],
+              )
+              setSelectedSortBy(selectedOption?.value || 'CREATEDAT')
+            }}
             singleSelect={true}
           />
         </div>
@@ -146,6 +159,7 @@ export default function Resume() {
           position={selectedPosition}
           year={selectedYear}
           category={activeOption}
+          sortBy={selectedSortBy}
         />
       </div>
     </div>
