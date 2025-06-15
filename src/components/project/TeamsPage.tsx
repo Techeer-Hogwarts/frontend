@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useTeamsList } from '@/hooks/project/useTeamsList'
@@ -67,7 +67,11 @@ export default function TeamsPage() {
   const safeActiveOption = activeOption || '전체보기'
 
   if (safeActiveOption !== '전체보기') {
-    filters.teamTypes = [safeActiveOption === '프로젝트' ? 'PROJECT' : 'STUDY']
+    if (safeActiveOption === '프로젝트') {
+      filters.teamTypes = ['PROJECT']
+    } else if (safeActiveOption === '스터디') {
+      filters.teamTypes = ['STUDY']
+    }
   }
   if (selectedRecruitment.length === 1) {
     filters.isRecruited = selectedRecruitment[0] === '모집 중'
