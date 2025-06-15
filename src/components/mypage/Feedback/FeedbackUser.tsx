@@ -1,12 +1,20 @@
 import React from 'react'
 import Star from '../../../../public/star.svg'
+import { useState } from 'react'
+import FeedbackModal from './FeedbackModal'
 
 const FeedbackUser = () => {
+  const [OpenModal, setOpenModal] = useState(false)
+
   return (
     <>
+      {OpenModal && <FeedbackModal />}
       <header className="flex justify-between items-center mb-3">
         <h1 className="text-xl font-medium">나의 피드백 요청</h1>
-        <button className="w-[13rem] h-[3rem] text-center rounded-xl shadow-md justify-center text-[1.1rem] font-medium flex items-center hover:shadow-custom">
+        <button
+          className="w-[13rem] h-[3rem] text-center rounded-xl shadow-md justify-center text-[1.1rem] font-medium flex items-center hover:shadow-custom"
+          onClick={() => setOpenModal(true)}
+        >
           <span>피드백 신청하기</span>
           <Star />
         </button>
