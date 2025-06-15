@@ -59,6 +59,7 @@ export default function ResumeList({
   position = [],
   year = [],
   category = '전체',
+  sortBy = 'CREATEDAT',
 }: ResumeQueryParams = {}) {
   const [resumes, setResumes] = useState<ResumeItem[]>([])
   const [currentCursor, setCurrentCursor] = useState(0)
@@ -84,6 +85,7 @@ export default function ResumeList({
     category: category || '전체',
     cursorId: undefined,
     limit: 10,
+    sortBy,
   })
 
   const checkLike = async () => {
@@ -174,6 +176,7 @@ export default function ResumeList({
         category: category || '전체',
         cursorId: currentCursor,
         limit: 12,
+        sortBy,
       })
 
       if (response.data && response.data.length > 0) {
@@ -192,7 +195,7 @@ export default function ResumeList({
     } finally {
       setIsLoadingMore(false)
     }
-  }, [hasNext, isLoadingMore, position, year, category, currentCursor])
+  }, [hasNext, isLoadingMore, position, year, category, currentCursor, sortBy])
 
   // 필터 변경 시 초기화
   useEffect(() => {
@@ -202,7 +205,7 @@ export default function ResumeList({
     checkLike()
     checkBookmark()
     refetch()
-  }, [position, year, category])
+  }, [position, year, category, sortBy])
 
   // 초기 데이터 로드
   useEffect(() => {
@@ -215,7 +218,7 @@ export default function ResumeList({
 
   // 무한 스크롤 트리거
   useEffect(() => {
-     if (inView && hasNext && !isLoadingMore) {
+    if (inView && hasNext && !isLoadingMore) {
       loadMoreResumes()
     }
   }, [inView, hasNext, isLoadingMore, loadMoreResumes])

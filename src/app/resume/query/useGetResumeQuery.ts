@@ -8,10 +8,12 @@ export function useGetResumeQuery({
   category,
   cursorId,
   limit,
+  sortBy,
 }: ResumeQueryParams) {
   return useQuery({
-    queryKey: ['resumes', position, year, category, cursorId, limit], // 고유 쿼리 키에 cursorId 추가
-    queryFn: () => getResumeList({ position, year, category, cursorId, limit }), // cursorId 파라미터 전달
+    queryKey: ['resumes', position, year, category, cursorId, limit, sortBy],
+    queryFn: () =>
+      getResumeList({ position, year, category, cursorId, limit, sortBy }),
     staleTime: 10 * 1000, // 10초 동안 fresh
     // cacheTime: 30 * 60 * 1000, // 30분 동안 캐시 유지
     retry: 0, // 실패 시 재시도 횟수 설정
