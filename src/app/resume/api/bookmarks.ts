@@ -27,8 +27,7 @@ export const handleBookmarkClick = async (
     if (!response.ok) {
       throw new Error('Bookmark request failed')
     }
-  } catch (error) {
-  }
+  } catch (error) { }
 
   // 북마크 상태 업데이트
   setBookmarks((prevBookmarks) => {

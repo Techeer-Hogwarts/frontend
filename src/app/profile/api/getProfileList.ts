@@ -5,7 +5,9 @@ export async function getProfileList({
   year = [],
   university = [],
   grade = [],
+  cursorId,
   limit: limit,
+  sortBy = 'year'
 }: ProfileQueryParams) {
   try {
     // URLSearchParams에 배열 데이터를 추가하는 함수
@@ -17,9 +19,13 @@ export async function getProfileList({
     if (university.length > 0)
       university.forEach((u) => params.append('university', u))
     if (grade.length > 0) grade.forEach((g) => params.append('grade', g))
+    
+    params.append('limit', (limit ?? 12).toString()) // undefined 방지
+    params.append('sortBy', sortBy)
 
-    // params.append('offset', (offset ?? 0).toString()) // undefined 방지
-    params.append('limit', (limit ?? 10).toString()) // undefined 방지
+    if (cursorId !== undefined) {
+      params.append('cursorId', cursorId.toString())
+    }
 
     const response = await fetch(
       `/api/v1/users/profiles?${params.toString()}`,
@@ -32,7 +38,6 @@ export async function getProfileList({
       },
     )
     const result = await response.json()
-    const dataWithWrapper = { data: result } // Back에서 data 필드 없시 바로 반환하기 때문에
 
     if (!response.ok) {
       throw new Error(
@@ -40,7 +45,11 @@ export async function getProfileList({
       )
     }
 
-    return dataWithWrapper?.data || []
+    return {
+      profiles: result.profiles,
+      hasNext: result.hasNext,
+      nextCursor: result.nextCursor,
+    }
   } catch (error) {
     throw error
   }

@@ -35,21 +35,15 @@ export const useLogin = () => {
       await loginUser(data)
       setIsLoggedIn(true)
       await checkAuth()
-      if (redirectPath) {
-        router.replace(redirectPath)
-      } else if (form === 'signup') {
-        router.replace('/')
-      } else {
-        router.back()
-      }
+      router.replace('/')
     } catch (error) {
-      if (error.message == 404) {
+      if (error.status == 404) {
         setError('root', {
           message: '가입되지 않은 사용자입니다.',
         })
-      } else if (error.message == 401) {
+      } else if (error.status == 401) {
         setError('root', {
-          message: '비밀번호가 틀렸습니다.',
+          message: '이메일 또는 비밀번호가 올바르지 않습니다.',
         })
       } else {
         setError('root', {

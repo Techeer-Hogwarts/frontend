@@ -26,29 +26,30 @@ export default function OtherResume({ id, offset, limit }: OtherResumeProps) {
   useEffect(() => {
     async function loadUserResumes() {
       try {
-        const userResumes = await fetchUserResumes(id)
+        const userResumes = await fetchUserResumes(id, undefined, limit)
 
-        // userResumes.data로 접근하여 데이터를 배열로 처리
+        // 새로운 API 응답 구조에 맞춰 데이터 처리
         if (!Array.isArray(userResumes.data)) {
           return
         }
-        // console.log('User resumes data:', userResumes.data)
 
-        // 필요한 데이터 구조로 변환\
+        // 필요한 데이터 구조로 변환
         const formattedData: Resume[] = userResumes.data.map((resume: any) => ({
           id: resume.id,
-          createdAt: resume.createdAt,
+          createdAt: new Date(resume.createdAt).getTime(),
           title: resume.title,
-          position: resume.user.mainPosition,
-          year: resume.user.year,
+          position: resume.position, // API 응답에서 position 직접 사용
+          year: 0, // API 응답에 user.year가 없으므로 기본값 사용
         }))
 
         setOtherData(formattedData)
-      } catch (err: any) {}
+      } catch (err: any) {
+        console.error('다른 이력서 로드 실패:', err)
+      }
     }
 
     loadUserResumes()
-  }, [])
+  }, [id, limit])
 
   const handleResumeClick = (id: number) => {
     router.push(`/resume/${id}`)
@@ -86,12 +87,8 @@ export default function OtherResume({ id, offset, limit }: OtherResumeProps) {
               alt="file"
               style={{ width: '40px', height: '40px', objectFit: 'contain' }}
             />
-            {/* <div className="flex flex-col gap-1"> */}
             <div className="flex flex-col items-start gap-1">
               <span className="font-medium text-[1rem]">{truncatedTitle}</span>
-              {/* <span className="font-medium text-[0.8rem] text-primary">
-              {user.year}기
-            </span> */}
               <div className="flex justify-between gap-2">
                 <PositionTag position={user.position} />
                 <span className="font-light text-[0.8rem]">

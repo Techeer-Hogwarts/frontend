@@ -50,9 +50,12 @@ export default function NavBar() {
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const [query, setQuery] = useState('')
   const [basicResults, setBasicResults] = useState<BasicResult[]>([])
-  const { isLoggedIn, logout, checkAuth } = useAuthStore()
+  const { isLoggedIn, user, logout, checkAuth } = useAuthStore()
   const router = useRouter()
   const pathname = usePathname()
+
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+  const dropdownRef = useRef<HTMLDivElement>(null)
 
   const debouncedQuery = useDebounce(query, 300)
 
@@ -107,9 +110,33 @@ export default function NavBar() {
     }
   }
 
-  const visibleNavItems = isLoggedIn
-    ? navItems
-    : navItems.filter((item) => item.key !== 'resume' && item.key !== 'session')
+  const visibleNavItems = (() => {
+
+    if (isLoggedIn === null) {
+      return null // 아직 auth 체크 중
+    }
+
+    if (!isLoggedIn) {
+      return [{ key: 'blog', href: '/blog' }]
+    }
+
+    if (!user) {
+      return [{ key: 'blog', href: '/blog' }]
+    }
+
+    const roleId = user.roleId
+
+    if ([1, 2, 3].includes(roleId)) {
+      return navItems
+    } else if (roleId === 4) {
+      return navItems.filter((item) =>
+        ['profile', 'resume', 'blog'].includes(item.key),
+      )
+    } else {
+      return navItems.filter((item) => item.key === 'blog')
+    }
+  })()
+
   const toggleSearch = () => {
     if (isSearchOpen) {
       setIsSearchOpen(false)
@@ -178,7 +205,7 @@ export default function NavBar() {
 
         {/* 메뉴 */}
         <div className="flex items-center gap-[1.62rem]">
-          {visibleNavItems.map((item) => {
+          { visibleNavItems && visibleNavItems.map((item) => {
             const isActive = pathname.startsWith(item.href)
             return (
               <Link
@@ -196,7 +223,7 @@ export default function NavBar() {
       </div>
       {/* 우측 메뉴 */}
       <div className="flex items-center cursor-pointer">
-        {isLoggedIn === true && pathname !== '/' && (
+        {isLoggedIn === true && (user?.roleId === 1 || user?.roleId === 2 || user?.roleId === 3) && pathname !== '/' && (
           <div className="flex items-center">
             {/* 검색 영역 */}
             <div className="relative p-2">
@@ -279,24 +306,60 @@ export default function NavBar() {
                 className={`${pathname == '/' ? 'text-white' : ''}`}
               />
             </Link>
-            {/* 마이페이지 아이콘 */}
-            <Link href="/mypage" className="p-[6px] cursor-pointer">
-              <IoPersonCircle
-                size={28}
-                className={`${pathname == '/' ? 'text-white' : ''}`}
-              />
-            </Link>
-          </>
-        )}
+             {/* 마이페이지 아이콘 */}
+              {(user?.roleId === 1 || user?.roleId === 2 || user?.roleId === 3) && (
+                <Link href="/mypage" className="p-[6px] cursor-pointer">
+                  <IoPersonCircle size={28} className={`${pathname === '/' ? 'text-white' : ''}`} />
+                </Link>
+              )}
+
+              {(user?.roleId === 4 || user?.roleId === 5) && (
+                <div className="relative" ref={dropdownRef}>
+                  <button
+                    onClick={() => setIsDropdownOpen((prev) => !prev)}
+                    className="p-[6px] cursor-pointer"
+                  >
+                    <IoPersonCircle size={28} className={`${pathname === '/' ? 'text-white' : ''}`} />
+                  </button>
+                  {isDropdownOpen && (
+                    <div className="absolute right-0 mt-2 w-40 bg-white rounded-md shadow-md z-50 border border-gray">
+                      {/* 테커 전환 아직 미구현 */}
+                      {user.roleId === 5 && (
+                        <button
+                          className="block w-full text-left px-3 py-[10px] text-[14px] hover:rounded-t-md hover:bg-lightgray"
+                        >
+                          테커 전환
+                        </button>
+                      )}
+                      <button
+                        onClick={handleLogout}
+                        className="block w-full text-left px-3 py-[10px] text-[14px] hover:bg-lightgray"
+                      >
+                        로그아웃
+                      </button>
+                      <Link
+                        href="/mypage/leave"
+                        className="block w-full text-left px-3 py-[10px] text-[14px] text-primary hover:rounded-b-md hover:bg-lightgray"
+                      >
+                        회원탈퇴
+                      </Link>
+                    </div>
+                  )}
+                </div>
+              )}
+              </>
+            )}
 
         {isLoggedIn === true ? (
-          <button
-            type="button"
-            className={`ml-4 hover:text-primary cursor-pointer ${pathname == '/' ? 'text-white' : ''}`}
-            onClick={handleLogout}
-          >
-            로그아웃
-          </button>
+          user?.roleId === 1 || user?.roleId === 2 || user?.roleId === 3 ? (
+            <button
+              type="button"
+              className={`ml-4 hover:text-primary cursor-pointer ${pathname == '/' ? 'text-white' : ''}`}
+              onClick={handleLogout}
+            >
+              로그아웃
+            </button>
+          ) : null
         ) : (
           <Link
             href="/login"

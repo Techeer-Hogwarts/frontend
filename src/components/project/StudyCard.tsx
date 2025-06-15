@@ -1,17 +1,7 @@
-'use client'
-
 import Link from 'next/link'
+import type { StudyTeam } from '@/types/project/project'
 
-type Team = {
-  id: number
-  name: string
-  isRecruited: boolean
-  isFinished: boolean
-  studyExplain: string
-  recruitNum: number
-}
-
-export default function StudyCard({ team }: { team: Team }) {
+export default function StudyCard({ team }: { team: StudyTeam }) {
   return (
     <Link
       href={`/project/detail/study/${team.id}`}
@@ -49,7 +39,7 @@ export default function StudyCard({ team }: { team: Team }) {
           </div>
 
           {/* 모집 중이면 표시 */}
-          {team.isRecruited && (
+          {team.recruited && (
             <div className="bg-lightblue py-[0.1rem] text-blue rounded-lg text-[13px] text-center">
               모집인원 : {team.recruitNum} 명
             </div>

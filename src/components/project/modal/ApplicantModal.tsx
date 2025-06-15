@@ -1,189 +1,180 @@
+// components/ApplicantModal.tsx
+
 'use client'
 
-import { useState, useEffect } from 'react'
-import { useQueryClient } from '@tanstack/react-query'
+import React, { useState } from 'react'
 import Image from 'next/image'
+import { useParams } from 'next/navigation'
+import { useQueryClient } from '@tanstack/react-query'
 import { getPositionStyle } from '@/styles/positionStyles'
 
-import {
-  acceptStudyApplicant,
-  denyStudyApplicant,
-} from '@/api/project/study/study'
+import { Applicant } from '@/types/project/project'
+
+// 프로젝트 API
 import {
   acceptProjectApplicant,
   denyProjectApplicant,
 } from '@/api/project/project/project'
-import { useParams } from 'next/navigation'
-
-interface Applicant {
-  id: number
-  userId: number
-  name: string
-  isLeader: boolean
-  teamRole: string
-  summary: string
-  status: string
-  profileImage: string
-  year: number
-}
+// 스터디 API
+import {
+  acceptStudyApplicant,
+  denyStudyApplicant,
+} from '@/api/project/study/study'
 
 interface ApplicantModalProps {
+  /** 'project' 또는 'study' 지정 */
+  variant: 'project' | 'study'
   onClose: () => void
   applicant: Applicant
 }
 
 export default function ApplicantModal({
+  variant,
   onClose,
   applicant,
 }: ApplicantModalProps) {
-  const [projectType, setProjectType] = useState<null | string>(null)
   const [approve, setApprove] = useState(true)
   const params = useParams()
-  const projectId = Number(params.id)
-
+  const teamId = Number(params.id)
   const queryClient = useQueryClient()
 
-  // 승인 버튼 핸들러
+  // 승인
   const handleApprove = async () => {
     try {
-      await acceptProjectApplicant({
-        projectTeamId: projectId,
-        applicantId: applicant.userId,
-      })
-
-      queryClient.invalidateQueries({
-        queryKey: ['getProjectDetails', projectId],
-      })
-
+      if (variant === 'project') {
+        await acceptProjectApplicant({
+          teamId: teamId,
+          applicantId: applicant.userId,
+        })
+        queryClient.invalidateQueries({
+          queryKey: ['getProjectDetails', teamId],
+        })
+      } else {
+        await acceptStudyApplicant({
+          studyId: teamId,
+          applicantId: applicant.userId,
+        })
+        queryClient.invalidateQueries({ queryKey: ['getStudyDetails', teamId] })
+        queryClient.invalidateQueries({
+          queryKey: ['getStudyApplicants', teamId],
+        })
+      }
       onClose()
-      queryClient.invalidateQueries({
-        queryKey: ['getStudyDetails', projectId],
-      })
-      queryClient.invalidateQueries({
-        queryKey: ['getStudyApplicants', projectId],
-      })
-    } catch (error) {
+    } catch {
       alert('오류가 발생했습니다.')
     }
   }
 
-  // 거절 버튼 핸들러
+  // 거절
   const handleReject = async () => {
     try {
-      await denyProjectApplicant({
-        projectTeamId: projectId,
-        applicantId: applicant.userId,
-      })
-
-      queryClient.invalidateQueries({
-        queryKey: ['getProjectDetails', projectId],
-      })
-
+      if (variant === 'project') {
+        await denyProjectApplicant({
+          teamId: teamId,
+          applicantId: applicant.userId,
+        })
+        queryClient.invalidateQueries({
+          queryKey: ['getProjectDetails', teamId],
+        })
+      } else {
+        await denyStudyApplicant({
+          studyId: teamId,
+          applicantId: applicant.userId,
+        })
+        queryClient.invalidateQueries({ queryKey: ['getStudyDetails', teamId] })
+      }
       onClose()
-      queryClient.invalidateQueries({
-        queryKey: ['getStudyDetails', projectId],
-      })
-    } catch (error) {
+    } catch {
       alert('오류가 발생했습니다.')
     }
   }
 
-  // "전송" 버튼 클릭 시 승인/거절 결정
+  // 저장
   const handleSave = () => {
-    if (approve) {
-      handleApprove()
-    } else {
-      handleReject()
-    }
-    onClose()
+    if (approve) handleApprove()
+    else handleReject()
   }
 
+  // 스타일
+  const roles = ['FRONTEND', 'BACKEND', 'DEVOPS', 'FULLSTACK', 'DATA_ENGINEER']
+
   return (
-    <div className="z-50 fixed inset-0 flex justify-center items-center bg-black bg-opacity-70 text-center">
-      <div className="flex flex-col p-8 w-[30.375rem] max-h-[39.375rem] bg-white border rounded-xl">
-        <p className="w-full text-[1.375rem] text-center mb-4">
-          지원자 상세 정보
-        </p>
+    <div className="z-50 fixed inset-0 flex justify-center items-center bg-black bg-opacity-70">
+      <div className="flex flex-col p-8 w-[30.375rem] max-h-[39.375rem] bg-white border rounded-xl text-center">
+        <p className="text-[1.375rem] mb-4 font-semibold">지원자 상세 정보</p>
         <div className="flex justify-center mb-1">
           <Image
             src={applicant.profileImage || '/default-profile.png'}
             width={100}
             height={100}
-            alt="img"
-            className="border  object-cover w-[100px] h-[100px] rounded-md"
+            alt={applicant.name}
+            className="border object-cover w-[100px] h-[100px] rounded-md"
           />
         </div>
         <div className="flex items-center justify-center gap-2 mb-3">
           <p className="text-lg font-bold">{applicant.name}</p>
-
-          {/* 추후 수정 예정 */}
-          <span className="text-darkgray text-sm">{applicant.year}기</span>
+          <span className="text-sm text-gray-500">| {applicant.year}기</span>
         </div>
 
-        {/* 승인 / 거절 버튼 */}
-        <div className="flex justify-between gap-4 mb-6">
+        {/* 승인/거절 토글 */}
+        <div className="flex justify-center gap-4 mb-6">
           <button
-            className={`w-full rounded-md text-sm h-[34px]  bg-white border ${approve ? 'border-primary text-primary' : 'border-gray  text-gray'}`}
-            onClick={() => {
-              setApprove(true)
-            }}
+            className={`w-[200px] h-[34px] rounded-md text-sm bg-white border ${approve ? 'border-primary text-primary' : 'border-gray text-gray'}`}
+            onClick={() => setApprove(true)}
           >
             승인
           </button>
           <button
-            className={`w-full rounded-md text-sm h-[34px]  bg-white border ${!approve ? 'border-primary text-primary' : 'border-gray  text-gray'}`}
-            onClick={() => {
-              setApprove(false)
-            }}
+            className={`w-[200px] h-[34px] rounded-md text-sm bg-white border ${!approve ? 'border-primary text-primary' : 'border-gray text-gray'}`}
+            onClick={() => setApprove(false)}
           >
             거절
           </button>
         </div>
 
         {/* 지원 포지션 */}
-        <div className="mb-4">
-          <p className="text-left mb-2 font-medium">지원한 포지션</p>
-          <div className="w-full flex justify-between">
-            {['Frontend', 'Backend', 'DevOps', 'FullStack', 'DataEngineer'].map(
-              (el) => {
-                const { bg, textColor } = getPositionStyle(el)
-
+        {variant === 'project' && (
+          <div className="mb-4 text-left">
+            <p className="mb-2 font-medium">지원한 포지션</p>
+            <div className="flex justify-between">
+              {roles.map((role) => {
+                const { bg, textColor } = getPositionStyle(role)
+                const selected = applicant.teamRole === role
+                const cls = selected
+                  ? `bg-${bg} ${textColor}`
+                  : 'bg-white text-gray border border-lightprimary justify-center items-center'
                 return (
                   <div
-                    key={el}
-                    className={`px-1 h-[1.75rem] rounded-md ${applicant.teamRole === el ? `bg-${bg} ${textColor} mx-[1px]` : 'bg-white text-gray border border-lightprimary'} `}
+                    key={role}
+                    className={`${cls} px-1 rounded-md text-center text-[13px]`}
                   >
-                    {el}
+                    {role}
                   </div>
                 )
-              },
-            )}
+              })}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* 지원 동기 */}
-        <div className="mb-4">
-          <p className="text-left mb-2 font-medium">
-            {applicant.name}의 지원동기
-          </p>
-          <div className="w-full px-2 py-1 h-[9.3125rem] border border-lightgray rounded-sm text-start">
+        <div className="mb-6 text-left">
+          <p className="mb-2 font-medium">{applicant.name}의 지원동기</p>
+          <div className="w-full p-2 h-[9.3125rem] border border-lightgray rounded-sm text-start overflow-auto">
             {applicant.summary}
           </div>
         </div>
 
         {/* 하단 버튼 */}
-        <div className="flex gap-4 mt-4 justify-between">
+        <div className="flex gap-4 justify-between">
           <button
-            type="button"
             onClick={onClose}
-            className="w-full rounded-md text-sm h-[34px] bg-white text-gray border border-lightgray"
+            className="w-[200px] h-[34px] rounded-md text-sm bg-white text-gray border border-lightgray"
           >
             취소
           </button>
           <button
-            type="button"
-            className={`w-full rounded-md text-sm h-[34px] bg-primary text-white`}
             onClick={handleSave}
+            className="w-[200px] h-[34px] rounded-md text-sm bg-primary text-white"
           >
             전송
           </button>

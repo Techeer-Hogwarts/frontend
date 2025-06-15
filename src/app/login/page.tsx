@@ -55,9 +55,9 @@ export default function Login() {
               })}
             />
           </div>
-          <div className="flex items-center justify-end mt-12 mb-3">
+          <div className="flex items-center justify-end mt-12 mb-3 text-[15px]">
             <Link href="/changepassword" className="text-[#666666]">
-              비밀번호 찾기
+              비밀번호 재설정
             </Link>
           </div>
 

@@ -1,42 +1,87 @@
+// components/Applicants.tsx
+
 'use client'
 
-import { useState } from 'react'
+import React, { useState } from 'react'
 import Image from 'next/image'
 import { IoChevronDownSharp, IoChevronUpSharp } from 'react-icons/io5'
 import { getPositionStyle } from '@/styles/positionStyles'
 
-interface Applicant {
-  id: number
-  userId: number
-  name: string
-  isLeader: boolean
-  teamRole: string
-  summary: string
-  status: string
-  profileImage: string
-  year: number
-}
+import { Applicant } from '@/types/project/project'
 
 interface ApplicantsProps {
-  projectType: string
+  /** 'project' 또는 'study' 모드 지정 */
+  variant: 'project' | 'study'
+  /** 지원자 목록 */
   applicants: Applicant[]
+  /** 상세 보기 콜백 */
   onOpen?: (applicant: Applicant) => void
 }
 
-function Box({
-  name,
-  year,
-  position,
-  profileImage,
-  onClick,
-}: {
-  name: string
-  year: number
-  position: string
-  profileImage?: string
+export default function Applicants({
+  variant,
+  applicants,
+  onOpen,
+}: ApplicantsProps) {
+  const [isOpen, setIsOpen] = useState(false)
+  const toggleDropdown = () => setIsOpen((open) => !open)
+
+  const title = variant === 'study' ? '스터디 지원자' : '프로젝트 지원자'
+
+  return (
+    <div className="mt-[1rem]">
+      {/* 드롭다운 버튼 */}
+      <div
+        role="button"
+        onClick={toggleDropdown}
+        className="w-[19rem] px-[1.63rem] h-[2.4375rem] flex items-center justify-between bg-white rounded-lg shadow-md border border-primary cursor-pointer"
+      >
+        {title}
+        {isOpen ? <IoChevronUpSharp /> : <IoChevronDownSharp />}
+      </div>
+
+      {/* 드롭다운 내용 */}
+      <div
+        className={`${
+          isOpen ? 'max-h-60' : 'max-h-0'
+        } overflow-y-auto transition-max-height duration-500 ease-in-out w-[19rem] mt-3 flex flex-col gap-2 shadow-bgshadow rounded-[0.63rem]`}
+      >
+        {applicants.length === 0 ? (
+          <div className="p-4 text-center text-gray-700">지원자가 없습니다</div>
+        ) : (
+          applicants.map((applicant) => (
+            <Box
+              key={applicant.id}
+              applicant={applicant}
+              variant={variant}
+              onClick={() => onOpen?.(applicant)}
+            />
+          ))
+        )}
+      </div>
+    </div>
+  )
+}
+
+interface BoxProps {
+  applicant: Applicant
+  variant: 'project' | 'study'
   onClick?: () => void
-}) {
-  const { bg, textColor } = getPositionStyle(position)
+}
+
+function Box({ applicant, variant, onClick }: BoxProps) {
+  const { name, year, teamRole, profileImage } = applicant
+  const label = `${year}기`
+
+  // 프로젝트 모드에서는 getPositionStyle 사용, 스터디는 기본 스타일
+  const role = teamRole || '미지정'
+  const styleClasses =
+    variant === 'project'
+      ? (() => {
+          const { bg, textColor } = getPositionStyle(role)
+          return `bg-${bg} ${textColor}`
+        })()
+      : 'bg-lightblue text-blue'
 
   return (
     <div
@@ -48,64 +93,19 @@ function Box({
           src={profileImage || '/default-profile.png'}
           width={36}
           height={36}
-          alt="Picture"
+          alt="Profile"
           className="border rounded-lg mr-[0.75rem] w-[36px] h-[36px] object-cover"
         />
         <div className="flex items-center gap-1">
           <p className="font-semibold">{name}</p>
-          <p className="text-[#7B7B7B] text-sm">{year}기</p>
+          <p className="text-[#7B7B7B] text-sm">{label}</p>
         </div>
       </div>
-      <div className={`bg-${bg} ${textColor} px-3 py-1 rounded-md text-sm`}>
-        {position}
-      </div>
-    </div>
-  )
-}
-
-export default function Applicants({
-  projectType,
-  applicants,
-  onOpen,
-}: ApplicantsProps) {
-  const [isOpen, setIsOpen] = useState(false)
-
-  const toggleDropdown = () => {
-    setIsOpen(!isOpen)
-  }
-
-  return (
-    <div className="mt-[1rem]">
-      {/* 드롭다운 버튼 */}
-      <div
-        role="button"
-        onClick={toggleDropdown}
-        className="w-[19rem] gap-32 px-[1.63rem] h-[2.4375rem] flex items-center bg-white rounded-lg shadow-md border border-primary cursor-pointer"
-      >
-        {projectType === 'study' ? '스터디 지원자' : '프로젝트 지원자'}
-        {isOpen ? <IoChevronUpSharp /> : <IoChevronDownSharp />}
-      </div>
-      {/* 드롭다운 내용 */}
-      <div
-        className={`${
-          isOpen ? 'max-h-60' : 'max-h-0'
-        } overflow-y-auto transition-max-height duration-500 ease-in-out w-[19rem] mt-3 flex flex-col gap-2 shadow-bgshadow rounded-[0.63rem]`}
-      >
-        {applicants?.length === 0 ? (
-          <div className="p-4 text-center text-gray-700">지원자가 없습니다</div>
-        ) : (
-          applicants?.map((applicant) => (
-            <Box
-              key={applicant.id}
-              name={applicant.name} // <-- userName 필드
-              year={applicant.year}
-              position={applicant.teamRole || '미지정'}
-              profileImage={applicant.profileImage}
-              onClick={() => onOpen(applicant)}
-            />
-          ))
-        )}
-      </div>
+      {role !== '미지정' && (
+        <div className={`${styleClasses} px-3 py-1 rounded-md text-sm`}>
+          {role}
+        </div>
+      )}
     </div>
   )
 }

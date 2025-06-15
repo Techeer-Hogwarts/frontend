@@ -48,3 +48,8 @@ export const POSITION = [
   'FULL_STACK',
   'DATA_ENGINEER',
 ]
+
+export const joinReason = [
+  { label: '회사', value: 'COMPANY' },
+  { label: '부트캠프', value: 'BOOTCAMP' },
+]

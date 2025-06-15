@@ -5,7 +5,8 @@ import { useSignupForm } from './useSignupForm'
 export const useSignupHandler = () => {
   const router = useRouter()
   const [signupError, setSignupError] = useState<string>('')
-  const [step, setStep] = useState(1)
+  const [step, setStep] = useState(0)
+  const [isTecheer, setIsTecheer] = useState<boolean | null>(null)
   const [isLoading, setIsLoading] = useState(false)
 
   const {
@@ -20,6 +21,10 @@ export const useSignupHandler = () => {
   const passwordsMatch =
     formData.password === formData.confirmPassword &&
     formData.password.length > 0
+
+  const handleTecheerSelect = (isTecheer: boolean) => {
+    setIsTecheer(isTecheer)
+  }
 
   const validateStepOne = () => {
     if (!formData.name.trim()) return '이름을 입력해주세요.'
@@ -57,19 +62,30 @@ export const useSignupHandler = () => {
       if (!formData.jobExperience) return '정규직 경험 여부를 선택해주세요.'
     }
     if (!formData.isVerified) return '이메일 인증을 완료해주세요.'
+    if (!isTecheer && !formData.joinReason) { return alert('가입 동기를 선택해주세요.')}
     return ''
   }
 
   const handleNext = () => {
     setSignupError('')
-    const error = validateStepOne()
-    if (error) return alert(error)
+
+    if (step === 0) {
+      if (isTecheer === null) {
+        return alert('테커 소속 여부를 선택해주세요.')
+      }
+    }
+
+    if (step === 1) {
+      const error = validateStepOne()
+      if (error) return alert(error)
+    }
+    
     if (step < 2) setStep(step + 1)
   }
 
   const handleBack = () => {
     setSignupError('')
-    if (step > 1) setStep(step - 1)
+    if (step > 0) setStep(step - 1)
   }
 
   const createExperiences = () => {
@@ -79,6 +95,8 @@ export const useSignupHandler = () => {
       startDate: string
       endDate: string
       category: string
+      description?: string
+      isFinished?: boolean
     }[] = []
 
     if (formData.internshipExperience === 'yes') {
@@ -87,8 +105,10 @@ export const useSignupHandler = () => {
           companyName: item.companyName || '',
           position: item.position || formData.selectedPositions[0] || '',
           startDate: item.startDate || '',
-          endDate: item.isCurrentJob ? '' : item.endDate || '',
+          endDate: item.isFinished === false ? '' : item.endDate || '',
           category: '인턴',
+          description: item.description || '',
+          isFinished: item.isFinished ?? false,
         })),
       )
     }
@@ -99,8 +119,10 @@ export const useSignupHandler = () => {
           companyName: item.companyName || '',
           position: item.position || formData.selectedPositions[0] || '',
           startDate: item.startDate || '',
-          endDate: item.isCurrentJob ? '' : item.endDate || '',
+          endDate: item.isFinished === false ? '' : item.endDate || '',
           category: '정규직',
+          description: item.description || '',
+          isFinished: item.isFinished ?? false,
         })),
       )
     }
@@ -178,6 +200,48 @@ export const useSignupHandler = () => {
     }
   }
 
+  const handleSignupExternal = async () => {
+    setSignupError('')
+    const error = validateStepOne()
+    if (error) return alert(error)
+    setIsLoading(true)
+
+    const requestPayload = {
+      name: formData.name,
+      password: formData.password,
+      email: formData.email,
+      joinReason: formData.joinReason,
+    }
+
+    try {
+      const response = await fetch('/api/v1/users/signup/external', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestPayload),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => null)
+        if (response.status === 400)
+          return alert('필수 항목을 모두 입력해주세요.')
+        if (response.status === 500) return alert('이미 등록된 이메일입니다.')
+        if (response.status === 401) return alert(errorData.message)
+      }
+
+      router.push('/login?form=signup')
+    } catch (err) {
+      alert('네트워크 오류가 발생했습니다.')
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handleSignupPurpose = (purpose: string) => {
+    setFormData((prev) => ({ ...prev, joinReason: purpose }))
+  }
+
   const formRef = useRef<HTMLDivElement>(null)
   const bottomRef = useRef<HTMLDivElement>(null)
 
@@ -208,6 +272,7 @@ export const useSignupHandler = () => {
   return {
     signupError,
     step,
+    isTecheer,
     isLoading,
     formData,
     handleChange,
@@ -215,6 +280,9 @@ export const useSignupHandler = () => {
     handleNext,
     handleBack,
     handleSignup,
+    handleSignupExternal,
+    handleSignupPurpose,
+    handleTecheerSelect,
     formRef,
     bottomRef,
     passwordsMatch,
@@ -222,5 +290,6 @@ export const useSignupHandler = () => {
     setInternships,
     setFullTimes,
     setStep,
+    setIsTecheer,
   }
 }
