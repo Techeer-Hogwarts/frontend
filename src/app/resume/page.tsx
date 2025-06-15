@@ -25,6 +25,8 @@ export default function Resume() {
   const [selectedPosition, setSelectedPosition] = useState<string[]>([])
   const [selectedYear, setSelectedYear] = useState<string[]>([])
   const [selectedCategory, setSelectedCategory] = useState('전체')
+  const [selectedSortBy, setSelectedSortBy] = useState<string[]>(['최신순'])
+
 
   // 드롭다운 항목 리스트
   const positionOptions = [
@@ -36,6 +38,7 @@ export default function Resume() {
   ]
   const yearOptions = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
   const category = ['전체', '이력서', '포트폴리오', 'ICT', 'OTHER']
+  const sortByOptions = ['최신순', '조회순']
 
   //필터 제거
   const handleRemoveFilter = (filter: string | number, type: string) => {
@@ -105,6 +108,13 @@ export default function Resume() {
             options={yearOptions} // Dropdown 컴포넌트에서 문자열로 처리
             selectedOptions={selectedYear.map(String)} // 숫자를 문자열로 변환
             setSelectedOptions={setSelectedYear}
+          />
+          <Dropdown
+            title={selectedSortBy[0] || '최신순'} 
+            options={sortByOptions}
+            selectedOptions={selectedSortBy}
+            setSelectedOptions={setSelectedSortBy}
+            singleSelect={true}
           />
         </div>
         {/** BestResume에서 setAuthModalOpen을 전달하도록 수정 */}
