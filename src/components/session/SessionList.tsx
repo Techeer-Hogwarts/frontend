@@ -109,14 +109,11 @@ export default function SessionList() {
     )
     setTimeout(() => {
       checkLike()
-      refetch()
     }, 500)
   }
 
   useEffect(() => {
     if (!sessionsResponse || isLoading) return
-
-
 
     // 응답에서 데이터와 메타정보 추출
     const sessions = Array.isArray(sessionsResponse)
@@ -141,16 +138,15 @@ export default function SessionList() {
         return [...prev, ...newItems]
       })
     }
+
   }, [sessionsResponse, isLoading, cursor])
 
   useEffect(() => {
     // 필터나 탭이 변경되면 초기화
-    setAllSessions([])
     setCursor(undefined)
     setCreatedAt(undefined)
     setHasNext(true)
     checkLike()
-    refetch()
   }, [activeOption, selectedFilters])
 
   useEffect(() => {
