@@ -15,4 +15,5 @@ export interface ResumeQueryParams {
   category?: string
   cursorId?: number
   limit?: number
+  sortBy?: string
 }
