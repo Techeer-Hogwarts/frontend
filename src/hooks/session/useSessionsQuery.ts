@@ -8,8 +8,8 @@ interface UseSessionsQueryParams {
   selectedPeriodsB: string[]
   selectedPeriodsPo: string[]
   setAuthModalOpen: (open: boolean) => void
-  cursor?: number
-  createdAt?: string
+  cursorId?: number
+  sortBy: string
 }
 
 export const useSessionsQuery = ({
@@ -19,8 +19,8 @@ export const useSessionsQuery = ({
   selectedPeriodsB,
   selectedPeriodsPo,
   setAuthModalOpen,
-  cursor,
-  createdAt,
+  cursorId,
+  sortBy,
 }: UseSessionsQueryParams) => {
   const category =
     activeOption === '부트캠프'
@@ -45,14 +45,14 @@ export const useSessionsQuery = ({
           ? [...selectedPeriodsPo]
           : [],
         category,
-        cursor,
-        createdAt,
+        cursorId,
+        sortBy
       },
     ],
     queryFn: async () => {
       if (activeOption === '금주의 세션') {
-        const data = await getBestSessions(limit)
-        return Array.isArray(data) ? data : []
+        const result = await getBestSessions(limit)
+        return result
       }
       const date = [...selectedPeriodsP, ...selectedPeriodsB]
       const result = await getSessions(
@@ -61,8 +61,8 @@ export const useSessionsQuery = ({
         date,
         selectedPeriodsPo,
         setAuthModalOpen,
-        cursor,
-        createdAt,
+        sortBy,
+        cursorId,
       )
       // 전체 응답 객체 반환 (content, nextCursor, hasNext 포함)
       return result
