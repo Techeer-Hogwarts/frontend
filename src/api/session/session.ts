@@ -21,10 +21,15 @@ export const deleteSession = async (id: string) => {
 }
 
 // 세션 금주의 데이터 조회
-export const getBestSessions = async (limit: number) => {
-  const response = await fetch(
-    `/api/v1/sessions/best?offset=0&limit=${limit}`,
-    {
+export const getBestSessions = async (limit: number, cursorId?: number) => {
+  const params = new URLSearchParams()
+  params.append('limit', String(limit))
+
+   if (cursorId) {
+    params.append('cursorId', String(cursorId))
+  }
+
+    const response = await fetch(`/api/v1/sessions/best?${params.toString()}`, {
       method: 'GET',
       credentials: 'include',
     },
@@ -35,7 +40,7 @@ export const getBestSessions = async (limit: number) => {
   }
 
   const result = await response.json()
-  return result.content || result.data || result
+  return result
 }
 
 // 세션 데이터 조회
@@ -45,8 +50,8 @@ export const getSessions = async (
   date: string[],
   position: string[],
   setAuthModalOpen: any,
-  cursor?: number,
-  createdAt?: string,
+  sortBy: string,
+  cursorId?: number,
 ) => {
   const baseUrl = '/api/v1/sessions'
   const params: Record<string, string> = {
@@ -54,16 +59,15 @@ export const getSessions = async (
     size: String(newLimit),
   }
 
-  // 커서와 createdAt이 있으면 추가 (첫 요청은 없이)
-  if (cursor && createdAt) {
-    params.cursor = String(cursor)
-    params.createdAt = createdAt
-  }
-
   // 파라미터 생성
   const searchParams = new URLSearchParams(params)
   date.forEach((d) => searchParams.append('date', d))
   position.forEach((p) => searchParams.append('position', p))
+  searchParams.append('sortBy', sortBy)
+  if (cursorId) {
+    searchParams.append('cursorId', String(cursorId))
+  }
+
   const url = `${baseUrl}?${searchParams.toString()}`
 
   const response = await fetch(url, {
