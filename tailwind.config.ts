@@ -41,6 +41,20 @@ const config: Config = {
         cardtop: '0px -1px 4px 0px rgba(0, 0, 0, 0.1)',
         card: '0px -1px 4px 0px rgba(0, 0, 0, 0.1), 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);',
       },
+      keyframes: {
+        slider: {
+          '0%': { transform: 'translateX(0)' },
+          '100%': { transform: 'translateX(-50%)' },
+        },
+        'slider-reverse': {
+          '0%': { transform: 'translateX(-50%)' },
+          '100%': { transform: 'translateX(0)' },
+        },
+      },
+      animation: {
+        slider: 'slider 40s linear infinite',
+        'slider-reverse': 'slider-reverse 40s linear infinite',
+      },
       safelist: [
         'before:content-[""]',
         'before:absolute',

@@ -2,13 +2,13 @@
 
 import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
-import { searchAPI } from '../search/api/search'
+import { searchAPI } from '../../api/search/search'
 import { IoSearchOutline } from 'react-icons/io5'
 import { useRouter } from 'next/navigation'
 import {
   getSearchResults,
   getBasicSearchResults,
-} from '../search/api/getSearch'
+} from '../../api/search/getSearch'
 
 interface SearchBarProps {
   placeholder: string
@@ -72,8 +72,7 @@ export default function Search({
     try {
       const result = await searchAPI({ index, query })
       onSearchResult(result || [])
-    } catch (error) {
-    }
+    } catch (error) {}
   }
 
   const toggleSearch = () => {
@@ -113,8 +112,7 @@ export default function Search({
             }
             setBasicResults(filteredResults)
           }
-        } catch (error) {
-        }
+        } catch (error) {}
       }
       fetchBasicResults()
     }
