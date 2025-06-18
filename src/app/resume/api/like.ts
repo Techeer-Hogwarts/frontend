@@ -38,6 +38,5 @@ export const handleLikeClick = async (
     if (!response.ok) {
       throw new Error('Like request failed')
     }
-  } catch (error) {
-  }
+  } catch (error) { }
 }

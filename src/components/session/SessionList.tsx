@@ -60,17 +60,22 @@ export default function SessionList() {
     position: [] as string[],
   })
   const [limit, setLimit] = useState(12)
+  const [cursorId, setCursorId] = useState<number | undefined>(undefined)
+  const [hasNext, setHasNext] = useState(true)
   const [likeList, setLikeList] = useState([])
   const [message, setMessage] = useState<string | null>(null)
   const [allSessions, setAllSessions] = useState<Session[]>([])
   const [ref, inView] = useInView({ triggerOnce: false, threshold: 0.5 })
+
+  const [selectedSortBy, setSelectedSortBy] = useState<string[]>(['최신순'])
+  const sortByOptions = ['최신순', '가나다순']
 
   const updateFilter = (key: keyof typeof selectedFilters, value: string[]) => {
     setSelectedFilters((prev) => ({ ...prev, [key]: value }))
   }
 
   const {
-    data: newSessions,
+    data: sessionsResponse,
     isLoading,
     refetch,
     error,
@@ -81,10 +86,11 @@ export default function SessionList() {
     selectedPeriodsB: selectedFilters.bootcamp,
     selectedPeriodsPo: selectedFilters.position,
     setAuthModalOpen: openAuthModal,
+    cursorId,
+    sortBy: selectedSortBy[0] === '최신순' ? 'date' : 'name',
   })
 
   const showMessage = () => {
-    console.log('세션영상 삭제')
     setMessage('세션영상이 삭제되었습니다.')
     setTimeout(() => setMessage(null), 2000)
     refetch()
@@ -105,98 +111,124 @@ export default function SessionList() {
     )
     setTimeout(() => {
       checkLike()
-      refetch()
     }, 500)
   }
 
   useEffect(() => {
-    if (!newSessions || isLoading) return
-    if (limit === 12) {
-      setAllSessions(newSessions)
+    if (!sessionsResponse || isLoading) return
+
+    // 응답에서 데이터와 메타정보 추출
+    const sessions = sessionsResponse?.sessions || []
+
+    // 커서 기반 메타정보 업데이트
+    if (sessionsResponse.hasNext !== undefined) {
+      setHasNext(sessionsResponse.hasNext)
+    }
+
+    // 첫 로드이거나 필터가 변경된 경우
+    if (!cursorId) {
+      setAllSessions(sessions)
     } else {
+      // 무한 스크롤로 데이터 추가
       setAllSessions((prev) => {
         const existingIds = new Set(prev.map((session) => session.id))
-        const newItems = newSessions.filter(
+        const newItems = sessions.filter(
           (session: any) => !existingIds.has(session.id),
         )
         return [...prev, ...newItems]
       })
     }
-  }, [newSessions, isLoading, limit])
+
+  }, [sessionsResponse, isLoading, cursorId])
 
   useEffect(() => {
-    setLimit(12)
+    // 필터나 탭이 변경되면 초기화
+    setCursorId(undefined)
+    setHasNext(true)
     checkLike()
-    refetch()
-  }, [activeOption, selectedFilters])
+  }, [activeOption, selectedFilters, selectedSortBy])
 
   useEffect(() => {
-    if (!newSessions) return
-    const reachedEnd = newSessions.length < limit
-    if (inView && !reachedEnd) {
-      setLimit((prev) => prev + 12)
+    // 무한 스크롤 트리거
+
+    if (inView && hasNext && !isLoading) {
+      if (sessionsResponse?.nextCursor &&
+        (sessionsResponse.nextCursor !== cursorId)) {
+        setCursorId(sessionsResponse.nextCursor)
+      }
     }
-  }, [inView])
+  }, [inView, hasNext, isLoading, sessionsResponse, cursorId])
 
   return (
     <div>
-      <div className="flex items-center justify-start gap-8">
-        <div className="flex justify-start gap-3">
-          {activeOption === '부트캠프' && (
-            <>
-              <Dropdown
-                title="부트캠프 기간"
-                options={BootcampPeriod}
-                selectedOptions={selectedFilters.bootcamp}
-                setSelectedOptions={(value) => updateFilter('bootcamp', value)}
-              />
-              <Dropdown
-                title="포지션"
-                options={Position}
-                selectedOptions={selectedFilters.position}
-                setSelectedOptions={(value) => updateFilter('position', value)}
-              />
-            </>
-          )}
-          {activeOption === '파트너스' && (
-            <>
-              <Dropdown
-                title="파트너스 기간"
-                options={PartnersPeriod}
-                selectedOptions={selectedFilters.partners}
-                setSelectedOptions={(value) => updateFilter('partners', value)}
-              />
-              <Dropdown
-                title="포지션"
-                options={Position}
-                selectedOptions={selectedFilters.position}
-                setSelectedOptions={(value) => updateFilter('position', value)}
-              />
-            </>
-          )}
-          {activeOption === '전체보기' && (
-            <>
-              <Dropdown
-                title="파트너스 기간"
-                options={PartnersPeriod}
-                selectedOptions={selectedFilters.partners}
-                setSelectedOptions={(value) => updateFilter('partners', value)}
-              />
-              <Dropdown
-                title="부트캠프 기간"
-                options={BootcampPeriod}
-                selectedOptions={selectedFilters.bootcamp}
-                setSelectedOptions={(value) => updateFilter('bootcamp', value)}
-              />
-              <Dropdown
-                title="포지션"
-                options={Position}
-                selectedOptions={selectedFilters.position}
-                setSelectedOptions={(value) => updateFilter('position', value)}
-              />
-            </>
-          )}
+      <div className='flex justify-between'>
+        <div className="flex items-center justify-start gap-8">
+          <div className="flex justify-start gap-3">
+            {activeOption === '부트캠프' && (
+              <>
+                <Dropdown
+                  title="부트캠프 기간"
+                  options={BootcampPeriod}
+                  selectedOptions={selectedFilters.bootcamp}
+                  setSelectedOptions={(value) => updateFilter('bootcamp', value)}
+                />
+                <Dropdown
+                  title="포지션"
+                  options={Position}
+                  selectedOptions={selectedFilters.position}
+                  setSelectedOptions={(value) => updateFilter('position', value)}
+                />
+              </>
+            )}
+            {activeOption === '파트너스' && (
+              <>
+                <Dropdown
+                  title="파트너스 기간"
+                  options={PartnersPeriod}
+                  selectedOptions={selectedFilters.partners}
+                  setSelectedOptions={(value) => updateFilter('partners', value)}
+                />
+                <Dropdown
+                  title="포지션"
+                  options={Position}
+                  selectedOptions={selectedFilters.position}
+                  setSelectedOptions={(value) => updateFilter('position', value)}
+                />
+              </>
+            )}
+            {activeOption === '전체보기' && (
+              <>
+                  <Dropdown
+                  title="파트너스 기간"
+                  options={PartnersPeriod}
+                  selectedOptions={selectedFilters.partners}
+                  setSelectedOptions={(value) => updateFilter('partners', value)}
+                />
+                <Dropdown
+                  title="부트캠프 기간"
+                  options={BootcampPeriod}
+                  selectedOptions={selectedFilters.bootcamp}
+                  setSelectedOptions={(value) => updateFilter('bootcamp', value)}
+                />
+                <Dropdown
+                  title="포지션"
+                  options={Position}
+                  selectedOptions={selectedFilters.position}
+                  setSelectedOptions={(value) => updateFilter('position', value)}
+                />
+              </>
+            )}
+          </div>
         </div>
+        { activeOption !== '금주의 세션' && (
+          <Dropdown
+            title={selectedSortBy[0] || '최신순'} 
+            options={sortByOptions}
+            selectedOptions={selectedSortBy}
+            setSelectedOptions={setSelectedSortBy}
+            singleSelect={true}
+          />
+        )}
       </div>
 
       {activeOption !== '금주의 세션' &&
@@ -241,7 +273,7 @@ export default function SessionList() {
           />
         )}
         {!authModalOpen &&
-          (error || (newSessions && allSessions.length === 0)) && (
+          (error || (sessionsResponse && !isLoading && allSessions.length === 0)) && (
             <EmptyLottie
               text="세션 데이터가 없습니다."
               text2="다시 조회해주세요."

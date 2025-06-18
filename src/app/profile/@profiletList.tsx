@@ -27,38 +27,53 @@ export default function ProfileList({
   year = [],
   university = [],
   grade = [],
+  sortBy= '기수순',
 }: ProfileQueryParams = {}) {
   const [profiles, setProfiles] = useState<Profile[]>([])
-  const [limit, setLimit] = useState(12)
+  const [cursorId, setCursorId] = useState<number | undefined>(undefined)
+  const [hasNext, setHasNext] = useState<boolean>(true)
+  const [initialLoad, setInitialLoad] = useState(true)
+
   const [ref, inView] = useInView({ threshold: 0.5 })
+
+  const sortByValue = sortBy === '기수순' ? 'year' : 'name'
 
   const { data, isError, isLoading } = useGetProfileQuery({
     position,
     year,
     university,
     grade,
-    limit,
+    cursorId,
+    limit: 12,
+    hasNext,
+    sortBy: sortByValue,
   })
   useEffect(() => {
     setProfiles([])
-    setLimit(12)
-  }, [position, year, university, grade])
+    setCursorId(undefined)
+    setHasNext(true)
+  }, [position, year, university, grade, sortByValue])
 
   useEffect(() => {
-    if (data && Array.isArray(data)) {
+    if (data && Array.isArray(data.profiles)) {
       setProfiles((prev) => {
         const existingIds = new Set(prev.map((p) => p.id))
-        const newProfiles = data.filter((p) => !existingIds.has(p.id)) // 중복 제거
+        const newProfiles = data.profiles.filter((p) => !existingIds.has(p.id))
         return [...prev, ...newProfiles]
       })
+
+      if (data.profiles.length > 0) {
+        setHasNext(data.hasNext)
+      }
     }
   }, [data])
 
   useEffect(() => {
-    if (inView) {
-      setLimit((prev) => prev + 8)
+    if (inView && hasNext && profiles.length > 0) {
+      const lastId = profiles[profiles.length - 1].id
+      setCursorId(lastId)
     }
-  }, [inView])
+  }, [inView, hasNext, profiles])
 
   if (isLoading && profiles.length === 0) {
     return (
