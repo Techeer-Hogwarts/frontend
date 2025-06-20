@@ -23,6 +23,7 @@ interface User {
   id: number
   profileImage: string
   name: string
+  roleId: number
   nickname: string
   email: string
   school: string
@@ -54,6 +55,7 @@ export const useAuthStore = create<AuthState>()(
     (set) => ({
       isLoggedIn: null, // 초기 상태를 null로 설정해서 Hydration mismatch 방지
       user: null,
+
       setIsLoggedIn: (status: boolean) => set({ isLoggedIn: status }),
       setUser: (user: User | null) => set({ user }),
       checkAuth: async () => {

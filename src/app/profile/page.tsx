@@ -16,6 +16,7 @@ export default function Page() {
   const [selectedYear, setSelectedYear] = useState<string[]>([])
   const [selectedUniversity, setSelectedUniversity] = useState<string[]>([])
   const [selectedGrade, setSelectedGrade] = useState<string[]>([])
+  const [selectedSortBy, setSelectedSortBy] = useState<string[]>(['기수순'])
 
   const positionOptions = [
     'FRONTEND',
@@ -27,7 +28,7 @@ export default function Page() {
   const yearOptions = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
   const gradeOptions = ['1학년', '2학년', '3학년', '4학년', '졸업']
   const universityOptions = [
-    '강원대',
+    '강원대학교',
     '가톨릭대학교',
     '가천대학교',
     '광운대학교',
@@ -55,6 +56,8 @@ export default function Page() {
     '호서대학교',
     '해당 없음',
   ]
+  const sortByOptions = ['기수순', '이름순']
+
   //기수 탭
   // const category = ['전체', '이력서', '포트폴리오', 'ICT', 'OTHER']
 
@@ -90,32 +93,42 @@ export default function Page() {
             /> */}
         </div>
         <div className="flex w-full h-[1px] mb-5 bg-gray"></div>
-        <div className="flex justify-start gap-3">
-          <Dropdown
-            title="포지션"
-            options={positionOptions}
-            selectedOptions={selectedPosition}
-            setSelectedOptions={setSelectedPosition}
-          />
-          <Dropdown
-            title="기수"
-            options={yearOptions} // Dropdown 컴포넌트에서 문자열로 처리
-            selectedOptions={selectedYear.map(String)} // 숫자를 문자열로 변환
-            setSelectedOptions={setSelectedYear}
-          />
-          <Dropdown
-            title="대학"
-            options={universityOptions}
-            selectedOptions={selectedUniversity}
-            setSelectedOptions={setSelectedUniversity}
-          />
-          <Dropdown
-            title="학년"
-            options={gradeOptions}
-            selectedOptions={selectedGrade}
-            setSelectedOptions={setSelectedGrade}
-          />
+        <div className='flex justify-between'>
+          <div className="flex justify-start gap-3">
+            <Dropdown
+              title="포지션"
+              options={positionOptions}
+              selectedOptions={selectedPosition}
+              setSelectedOptions={setSelectedPosition}
+            />
+            <Dropdown
+              title="기수"
+              options={yearOptions} // Dropdown 컴포넌트에서 문자열로 처리
+              selectedOptions={selectedYear.map(String)} // 숫자를 문자열로 변환
+              setSelectedOptions={setSelectedYear}
+            />
+            <Dropdown
+              title="대학"
+              options={universityOptions}
+              selectedOptions={selectedUniversity}
+              setSelectedOptions={setSelectedUniversity}
+            />
+            <Dropdown
+              title="학년"
+              options={gradeOptions}
+              selectedOptions={selectedGrade}
+              setSelectedOptions={setSelectedGrade}
+            />
+          </div>
+            <Dropdown
+              title={selectedSortBy[0] || '기수순'} 
+              options={sortByOptions}
+              selectedOptions={selectedSortBy}
+              setSelectedOptions={setSelectedSortBy}
+              singleSelect={true}
+            />
         </div>
+        
         {[
           selectedPosition,
           selectedYear,
@@ -156,10 +169,12 @@ export default function Page() {
           </div>
         )}
         <ProfileList
+          key={`${selectedPosition.join(',')}_${selectedYear.join(',')}_${selectedUniversity.join(',')}_${selectedGrade.join(',')}_${selectedSortBy[0]}`}
           position={selectedPosition}
           year={selectedYear}
           university={selectedUniversity}
           grade={selectedGrade}
+          sortBy={selectedSortBy[0]}
         />
       </div>
     </div>

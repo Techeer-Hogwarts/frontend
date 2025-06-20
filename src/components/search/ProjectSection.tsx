@@ -1,9 +1,6 @@
 import ProjectCard from './ProjectCard'
 import Section from './Section'
-import CardItem from './CardItem'
-import { useEffect, useState } from 'react'
-import { useQueries } from '@tanstack/react-query'
-import { getAllTeams } from '@/api/project/common'
+import { useState } from 'react'
 import StudyCard from './StudyCard'
 import { ProjectTeam, StudyTeam } from '@/types/search'
 
