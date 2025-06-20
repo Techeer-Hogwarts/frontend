@@ -1,7 +1,7 @@
 import React from 'react'
 import TapBar from '@/components/common/TapBar'
 import Image from 'next/image'
-import Goldmedal from '/public/images/bootcamp/1st-place-medal.svg'
+import BootcampModal from '@/components/bootcamp/BootcampModal'
 
 const BootcampPage = () => {
   const options = [
@@ -96,6 +96,7 @@ const BootcampPage = () => {
 
   return (
     <div className="flex justify-center">
+      <BootcampModal />
       <div className="flex flex-col w-[1200px]">
         <div className="flex justify-between mt-14 mb-[2.84rem] w-[100%]">
           <div className="text-left">
