@@ -30,7 +30,13 @@ const data = {
   ],
 }
 
-const BootcampModal = () => {
+interface BootcampModalProps {
+  id: number
+  onClose: () => void
+}
+
+const BootcampModal = ({ id, onClose }: BootcampModalProps) => {
+  console.log('BootcampModal project ID:', id)
   return (
     <div className="fixed inset-0 z-50 flex justify-center items-center backdrop-blur-sm bg-black/30">
       <div className="bg-white fixed top-1/2 left-1/2 w-[600px] h-[700px] z-50 -translate-x-1/2 -translate-y-1/2 rounded-xl border-lightgray border-2 flex flex-col items-center p-5 realtive gap-5">
@@ -38,7 +44,9 @@ const BootcampModal = () => {
           <div className="absolute left-1/2 -translate-x-1/2 font-bold text-2xl">
             Next Page
           </div>
-          <button>x</button>
+          <button onClick={onClose} className="text-xl font-bold">
+            ×
+          </button>
         </header>
         <div className="border-b border-lightgray w-full"></div>
         <section>

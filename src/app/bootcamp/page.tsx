@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import TapBar from '@/components/common/TapBar'
 import Image from 'next/image'
 import BootcampModal from '@/components/bootcamp/BootcampModal'
@@ -9,6 +9,11 @@ import RegistModal from '@/components/bootcamp/RegistModal'
 const BootcampPage = () => {
   const [openModal, setOpenModal] = useState(false)
   const [selectedID, setSelectedID] = useState<Number>()
+  const [showRegistModal, setShowRegistModal] = useState(false)
+
+  useEffect(() => {
+    document.body.style.overflow = showRegistModal || openModal ? 'hidden' : ''
+  }, [showRegistModal, openModal])
 
   const options = [
     '전체보기',
@@ -102,8 +107,12 @@ const BootcampPage = () => {
 
   return (
     <div className="flex justify-center">
-      {openModal && <BootcampModal />}
-      <RegistModal />
+      {openModal && selectedID && (
+        <BootcampModal id={selectedID} onClose={() => setOpenModal(false)} />
+      )}
+      {showRegistModal && (
+        <RegistModal onClose={() => setShowRegistModal(false)} />
+      )}
       <div className="flex flex-col w-[1200px]">
         <div className="flex justify-between mt-14 mb-[2.84rem] w-[100%]">
           <div className="text-left">
@@ -112,7 +121,10 @@ const BootcampPage = () => {
               부트캠프 참여자들의 프로젝트를 확인해보세요.
             </p>
           </div>
-          <button className="flex items-center gap-2 w-[13rem] h-[3rem] rounded-xl shadow-md text-[1.1rem] font-medium justify-center hover:shadow-custom">
+          <button
+            onClick={() => setShowRegistModal(true)}
+            className="flex items-center gap-2 w-[13rem] h-[3rem] rounded-xl shadow-md text-[1.1rem] font-medium justify-center hover:shadow-custom"
+          >
             <span>부트캠프 등록하기</span>
             <Image src="/star.svg" alt="star" width={20} height={20} />
           </button>
@@ -122,7 +134,12 @@ const BootcampPage = () => {
         <div className="grid grid-cols-4 gap-6">
           {data.map((bootcamp) => (
             <div key={bootcamp.id} className="relative">
-              <button>
+              <button
+                onClick={() => {
+                  setSelectedID(bootcamp.id)
+                  setOpenModal(true)
+                }}
+              >
                 <Image
                   src={bootcamp.image_url}
                   alt="bootcamp project Image"

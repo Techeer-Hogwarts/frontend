@@ -93,7 +93,7 @@ const RegistModal: React.FC<RegistModalProps> = ({ onClose }) => {
         <div className="border-lightgray border-t"></div>
 
         <div>
-          <label className="block text-sm font-medium mb-1">
+          <label className="block text-lg font-medium mb-1">
             프로젝트 제목
           </label>
           <input
@@ -106,7 +106,7 @@ const RegistModal: React.FC<RegistModalProps> = ({ onClose }) => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-1">소개</label>
+          <label className="block text-lg font-medium mb-1">소개</label>
           <textarea
             value={formData.description}
             onChange={(e) => handleChange('description', e.target.value)}
@@ -116,7 +116,7 @@ const RegistModal: React.FC<RegistModalProps> = ({ onClose }) => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-1">팀 알파벳</label>
+          <label className="block text-lg font-medium mb-1">팀 알파벳</label>
           <input
             type="text"
             value={formData.team}
@@ -127,13 +127,15 @@ const RegistModal: React.FC<RegistModalProps> = ({ onClose }) => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-2">
+          <label className="block text-lg font-medium mb-2">
             포지션별 인원
           </label>
           <div className="flex gap-4 flex-col justify-between">
             {(['BE', 'FE', 'DEV'] as const).map((role) => (
               <div key={role} className="flex flex-col w-full">
-                <label className="text-sm font-semibold mb-1">{role}</label>
+                <label className="text-sm font-semibold mb-1 text-primary">
+                  {role}
+                </label>
                 <input
                   type="text"
                   value={inputMembers[role]}
@@ -183,7 +185,7 @@ const RegistModal: React.FC<RegistModalProps> = ({ onClose }) => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-2">
+          <label className="block text-lg font-medium mb-2">
             프로젝트 대표 이미지
           </label>
           <div className="flex flex-col gap-2 items-center">
