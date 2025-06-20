@@ -39,6 +39,7 @@ interface BasicResult {
 }
 
 const navItems: { key: string; href: string }[] = [
+  { key: 'bootcamp', href: '/bootcamp' },
   { key: 'project', href: '/project' },
   { key: 'profile', href: '/profile' },
   { key: 'resume', href: '/resume' },
@@ -71,6 +72,7 @@ export default function NavBar() {
     event: '이벤트',
     session: '세션',
     profile: '프로필',
+    bootcamp: '부트캠프',
   }
   const handleSelectResult = async (
     selectedTitle: string,
@@ -111,17 +113,22 @@ export default function NavBar() {
   }
 
   const visibleNavItems = (() => {
-
     if (isLoggedIn === null) {
       return null // 아직 auth 체크 중
     }
 
     if (!isLoggedIn) {
-      return [{ key: 'blog', href: '/blog' }]
+      return [
+        { key: 'bootcamp', href: '/bootcamp' },
+        { key: 'blog', href: '/blog' },
+      ]
     }
 
     if (!user) {
-      return [{ key: 'blog', href: '/blog' }]
+      return [
+        { key: 'bootcamp', href: '/bootcamp' },
+        { key: 'blog', href: '/blog' },
+      ]
     }
 
     const roleId = user.roleId
@@ -205,96 +212,99 @@ export default function NavBar() {
 
         {/* 메뉴 */}
         <div className="flex items-center gap-[1.62rem]">
-          { visibleNavItems && visibleNavItems.map((item) => {
-            const isActive = pathname.startsWith(item.href)
-            return (
-              <Link
-                key={item.key}
-                href={item.href}
-                className={`hover:text-primary cursor-pointer ${pathname == '/' ? 'text-white' : ''} ${
-                  isActive ? 'text-primary' : ''
-                }`}
-              >
-                {indexMap[item.key]}
-              </Link>
-            )
-          })}
+          {visibleNavItems &&
+            visibleNavItems.map((item) => {
+              const isActive = pathname.startsWith(item.href)
+              return (
+                <Link
+                  key={item.key}
+                  href={item.href}
+                  className={`hover:text-primary cursor-pointer ${pathname == '/' ? 'text-white' : ''} ${
+                    isActive ? 'text-primary' : ''
+                  }`}
+                >
+                  {indexMap[item.key]}
+                </Link>
+              )
+            })}
         </div>
       </div>
       {/* 우측 메뉴 */}
       <div className="flex items-center cursor-pointer">
-        {isLoggedIn === true && (user?.roleId === 1 || user?.roleId === 2 || user?.roleId === 3) && pathname !== '/' && (
-          <div className="flex items-center">
-            {/* 검색 영역 */}
-            <div className="relative p-2">
-              <form onSubmit={handleSubmit} className="flex items-center">
-                <button
-                  type="button"
-                  aria-label="검색"
-                  className="flex items-center px-1 transition-all duration-300 ease-in-out border rounded-full focus:outline-none"
-                >
-                  <IoSearchOutline onClick={toggleSearch} />
-                  <input
-                    type="text"
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
-                    placeholder="검색어를 입력하세요"
-                    className={`${
-                      isSearchOpen ? 'w-[18rem] rounded-xl px-2' : 'w-0  px-0'
-                    } transition-all duration-300 ease-in-out focus:outline-none`}
-                  />
-                </button>
-              </form>
-              {/* 자동완성 결과 출력 */}
-              {debouncedQuery && (
-                <ul className="absolute bg-white border border-gray rounded-lg mt-1 w-[314px] max-h-[17rem] overflow-y-auto z-10">
-                  {basicResults && basicResults.length > 0 ? (
-                    basicResults.map((result, index) => {
-                      const truncatedTitle =
-                        result.title.length > 16
-                          ? result.title.slice(0, 16) + '...'
-                          : result.title
-                      return (
-                        <div
-                          key={result.id}
-                          className="flex items-center pl-4 hover:bg-lightprimary"
-                        >
-                          <IoSearchOutline
-                            className="w-3"
-                            onClick={toggleSearch}
-                          />
-                          <li
-                            key={index}
-                            className="p-1 font-light cursor-pointer"
-                            onClick={() =>
-                              handleSelectResult(
-                                result.title.split('-').slice(-1).join(' '),
-                                result.index,
-                                result.id,
-                                result.url,
-                              )
-                            }
+        {isLoggedIn === true &&
+          (user?.roleId === 1 || user?.roleId === 2 || user?.roleId === 3) &&
+          pathname !== '/' && (
+            <div className="flex items-center">
+              {/* 검색 영역 */}
+              <div className="relative p-2">
+                <form onSubmit={handleSubmit} className="flex items-center">
+                  <button
+                    type="button"
+                    aria-label="검색"
+                    className="flex items-center px-1 transition-all duration-300 ease-in-out border rounded-full focus:outline-none"
+                  >
+                    <IoSearchOutline onClick={toggleSearch} />
+                    <input
+                      type="text"
+                      value={query}
+                      onChange={(e) => setQuery(e.target.value)}
+                      placeholder="검색어를 입력하세요"
+                      className={`${
+                        isSearchOpen ? 'w-[18rem] rounded-xl px-2' : 'w-0  px-0'
+                      } transition-all duration-300 ease-in-out focus:outline-none`}
+                    />
+                  </button>
+                </form>
+                {/* 자동완성 결과 출력 */}
+                {debouncedQuery && (
+                  <ul className="absolute bg-white border border-gray rounded-lg mt-1 w-[314px] max-h-[17rem] overflow-y-auto z-10">
+                    {basicResults && basicResults.length > 0 ? (
+                      basicResults.map((result, index) => {
+                        const truncatedTitle =
+                          result.title.length > 16
+                            ? result.title.slice(0, 16) + '...'
+                            : result.title
+                        return (
+                          <div
+                            key={result.id}
+                            className="flex items-center pl-4 hover:bg-lightprimary"
                           >
-                            <span className="text-sm  text-primary">
-                              {indexMap[result.index] || result.index}
-                              <span className="text-gray">
-                                {' '}
-                                &nbsp; | &nbsp;
+                            <IoSearchOutline
+                              className="w-3"
+                              onClick={toggleSearch}
+                            />
+                            <li
+                              key={index}
+                              className="p-1 font-light cursor-pointer"
+                              onClick={() =>
+                                handleSelectResult(
+                                  result.title.split('-').slice(-1).join(' '),
+                                  result.index,
+                                  result.id,
+                                  result.url,
+                                )
+                              }
+                            >
+                              <span className="text-sm  text-primary">
+                                {indexMap[result.index] || result.index}
+                                <span className="text-gray">
+                                  {' '}
+                                  &nbsp; | &nbsp;
+                                </span>
                               </span>
-                            </span>
-                            {truncatedTitle}
-                          </li>
-                        </div>
-                      )
-                    })
-                  ) : (
-                    <li className="p-2 text-darkgray">검색 결과 없음</li>
-                  )}
-                </ul>
-              )}
+                              {truncatedTitle}
+                            </li>
+                          </div>
+                        )
+                      })
+                    ) : (
+                      <li className="p-2 text-darkgray">검색 결과 없음</li>
+                    )}
+                  </ul>
+                )}
+              </div>
             </div>
-          </div>
-        )}
+          )}
         {/* 돋보기 및 기타 아이콘 */}
 
         {isLoggedIn === true && (
@@ -306,49 +316,55 @@ export default function NavBar() {
                 className={`${pathname == '/' ? 'text-white' : ''}`}
               />
             </Link>
-             {/* 마이페이지 아이콘 */}
-              {(user?.roleId === 1 || user?.roleId === 2 || user?.roleId === 3) && (
-                <Link href="/mypage" className="p-[6px] cursor-pointer">
-                  <IoPersonCircle size={28} className={`${pathname === '/' ? 'text-white' : ''}`} />
-                </Link>
-              )}
-
-              {(user?.roleId === 4 || user?.roleId === 5) && (
-                <div className="relative" ref={dropdownRef}>
-                  <button
-                    onClick={() => setIsDropdownOpen((prev) => !prev)}
-                    className="p-[6px] cursor-pointer"
-                  >
-                    <IoPersonCircle size={28} className={`${pathname === '/' ? 'text-white' : ''}`} />
-                  </button>
-                  {isDropdownOpen && (
-                    <div className="absolute right-0 mt-2 w-40 bg-white rounded-md shadow-md z-50 border border-gray">
-                      {/* 테커 전환 아직 미구현 */}
-                      {user.roleId === 5 && (
-                        <button
-                          className="block w-full text-left px-3 py-[10px] text-[14px] hover:rounded-t-md hover:bg-lightgray"
-                        >
-                          테커 전환
-                        </button>
-                      )}
-                      <button
-                        onClick={handleLogout}
-                        className="block w-full text-left px-3 py-[10px] text-[14px] hover:bg-lightgray"
-                      >
-                        로그아웃
-                      </button>
-                      <Link
-                        href="/mypage/leave"
-                        className="block w-full text-left px-3 py-[10px] text-[14px] text-primary hover:rounded-b-md hover:bg-lightgray"
-                      >
-                        회원탈퇴
-                      </Link>
-                    </div>
-                  )}
-                </div>
-              )}
-              </>
+            {/* 마이페이지 아이콘 */}
+            {(user?.roleId === 1 ||
+              user?.roleId === 2 ||
+              user?.roleId === 3) && (
+              <Link href="/mypage" className="p-[6px] cursor-pointer">
+                <IoPersonCircle
+                  size={28}
+                  className={`${pathname === '/' ? 'text-white' : ''}`}
+                />
+              </Link>
             )}
+
+            {(user?.roleId === 4 || user?.roleId === 5) && (
+              <div className="relative" ref={dropdownRef}>
+                <button
+                  onClick={() => setIsDropdownOpen((prev) => !prev)}
+                  className="p-[6px] cursor-pointer"
+                >
+                  <IoPersonCircle
+                    size={28}
+                    className={`${pathname === '/' ? 'text-white' : ''}`}
+                  />
+                </button>
+                {isDropdownOpen && (
+                  <div className="absolute right-0 mt-2 w-40 bg-white rounded-md shadow-md z-50 border border-gray">
+                    {/* 테커 전환 아직 미구현 */}
+                    {user.roleId === 5 && (
+                      <button className="block w-full text-left px-3 py-[10px] text-[14px] hover:rounded-t-md hover:bg-lightgray">
+                        테커 전환
+                      </button>
+                    )}
+                    <button
+                      onClick={handleLogout}
+                      className="block w-full text-left px-3 py-[10px] text-[14px] hover:bg-lightgray"
+                    >
+                      로그아웃
+                    </button>
+                    <Link
+                      href="/mypage/leave"
+                      className="block w-full text-left px-3 py-[10px] text-[14px] text-primary hover:rounded-b-md hover:bg-lightgray"
+                    >
+                      회원탈퇴
+                    </Link>
+                  </div>
+                )}
+              </div>
+            )}
+          </>
+        )}
 
         {isLoggedIn === true ? (
           user?.roleId === 1 || user?.roleId === 2 || user?.roleId === 3 ? (
