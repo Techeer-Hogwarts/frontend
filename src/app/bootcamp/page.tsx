@@ -1,9 +1,15 @@
-import React from 'react'
+'use client'
+
+import React, { useState } from 'react'
 import TapBar from '@/components/common/TapBar'
 import Image from 'next/image'
 import BootcampModal from '@/components/bootcamp/BootcampModal'
+import RegistModal from '@/components/bootcamp/RegistModal'
 
 const BootcampPage = () => {
+  const [openModal, setOpenModal] = useState(false)
+  const [selectedID, setSelectedID] = useState<Number>()
+
   const options = [
     '전체보기',
     '역대 수상작',
@@ -96,7 +102,8 @@ const BootcampPage = () => {
 
   return (
     <div className="flex justify-center">
-      <BootcampModal />
+      {openModal && <BootcampModal />}
+      <RegistModal />
       <div className="flex flex-col w-[1200px]">
         <div className="flex justify-between mt-14 mb-[2.84rem] w-[100%]">
           <div className="text-left">
