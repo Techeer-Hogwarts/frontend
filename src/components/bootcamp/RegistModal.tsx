@@ -8,22 +8,37 @@ import Link from '@/../public/link.svg'
 
 interface RegistModalProps {
   onClose: () => void
+  mode?: 'register' | 'edit'
+  initialData?: {
+    name: string
+    project_explain: string
+    team: string
+    members: {
+      BE: string[]
+      FE: string[]
+      DEV: string[]
+    }
+    github_url: string
+    medium_url: string
+    web_url: string
+    image_url: string
+  }
 }
 
-const RegistModal: React.FC<RegistModalProps> = ({ onClose }) => {
+const RegistModal: React.FC<RegistModalProps> = ({
+  onClose,
+  mode = 'register',
+  initialData,
+}) => {
   const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    team: '',
-    members: {
-      BE: [] as string[],
-      FE: [] as string[],
-      DEV: [] as string[],
-    },
-    github: '',
-    medium: '',
-    service: '',
-    image: null as File | null,
+    name: initialData?.name || '',
+    project_explain: initialData?.project_explain || '',
+    team: initialData?.team || '',
+    members: initialData?.members || { BE: [], FE: [], DEV: [] },
+    github_url: initialData?.github_url || '',
+    medium_url: initialData?.medium_url || '',
+    web_url: initialData?.web_url || '',
+    image: initialData?.image || null,
   })
   const [inputMembers, setInputMembers] = useState({
     BE: '',
@@ -74,8 +89,25 @@ const RegistModal: React.FC<RegistModalProps> = ({ onClose }) => {
   }
 
   const handleSubmit = () => {
-    console.log('제출 데이터:', formData)
-    // 여기에 제출 로직 추가
+    const memberList = ['BE', 'FE', 'DEV'].flatMap((role) =>
+      formData.members[role].map((name, index) => ({
+        user_id: index + 1, // 임시 ID, 실제 구현에 맞게 수정 필요
+        position: role,
+      })),
+    )
+
+    const payload = {
+      name: formData.name,
+      team: formData.team,
+      project_explain: formData.project_explain,
+      github_url: formData.github_url,
+      medium_url: formData.medium_url,
+      web_url: formData.web_url,
+      members: memberList,
+    }
+
+    console.log('제출 데이터:', payload)
+    // 실제 API 요청 로직 추가
     onClose()
   }
 
@@ -84,7 +116,7 @@ const RegistModal: React.FC<RegistModalProps> = ({ onClose }) => {
       <div className="bg-white fixed top-1/2 left-1/2 w-[600px] max-h-[90vh] overflow-y-auto z-50 -translate-x-1/2 -translate-y-1/2 rounded-xl border border-lightgray p-6 flex flex-col gap-6">
         <header className="relative flex justify-end items-center w-full">
           <div className="absolute left-1/2 -translate-x-1/2 font-bold text-2xl">
-            프로젝트 등록
+            {mode === 'edit' ? '프로젝트 수정' : '프로젝트 등록'}
           </div>
           <button onClick={onClose} className="text-xl font-bold">
             ×
@@ -98,8 +130,8 @@ const RegistModal: React.FC<RegistModalProps> = ({ onClose }) => {
           </label>
           <input
             type="text"
-            value={formData.title}
-            onChange={(e) => handleChange('title', e.target.value)}
+            value={formData.name}
+            onChange={(e) => handleChange('name', e.target.value)}
             className="w-full border-lightgray border-2 px-3 py-2 rounded-md"
             placeholder="프로젝트명을 입력하세요"
           />
@@ -108,8 +140,8 @@ const RegistModal: React.FC<RegistModalProps> = ({ onClose }) => {
         <div>
           <label className="block text-lg font-medium mb-1">소개</label>
           <textarea
-            value={formData.description}
-            onChange={(e) => handleChange('description', e.target.value)}
+            value={formData.project_explain}
+            onChange={(e) => handleChange('project_explain', e.target.value)}
             className="w-full border-lightgray border-2 px-3 py-2 rounded-md resize-none h-[80px]"
             placeholder="프로젝트 소개를 입력하세요"
           />
@@ -223,8 +255,8 @@ const RegistModal: React.FC<RegistModalProps> = ({ onClose }) => {
               <Git />
               <input
                 type="text"
-                value={formData.github}
-                onChange={(e) => handleChange('github', e.target.value)}
+                value={formData.github_url}
+                onChange={(e) => handleChange('github_url', e.target.value)}
                 className="w-full border-lightgray border-2 px-3 py-2 rounded-md"
                 placeholder="GitHub URL"
               />
@@ -233,8 +265,8 @@ const RegistModal: React.FC<RegistModalProps> = ({ onClose }) => {
               <Medium />
               <input
                 type="text"
-                value={formData.medium}
-                onChange={(e) => handleChange('medium', e.target.value)}
+                value={formData.medium_url}
+                onChange={(e) => handleChange('medium_url', e.target.value)}
                 className="w-full border-lightgray border-2 px-3 py-2 rounded-md"
                 placeholder="Medium URL"
               />
@@ -243,8 +275,8 @@ const RegistModal: React.FC<RegistModalProps> = ({ onClose }) => {
               <Link />
               <input
                 type="text"
-                value={formData.service}
-                onChange={(e) => handleChange('service', e.target.value)}
+                value={formData.web_url}
+                onChange={(e) => handleChange('web_url', e.target.value)}
                 className="w-full border-lightgray border-2 px-3 py-2 rounded-md"
                 placeholder="서비스 URL"
               />
@@ -263,7 +295,7 @@ const RegistModal: React.FC<RegistModalProps> = ({ onClose }) => {
             onClick={handleSubmit}
             className="px-4 py-2 rounded-md bg-primary text-white hover:bg-primary/80"
           >
-            등록
+            {mode === 'edit' ? '수정' : '등록'}
           </button>
         </div>
       </div>

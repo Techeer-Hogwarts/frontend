@@ -8,7 +8,7 @@ import RegistModal from '@/components/bootcamp/RegistModal'
 
 const BootcampPage = () => {
   const [openModal, setOpenModal] = useState(false)
-  const [selectedID, setSelectedID] = useState<Number>()
+  const [selectedID, setSelectedID] = useState<number>()
   const [showRegistModal, setShowRegistModal] = useState(false)
 
   useEffect(() => {

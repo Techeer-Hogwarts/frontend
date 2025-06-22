@@ -1,8 +1,10 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Image from 'next/image'
 import Git from '@/../public/git.svg'
 import Medium from '@/../public/medium.svg'
 import Link from '@/../public/link.svg'
+import FixIcon from '@/../public/images/Fixicon.svg'
+import RegistModal from './RegistModal'
 
 const data = {
   id: 1,
@@ -16,18 +18,11 @@ const data = {
   image_url: '/images/bootcamp/bootcampImage.svg',
   isOpen: true,
   rank: 1,
-  members: [
-    {
-      id: 1,
-      user_id: 1,
-      position: 'BE',
-    },
-    {
-      id: 2,
-      user_id: 2,
-      position: 'FE',
-    },
-  ],
+  members: {
+    BE: ['주영준', '권유리', '김진희', '윤정은', '최지혜'],
+    FE: ['주영준', '권유리', '김진희', '윤정은', '최지혜'],
+    DEV: ['주영준', '권유리', '김진희', '윤정은', '최지혜'],
+  },
 }
 
 interface BootcampModalProps {
@@ -36,7 +31,19 @@ interface BootcampModalProps {
 }
 
 const BootcampModal = ({ id, onClose }: BootcampModalProps) => {
+  const [isEditing, setIsEditing] = useState(false)
   console.log('BootcampModal project ID:', id)
+
+  if (isEditing) {
+    return (
+      <RegistModal
+        mode="edit"
+        onClose={() => setIsEditing(false)}
+        initialData={data}
+      />
+    )
+  }
+
   return (
     <div className="fixed inset-0 z-50 flex justify-center items-center backdrop-blur-sm bg-black/30">
       <div className="bg-white fixed top-1/2 left-1/2 w-[600px] h-[700px] z-50 -translate-x-1/2 -translate-y-1/2 rounded-xl border-lightgray border-2 flex flex-col items-center p-5 realtive gap-5">
@@ -44,9 +51,14 @@ const BootcampModal = ({ id, onClose }: BootcampModalProps) => {
           <div className="absolute left-1/2 -translate-x-1/2 font-bold text-2xl">
             Next Page
           </div>
-          <button onClick={onClose} className="text-xl font-bold">
-            ×
-          </button>
+          <div className="flex flex-row gap-3">
+            <button onClick={() => setIsEditing(true)}>
+              <FixIcon />
+            </button>
+            <button onClick={onClose} className="text-2xl">
+              ×
+            </button>
+          </div>
         </header>
         <div className="border-b border-lightgray w-full"></div>
         <section>
@@ -80,6 +92,7 @@ const BootcampModal = ({ id, onClose }: BootcampModalProps) => {
               <p className="text-lg">주영준 권유리 김진희 윤정은 최지혜</p>
             </div>
           </div>
+
           <div className="flex flex-row gap-5 w-[500px] mt-5">
             <button>
               <Git />
