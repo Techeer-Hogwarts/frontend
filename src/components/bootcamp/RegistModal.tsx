@@ -21,7 +21,7 @@ interface RegistModalProps {
     github_url: string
     medium_url: string
     web_url: string
-    image_url: string
+    image_url: string | Blob
   }
 }
 
@@ -38,7 +38,8 @@ const RegistModal: React.FC<RegistModalProps> = ({
     github_url: initialData?.github_url || '',
     medium_url: initialData?.medium_url || '',
     web_url: initialData?.web_url || '',
-    image_url: initialData?.image_url || null,
+    image:
+      initialData?.image_url instanceof File ? initialData.image_url : null,
   })
   const [inputMembers, setInputMembers] = useState({
     BE: '',
