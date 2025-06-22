@@ -155,7 +155,7 @@ const RegistModal: React.FC<RegistModalProps> = ({
             value={formData.team}
             onChange={(e) => handleChange('team', e.target.value)}
             className="w-full border-lightgray border-2 px-3 py-2 rounded-md"
-            placeholder="예:A"
+            placeholder="A"
           />
         </div>
 
