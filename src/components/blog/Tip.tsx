@@ -3,13 +3,11 @@
 import { useState } from 'react'
 
 interface TooltipProps {
-  content: React.ReactNode
   children: React.ReactNode
 }
 
-export default function Tooltip({ content, children }: TooltipProps) {
+export default function Tooltip({ children }: TooltipProps) {
   const [show, setShow] = useState(false)
-
   return (
     <div
       className="relative flex items-center"

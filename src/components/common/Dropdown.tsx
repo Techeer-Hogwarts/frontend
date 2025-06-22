@@ -1,41 +1,35 @@
-'use client'
-
 import { useState, useRef, useEffect } from 'react'
 
-export interface DropdownProps {
-  title: string // 드롭다운 버튼의 제목
-  options: string[] // 드롭다운 항목 리스트
-  selectedOptions: string[] // 현재 선택된 항목 배열
-  setSelectedOptions: (options: string[]) => void // 선택된 항목을 업데이트하는 함수
-  singleSelect?: boolean // 단일 선택 모드 여부 (optional)
+export interface DropdownProps<T extends string> {
+  title: string
+  options: readonly T[]
+  selectedOptions: T[]
+  setSelectedOptions: React.Dispatch<React.SetStateAction<T[]>>
+  singleSelect?: boolean
 }
 
-const Dropdown: React.FC<DropdownProps> = ({
+function Dropdown<T extends string>({
   title,
   options,
   selectedOptions,
   setSelectedOptions,
-  singleSelect = false, // 기본값은 false (다중 선택)
-}) => {
+  singleSelect = false,
+}: DropdownProps<T>) {
   const [isOpen, setIsOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
   const toggleDropdown = () => setIsOpen(!isOpen)
 
-  const handleSelect = (option: string) => {
+  const handleSelect = (option: T) => {
     if (selectedOptions.includes(option)) {
-      // 이미 선택된 항목 클릭 시 선택 해제
       setSelectedOptions(selectedOptions.filter((item) => item !== option))
     } else if (singleSelect) {
-      // 단일 선택 모드에서는 새 항목만 선택
       setSelectedOptions([option])
     } else {
-      // 다중 선택 모드에서는 기존 선택에 추가
       setSelectedOptions([...selectedOptions, option])
     }
   }
 
-  // 드롭다운 외부 클릭 감지 및 닫기 기능
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -45,11 +39,8 @@ const Dropdown: React.FC<DropdownProps> = ({
         setIsOpen(false)
       }
     }
-
     document.addEventListener('mousedown', handleClickOutside)
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
+    return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
   return (
