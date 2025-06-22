@@ -5,6 +5,9 @@ import TapBar from '@/components/common/TapBar'
 import Image from 'next/image'
 import BootcampModal from '@/components/bootcamp/BootcampModal'
 import RegistModal from '@/components/bootcamp/RegistModal'
+import ProjectItem from '@/components/bootcamp/ProjectItem'
+import { BootCampTapOptions } from '@/constants/bootcamp'
+import { allBootcampProject } from '@/constants/bootcamp'
 
 const BootcampPage = () => {
   const [openModal, setOpenModal] = useState(false)
@@ -12,98 +15,9 @@ const BootcampPage = () => {
   const [showRegistModal, setShowRegistModal] = useState(false)
 
   useEffect(() => {
+    //모달 창 열었을때, 바깥 페이지의 스크롤을 제거
     document.body.style.overflow = showRegistModal || openModal ? 'hidden' : ''
   }, [showRegistModal, openModal])
-
-  const options = [
-    '전체보기',
-    '역대 수상작',
-    '10기',
-    '9기',
-    '8기',
-    '7기',
-    '6기',
-    '5기',
-    '4기',
-    '3기',
-    '2기',
-    '1기',
-  ]
-
-  const data = [
-    {
-      id: 1,
-      year: 10,
-      image_url: '/images/bootcamp/bootcampImage.svg',
-      rank: 1,
-    },
-    {
-      id: 2,
-      year: 10,
-      image_url: '/images/bootcamp/bootcampImage.svg',
-      rank: 2,
-    },
-    {
-      id: 3,
-      year: 10,
-      image_url: '/images/bootcamp/bootcampImage.svg',
-      rank: 3,
-    },
-    {
-      id: 4,
-      year: 10,
-      image_url: '/images/bootcamp/bootcampImage.svg',
-      rank: 3,
-    },
-    {
-      id: 5,
-      year: 10,
-      image_url: '/images/bootcamp/bootcampImage.svg',
-      rank: 0,
-    },
-    {
-      id: 6,
-      year: 10,
-      image_url: '/images/bootcamp/bootcampImage.svg',
-      rank: 0,
-    },
-    {
-      id: 7,
-      year: 10,
-      image_url: '/images/bootcamp/bootcampImage.svg',
-      rank: 0,
-    },
-    {
-      id: 8,
-      year: 10,
-      image_url: '/images/bootcamp/bootcampImage.svg',
-      rank: 0,
-    },
-    {
-      id: 9,
-      year: 10,
-      image_url: '/images/bootcamp/bootcampImage.svg',
-      rank: 0,
-    },
-    {
-      id: 10,
-      year: 10,
-      image_url: '/images/bootcamp/bootcampImage.svg',
-      rank: 0,
-    },
-    {
-      id: 11,
-      year: 10,
-      image_url: '/images/bootcamp/bootcampImage.svg',
-      rank: 0,
-    },
-    {
-      id: 12,
-      year: 10,
-      image_url: '/images/bootcamp/bootcampImage.svg',
-      rank: 0,
-    },
-  ]
 
   return (
     <div className="flex justify-center">
@@ -129,56 +43,15 @@ const BootcampPage = () => {
             <Image src="/star.svg" alt="star" width={20} height={20} />
           </button>
         </div>
-        <TapBar options={options} />
+        <TapBar options={BootCampTapOptions} />
         <div className="border-t my-5" />
         <div className="grid grid-cols-4 gap-6">
-          {data.map((bootcamp) => (
-            <div key={bootcamp.id} className="relative">
-              <button
-                onClick={() => {
-                  setSelectedID(bootcamp.id)
-                  setOpenModal(true)
-                }}
-              >
-                <Image
-                  src={bootcamp.image_url}
-                  alt="bootcamp project Image"
-                  width={300}
-                  height={200}
-                  className="rounded-lg shadow-xl"
-                />
-
-                {bootcamp.rank === 1 && (
-                  <Image
-                    src="/images/bootcamp/1st-place-medal.svg"
-                    alt="Gold Medal"
-                    width={60}
-                    height={60}
-                    className="absolute top-0 right-2 z-10"
-                  />
-                )}
-
-                {bootcamp.rank === 2 && (
-                  <Image
-                    src="/images/bootcamp/2nd-place-medal.svg"
-                    alt="Gold Medal"
-                    width={60}
-                    height={60}
-                    className="absolute top-0 right-2 z-10"
-                  />
-                )}
-
-                {bootcamp.rank === 3 && (
-                  <Image
-                    src="/images/bootcamp/3rd-place-medal.svg"
-                    alt="Gold Medal"
-                    width={60}
-                    height={60}
-                    className="absolute top-0 right-2 z-10"
-                  />
-                )}
-              </button>
-            </div>
+          {allBootcampProject.map((bootcamp) => (
+            <ProjectItem
+              bootcamp={bootcamp}
+              setSelectedID={setSelectedID}
+              setOpenModal={setOpenModal}
+            />
           ))}
         </div>
       </div>

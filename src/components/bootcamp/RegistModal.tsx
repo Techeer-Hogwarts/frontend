@@ -38,7 +38,7 @@ const RegistModal: React.FC<RegistModalProps> = ({
     github_url: initialData?.github_url || '',
     medium_url: initialData?.medium_url || '',
     web_url: initialData?.web_url || '',
-    image: initialData?.image || null,
+    image_url: initialData?.image_url || null,
   })
   const [inputMembers, setInputMembers] = useState({
     BE: '',
