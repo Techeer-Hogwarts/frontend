@@ -21,7 +21,7 @@ export type BootcampDetailType = {
   githubUrl: string
   mediumUrl: string
   webUrl: string
-  imageUrl: string
+  imageUrl: string | Blob
   isOpen: boolean
   rank: number
   members: BootcampMemberType[]

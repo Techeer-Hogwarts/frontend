@@ -1,33 +1,24 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import Image from 'next/image'
-import Git from '@/../public/git.svg'
-import Medium from '@/../public/medium.svg'
-import Link from '@/../public/link.svg'
 import ProjectMemberModal from '../project/modal/ProjectModal'
-import { Member } from '../project/modal/ProjectModal'
-
-type BootcampMember = {
-  userId: number
-  name?: string
-  position: string
-  isLeader: boolean
-}
+import {
+  BootcampDetailType,
+  BootcampMemberType,
+} from '@/types/bootcamp/bootcamp'
+import ModalHeader from './RegistModal/ModalHeader'
+import ProjectTitleInput from './RegistModal/ProjectTitleInput'
+import ProjectExplain from './RegistModal/ProjectExplain'
+import ProjectTeamName from './RegistModal/ProjectTeamName'
+import ProjectImage from './RegistModal/ProjectImage'
+import ProjectLinkInput from './RegistModal/ProjectLinkInput'
+import ProjectSave from './RegistModal/ProjectSave'
+import ProjectMembers from './RegistModal/ProjectMembers'
 
 interface RegistModalProps {
   onClose: () => void
   mode?: 'register' | 'edit'
-  initialData?: {
-    name: string
-    projectExplain: string
-    team: string
-    members: BootcampMember[]
-    githubUrl: string
-    mediumUrl: string
-    webUrl: string
-    imageUrl: string | Blob
-  }
+  initialData?: BootcampDetailType
 }
 
 const RegistModal: React.FC<RegistModalProps> = ({
@@ -35,7 +26,7 @@ const RegistModal: React.FC<RegistModalProps> = ({
   mode = 'register',
   initialData,
 }) => {
-  const [members, setMembers] = useState<BootcampMember[]>([])
+  const [members, setMembers] = useState<BootcampMemberType[]>([])
   const [IsModalOpen, setIsModalOpen] = useState(false)
   const [formData, setFormData] = useState({
     name: initialData?.name || '',
@@ -49,15 +40,6 @@ const RegistModal: React.FC<RegistModalProps> = ({
       initialData?.imageUrl instanceof File ? initialData.imageUrl : null,
   })
 
-  useEffect(() => {
-    console.log(members)
-    console.log(formData)
-  }, [members])
-
-  useEffect(() => {
-    console.log(initialData)
-  }, [])
-
   const handleChange = (field: string, value: string) => {
     setFormData((prev) => ({
       ...prev,
@@ -67,10 +49,10 @@ const RegistModal: React.FC<RegistModalProps> = ({
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] || null
-    setFormData((prev) => ({ ...prev, image: file }))
+    setFormData((prev) => ({ ...prev, imageUrl: file }))
   }
 
-  const handleSaveMembers = (selectedMembers: BootcampMember[]) => {
+  const handleSaveMembers = (selectedMembers: BootcampMemberType[]) => {
     setMembers(selectedMembers)
     const formattedMembers = selectedMembers.map((member) => ({
       userId: member.userId,
@@ -109,213 +91,24 @@ const RegistModal: React.FC<RegistModalProps> = ({
       ) : (
         <div className="fixed inset-0 z-50 flex justify-center items-center bg-black bg-opacity-70">
           <div className="bg-white fixed top-1/2 left-1/2 w-[600px] max-h-[90vh] overflow-y-auto z-50 -translate-x-1/2 -translate-y-1/2 rounded-xl border border-lightgray p-6 flex flex-col gap-10">
-            <header className="relative flex justify-end items-center w-full">
-              <div className="absolute left-1/2 -translate-x-1/2 font-bold text-2xl">
-                {mode === 'edit' ? '프로젝트 수정' : '프로젝트 등록'}
-              </div>
-              <button onClick={onClose} className="text-xl font-bold">
-                ×
-              </button>
-            </header>
-            <div className="border-lightgray border-t"></div>
-
-            <div>
-              <label className="block text-lg font-medium mb-1">
-                프로젝트 제목
-              </label>
-              <input
-                type="text"
-                value={formData.name}
-                onChange={(e) => handleChange('name', e.target.value)}
-                className="w-full border-lightgray border-2 px-3 py-2 rounded-md"
-                placeholder="프로젝트명을 입력하세요"
-              />
-            </div>
-
-            <div>
-              <label className="block text-lg font-medium mb-1">소개</label>
-              <textarea
-                value={formData.projectExplain}
-                onChange={(e) =>
-                  handleChange('project_explain', e.target.value)
-                }
-                className="w-full border-lightgray border-2 px-3 py-2 rounded-md resize-none h-[80px]"
-                placeholder="프로젝트 소개를 입력하세요"
-              />
-            </div>
-
-            <div>
-              <label className="block text-lg font-medium mb-1">
-                팀 알파벳
-              </label>
-              <input
-                type="text"
-                value={formData.team}
-                onChange={(e) => handleChange('team', e.target.value)}
-                className="w-full border-lightgray border-2 px-3 py-2 rounded-md"
-                placeholder="A"
-              />
-            </div>
-
-            <section>
-              <div className="flex flex-row items-center gap-2 mb-5">
-                <label className="block text-lg font-medium">포지션 인원</label>
-                <button
-                  onClick={() => setIsModalOpen(true)}
-                  className="border border-lightgray text-gray rounded-md p-1 text-xs shadow-sm hover:shadow-[0px_0px_4px_1px_rgba(138,138,138,0.73)]"
-                >
-                  +
-                </button>
-              </div>
-              <div className="flex flex-col gap-3">
-                <div className="flex gap-5">
-                  <p className="font-bold text-xl text-primary">Leader</p>
-                  <p className="flex gap-2 flex-wrap">
-                    {members
-                      .filter((member) => member.isLeader)
-                      .map((member) => (
-                        <span
-                          key={member.userId}
-                          className="bg-gray-200 text-sm px-3 py-1 rounded-full flex items-center gap-1 border border-gray"
-                        >
-                          {member.name}
-                          <button
-                            onClick={() => handleRemoveMember(member.userId)}
-                            className="text-red-500 hover:text-red-700"
-                          >
-                            ×
-                          </button>
-                        </span>
-                      ))}
-                  </p>
-                </div>
-                <div className="flex gap-5">
-                  <p className="font-bold text-xl text-primary">FE</p>
-                  <p className="flex gap-2 flex-wrap">
-                    {members
-                      .filter((member) => member.position == 'FRONTEND')
-                      .map((member) => (
-                        <span
-                          key={member.userId}
-                          className="bg-gray-200 text-sm px-3 py-1 rounded-full flex items-center gap-1 border border-gray"
-                        >
-                          {member.name}
-                          <button
-                            onClick={() => handleRemoveMember(member.userId)}
-                            className="text-red-500 hover:text-red-700"
-                          >
-                            ×
-                          </button>
-                        </span>
-                      ))}
-                  </p>
-                </div>
-                <div className="flex gap-5">
-                  <p className="font-bold text-xl text-primary">BE</p>
-                  <p className="flex gap-2 w-[100px] flex-wrap">
-                    {members
-                      .filter((member) => member.position == 'BACKEND')
-                      .map((member) => (
-                        <span
-                          key={member.userId}
-                          className="bg-gray-200 text-sm px-3 py-1 rounded-full flex items-center gap-1 border border-gray"
-                        >
-                          {member.name}
-                          <button
-                            onClick={() => handleRemoveMember(member.userId)}
-                            className="text-red-500 hover:text-red-700"
-                          >
-                            ×
-                          </button>
-                        </span>
-                      ))}
-                  </p>
-                </div>
-              </div>
-            </section>
-
-            <div>
-              <label className="block text-lg font-medium mb-2">
-                프로젝트 대표 이미지
-              </label>
-              <div className="flex flex-col gap-2 items-center">
-                <label htmlFor="image-upload" className="cursor-pointer w-fit">
-                  <Image
-                    src={
-                      formData.imageUrl
-                        ? URL.createObjectURL(formData.imageUrl)
-                        : '/images/bootcamp/placeholder.svg'
-                    }
-                    alt="이미지 업로드"
-                    width={500}
-                    height={500}
-                  />
-                </label>
-                <input
-                  id="image-upload"
-                  type="file"
-                  accept="image/*"
-                  onChange={handleFileChange}
-                  className="hidden"
-                />
-                {formData.imageUrl && (
-                  <p className="text-xs text-gray-600 mt-1">
-                    선택된 파일: {formData.imageUrl.name}
-                  </p>
-                )}
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-2">링크</label>
-              <div className="flex flex-col gap-2">
-                <div className="flex items-center gap-2">
-                  <Git />
-                  <input
-                    type="text"
-                    value={formData.githubUrl}
-                    onChange={(e) => handleChange('github_url', e.target.value)}
-                    className="w-full border-lightgray border-2 px-3 py-2 rounded-md"
-                    placeholder="GitHub URL"
-                  />
-                </div>
-                <div className="flex items-center gap-2">
-                  <Medium />
-                  <input
-                    type="text"
-                    value={formData.mediumUrl}
-                    onChange={(e) => handleChange('medium_url', e.target.value)}
-                    className="w-full border-lightgray border-2 px-3 py-2 rounded-md"
-                    placeholder="Medium URL"
-                  />
-                </div>
-                <div className="flex items-center gap-2">
-                  <Link />
-                  <input
-                    type="text"
-                    value={formData.webUrl}
-                    onChange={(e) => handleChange('web_url', e.target.value)}
-                    className="w-full border-lightgray border-2 px-3 py-2 rounded-md"
-                    placeholder="서비스 URL"
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div className="flex justify-end gap-4 mt-4">
-              <button
-                onClick={onClose}
-                className="px-4 py-2 rounded-md border border-gray-300 hover:bg-gray-100"
-              >
-                취소
-              </button>
-              <button
-                onClick={onClose}
-                className="px-4 py-2 rounded-md bg-primary text-white hover:bg-primary/80"
-              >
-                {mode === 'edit' ? '수정' : '등록'}
-              </button>
-            </div>
+            <ModalHeader mode={mode} onClose={onClose} />
+            <ProjectTitleInput
+              formData={formData}
+              handleChange={handleChange}
+            />
+            <ProjectExplain formData={formData} handleChange={handleChange} />
+            <ProjectTeamName formData={formData} handleChange={handleChange} />
+            <ProjectMembers
+              members={members}
+              setIsModalOpen={setIsModalOpen}
+              handleRemoveMember={handleRemoveMember}
+            />
+            <ProjectImage
+              formData={formData}
+              handleFileChange={handleFileChange}
+            />
+            <ProjectLinkInput formData={formData} handleChange={handleChange} />
+            <ProjectSave mode={mode} onClose={onClose} />
           </div>
         </div>
       )}
