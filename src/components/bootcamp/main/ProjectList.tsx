@@ -1,13 +1,9 @@
 import React from 'react'
 import ProjectItem from './ProjectItem'
+import { BootcampType } from '@/types/bootcamp/bootcamp'
 
 interface ProjectListProps {
-  allProject: {
-    id: number
-    year: number
-    imageUrl: string
-    rank: number
-  }[]
+  allProject: BootcampType[]
   setSelectedID: (id: number) => void
   setOpenModal: (open: boolean) => void
 }
@@ -19,20 +15,13 @@ const ProjectList = ({
 }: ProjectListProps) => {
   return (
     <div className="grid grid-cols-4 gap-6">
-      {allProject.map(
-        (bootcamp: {
-          id: number
-          imageUrl: string
-          year: number
-          rank: number
-        }) => (
-          <ProjectItem
-            bootcamp={bootcamp}
-            setSelectedID={setSelectedID}
-            setOpenModal={setOpenModal}
-          />
-        ),
-      )}
+      {allProject.map((bootcamp: BootcampType) => (
+        <ProjectItem
+          bootcamp={bootcamp}
+          setSelectedID={setSelectedID}
+          setOpenModal={setOpenModal}
+        />
+      ))}
     </div>
   )
 }
