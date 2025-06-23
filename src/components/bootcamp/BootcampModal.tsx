@@ -64,19 +64,28 @@ const BootcampModal = ({ id, onClose }: BootcampModalProps) => {
             <div className="flex gap-5">
               <p className="font-bold text-xl text-primary w-[50px]">BE</p>
               <p className="text-lg">
-                {bootcampProjectDetail.members.BE.join(' ')}
+                {bootcampProjectDetail.members
+                  .filter((member) => member.teamRole === 'BACKEND')
+                  .map((member) => member.name)
+                  .join(' ')}
               </p>
             </div>
             <div className="flex gap-5">
               <p className="font-bold text-xl text-primary w-[50px]">FE</p>
               <p className="text-lg">
-                {bootcampProjectDetail.members.FE.join(' ')}
+                {bootcampProjectDetail.members
+                  .filter((member) => member.teamRole === 'FRONTEND')
+                  .map((member) => member.name)
+                  .join(' ')}
               </p>
             </div>
             <div className="flex gap-5">
               <p className="font-bold text-xl text-primary w-[50px]">DEV</p>
               <p className="text-lg">
-                {bootcampProjectDetail.members.DEV.join(' ')}
+                {bootcampProjectDetail.members
+                  .filter((member) => member.teamRole === 'DEV')
+                  .map((member) => member.name)
+                  .join(' ')}
               </p>
             </div>
           </div>

@@ -28,7 +28,7 @@ const RegistModal: React.FC<RegistModalProps> = ({
   mode = 'register',
   initialData,
 }) => {
-  const [members, setMembers] = useState<Member[]>([])
+  const [members, setMembers] = useState([])
   const [IsModalOpen, setIsModalOpen] = useState(false)
   const [formData, setFormData] = useState({
     name: initialData?.name || '',
