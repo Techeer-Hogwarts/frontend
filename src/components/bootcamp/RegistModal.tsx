@@ -6,7 +6,15 @@ import Git from '@/../public/git.svg'
 import Medium from '@/../public/medium.svg'
 import Link from '@/../public/link.svg'
 import ProjectMemberModal from '../project/modal/ProjectModal'
-import { IoClose } from 'react-icons/io5'
+import { Member } from '../project/modal/ProjectModal'
+
+type BootcampMember = {
+  id?: number
+  user_id: number
+  name?: string
+  position: string
+  isLeader: boolean
+}
 
 interface RegistModalProps {
   onClose: () => void
@@ -15,7 +23,7 @@ interface RegistModalProps {
     name: string
     project_explain: string
     team: string
-    members: Member[]
+    members: BootcampMember[]
     github_url: string
     medium_url: string
     web_url: string
@@ -28,7 +36,7 @@ const RegistModal: React.FC<RegistModalProps> = ({
   mode = 'register',
   initialData,
 }) => {
-  const [members, setMembers] = useState([])
+  const [members, setMembers] = useState<Member[]>([])
   const [IsModalOpen, setIsModalOpen] = useState(false)
   const [formData, setFormData] = useState({
     name: initialData?.name || '',
@@ -47,6 +55,10 @@ const RegistModal: React.FC<RegistModalProps> = ({
     console.log(formData)
   }, [members])
 
+  useEffect(() => {
+    console.log(initialData)
+  }, [])
+
   const handleChange = (field: string, value: string) => {
     setFormData((prev) => ({
       ...prev,
@@ -59,11 +71,12 @@ const RegistModal: React.FC<RegistModalProps> = ({
     setFormData((prev) => ({ ...prev, image: file }))
   }
 
-  const handleSaveMembers = (selectedMembers: []) => {
+  const handleSaveMembers = (selectedMembers: Member[]) => {
     setMembers(selectedMembers)
     const formattedMembers = selectedMembers.map((member) => ({
       user_id: member.id,
       position: member.teamRole,
+      isLeader: member.isLeader,
     }))
 
     setFormData((prev) => ({
@@ -79,6 +92,7 @@ const RegistModal: React.FC<RegistModalProps> = ({
     const formattedMembers = updatedMembers.map((member) => ({
       user_id: member.id,
       position: member.teamRole,
+      isLeader: member.isLeader,
     }))
     setFormData((prev) => ({
       ...prev,
@@ -180,7 +194,7 @@ const RegistModal: React.FC<RegistModalProps> = ({
                   <p className="font-bold text-xl text-primary">FE</p>
                   <p className="flex gap-2 flex-wrap">
                     {members
-                      .filter((member) => member.teamRole == 'FRONTEND')
+                      .filter((member) => member.position == 'FRONTEND')
                       .map((member) => (
                         <span
                           key={member.id}
@@ -201,7 +215,7 @@ const RegistModal: React.FC<RegistModalProps> = ({
                   <p className="font-bold text-xl text-primary">BE</p>
                   <p className="flex gap-2 w-[100px] flex-wrap">
                     {members
-                      .filter((member) => member.teamRole == 'BACKEND')
+                      .filter((member) => member.position == 'BACKEND')
                       .map((member) => (
                         <span
                           key={member.id}

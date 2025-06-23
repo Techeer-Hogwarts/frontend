@@ -65,7 +65,7 @@ const BootcampModal = ({ id, onClose }: BootcampModalProps) => {
               <p className="font-bold text-xl text-primary w-[50px]">BE</p>
               <p className="text-lg">
                 {bootcampProjectDetail.members
-                  .filter((member) => member.teamRole === 'BACKEND')
+                  .filter((member) => member.position === 'BACKEND')
                   .map((member) => member.name)
                   .join(' ')}
               </p>
@@ -74,7 +74,7 @@ const BootcampModal = ({ id, onClose }: BootcampModalProps) => {
               <p className="font-bold text-xl text-primary w-[50px]">FE</p>
               <p className="text-lg">
                 {bootcampProjectDetail.members
-                  .filter((member) => member.teamRole === 'FRONTEND')
+                  .filter((member) => member.position === 'FRONTEND')
                   .map((member) => member.name)
                   .join(' ')}
               </p>
@@ -83,7 +83,7 @@ const BootcampModal = ({ id, onClose }: BootcampModalProps) => {
               <p className="font-bold text-xl text-primary w-[50px]">DEV</p>
               <p className="text-lg">
                 {bootcampProjectDetail.members
-                  .filter((member) => member.teamRole === 'DEV')
+                  .filter((member) => member.position === 'DEV')
                   .map((member) => member.name)
                   .join(' ')}
               </p>
