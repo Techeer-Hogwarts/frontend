@@ -2,12 +2,12 @@
 
 import React, { useState, useEffect } from 'react'
 import TapBar from '@/components/common/TapBar'
-import Image from 'next/image'
 import BootcampModal from '@/components/bootcamp/BootcampModal'
 import RegistModal from '@/components/bootcamp/RegistModal'
-import ProjectItem from '@/components/bootcamp/ProjectItem'
 import { BootCampTapOptions } from '@/constants/bootcamp'
 import { allBootcampProject } from '@/constants/bootcamp'
+import BootcampHeader from '@/components/bootcamp/main/BootcampHeader'
+import ProjectList from '@/components/bootcamp/main/ProjectList'
 
 const BootcampPage = () => {
   const [openModal, setOpenModal] = useState(false)
@@ -28,32 +28,14 @@ const BootcampPage = () => {
         <RegistModal onClose={() => setShowRegistModal(false)} />
       )}
       <div className="flex flex-col w-[1200px]">
-        <div className="flex justify-between mt-14 mb-[2.84rem] w-[100%]">
-          <div className="text-left">
-            <p className="text-[2rem] font-bold">부트캠프 프로젝트</p>
-            <p className="text-[1.25rem]">
-              부트캠프 참여자들의 프로젝트를 확인해보세요.
-            </p>
-          </div>
-          <button
-            onClick={() => setShowRegistModal(true)}
-            className="flex items-center gap-2 w-[13rem] h-[3rem] rounded-xl shadow-md text-[1.1rem] font-medium justify-center hover:shadow-custom"
-          >
-            <span>부트캠프 등록하기</span>
-            <Image src="/star.svg" alt="star" width={20} height={20} />
-          </button>
-        </div>
+        <BootcampHeader ModalOpen={() => setShowRegistModal(true)} />
         <TapBar options={BootCampTapOptions} />
         <div className="border-t my-5" />
-        <div className="grid grid-cols-4 gap-6">
-          {allBootcampProject.map((bootcamp) => (
-            <ProjectItem
-              bootcamp={bootcamp}
-              setSelectedID={setSelectedID}
-              setOpenModal={setOpenModal}
-            />
-          ))}
-        </div>
+        <ProjectList
+          allProject={allBootcampProject}
+          setSelectedID={setSelectedID}
+          setOpenModal={setOpenModal}
+        />
       </div>
     </div>
   )

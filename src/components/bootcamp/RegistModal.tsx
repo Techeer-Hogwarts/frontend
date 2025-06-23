@@ -9,8 +9,7 @@ import ProjectMemberModal from '../project/modal/ProjectModal'
 import { Member } from '../project/modal/ProjectModal'
 
 type BootcampMember = {
-  id?: number
-  user_id: number
+  userId: number
   name?: string
   position: string
   isLeader: boolean
@@ -21,13 +20,13 @@ interface RegistModalProps {
   mode?: 'register' | 'edit'
   initialData?: {
     name: string
-    project_explain: string
+    projectExplain: string
     team: string
     members: BootcampMember[]
-    github_url: string
-    medium_url: string
-    web_url: string
-    image_url: string | Blob
+    githubUrl: string
+    mediumUrl: string
+    webUrl: string
+    imageUrl: string | Blob
   }
 }
 
@@ -36,18 +35,18 @@ const RegistModal: React.FC<RegistModalProps> = ({
   mode = 'register',
   initialData,
 }) => {
-  const [members, setMembers] = useState<Member[]>([])
+  const [members, setMembers] = useState<BootcampMember[]>([])
   const [IsModalOpen, setIsModalOpen] = useState(false)
   const [formData, setFormData] = useState({
     name: initialData?.name || '',
-    project_explain: initialData?.project_explain || '',
+    projectExplain: initialData?.projectExplain || '',
     team: initialData?.team || '',
     members: initialData?.members || [],
-    github_url: initialData?.github_url || '',
-    medium_url: initialData?.medium_url || '',
-    web_url: initialData?.web_url || '',
-    image:
-      initialData?.image_url instanceof File ? initialData.image_url : null,
+    githubUrl: initialData?.githubUrl || '',
+    mediumUrl: initialData?.mediumUrl || '',
+    webUrl: initialData?.webUrl || '',
+    imageUrl:
+      initialData?.imageUrl instanceof File ? initialData.imageUrl : null,
   })
 
   useEffect(() => {
@@ -71,11 +70,11 @@ const RegistModal: React.FC<RegistModalProps> = ({
     setFormData((prev) => ({ ...prev, image: file }))
   }
 
-  const handleSaveMembers = (selectedMembers: Member[]) => {
+  const handleSaveMembers = (selectedMembers: BootcampMember[]) => {
     setMembers(selectedMembers)
     const formattedMembers = selectedMembers.map((member) => ({
-      user_id: member.id,
-      position: member.teamRole,
+      userId: member.userId,
+      position: member.position,
       isLeader: member.isLeader,
     }))
 
@@ -87,11 +86,11 @@ const RegistModal: React.FC<RegistModalProps> = ({
   }
 
   const handleRemoveMember = (id: number) => {
-    const updatedMembers = members.filter((member) => member.id !== id)
+    const updatedMembers = members.filter((member) => member.userId !== id)
     setMembers(updatedMembers)
     const formattedMembers = updatedMembers.map((member) => ({
-      user_id: member.id,
-      position: member.teamRole,
+      userId: member.userId,
+      position: member.position,
       isLeader: member.isLeader,
     }))
     setFormData((prev) => ({
@@ -136,7 +135,7 @@ const RegistModal: React.FC<RegistModalProps> = ({
             <div>
               <label className="block text-lg font-medium mb-1">소개</label>
               <textarea
-                value={formData.project_explain}
+                value={formData.projectExplain}
                 onChange={(e) =>
                   handleChange('project_explain', e.target.value)
                 }
@@ -176,12 +175,12 @@ const RegistModal: React.FC<RegistModalProps> = ({
                       .filter((member) => member.isLeader)
                       .map((member) => (
                         <span
-                          key={member.id}
+                          key={member.userId}
                           className="bg-gray-200 text-sm px-3 py-1 rounded-full flex items-center gap-1 border border-gray"
                         >
                           {member.name}
                           <button
-                            onClick={() => handleRemoveMember(member.id)}
+                            onClick={() => handleRemoveMember(member.userId)}
                             className="text-red-500 hover:text-red-700"
                           >
                             ×
@@ -197,12 +196,12 @@ const RegistModal: React.FC<RegistModalProps> = ({
                       .filter((member) => member.position == 'FRONTEND')
                       .map((member) => (
                         <span
-                          key={member.id}
+                          key={member.userId}
                           className="bg-gray-200 text-sm px-3 py-1 rounded-full flex items-center gap-1 border border-gray"
                         >
                           {member.name}
                           <button
-                            onClick={() => handleRemoveMember(member.id)}
+                            onClick={() => handleRemoveMember(member.userId)}
                             className="text-red-500 hover:text-red-700"
                           >
                             ×
@@ -218,12 +217,12 @@ const RegistModal: React.FC<RegistModalProps> = ({
                       .filter((member) => member.position == 'BACKEND')
                       .map((member) => (
                         <span
-                          key={member.id}
+                          key={member.userId}
                           className="bg-gray-200 text-sm px-3 py-1 rounded-full flex items-center gap-1 border border-gray"
                         >
                           {member.name}
                           <button
-                            onClick={() => handleRemoveMember(member.id)}
+                            onClick={() => handleRemoveMember(member.userId)}
                             className="text-red-500 hover:text-red-700"
                           >
                             ×
@@ -243,8 +242,8 @@ const RegistModal: React.FC<RegistModalProps> = ({
                 <label htmlFor="image-upload" className="cursor-pointer w-fit">
                   <Image
                     src={
-                      formData.image
-                        ? URL.createObjectURL(formData.image)
+                      formData.imageUrl
+                        ? URL.createObjectURL(formData.imageUrl)
                         : '/images/bootcamp/placeholder.svg'
                     }
                     alt="이미지 업로드"
@@ -259,9 +258,9 @@ const RegistModal: React.FC<RegistModalProps> = ({
                   onChange={handleFileChange}
                   className="hidden"
                 />
-                {formData.image && (
+                {formData.imageUrl && (
                   <p className="text-xs text-gray-600 mt-1">
-                    선택된 파일: {formData.image.name}
+                    선택된 파일: {formData.imageUrl.name}
                   </p>
                 )}
               </div>
@@ -274,7 +273,7 @@ const RegistModal: React.FC<RegistModalProps> = ({
                   <Git />
                   <input
                     type="text"
-                    value={formData.github_url}
+                    value={formData.githubUrl}
                     onChange={(e) => handleChange('github_url', e.target.value)}
                     className="w-full border-lightgray border-2 px-3 py-2 rounded-md"
                     placeholder="GitHub URL"
@@ -284,7 +283,7 @@ const RegistModal: React.FC<RegistModalProps> = ({
                   <Medium />
                   <input
                     type="text"
-                    value={formData.medium_url}
+                    value={formData.mediumUrl}
                     onChange={(e) => handleChange('medium_url', e.target.value)}
                     className="w-full border-lightgray border-2 px-3 py-2 rounded-md"
                     placeholder="Medium URL"
@@ -294,7 +293,7 @@ const RegistModal: React.FC<RegistModalProps> = ({
                   <Link />
                   <input
                     type="text"
-                    value={formData.web_url}
+                    value={formData.webUrl}
                     onChange={(e) => handleChange('web_url', e.target.value)}
                     className="w-full border-lightgray border-2 px-3 py-2 rounded-md"
                     placeholder="서비스 URL"

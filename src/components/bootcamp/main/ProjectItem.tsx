@@ -4,7 +4,8 @@ import Image from 'next/image'
 interface ProjectItemProps {
   bootcamp: {
     id: number
-    image_url: string
+    year: number
+    imageUrl: string
     rank: number
   }
   setSelectedID: (id: number) => void
@@ -25,7 +26,7 @@ const ProjectItem = ({
         }}
       >
         <Image
-          src={bootcamp.image_url}
+          src={bootcamp.imageUrl}
           alt="bootcamp project Image"
           width={300}
           height={200}

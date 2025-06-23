@@ -45,7 +45,7 @@ const BootcampModal = ({ id, onClose }: BootcampModalProps) => {
         <div className="border-b border-lightgray w-full"></div>
         <section>
           <Image
-            src={bootcampProjectDetail.image_url}
+            src={bootcampProjectDetail.imageUrl}
             alt="bootcamp project image"
             width={500}
             height={500}
@@ -55,7 +55,7 @@ const BootcampModal = ({ id, onClose }: BootcampModalProps) => {
         <section className="w-[500px] flex flex-col gap-5">
           <div className="flex flex-col gap-2">
             <p className="text-2xl font-bold">소개</p>
-            <p className="text-lg">{bootcampProjectDetail.project_explain}</p>
+            <p className="text-lg">{bootcampProjectDetail.projectExplain}</p>
           </div>
           <div>
             <p className="text-2xl font-bold">
