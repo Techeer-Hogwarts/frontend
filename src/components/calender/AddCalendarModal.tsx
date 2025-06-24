@@ -114,7 +114,7 @@ export default function AddCalenderModal({
             카테고리를 선택해주세요.<span className="text-primary">*</span>
           </p>
           <div className="flex mt-1 gap-[3px]">
-            {['행사', '컨퍼런스', '취업공고'].map((category) => {
+            {['행사', '컨퍼런스', '지원 공고'].map((category) => {
               const mappedCategory =
                 category === '행사'
                   ? 'TECHEER'
