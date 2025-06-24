@@ -17,6 +17,7 @@ const ProjectList = ({
     <div className="grid grid-cols-4 gap-6">
       {allProject.map((bootcamp: BootcampType) => (
         <ProjectItem
+          key={bootcamp.id}
           bootcamp={bootcamp}
           setSelectedID={setSelectedID}
           setOpenModal={setOpenModal}

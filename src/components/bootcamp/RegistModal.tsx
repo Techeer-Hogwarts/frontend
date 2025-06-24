@@ -14,6 +14,7 @@ import ProjectImage from './RegistModal/ProjectImage'
 import ProjectLinkInput from './RegistModal/ProjectLinkInput'
 import ProjectSave from './RegistModal/ProjectSave'
 import ProjectMembers from './RegistModal/ProjectMembers'
+import AddmemberModal from './AddMemberModal'
 
 interface RegistModalProps {
   onClose: () => void
@@ -52,42 +53,10 @@ const RegistModal: React.FC<RegistModalProps> = ({
     setFormData((prev) => ({ ...prev, imageUrl: file }))
   }
 
-  const handleSaveMembers = (selectedMembers: BootcampMemberType[]) => {
-    setMembers(selectedMembers)
-    const formattedMembers = selectedMembers.map((member) => ({
-      userId: member.userId,
-      position: member.position,
-      isLeader: member.isLeader,
-    }))
-
-    setFormData((prev) => ({
-      ...prev,
-      members: formattedMembers,
-    }))
-    setIsModalOpen(false)
-  }
-
-  const handleRemoveMember = (id: number) => {
-    const updatedMembers = members.filter((member) => member.userId !== id)
-    setMembers(updatedMembers)
-    const formattedMembers = updatedMembers.map((member) => ({
-      userId: member.userId,
-      position: member.position,
-      isLeader: member.isLeader,
-    }))
-    setFormData((prev) => ({
-      ...prev,
-      members: formattedMembers,
-    }))
-  }
-
   return (
     <>
       {IsModalOpen ? (
-        <ProjectMemberModal
-          onClose={() => setIsModalOpen(false)}
-          onSave={handleSaveMembers}
-        />
+        <AddmemberModal onClose={() => setIsModalOpen(false)} />
       ) : (
         <div className="fixed inset-0 z-50 flex justify-center items-center bg-black bg-opacity-70">
           <div className="bg-white fixed top-1/2 left-1/2 w-[600px] max-h-[90vh] overflow-y-auto z-50 -translate-x-1/2 -translate-y-1/2 rounded-xl border border-lightgray p-6 flex flex-col gap-10">
@@ -98,11 +67,7 @@ const RegistModal: React.FC<RegistModalProps> = ({
             />
             <ProjectExplain formData={formData} handleChange={handleChange} />
             <ProjectTeamName formData={formData} handleChange={handleChange} />
-            <ProjectMembers
-              members={members}
-              setIsModalOpen={setIsModalOpen}
-              handleRemoveMember={handleRemoveMember}
-            />
+            <ProjectMembers members={members} setIsModalOpen={setIsModalOpen} />
             <ProjectImage
               formData={formData}
               handleFileChange={handleFileChange}
