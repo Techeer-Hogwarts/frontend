@@ -53,7 +53,7 @@ export default function BlogPost({
   }
   useEffect(() => {
     if (Array.isArray(likeList)) {
-      setIsLike(likeList.some((bookmark: any) => bookmark.id === id))
+      setIsLike(likeList.some((bookmark: any) => String(bookmark.id) === String(id)))
     }
   }, [likeList, id])
   const putBlogMutation = usePutBlogAPI()
@@ -132,16 +132,14 @@ export default function BlogPost({
 
           <div className="flex justify-between mt-3 pl-5 pr-2 pb-1">
             <div className="flex items-center">
-              {category !== null && (
-                <img
-                  src={profile.image}
-                  alt="profile"
-                  className="w-5 h-5 rounded-full mr-2"
-                  onError={(e: any) => {
-                    e.target.src = '/images/session/thumbnail.png'
-                  }}
-                />
-              )}
+              <img
+                src={profile.image}
+                alt="profile"
+                className="w-5 h-5 rounded-full mr-2"
+                onError={(e: any) => {
+                  e.target.src = '/images/session/thumbnail.png'
+                }}
+              />
 
               <span className="text-xs font-semibold">{profile.name}</span>
             </div>

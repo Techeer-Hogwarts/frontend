@@ -33,14 +33,12 @@ export function BlogChallenge() {
   const { data: likeDate } = useGetLikesAPI('BLOG', 0, 50)
   const [ref, inView] = useInView({ threshold: 0.5 })
 
-  // 공통 초기화 함수
   const resetBlogs = () => {
     setBlogs([])
     setNextCursor(null)
     setHasNext(true)
   }
 
-  // 드롭다운 선택 핸들러 통합
   const handleDropdownSelect = (type, selectedNames) => {
     const selected = selectedNames[0]
 
@@ -139,7 +137,7 @@ export function BlogChallenge() {
       <div className="flex justify-between">
         <div className="flex gap-3">
           <Dropdown
-            title="기간"
+            title={selectedTime[0] || '기간'}
             options={yearOptions}
             selectedOptions={selectedYear}
             setSelectedOptions={(names) => handleDropdownSelect('year', names)}
@@ -207,13 +205,15 @@ export function BlogChallenge() {
                 url={blog.url}
                 likeCount={blog.likeCount}
                 authorName={blog.author}
+                authorImage={
+                  blog.authorImage || '/images/session/thumbnail.png'
+                }
+                date={blog.createdAt}
+                image={blog.thumbnail}
                 likeList={likeDate || []}
                 userName={null}
                 userImage={null}
-                image={null}
-                authorImage={null}
                 category={null}
-                date={null}
                 onDelete={null}
               />
             ))}
