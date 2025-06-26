@@ -1,26 +1,28 @@
+'use client'
+
 import { useState, useRef, useEffect } from 'react'
 
-export interface DropdownProps<T extends string> {
+export interface DropdownProps {
   title: string
-  options: readonly T[]
-  selectedOptions: T[]
-  setSelectedOptions: React.Dispatch<React.SetStateAction<T[]>>
+  options: string[]
+  selectedOptions: string[]
+  setSelectedOptions: (options: string[]) => void
   singleSelect?: boolean
 }
 
-function Dropdown<T extends string>({
+const Dropdown: React.FC<DropdownProps> = ({
   title,
   options,
   selectedOptions,
   setSelectedOptions,
   singleSelect = false,
-}: DropdownProps<T>) {
+}) => {
   const [isOpen, setIsOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
   const toggleDropdown = () => setIsOpen(!isOpen)
 
-  const handleSelect = (option: T) => {
+  const handleSelect = (option: string) => {
     if (selectedOptions.includes(option)) {
       setSelectedOptions(selectedOptions.filter((item) => item !== option))
     } else if (singleSelect) {
@@ -39,8 +41,11 @@ function Dropdown<T extends string>({
         setIsOpen(false)
       }
     }
+
     document.addEventListener('mousedown', handleClickOutside)
-    return () => document.removeEventListener('mousedown', handleClickOutside)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
   }, [])
 
   return (
