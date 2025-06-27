@@ -199,7 +199,7 @@ export default function Section3() {
         >
           <BootcampCard
             week="3주차"
-            title1="백엔드 기초 기초 개발"
+            title1="백엔드 기초 개발"
             items1={[
               'DB 스키마 설계 및 구축',
               'API 명세 작성 및 문서 기반 개발',
