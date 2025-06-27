@@ -15,6 +15,8 @@ import ProjectLinkInput from './RegistModal/ProjectLinkInput'
 import ProjectSave from './RegistModal/ProjectSave'
 import ProjectMembers from './RegistModal/ProjectMembers'
 import AddmemberModal from './AddMemberModal'
+import { createBootcamp } from '@/api/bootcamp/createBootcamp'
+import { updateBootcamp } from '@/api/bootcamp/updateBootcamp'
 
 interface RegistModalProps {
   onClose: () => void
@@ -27,7 +29,9 @@ const RegistModal: React.FC<RegistModalProps> = ({
   mode = 'register',
   initialData,
 }) => {
-  const [members, setMembers] = useState<BootcampMemberType[]>([])
+  const [members, setMembers] = useState<BootcampMemberType[]>(
+    initialData?.members || [],
+  )
   const [IsModalOpen, setIsModalOpen] = useState(false)
   const [formData, setFormData] = useState({
     name: initialData?.name || '',
@@ -52,11 +56,32 @@ const RegistModal: React.FC<RegistModalProps> = ({
     const file = e.target.files?.[0] || null
     setFormData((prev) => ({ ...prev, imageUrl: file }))
   }
+  const handleSubmit = async () => {
+    try {
+      const requestData = {
+        ...formData,
+        members,
+      }
+
+      if (mode === 'register') {
+        await createBootcamp(requestData)
+      } else if (mode === 'edit' && initialData?.id) {
+        await updateBootcamp(initialData.id, requestData)
+      }
+
+      onClose()
+    } catch (err) {
+      console.error('에러 발생:', err)
+    }
+  }
 
   return (
     <>
       {IsModalOpen ? (
-        <AddmemberModal onClose={() => setIsModalOpen(false)} />
+        <AddmemberModal
+          onClose={() => setIsModalOpen(false)}
+          setMembers={setMembers}
+        />
       ) : (
         <div className="fixed inset-0 z-50 flex justify-center items-center bg-black bg-opacity-70">
           <div className="bg-white fixed top-1/2 left-1/2 w-[600px] max-h-[90vh] overflow-y-auto z-50 -translate-x-1/2 -translate-y-1/2 rounded-xl border border-lightgray p-6 flex flex-col gap-10">
@@ -73,7 +98,11 @@ const RegistModal: React.FC<RegistModalProps> = ({
               handleFileChange={handleFileChange}
             />
             <ProjectLinkInput formData={formData} handleChange={handleChange} />
-            <ProjectSave mode={mode} onClose={onClose} />
+            <ProjectSave
+              mode={mode}
+              onClose={onClose}
+              onSubmit={handleSubmit}
+            />
           </div>
         </div>
       )}

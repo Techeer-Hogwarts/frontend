@@ -22,7 +22,7 @@ const ProjectTeam = ({ ProjectDetail }: ProjectDetailProps) => {
         <p className="font-bold text-xl text-primary w-[50px]">BE</p>
         <p className="text-lg">
           {ProjectDetail.members
-            .filter((member) => member.position === 'BACKEND')
+            .filter((member) => member.position === 'BE')
             .map((member) => member.name)
             .join(' ')}
         </p>
@@ -31,7 +31,7 @@ const ProjectTeam = ({ ProjectDetail }: ProjectDetailProps) => {
         <p className="font-bold text-xl text-primary w-[50px]">FE</p>
         <p className="text-lg">
           {ProjectDetail.members
-            .filter((member) => member.position === 'FRONTEND')
+            .filter((member) => member.position === 'FE')
             .map((member) => member.name)
             .join(' ')}
         </p>

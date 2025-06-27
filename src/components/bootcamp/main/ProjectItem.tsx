@@ -18,19 +18,22 @@ const ProjectItem = ({
   setOpenModal,
 }: ProjectItemProps) => {
   return (
-    <div key={bootcamp.id} className="relative">
+    <div
+      key={bootcamp.id}
+      className="relative w-full h-[200px] rounded-lg overflow-hidden shadow-xl"
+    >
       <button
         onClick={() => {
           setSelectedID(bootcamp.id)
           setOpenModal(true)
         }}
+        className="w-full h-full relative"
       >
         <Image
           src={bootcamp.imageUrl}
           alt="bootcamp project Image"
-          width={300}
-          height={200}
-          className="rounded-lg shadow-xl"
+          fill
+          className="object-contain"
         />
 
         {bootcamp.rank === 1 && (

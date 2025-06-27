@@ -14,9 +14,9 @@ const ProjectMembers = ({ members, setIsModalOpen }) => {
         </button>
       </div>
       <div className="mt-4 grid grid-cols-4 gap-4">
-        {members.length > 0 ? ( //멤버가 있으면 표시될 UI
+        {members.length > 0 ? (
           members.map((member) => (
-            <div key={member.user_id} className="flex flex-col items-center">
+            <div key={member.userId} className="flex flex-col items-center">
               <img
                 src={member.profileImage || '/default-profile.png'}
                 alt="Profile"

@@ -3,7 +3,7 @@
 import React from 'react'
 import Image from 'next/image'
 
-const AddMemberModal = ({ onClose }) => {
+const AddMemberModal = ({ onClose, setMembers }) => {
   const mockSelectedMembers = [
     {
       id: 1,

@@ -1,6 +1,16 @@
 import React from 'react'
 
-const ProjectSave = ({ mode, onClose }) => {
+interface ProjectSaveProps {
+  mode: 'register' | 'edit'
+  onClose: () => void
+  onSubmit: () => Promise<void>
+}
+
+const ProjectSave: React.FC<ProjectSaveProps> = ({
+  mode,
+  onClose,
+  onSubmit,
+}) => {
   return (
     <div className="flex justify-end gap-4 mt-4">
       <button
@@ -10,7 +20,7 @@ const ProjectSave = ({ mode, onClose }) => {
         취소
       </button>
       <button
-        onClick={onClose}
+        onClick={onSubmit}
         className="px-4 py-2 rounded-md bg-primary text-white hover:bg-primary/80"
       >
         {mode === 'edit' ? '수정' : '등록'}
