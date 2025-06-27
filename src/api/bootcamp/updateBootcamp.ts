@@ -16,13 +16,18 @@ export const updateBootcamp = async (
   },
 ) => {
   const formData = new FormData()
-  formData.append('name', data.name)
-  formData.append('team', data.team)
-  formData.append('projectExplain', data.projectExplain)
-  formData.append('githubUrl', data.githubUrl)
-  formData.append('mediumUrl', data.mediumUrl)
-  formData.append('webUrl', data.webUrl)
-  formData.append('members', JSON.stringify(data.members))
+
+  const requestPayload = {
+    name: data.name,
+    team: data.team,
+    projectExplain: data.projectExplain,
+    githubUrl: data.githubUrl,
+    mediumUrl: data.mediumUrl,
+    webUrl: data.webUrl,
+    members: data.members,
+  }
+
+  formData.append('request', JSON.stringify(requestPayload))
 
   if (data.imageUrl) {
     formData.append('image', data.imageUrl)

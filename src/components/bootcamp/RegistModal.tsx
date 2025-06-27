@@ -58,9 +58,15 @@ const RegistModal: React.FC<RegistModalProps> = ({
   }
   const handleSubmit = async () => {
     try {
+      const cleanedMembers = members.map(({ userId, position, isLeader }) => ({
+        userId,
+        position,
+        isLeader,
+      }))
+
       const requestData = {
         ...formData,
-        members,
+        members: cleanedMembers,
       }
 
       if (mode === 'register') {
