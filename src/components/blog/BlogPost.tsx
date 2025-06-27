@@ -2,7 +2,6 @@
 
 'use client'
 
-import Link from 'next/link'
 import Image from 'next/image'
 import BlogMenu from './BlogMenu'
 import BookmarkModal from '../common/BookmarkModal'
@@ -53,7 +52,7 @@ export default function BlogPost({
   }
   useEffect(() => {
     if (Array.isArray(likeList)) {
-      setIsLike(likeList.some((bookmark: any) => String(bookmark.id) === String(id)))
+      setIsLike(likeList.some((bookmark) => String(bookmark.id) === String(id)))
     }
   }, [likeList, id])
   const putBlogMutation = usePutBlogAPI()

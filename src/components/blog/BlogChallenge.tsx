@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
 import Tooltip from './Tip'
@@ -15,17 +16,28 @@ import EmptyLottie from '../common/EmptyLottie'
 import BlogPost from './BlogPost'
 import { useGetLikesAPI } from '@/api/likes/likes'
 import { useInView } from 'react-intersection-observer'
+import { useBlogChallengeState } from '@/hooks/blog/useBlogChallengeState'
 
 const sortOptions = ['최신순', '조회순', '가나다순']
 
 export function BlogChallenge() {
-  const [terms, setTerms] = useState([])
-  const [yearOptions, setYearOptions] = useState([])
-  const [timeOptions, setTimeOptions] = useState([])
-  const [selectedYear, setSelectedYear] = useState([])
-  const [selectedTime, setSelectedTime] = useState([])
-  const [selectedSort, setSelectedSort] = useState(['최신순'])
-  const [selectedTermId, setSelectedTermId] = useState(null)
+  const {
+    terms,
+    setTerms,
+    yearOptions,
+    setYearOptions,
+    timeOptions,
+    setTimeOptions,
+    selectedYear,
+    setSelectedYear,
+    selectedTime,
+    setSelectedTime,
+    selectedSort,
+    setSelectedSort,
+    selectedTermId,
+    setSelectedTermId,
+  } = useBlogChallengeState()
+
   const [blogs, setBlogs] = useState([])
   const [nextCursor, setNextCursor] = useState(null)
   const [hasNext, setHasNext] = useState(true)
@@ -39,33 +51,71 @@ export function BlogChallenge() {
     setHasNext(true)
   }
 
+  const dropdownHandlers = {
+    year: (selectedNames) => {
+      const selected = selectedNames[0]
+      setSelectedYear([selected])
+      const foundTerm = terms.find((t) => t.termName === selected)
+      if (foundTerm) setSelectedTermId(foundTerm.termId)
+    },
+    time: (selectedNames) => setSelectedTime(selectedNames),
+    sort: (selectedNames) => setSelectedSort(selectedNames),
+  }
+
   const handleDropdownSelect = (type, selectedNames) => {
-    const selected = selectedNames[0]
-
-    switch (type) {
-      case 'year':
-        setSelectedYear([selected])
-        const foundTerm = terms.find((t) => t.termName === selected)
-        if (foundTerm) setSelectedTermId(foundTerm.termId)
-        break
-      case 'time':
-        setSelectedTime(selectedNames)
-        break
-      case 'sort':
-        setSelectedSort(selectedNames)
-        break
-      default:
-        break
-    }
-
+    dropdownHandlers[type]?.(selectedNames)
     resetBlogs()
+  }
+
+  const getSortValue = (sortBy) => {
+    return sortBy === '조회순'
+      ? 'viewCount'
+      : sortBy === '가나다순'
+        ? 'name'
+        : 'latest'
+  }
+
+  const fetchBlogs = async (cursor, sortBy = '최신순') => {
+    if (isLoading || !hasNext) return
+    setIsLoading(true)
+
+    try {
+      const sortByValue = getSortValue(sortBy)
+      let roundId
+
+      if (selectedTime.length > 0) {
+        const index = timeOptions.findIndex((name) => name === selectedTime[0])
+        roundId = index !== -1 ? index + 1 : undefined
+      }
+
+      const res = await getBlogChallengeBlogsAPI(
+        sortByValue,
+        5,
+        cursor,
+        selectedTermId || undefined,
+        roundId,
+      )
+
+      setBlogs((prev) => {
+        const existingIds = new Set(prev.map((b) => b.blogId))
+        const newItems = (res.data || []).filter(
+          (b) => !existingIds.has(b.blogId),
+        )
+        return [...prev, ...newItems]
+      })
+      setNextCursor(res.nextCursor)
+      setHasNext(!!res.nextCursor && res.hasNext)
+    } catch (err) {
+      console.error('블로그 불러오기 실패:', err)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   useEffect(() => {
     getBlogChallengeTermsAPI().then((data) => {
       setTerms(data)
-      const termNames = data.map((term) => term.termName)
-      setYearOptions(termNames)
+      setYearOptions(data.map((term) => term.termName))
     })
   }, [])
 
@@ -78,49 +128,6 @@ export function BlogChallenge() {
     }
   }, [selectedTermId])
 
-  const fetchBlogs = async (cursor, sortBy: string = '최신순') => {
-    const sortByValue =
-      sortBy === '조회순'
-        ? 'viewCount'
-        : sortBy === '가나다순'
-          ? 'name'
-          : 'latest'
-
-    if (isLoading || !hasNext) return
-    setIsLoading(true)
-    try {
-      let roundId
-      if (selectedTime.length > 0 && timeOptions.length > 0) {
-        const roundObj = timeOptions
-          .map((name, idx) => ({ name, idx }))
-          .find((item) => item.name === selectedTime[0])
-        if (roundObj) roundId = roundObj.idx + 1
-      }
-
-      const res = await getBlogChallengeBlogsAPI(
-        sortByValue,
-        5,
-        cursor,
-        selectedTermId ? selectedTermId : undefined,
-        roundId,
-      )
-
-      setBlogs((prev) => {
-        const existingIds = new Set(prev.map((b) => b.blogId))
-        const newItems = (res.data || []).filter(
-          (b) => !existingIds.has(b.blogId),
-        )
-        return [...prev, ...newItems]
-      })
-      setNextCursor(res.nextCursor)
-      setHasNext(res.nextCursor !== null && res.hasNext)
-    } catch (err) {
-      console.error('블로그 불러오기 실패:', err)
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
   useEffect(() => {
     resetBlogs()
     fetchBlogs(undefined, selectedSort[0])
@@ -130,37 +137,59 @@ export function BlogChallenge() {
     if (inView && hasNext && !isLoading) {
       fetchBlogs(nextCursor || undefined, selectedSort[0])
     }
-  }, [inView, hasNext, nextCursor, selectedSort, selectedTermId, selectedTime])
+  }, [
+    inView,
+    hasNext,
+    isLoading,
+    nextCursor,
+    selectedSort,
+    selectedTermId,
+    selectedTime,
+  ])
+
+  const dropdownConfigs = [
+    {
+      type: 'year',
+      title: selectedYear[0] || '기간',
+      options: yearOptions,
+      selected: selectedYear,
+      visible: true,
+    },
+    {
+      type: 'time',
+      title: selectedTime[0] || '회차',
+      options: timeOptions,
+      selected: selectedTime,
+      visible: !!selectedYear[0],
+    },
+    {
+      type: 'sort',
+      title: selectedSort[0] || '최신순',
+      options: sortOptions,
+      selected: selectedSort,
+      visible: true,
+    },
+  ]
 
   return (
     <div>
       <div className="flex justify-between">
         <div className="flex gap-3">
-          <Dropdown
-            title={selectedTime[0] || '기간'}
-            options={yearOptions}
-            selectedOptions={selectedYear}
-            setSelectedOptions={(names) => handleDropdownSelect('year', names)}
-            singleSelect={true}
-          />
-          {selectedYear[0] && (
-            <Dropdown
-              title="회차"
-              options={timeOptions}
-              selectedOptions={selectedTime}
-              setSelectedOptions={(names) =>
-                handleDropdownSelect('time', names)
-              }
-              singleSelect={true}
-            />
+          {dropdownConfigs.map(
+            ({ type, title, options, selected, visible }) =>
+              visible && (
+                <Dropdown
+                  key={type}
+                  title={title}
+                  options={options}
+                  selectedOptions={selected}
+                  setSelectedOptions={(names) =>
+                    handleDropdownSelect(type, names)
+                  }
+                  singleSelect={true}
+                />
+              ),
           )}
-          <Dropdown
-            title={selectedSort[0] || '최신순'}
-            options={sortOptions}
-            selectedOptions={selectedSort}
-            setSelectedOptions={(names) => handleDropdownSelect('sort', names)}
-            singleSelect={true}
-          />
         </div>
         <Tooltip>
           <Image
@@ -196,7 +225,7 @@ export function BlogChallenge() {
             text2="다시 조회해주세요"
           />
         ) : (
-          <div className="mt-8 grid grid-cols-4 gap-8">
+          <div className="w-full mt-10 grid grid-cols-4 gap-8">
             {blogs.map((blog, index) => (
               <BlogPost
                 key={index}
@@ -210,11 +239,7 @@ export function BlogChallenge() {
                 }
                 date={blog.createdAt}
                 image={blog.thumbnail}
-                likeList={likeDate || []}
-                userName={null}
-                userImage={null}
-                category={null}
-                onDelete={null}
+                likeList={likeDate}
               />
             ))}
           </div>
