@@ -3,7 +3,7 @@ interface ProgressBarProps {
   sequence: number[]
 }
 
-const getColorClass = (status) => {
+const getColorClass = (status: number) => {
   switch (status) {
     case 1:
       return 'bg-[#FFB47D]' // 1개
@@ -11,7 +11,6 @@ const getColorClass = (status) => {
       return 'bg-[#FFA451]' // 2개
     case 3:
       return 'bg-[#FF6B00]' // 3개 이상
-    case 0:
     default:
       return 'bg-[#D9D9D9]' // 0개
   }
