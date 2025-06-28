@@ -3,7 +3,10 @@
 
 import Tooltip from './Tip'
 import Image from 'next/image'
+import BlogPost from './BlogPost'
+import toast from 'react-hot-toast'
 import Dropdown from '../common/Dropdown'
+import EmptyLottie from '../common/EmptyLottie'
 import ParticipantProgressList from './ParticipantProgressList'
 import { useEffect, useState } from 'react'
 import {
@@ -12,10 +15,9 @@ import {
   getBlogChallengeTermsAPI,
   postBlogChallengeAPI,
 } from '@/api/blog/blog'
-import EmptyLottie from '../common/EmptyLottie'
-import BlogPost from './BlogPost'
 import { useGetLikesAPI } from '@/api/likes/likes'
 import { useInView } from 'react-intersection-observer'
+import { BlogChallengeProps } from '@/types/blog/BlogProps'
 import { useBlogChallengeState } from '@/hooks/blog/useBlogChallengeState'
 
 const sortOptions = ['최신순', '조회순', '가나다순']
@@ -38,7 +40,7 @@ export function BlogChallenge() {
     setSelectedTermId,
   } = useBlogChallengeState()
 
-  const [blogs, setBlogs] = useState([])
+  const [blogs, setBlogs] = useState<BlogChallengeProps[]>([])
   const [nextCursor, setNextCursor] = useState(null)
   const [hasNext, setHasNext] = useState(true)
   const [isLoading, setIsLoading] = useState(false)
@@ -60,6 +62,15 @@ export function BlogChallenge() {
     },
     time: (selectedNames) => setSelectedTime(selectedNames),
     sort: (selectedNames) => setSelectedSort(selectedNames),
+  }
+
+  const handleApplyClick = async () => {
+    const result = await postBlogChallengeAPI()
+    if (result.success) {
+      toast.success(result.message)
+    } else {
+      toast.error(result.message)
+    }
   }
 
   const handleDropdownSelect = (type, selectedNames) => {
@@ -107,6 +118,7 @@ export function BlogChallenge() {
       setHasNext(!!res.nextCursor && res.hasNext)
     } catch (err) {
       console.error('블로그 불러오기 실패:', err)
+      setIsLoading(false)
     } finally {
       setIsLoading(false)
     }
@@ -211,8 +223,8 @@ export function BlogChallenge() {
           className="mt-5 object-cover"
         />
         <button
-          className="bg-[#FE9142] text-white px-9 py-1 rounded-xl hover:bg-[#FE9142]/80"
-          onClick={postBlogChallengeAPI}
+          className="bg-[#FE9142] text-white px-9 py-1 rounded-xl hover:bg-[#FE9142]/80 flex items-center justify-center"
+          onClick={handleApplyClick}
         >
           지원하기
         </button>

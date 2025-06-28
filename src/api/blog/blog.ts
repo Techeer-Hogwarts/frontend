@@ -122,7 +122,11 @@ export const postBlogAPI = async (url: string) => {
 }
 
 // 블로깅 챌린지 신청 API
-export const postBlogChallengeAPI = async () => {
+export type PostResult =
+  | { success: true; message: string }
+  | { success: false; message: string }
+
+export const postBlogChallengeAPI = async (): Promise<PostResult> => {
   const now = new Date()
   const month = now.getMonth() + 1
   const currentYear = now.getFullYear()
@@ -131,41 +135,49 @@ export const postBlogChallengeAPI = async () => {
   let firstHalf: boolean
 
   if (month >= 3 && month <= 7) {
-    // 3월 ~ 7월: 상반기
     year = currentYear
     firstHalf = true
   } else if (month >= 9 && month <= 12) {
-    // 9월 ~ 12월: 하반기
     year = currentYear
     firstHalf = false
   } else if (month >= 1 && month <= 2) {
-    // 1월 ~ 2월: 전년도 하반기
     year = currentYear - 1
     firstHalf = false
   } else {
-    alert('다음 블로깅 챌린지는 9월부터 시작됩니다')
+    return {
+      success: false,
+      message: '다음 블로깅 챌린지는 9월부터 시작됩니다',
+    }
   }
-  const response = await fetch('/api/v1/tech-blogging/apply', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      credentials: 'include',
-    },
-    body: JSON.stringify({ year, firstHalf }),
-  })
-  if (response.status === 200) {
-    alert('블로깅 챌린지에 참여 신청을 완료했습니다')
-    return
-  }
-  if (response.status === 409) {
-    alert('이미 블로깅 챌린지에 참여 중입니다')
-    return
-  }
-  if (!response.ok) {
+
+  try {
+    const response = await fetch('/api/v1/tech-blogging/apply', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        credentials: 'include',
+      },
+      body: JSON.stringify({ year, firstHalf }),
+    })
+
+    if (response.status === 200) {
+      return { success: true, message: '블로깅 챌린지에 신청 완료!' }
+    }
+
+    if (response.status === 409) {
+      return { success: false, message: '이미 블로깅 챌린지에 참여 중입니다' }
+    }
+
     const errorData = await response.json()
-    throw new Error(
-      `${response.status} : ${errorData.message || response.statusText}`,
-    )
+    return {
+      success: false,
+      message: `${response.status}: ${errorData.message || response.statusText}`,
+    }
+  } catch (err) {
+    return {
+      success: false,
+      message: '신청 중 오류가 발생했습니다',
+    }
   }
 }
 
