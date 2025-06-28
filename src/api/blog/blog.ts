@@ -155,8 +155,8 @@ export const postBlogChallengeAPI = async (): Promise<PostResult> => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        credentials: 'include',
       },
+      credentials: 'include',
       body: JSON.stringify({ year, firstHalf }),
     })
 

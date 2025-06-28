@@ -27,14 +27,6 @@ export default function BlogList() {
           ))}
         </div>
       )}
-      {!isLoading && blog && blog.length === 0 && (
-        <div className="flex justify-center">
-          <EmptyLottie
-            text="블로그 데이터가 없습니다."
-            text2="다시 조회해주세요"
-          />
-        </div>
-      )}
       {blog && !isInitialLoad && (
         <>
           <div className="flex justify-end my-5">
@@ -48,6 +40,14 @@ export default function BlogList() {
               />
             )}
           </div>
+          {!isLoading && blog && blog.length === 0 && (
+            <div className="flex justify-center">
+              <EmptyLottie
+                text="블로그 데이터가 없습니다."
+                text2="다시 조회해주세요"
+              />
+            </div>
+          )}
           <div className="grid grid-cols-4 gap-8">
             {blog.map((blog, index) => (
               <BlogPost
