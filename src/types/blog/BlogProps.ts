@@ -19,3 +19,19 @@ interface Author {
   authorName: string
   authorImage: string
 }
+
+export interface ChallengeTerms {
+  termId: number
+  termName: string
+}
+
+export interface BlogChallengeProps {
+  blogId: number
+  title: string
+  url: string
+  likeCount: number
+  createdAt: string
+  author: string
+  authorImage?: string
+  thumbnail?: string
+}

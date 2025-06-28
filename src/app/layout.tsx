@@ -4,6 +4,7 @@ import NavBar from '@/components/common/NavBar'
 import Footer from '@/components/common/Footer'
 import Providers from '@/utils/provider'
 import GoogleAnalytics from '@/lib/GoogleAnalytics'
+import { Toaster } from 'react-hot-toast'
 
 const pretendard = localFont({
   src: '../../public/fonts/PretendardVariable.ttf',
@@ -37,6 +38,7 @@ export default function RootLayout({
         <Providers>
           <main className="flex-1">{children}</main>
         </Providers>
+        <Toaster position="top-center" reverseOrder={false} />
         <Footer />
       </body>
     </html>
