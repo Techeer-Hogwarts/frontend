@@ -1,7 +1,11 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Image from 'next/image'
 
 const ProjectImage = ({ formData, handleFileChange }) => {
+  useEffect(() => {
+    console.log(formData)
+  }, [formData])
+
   const getImageSrc = () => {
     if (formData.imageUrl instanceof File) {
       return URL.createObjectURL(formData.imageUrl)

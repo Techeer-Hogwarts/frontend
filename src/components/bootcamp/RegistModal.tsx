@@ -43,8 +43,7 @@ const RegistModal: React.FC<RegistModalProps> = ({
     githubUrl: initialData?.githubUrl || '',
     mediumUrl: initialData?.mediumUrl || '',
     webUrl: initialData?.webUrl || '',
-    imageUrl:
-      initialData?.imageUrl instanceof File ? initialData.imageUrl : null,
+    imageUrl: initialData?.imageUrl || null,
   })
 
   const handleChange = (field: string, value: string) => {

@@ -37,7 +37,7 @@ const ModalHeader = ({ ProjectDetail, setIsEditing, onClose }) => {
           </button>
         )}
       </div>
-      <div className="absolute left-1/2 -translate-x-1/2 font-bold text-2xl">
+      <div className="absolute left-1/2 -translate-x-1/2 max-w-[70%] truncate text-center font-bold text-2xl">
         {ProjectDetail.name}
       </div>
       <div className="flex flex-row gap-3">
