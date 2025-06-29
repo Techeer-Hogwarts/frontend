@@ -74,6 +74,7 @@ const BootcampPage = () => {
         <TapBar options={BootCampTapOptions} />
         <div className="border-t my-5" />
         <ProjectList
+          isLoading={query.isLoading}
           allProject={allProjects}
           setSelectedID={setSelectedID}
           setOpenModal={setOpenModal}

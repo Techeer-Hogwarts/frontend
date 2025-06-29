@@ -13,7 +13,7 @@ interface Params {
 }
 
 export const useGetBootcampList = ({ isAward, year, limit = 10 }: Params) => {
-  return useInfiniteQuery<
+  const queryResult = useInfiniteQuery<
     BootcampListResponse,
     Error,
     InfiniteData<BootcampListResponse, number>,
@@ -36,4 +36,9 @@ export const useGetBootcampList = ({ isAward, year, limit = 10 }: Params) => {
     initialPageParam: 0,
     staleTime: 1000 * 60 * 5,
   })
+
+  return {
+    ...queryResult,
+    isLoading: queryResult.isLoading,
+  }
 }

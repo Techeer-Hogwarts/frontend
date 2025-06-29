@@ -1,21 +1,28 @@
 import React from 'react'
 import ProjectItem from './ProjectItem'
 import { BootcampType } from '@/types/bootcamp/bootcamp'
+import ProjectListSkeleton from './ProjectListSkeleton'
 
 interface ProjectListProps {
+  isLoading
   allProject: BootcampType[]
   setSelectedID: (id: number) => void
   setOpenModal: (open: boolean) => void
 }
 
 const ProjectList = ({
+  isLoading,
   allProject,
   setSelectedID,
   setOpenModal,
 }: ProjectListProps) => {
   return (
     <>
-      {allProject.length > 0 ? (
+      {isLoading ? (
+        <div>
+          <ProjectListSkeleton />
+        </div>
+      ) : allProject.length > 0 ? (
         <div className="grid grid-cols-4 gap-6">
           {allProject.map((bootcamp: BootcampType) => (
             <ProjectItem
