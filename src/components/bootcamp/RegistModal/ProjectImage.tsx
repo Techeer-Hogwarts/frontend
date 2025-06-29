@@ -2,10 +2,6 @@ import React, { useEffect } from 'react'
 import Image from 'next/image'
 
 const ProjectImage = ({ formData, handleFileChange }) => {
-  useEffect(() => {
-    console.log(formData)
-  }, [formData])
-
   const getImageSrc = () => {
     if (formData.imageUrl instanceof File) {
       return URL.createObjectURL(formData.imageUrl)
@@ -36,11 +32,11 @@ const ProjectImage = ({ formData, handleFileChange }) => {
           onChange={handleFileChange}
           className="hidden"
         />
-        {formData.imageUrl && (
+        {/* {formData.imageUrl && (
           <p className="text-xs text-gray-600 mt-1">
             선택된 파일: {formData.imageUrl.name}
           </p>
-        )}
+        )} */}
       </div>
     </div>
   )

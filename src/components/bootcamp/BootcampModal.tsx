@@ -42,6 +42,7 @@ const BootcampModal = ({ id, onClose }: BootcampModalProps) => {
             alt="bootcamp project image"
             fill
             className="rounded-xl object-contain"
+            sizes="50vw"
           />
         </section>
         <section className="w-[500px] flex flex-col gap-5">
