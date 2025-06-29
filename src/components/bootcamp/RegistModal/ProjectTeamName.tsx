@@ -1,5 +1,4 @@
 import React from 'react'
-import { BootcampDetailType } from '@/types/bootcamp/bootcamp'
 
 const ProjectTeamName = ({ formData, handleChange }) => {
   return (
@@ -8,7 +7,13 @@ const ProjectTeamName = ({ formData, handleChange }) => {
       <input
         type="text"
         value={formData.team}
-        onChange={(e) => handleChange('team', e.target.value)}
+        onChange={(e) => {
+          const value = e.target.value.toUpperCase()
+          if (/^[A-Z]?$/.test(value)) {
+            handleChange('team', value)
+          }
+        }}
+        maxLength={1}
         className="w-full border-lightgray border-2 px-3 py-2 rounded-md"
         placeholder="A"
       />
