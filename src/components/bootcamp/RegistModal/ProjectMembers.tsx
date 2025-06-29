@@ -16,13 +16,12 @@ const ProjectMembers = ({ members, setIsModalOpen }) => {
       <div className="mt-4 grid grid-cols-4 gap-4">
         {members.length > 0 ? (
           members.map((member) => (
-            <div key={member.userId} className="flex flex-col items-center">
-              <img
-                src={member.profileImage || '/default-profile.png'}
-                alt="Profile"
-                className="w-14 h-14 rounded-full border"
-              />
-              <p className="mt-1 text-sm">{member.name}</p>
+            <div
+              key={`${member.userId}-${member.position}`}
+              className="flex flex-col items-center"
+            >
+              {' '}
+              <p className="mt-1 text-base">{member.name}</p>
               <p className="text-xs text-gray">{member.position}</p>
               {member.isLeader && (
                 <div className="text-[10px] text-white bg-black bg-opacity-40 rounded px-2 mt-1">

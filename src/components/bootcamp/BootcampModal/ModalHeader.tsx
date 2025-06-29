@@ -10,10 +10,13 @@ const ModalHeader = ({ ProjectDetail, setIsEditing, onClose }) => {
   const queryClient = useQueryClient()
   const router = useRouter()
   const { user } = useAuthStore()
+
+  const leader = ProjectDetail.members?.find((member) => member.isLeader)
+
   return (
     <header className="relative flex justify-between items-center w-full">
       <div className="flex flex-row gap-3">
-        {user?.id === ProjectDetail.userId && (
+        {user?.id === leader?.userId && (
           <button
             className="w-[20px] h-[20px] justify-center items-center"
             onClick={async () => {

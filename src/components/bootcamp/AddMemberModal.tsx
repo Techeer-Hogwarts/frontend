@@ -1,25 +1,104 @@
 'use client'
 
-import React from 'react'
-import Image from 'next/image'
+import React, { useEffect, useState } from 'react'
+import { getBootcampMembers } from '@/api/bootcamp/getBootcampMembers'
+import { BootcampMemberType } from '@/types/bootcamp/bootcamp'
 
-const AddMemberModal = ({ onClose, setMembers }) => {
-  const mockSelectedMembers = [
-    {
-      id: 1,
-      name: '홍길동',
-      profileImage: null,
-      teamRole: 'FRONTEND',
-      isLeader: true,
-    },
-    {
-      id: 2,
-      name: '김개발',
-      profileImage: null,
-      teamRole: 'BACKEND',
-      isLeader: false,
-    },
-  ]
+interface Member {
+  userId: number
+  name: string
+  position: string
+  isLeader: boolean
+}
+
+interface AddMemberModalProps {
+  onClose: () => void
+  setMembers: (members: Member[]) => void
+  initialMembers: BootcampMemberType[]
+}
+
+const AddMemberModal = ({
+  onClose,
+  setMembers,
+  initialMembers,
+}: AddMemberModalProps) => {
+  const [inputName, setInputName] = useState('')
+  const [selectedRole, setSelectedRole] = useState('Member')
+  const [selectedPosition, setSelectedPosition] = useState('')
+  const [memberList, setMemberList] = useState<Member[]>([])
+  const [bootcampProfiles, setBootcampProfiles] = useState<
+    { id: number; name: string }[]
+  >([])
+
+  useEffect(() => {
+    const fetchAndSetMembers = async () => {
+      try {
+        const data = await getBootcampMembers()
+        setBootcampProfiles(data.profiles)
+
+        const transformed = initialMembers.map((member) => {
+          const matched = data.profiles.find((p) => p.id === member.userId)
+          return {
+            userId: member.userId,
+            name: member.name || matched?.name || '알 수 없음',
+            position: member.position,
+            isLeader: member.isLeader,
+          }
+        })
+
+        setMemberList(transformed)
+      } catch (err) {
+        console.error('멤버 초기화 실패:', err)
+      }
+    }
+
+    fetchAndSetMembers()
+  }, [initialMembers])
+
+  const handleAddMember = () => {
+    if (!selectedPosition || !inputName.trim()) return
+
+    const matched = bootcampProfiles.find((p) => p.name === inputName.trim())
+
+    if (!matched) {
+      alert('해당 이름의 유저가 존재하지 않습니다.')
+      return
+    }
+
+    const newMember: Member = {
+      userId: matched.id,
+      name: matched.name,
+      position: selectedPosition,
+      isLeader: selectedRole === 'Leader',
+    }
+
+    setMemberList((prev) => [...prev, newMember])
+    setInputName('')
+    setSelectedRole('Member')
+    setSelectedPosition('')
+  }
+
+  const handleSave = () => {
+    setMembers(memberList)
+    onClose()
+  }
+
+  const handleDeleteMember = (
+    userId: number,
+    position: string,
+    isLeader: boolean,
+  ) => {
+    setMemberList((prev) =>
+      prev.filter(
+        (m) =>
+          !(
+            m.userId === userId &&
+            m.position === position &&
+            m.isLeader === isLeader
+          ),
+      ),
+    )
+  }
 
   return (
     <div className="z-50 fixed inset-0 flex justify-center items-center bg-black bg-opacity-70 text-center">
@@ -28,33 +107,67 @@ const AddMemberModal = ({ onClose, setMembers }) => {
           프로젝트 팀원 추가
         </p>
 
-        {/* 이름 검색 */}
-        <div className="mb-6 relative">
+        {/* 이름 검색 + 옵션 */}
+        <div className="mb-6">
           <p className="text-left mb-3">이름을 입력해주세요</p>
-          <div className="relative">
+          <div className="flex items-center gap-1">
             <input
               type="text"
-              className="w-full h-[2rem] border border-gray rounded-sm px-2 focus:outline-none"
+              className="w-[17rem] h-[2rem] border border-gray rounded-sm px-2 focus:outline-none"
               placeholder="팀원 이름을 검색하세요"
+              value={inputName}
+              onChange={(e) => setInputName(e.target.value)}
             />
+            <select
+              value={selectedRole}
+              onChange={(e) => setSelectedRole(e.target.value)}
+              className="text-sm border rounded px-1 h-[2rem]"
+            >
+              <option>Member</option>
+              <option>Leader</option>
+            </select>
+            <select
+              value={selectedPosition}
+              onChange={(e) => setSelectedPosition(e.target.value)}
+              className="text-sm border rounded px-1 h-[2rem]"
+            >
+              <option value="">Position</option>
+              <option value="FE">Frontend</option>
+              <option value="BE">Backend</option>
+              <option value="DEV">DevOps</option>
+            </select>
+            <button
+              onClick={handleAddMember}
+              className="text-sm px-4 h-[2rem] bg-orange-400 text-white rounded"
+            >
+              추가
+            </button>
           </div>
         </div>
 
         <div className="flex-1 overflow-y-auto mb-6">
           <div className="flex flex-col gap-2">
-            {mockSelectedMembers.length > 0 ? (
+            {memberList.length > 0 ? (
               <div className="grid grid-cols-4 gap-4">
-                {mockSelectedMembers.map((member) => (
-                  <div key={member.id} className="flex flex-col items-center">
-                    <Image
-                      src={member.profileImage || '/default-profile.png'}
-                      alt="Profile"
-                      width={60}
-                      height={60}
-                      className="rounded-full border"
-                    />
-                    <div className="mt-1 text-sm">{member.name}</div>
-                    <div className="text-xs text-gray">{member.teamRole}</div>
+                {memberList.map((member, index) => (
+                  <div
+                    key={`${member.userId}-${member.position}-${member.isLeader}-${index}`}
+                    className="relative flex flex-col items-center"
+                  >
+                    <button
+                      className="absolute top-0 right-3 text-xs text-primary"
+                      onClick={() =>
+                        handleDeleteMember(
+                          member.userId,
+                          member.position,
+                          member.isLeader,
+                        )
+                      }
+                    >
+                      X
+                    </button>
+                    <div className="mt-1 text-base">{member.name}</div>
+                    <div className="text-xs text-gray">{member.position}</div>
                     {member.isLeader && (
                       <div className="text-[10px] text-white bg-black bg-opacity-40 rounded px-2 mt-1">
                         Leader
@@ -81,7 +194,8 @@ const AddMemberModal = ({ onClose, setMembers }) => {
             취소
           </button>
           <button
-            type="submit"
+            onClick={handleSave}
+            type="button"
             className="w-full rounded-md text-sm h-[34px] bg-primary text-white hover:bg-blue-600"
           >
             저장하기

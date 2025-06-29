@@ -17,6 +17,7 @@ import ProjectMembers from './RegistModal/ProjectMembers'
 import AddmemberModal from './AddMemberModal'
 import { createBootcamp } from '@/api/bootcamp/createBootcamp'
 import { updateBootcamp } from '@/api/bootcamp/updateBootcamp'
+import { useQueryClient } from '@tanstack/react-query'
 
 interface RegistModalProps {
   onClose: () => void
@@ -29,6 +30,7 @@ const RegistModal: React.FC<RegistModalProps> = ({
   mode = 'register',
   initialData,
 }) => {
+  const queryClient = useQueryClient()
   const [members, setMembers] = useState<BootcampMemberType[]>(
     initialData?.members || [],
   )
@@ -56,13 +58,18 @@ const RegistModal: React.FC<RegistModalProps> = ({
     const file = e.target.files?.[0] || null
     setFormData((prev) => ({ ...prev, imageUrl: file }))
   }
+
   const handleSubmit = async () => {
     try {
-      const cleanedMembers = members.map(({ userId, position, isLeader }) => ({
-        userId,
-        position,
-        isLeader,
-      }))
+      const cleanedMembers = members
+        .filter(
+          (member): member is BootcampMemberType => !!member && !!member.userId,
+        )
+        .map(({ userId, position, isLeader }) => ({
+          userId,
+          position,
+          isLeader,
+        }))
 
       const requestData = {
         ...formData,
@@ -73,12 +80,24 @@ const RegistModal: React.FC<RegistModalProps> = ({
         await createBootcamp(requestData)
       } else if (mode === 'edit' && initialData?.id) {
         await updateBootcamp(initialData.id, requestData)
+        queryClient.invalidateQueries({
+          queryKey: ['bootcampDetail', initialData.id],
+        })
       }
 
+      queryClient.invalidateQueries({ queryKey: ['bootcampList'] })
       onClose()
     } catch (err) {
       console.error('에러 발생:', err)
     }
+  }
+
+  const handleSetMembers = (updated: BootcampMemberType[]) => {
+    setMembers(updated)
+    setFormData((prev) => ({
+      ...prev,
+      members: updated,
+    }))
   }
 
   return (
@@ -86,7 +105,8 @@ const RegistModal: React.FC<RegistModalProps> = ({
       {IsModalOpen ? (
         <AddmemberModal
           onClose={() => setIsModalOpen(false)}
-          setMembers={setMembers}
+          setMembers={handleSetMembers}
+          initialMembers={members}
         />
       ) : (
         <div className="fixed inset-0 z-50 flex justify-center items-center bg-black bg-opacity-70">

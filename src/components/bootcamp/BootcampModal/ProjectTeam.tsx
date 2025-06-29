@@ -19,7 +19,7 @@ const ProjectTeam = ({ ProjectDetail }: ProjectDetailProps) => {
         </p>
       </div>
       <div className="flex gap-10">
-        <p className="font-bold text-xl text-primary w-[50px]">BE</p>
+        <p className="font-bold text-xl text-primary w-[50px]">Backend</p>
         <p className="text-lg">
           {ProjectDetail.members
             .filter((member) => member.position === 'BE')
@@ -28,7 +28,7 @@ const ProjectTeam = ({ ProjectDetail }: ProjectDetailProps) => {
         </p>
       </div>
       <div className="flex gap-10">
-        <p className="font-bold text-xl text-primary w-[50px]">FE</p>
+        <p className="font-bold text-xl text-primary w-[50px]">Frontend</p>
         <p className="text-lg">
           {ProjectDetail.members
             .filter((member) => member.position === 'FE')
@@ -37,7 +37,7 @@ const ProjectTeam = ({ ProjectDetail }: ProjectDetailProps) => {
         </p>
       </div>
       <div className="flex gap-10">
-        <p className="font-bold text-xl text-primary w-[50px]">DEV</p>
+        <p className="font-bold text-xl text-primary w-[50px]">DevOps</p>
         <p className="text-lg">
           {ProjectDetail.members
             .filter((member) => member.position === 'DEV')
