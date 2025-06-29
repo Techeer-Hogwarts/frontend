@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import FixIcon from '@/../public/images/Fixicon.svg'
 import Trash from '@/../public/images/bootcamp/trash.svg'
 import { deleteBootcamp } from '@/api/bootcamp/deleteBootcamp'
@@ -11,7 +11,7 @@ const ModalHeader = ({ ProjectDetail, setIsEditing, onClose }) => {
   const router = useRouter()
   const { user } = useAuthStore()
 
-  const leader = ProjectDetail.members?.find((member) => member.isLeader)
+  const Myteam = ProjectDetail.members?.map((member) => member.userId)
 
   return (
     <header className="relative flex justify-between items-center w-full">
@@ -20,7 +20,7 @@ const ModalHeader = ({ ProjectDetail, setIsEditing, onClose }) => {
         {ProjectDetail.name}
       </div>
       <div className="flex flex-row gap-3">
-        {user?.id === leader?.userId && (
+        {Myteam?.includes(user?.id) && (
           <>
             <button
               className="flex items-center justify-center"
