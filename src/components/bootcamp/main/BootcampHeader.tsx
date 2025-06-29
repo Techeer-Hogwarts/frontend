@@ -2,6 +2,7 @@ import React from 'react'
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
 import { toogleBootcampParticipation } from '@/api/bootcamp/toogleBootcampParticipation'
+import { useRouter } from 'next/router'
 
 interface BootcampHeaderProps {
   ModalOpen: () => void
@@ -12,12 +13,12 @@ const BootcampHeader: React.FC<BootcampHeaderProps> = ({ ModalOpen }) => {
     null,
   )
   const [userBootcampYear, setUserBootcampYear] = useState<number | null>(null)
+  const storedAuth = localStorage.getItem('auth-storage')
+  const parsedUser = JSON.parse(storedAuth)
 
   useEffect(() => {
-    const storedAuth = localStorage.getItem('auth-storage')
     if (storedAuth) {
       try {
-        const parsedUser = JSON.parse(storedAuth)
         setUserBootcampYear(parsedUser?.state?.user?.bootcampYear ?? null)
       } catch (e) {
         console.error('로컬 유저 파싱 실패', e)
@@ -43,6 +44,11 @@ const BootcampHeader: React.FC<BootcampHeaderProps> = ({ ModalOpen }) => {
     currentBootcampYear !== null && currentBootcampYear === userBootcampYear
 
   const handleToggleParticipation = async () => {
+    if (!parsedUser?.state?.isLoggedIn) {
+      alert('로그인 후 시도해주세요.')
+      return
+    }
+
     try {
       const confirmed = confirm(
         participating
