@@ -14,16 +14,24 @@ const ProjectList = ({
   setOpenModal,
 }: ProjectListProps) => {
   return (
-    <div className="grid grid-cols-4 gap-6">
-      {allProject.map((bootcamp: BootcampType) => (
-        <ProjectItem
-          key={bootcamp.id}
-          bootcamp={bootcamp}
-          setSelectedID={setSelectedID}
-          setOpenModal={setOpenModal}
-        />
-      ))}
-    </div>
+    <>
+      {allProject.length > 0 ? (
+        <div className="grid grid-cols-4 gap-6">
+          {allProject.map((bootcamp: BootcampType) => (
+            <ProjectItem
+              key={bootcamp.id}
+              bootcamp={bootcamp}
+              setSelectedID={setSelectedID}
+              setOpenModal={setOpenModal}
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="w-full text-center text-xl text-gray mt-32">
+          등록된 프로젝트가 없습니다.
+        </div>
+      )}
+    </>
   )
 }
 
