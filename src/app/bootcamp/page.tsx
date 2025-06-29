@@ -9,6 +9,9 @@ import BootcampHeader from '@/components/bootcamp/main/BootcampHeader'
 import ProjectList from '@/components/bootcamp/main/ProjectList'
 import { useGetBootcampList } from '@/hooks/bootcamp/useGetBootcampList'
 import { useTapBarStore } from '@/store/tapBarStore'
+import type { InfiniteData } from '@tanstack/react-query'
+import type { BootcampListResponse } from '@/hooks/bootcamp/useGetBootcampList'
+import { useInView } from 'react-intersection-observer'
 
 const BootcampPage = () => {
   const [openModal, setOpenModal] = useState(false)
@@ -16,6 +19,7 @@ const BootcampPage = () => {
   const [showRegistModal, setShowRegistModal] = useState(false)
 
   const { activeOption } = useTapBarStore()
+  const { ref, inView } = useInView()
 
   const getTabParams = () => {
     if (activeOption === '역대 수상작')
@@ -34,25 +38,27 @@ const BootcampPage = () => {
 
   const { isAward, year } = getTabParams()
 
-  const { data } = useGetBootcampList({
-    isAward,
-    year,
-    cursorId: 0,
-    limit: 10,
-  })
+  const query = useGetBootcampList({ isAward, year, limit: 10 })
 
-  const allProjects = Array.isArray(data?.data)
-    ? data.data.map((project) => ({
+  const allProjects =
+    (query.data as InfiniteData<BootcampListResponse>)?.pages?.flatMap((page) =>
+      page.data.map((project) => ({
         id: project.id,
         year: project.year,
         imageUrl: project.imageUrl,
         rank: project.rank,
-      }))
-    : []
+      })),
+    ) ?? []
 
   useEffect(() => {
     document.body.style.overflow = showRegistModal || openModal ? 'hidden' : ''
   }, [showRegistModal, openModal])
+
+  useEffect(() => {
+    if (inView && query.hasNextPage && !query.isFetchingNextPage) {
+      query.fetchNextPage()
+    }
+  }, [inView, query.hasNextPage, query.isFetchingNextPage])
 
   return (
     <div className="flex justify-center">
@@ -68,10 +74,12 @@ const BootcampPage = () => {
         <TapBar options={BootCampTapOptions} />
         <div className="border-t my-5" />
         <ProjectList
+          isLoading={query.isLoading}
           allProject={allProjects}
           setSelectedID={setSelectedID}
           setOpenModal={setOpenModal}
         />
+        <div ref={ref} className="h-10" />
       </div>
     </div>
   )

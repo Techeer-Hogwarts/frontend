@@ -34,6 +34,7 @@ const ProjectItem = ({
           alt="bootcamp project Image"
           fill
           className="object-contain"
+          sizes="25vw"
         />
 
         {bootcamp.rank === 1 && (

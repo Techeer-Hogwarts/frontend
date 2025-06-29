@@ -5,7 +5,7 @@ export const createBootcamp = async (data: {
   githubUrl: string
   mediumUrl: string
   webUrl: string
-  imageUrl: File | null
+  imageUrl: File | string | Blob
   members: {
     userId: number
     position: string

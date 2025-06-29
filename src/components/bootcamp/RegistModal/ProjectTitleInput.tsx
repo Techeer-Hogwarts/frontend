@@ -8,9 +8,17 @@ const ProjectTitleInput = ({ formData, handleChange }) => {
       <input
         type="text"
         value={formData.name}
-        onChange={(e) => handleChange('name', e.target.value)}
+        onChange={(e) => {
+          const value = e.target.value
+          if (value.length > 30) {
+            alert('30자 이내로 입력해주세요.')
+            return
+          }
+          handleChange('name', e.target.value)
+        }}
         className="w-full border-lightgray border-2 px-3 py-2 rounded-md"
         placeholder="프로젝트명을 입력하세요"
+        maxLength={30}
       />
     </div>
   )

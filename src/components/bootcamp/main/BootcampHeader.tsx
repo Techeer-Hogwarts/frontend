@@ -12,13 +12,18 @@ const BootcampHeader: React.FC<BootcampHeaderProps> = ({ ModalOpen }) => {
     null,
   )
   const [userBootcampYear, setUserBootcampYear] = useState<number | null>(null)
+  const [parsedUser, setParsedUser] = useState(null)
 
   useEffect(() => {
-    const storedAuth = localStorage.getItem('auth-storage')
+    const storedAuth =
+      typeof window !== 'undefined'
+        ? localStorage.getItem('auth-storage')
+        : null
     if (storedAuth) {
       try {
-        const parsedUser = JSON.parse(storedAuth)
-        setUserBootcampYear(parsedUser?.state?.user?.bootcampYear ?? null)
+        const parsed = JSON.parse(storedAuth)
+        setParsedUser(parsed)
+        setUserBootcampYear(parsed?.state?.user?.bootcampYear ?? null)
       } catch (e) {
         console.error('로컬 유저 파싱 실패', e)
       }
@@ -42,10 +47,12 @@ const BootcampHeader: React.FC<BootcampHeaderProps> = ({ ModalOpen }) => {
   const participating =
     currentBootcampYear !== null && currentBootcampYear === userBootcampYear
 
-  //임시 값이에요. localStorage의 유저 정보에서 Bootcampyear을 추출해서 현재 부트캠프 기수와 같으면
-  //부트캠프 참여 취소 버튼이 렌더링 되고, 그 외에는 전부 부트캠프 참여 버튼이 렌더링 됩니다.
-
   const handleToggleParticipation = async () => {
+    if (!parsedUser?.state?.isLoggedIn) {
+      alert('로그인 후 시도해주세요.')
+      return
+    }
+
     try {
       const confirmed = confirm(
         participating
@@ -97,7 +104,13 @@ const BootcampHeader: React.FC<BootcampHeaderProps> = ({ ModalOpen }) => {
         )}
 
         <button
-          onClick={ModalOpen}
+          onClick={() => {
+            if (!participating) {
+              alert('부트캠프 참여자만 프로젝트를 등록 할 수 있습니다.')
+              return
+            }
+            ModalOpen()
+          }}
           className="flex items-center gap-2 w-[13rem] h-[3rem] rounded-xl shadow-md text-[1.1rem] font-medium justify-center hover:shadow-custom"
         >
           <span>부트캠프 등록하기</span>

@@ -8,8 +8,8 @@ interface ProjectDetailProps {
 const ProjectTeam = ({ ProjectDetail }: ProjectDetailProps) => {
   return (
     <div>
-      <p className="text-2xl font-bold">Team {ProjectDetail.team}</p>
-      <div className="flex gap-10">
+      <p className="text-2xl font-bold mb-2">Team {ProjectDetail.team}</p>
+      <div className="flex gap-14">
         <p className="font-bold text-xl text-primary w-[50px]">Leader</p>
         <p className="text-lg">
           {ProjectDetail.members
@@ -18,8 +18,8 @@ const ProjectTeam = ({ ProjectDetail }: ProjectDetailProps) => {
             .join(' ')}
         </p>
       </div>
-      <div className="flex gap-10">
-        <p className="font-bold text-xl text-primary w-[50px]">BE</p>
+      <div className="flex gap-14">
+        <p className="font-bold text-xl text-primary w-[50px]">Backend</p>
         <p className="text-lg">
           {ProjectDetail.members
             .filter((member) => member.position === 'BE')
@@ -27,8 +27,8 @@ const ProjectTeam = ({ ProjectDetail }: ProjectDetailProps) => {
             .join(' ')}
         </p>
       </div>
-      <div className="flex gap-10">
-        <p className="font-bold text-xl text-primary w-[50px]">FE</p>
+      <div className="flex gap-14">
+        <p className="font-bold text-xl text-primary w-[50px]">Frontend</p>
         <p className="text-lg">
           {ProjectDetail.members
             .filter((member) => member.position === 'FE')
@@ -36,8 +36,8 @@ const ProjectTeam = ({ ProjectDetail }: ProjectDetailProps) => {
             .join(' ')}
         </p>
       </div>
-      <div className="flex gap-10">
-        <p className="font-bold text-xl text-primary w-[50px]">DEV</p>
+      <div className="flex gap-14">
+        <p className="font-bold text-xl text-primary w-[50px]">DevOps</p>
         <p className="text-lg">
           {ProjectDetail.members
             .filter((member) => member.position === 'DEV')

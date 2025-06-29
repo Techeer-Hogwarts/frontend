@@ -13,10 +13,10 @@ export const getBootcampList = async ({
 }: GetBootcampListParams) => {
   const params = new URLSearchParams()
 
-  if (isAward !== undefined) params.append('isAward', String(isAward))
+  params.append('isAward', String(isAward))
   if (year !== undefined) params.append('year', String(year))
   if (cursorId !== undefined) params.append('cursorId', String(cursorId))
-  if (limit !== undefined) params.append('limit', String(limit))
+  params.append('limit', String(limit))
 
   const res = await fetch(`/api/v1/bootcamps?${params.toString()}`, {
     method: 'GET',
@@ -24,5 +24,6 @@ export const getBootcampList = async ({
   })
 
   if (!res.ok) throw new Error('부트캠프 리스트를 불러오지 못했습니다.')
+
   return res.json()
 }

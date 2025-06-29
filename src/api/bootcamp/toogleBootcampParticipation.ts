@@ -1,6 +1,6 @@
 export const toogleBootcampParticipation = async () => {
   const res = await fetch(`/api/v1/bootcamps/rejoin`, {
-    method: 'PATCH',
+    method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
