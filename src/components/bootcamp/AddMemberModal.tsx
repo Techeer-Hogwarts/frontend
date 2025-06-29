@@ -136,12 +136,15 @@ const AddMemberModal = ({
                   {filteredProfiles.map((profile) => (
                     <li
                       key={profile.id}
-                      className="px-2 py-1 hover:bg-gray-100 cursor-pointer"
-                      onClick={() => {
-                        setInputName(profile.name)
-                      }}
+                      className="px-2 py-1 hover:bg-gray-100"
                     >
-                      {profile.name}
+                      <button
+                        type="button"
+                        onClick={() => setInputName(profile.name)}
+                        className="w-full text-left"
+                      >
+                        {profile.name}
+                      </button>
                     </li>
                   ))}
                   {filteredProfiles.length === 0 && (
