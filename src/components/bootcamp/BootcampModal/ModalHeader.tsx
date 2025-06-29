@@ -15,35 +15,36 @@ const ModalHeader = ({ ProjectDetail, setIsEditing, onClose }) => {
 
   return (
     <header className="relative flex justify-between items-center w-full">
-      <div className="flex flex-row gap-3">
-        {user?.id === leader?.userId && (
-          <button
-            className="w-[20px] h-[20px] justify-center items-center"
-            onClick={async () => {
-              try {
-                const confirmed = confirm('정말 삭제하시겠습니까?')
-                if (!confirmed) return
-
-                await deleteBootcamp(ProjectDetail.id)
-                queryClient.invalidateQueries({ queryKey: ['bootcampList'] })
-                onClose()
-                router.refresh()
-              } catch (err) {
-                alert(err.message || '삭제 중 오류 발생')
-              }
-            }}
-          >
-            <Trash className="w-full h-full" />
-          </button>
-        )}
-      </div>
+      <div className="flex flex-row gap-3"></div>
       <div className="absolute left-1/2 -translate-x-1/2 max-w-[70%] truncate text-center font-bold text-2xl">
         {ProjectDetail.name}
       </div>
       <div className="flex flex-row gap-3">
-        <button onClick={() => setIsEditing(true)}>
-          <FixIcon />
-        </button>
+        {user?.id === leader?.userId && (
+          <>
+            <button
+              className="flex items-center justify-center"
+              onClick={async () => {
+                try {
+                  const confirmed = confirm('정말 삭제하시겠습니까?')
+                  if (!confirmed) return
+
+                  await deleteBootcamp(ProjectDetail.id)
+                  queryClient.invalidateQueries({ queryKey: ['bootcampList'] })
+                  onClose()
+                  router.refresh()
+                } catch (err) {
+                  alert(err.message || '삭제 중 오류 발생')
+                }
+              }}
+            >
+              <Trash />
+            </button>
+            <button onClick={() => setIsEditing(true)}>
+              <FixIcon />
+            </button>
+          </>
+        )}
         <button onClick={onClose} className="text-2xl">
           ×
         </button>
