@@ -30,6 +30,10 @@ const AddMemberModal = ({
     { id: number; name: string }[]
   >([])
 
+  const filteredProfiles = bootcampProfiles.filter((p) =>
+    p.name.toLowerCase().includes(inputName.toLowerCase()),
+  )
+
   useEffect(() => {
     const fetchAndSetMembers = async () => {
       try {
@@ -56,7 +60,15 @@ const AddMemberModal = ({
   }, [initialMembers])
 
   const handleAddMember = () => {
-    if (!selectedPosition || !inputName.trim()) return
+    if (!inputName.trim()) {
+      alert('이름을 입력해주세요.')
+      return
+    }
+
+    if (!selectedPosition) {
+      alert('Position을 선택해주세요.')
+      return
+    }
 
     const matched = bootcampProfiles.find((p) => p.name === inputName.trim())
 
@@ -111,17 +123,39 @@ const AddMemberModal = ({
         <div className="mb-6">
           <p className="text-left mb-3">이름을 입력해주세요</p>
           <div className="flex items-center gap-1">
-            <input
-              type="text"
-              className="w-[17rem] h-[2rem] border border-gray rounded-sm px-2 focus:outline-none"
-              placeholder="팀원 이름을 검색하세요"
-              value={inputName}
-              onChange={(e) => setInputName(e.target.value)}
-            />
+            <div className="relative">
+              <input
+                type="text"
+                className="w-[17rem] h-[2rem] border border-gray rounded-sm px-2 focus:outline-none"
+                placeholder="팀원 이름을 검색하세요"
+                value={inputName}
+                onChange={(e) => setInputName(e.target.value)}
+              />
+              {inputName && (
+                <ul className="absolute z-10 w-[17rem] mt-1 bg-white border border-gray rounded shadow max-h-40 overflow-y-auto text-left text-sm">
+                  {filteredProfiles.map((profile) => (
+                    <li
+                      key={profile.id}
+                      className="px-2 py-1 hover:bg-gray-100 cursor-pointer"
+                      onClick={() => {
+                        setInputName(profile.name)
+                      }}
+                    >
+                      {profile.name}
+                    </li>
+                  ))}
+                  {filteredProfiles.length === 0 && (
+                    <li className="px-2 py-1 text-gray-400">
+                      검색 결과가 없습니다
+                    </li>
+                  )}
+                </ul>
+              )}
+            </div>
             <select
               value={selectedRole}
               onChange={(e) => setSelectedRole(e.target.value)}
-              className="text-sm border rounded px-1 h-[2rem]"
+              className="text-sm border rounded px-1 h-[2rem] border-gray"
             >
               <option>Member</option>
               <option>Leader</option>
@@ -129,7 +163,7 @@ const AddMemberModal = ({
             <select
               value={selectedPosition}
               onChange={(e) => setSelectedPosition(e.target.value)}
-              className="text-sm border rounded px-1 h-[2rem]"
+              className="text-sm border rounded px-1 h-[2rem] border-gray"
             >
               <option value="">Position</option>
               <option value="FE">Frontend</option>
@@ -147,6 +181,7 @@ const AddMemberModal = ({
 
         <div className="flex-1 overflow-y-auto mb-6">
           <div className="flex flex-col gap-2">
+            <p className="text-start font-bold text-primary">현재 멤버</p>
             {memberList.length > 0 ? (
               <div className="grid grid-cols-4 gap-4">
                 {memberList.map((member, index) => (
