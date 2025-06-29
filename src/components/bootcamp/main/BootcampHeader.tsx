@@ -2,7 +2,6 @@ import React from 'react'
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
 import { toogleBootcampParticipation } from '@/api/bootcamp/toogleBootcampParticipation'
-import { useRouter } from 'next/router'
 
 interface BootcampHeaderProps {
   ModalOpen: () => void
@@ -13,13 +12,18 @@ const BootcampHeader: React.FC<BootcampHeaderProps> = ({ ModalOpen }) => {
     null,
   )
   const [userBootcampYear, setUserBootcampYear] = useState<number | null>(null)
-  const storedAuth = localStorage.getItem('auth-storage')
-  const parsedUser = JSON.parse(storedAuth)
+  const [parsedUser, setParsedUser] = useState(null)
 
   useEffect(() => {
+    const storedAuth =
+      typeof window !== 'undefined'
+        ? localStorage.getItem('auth-storage')
+        : null
     if (storedAuth) {
       try {
-        setUserBootcampYear(parsedUser?.state?.user?.bootcampYear ?? null)
+        const parsed = JSON.parse(storedAuth)
+        setParsedUser(parsed)
+        setUserBootcampYear(parsed?.state?.user?.bootcampYear ?? null)
       } catch (e) {
         console.error('로컬 유저 파싱 실패', e)
       }
