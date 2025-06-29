@@ -59,6 +59,32 @@ const RegistModal: React.FC<RegistModalProps> = ({
   }
 
   const handleSubmit = async () => {
+    const requiredFields = [
+      { key: 'name', label: '프로젝트 제목' },
+      { key: 'projectExplain', label: '프로젝트 소개' },
+      { key: 'team', label: '팀명' },
+      { key: 'githubUrl', label: 'GitHub 링크' },
+      { key: 'mediumUrl', label: 'Medium 링크' },
+      { key: 'webUrl', label: '웹사이트 링크' },
+    ]
+
+    for (const field of requiredFields) {
+      if (!formData[field.key as keyof typeof formData]) {
+        alert(`${field.label}을(를) 입력해주세요.`)
+        return
+      }
+    }
+
+    if (members.length === 0) {
+      alert('팀원을 한 명 이상 추가해주세요.')
+      return
+    }
+
+    if (!formData.imageUrl) {
+      alert('이미지를 업로드해주세요.')
+      return
+    }
+
     try {
       const cleanedMembers = members
         .filter(
