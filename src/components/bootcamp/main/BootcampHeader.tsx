@@ -42,9 +42,6 @@ const BootcampHeader: React.FC<BootcampHeaderProps> = ({ ModalOpen }) => {
   const participating =
     currentBootcampYear !== null && currentBootcampYear === userBootcampYear
 
-  //임시 값이에요. localStorage의 유저 정보에서 Bootcampyear을 추출해서 현재 부트캠프 기수와 같으면
-  //부트캠프 참여 취소 버튼이 렌더링 되고, 그 외에는 전부 부트캠프 참여 버튼이 렌더링 됩니다.
-
   const handleToggleParticipation = async () => {
     try {
       const confirmed = confirm(
@@ -97,7 +94,13 @@ const BootcampHeader: React.FC<BootcampHeaderProps> = ({ ModalOpen }) => {
         )}
 
         <button
-          onClick={ModalOpen}
+          onClick={() => {
+            if (!participating) {
+              alert('부트캠프 참여자만 프로젝트를 등록 할 수 있습니다.')
+              return
+            }
+            ModalOpen()
+          }}
           className="flex items-center gap-2 w-[13rem] h-[3rem] rounded-xl shadow-md text-[1.1rem] font-medium justify-center hover:shadow-custom"
         >
           <span>부트캠프 등록하기</span>
