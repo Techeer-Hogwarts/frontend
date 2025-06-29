@@ -12,7 +12,8 @@ const ProjectLinkInput = ({ formData, handleChange }) => {
         <div className="flex items-center gap-2">
           <Git />
           <input
-            type="text"
+            type="url"
+            pattern="https?://.+"
             value={formData.githubUrl}
             onChange={(e) => handleChange('githubUrl', e.target.value)}
             className="w-full border-lightgray border-2 px-3 py-2 rounded-md"
@@ -22,7 +23,8 @@ const ProjectLinkInput = ({ formData, handleChange }) => {
         <div className="flex items-center gap-2">
           <Medium />
           <input
-            type="text"
+            type="url"
+            pattern="https?://.+"
             value={formData.mediumUrl}
             onChange={(e) => handleChange('mediumUrl', e.target.value)}
             className="w-full border-lightgray border-2 px-3 py-2 rounded-md"
@@ -32,7 +34,8 @@ const ProjectLinkInput = ({ formData, handleChange }) => {
         <div className="flex items-center gap-2">
           <Link />
           <input
-            type="text"
+            type="url"
+            pattern="https?://.+"
             value={formData.webUrl}
             onChange={(e) => handleChange('webUrl', e.target.value)}
             className="w-full border-lightgray border-2 px-3 py-2 rounded-md"
