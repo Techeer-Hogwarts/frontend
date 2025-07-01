@@ -1,7 +1,7 @@
 import { withSentryConfig } from '@sentry/nextjs'
 /** @type {import('next').NextConfig} */
 
-const API_BASE_URL = process.env.API_BASE_URL || 'https://api.techeerzip.cloud'
+const API_BASE_URL = process.env.API_BASE_URL || 'https://api.yje.kr'
 
 const nextConfig = {
   images: {
@@ -33,6 +33,7 @@ const nextConfig = {
       'encore.cloud',
       'github.com',
       'cdn.discordapp.com',
+      'bootcamp.com',
     ], // 허용할 외부 도메인 추가
   },
 
