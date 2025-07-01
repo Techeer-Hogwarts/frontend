@@ -17,6 +17,7 @@ const ProjectItem = ({
   setSelectedID,
   setOpenModal,
 }: ProjectItemProps) => {
+  const isWebm = bootcamp.imageUrl.includes('/0webm/')
   return (
     <div
       key={bootcamp.id}
@@ -29,13 +30,24 @@ const ProjectItem = ({
         }}
         className="w-full h-full relative cursor-pointer rounded-2xl focus:outline-none focus:ring-4 focus:ring-blue-400"
       >
-        <Image
-          src={bootcamp.imageUrl}
-          alt="bootcamp project Image"
-          fill
-          className="object-cover object-top rounded-2xl"
-          sizes="20vw"
-        />
+        {isWebm ? (
+          <video
+            src={bootcamp.imageUrl}
+            muted
+            autoPlay
+            loop
+            playsInline
+            className="object-cover object-top rounded-2xl w-full h-full"
+          />
+        ) : (
+          <Image
+            src={bootcamp.imageUrl}
+            alt="bootcamp project Image"
+            fill
+            className="object-cover object-top rounded-2xl"
+            sizes="20vw"
+          />
+        )}
 
         {bootcamp.rank === 1 && (
           <Image

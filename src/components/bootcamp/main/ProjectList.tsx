@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import ProjectItem from './ProjectItem'
 import { BootcampType } from '@/types/bootcamp/bootcamp'
 import ProjectListSkeleton from './ProjectListSkeleton'
@@ -10,20 +10,12 @@ interface ProjectListProps {
   setOpenModal: (open: boolean) => void
 }
 
-console.log(() => {
-  useEffect(allProject)
-})
-
 const ProjectList = ({
   isLoading,
   allProject,
   setSelectedID,
   setOpenModal,
 }: ProjectListProps) => {
-  useEffect(() => {
-    console.log(allProject)
-  }, [allProject])
-
   return (
     <>
       {isLoading ? (

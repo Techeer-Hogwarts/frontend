@@ -41,7 +41,7 @@ const BootcampPage = () => {
   const query = useGetBootcampList({ isAward, year, limit: 10 })
 
   const allProjects =
-    (query.data as InfiniteData<BootcampListResponse>)?.pages
+    (query?.data as InfiniteData<BootcampListResponse>)?.pages
       ?.flatMap((page) =>
         page.data.map((project) => ({
           id: project.id,
