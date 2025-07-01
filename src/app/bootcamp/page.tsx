@@ -41,14 +41,20 @@ const BootcampPage = () => {
   const query = useGetBootcampList({ isAward, year, limit: 10 })
 
   const allProjects =
-    (query.data as InfiniteData<BootcampListResponse>)?.pages?.flatMap((page) =>
-      page.data.map((project) => ({
-        id: project.id,
-        year: project.year,
-        imageUrl: project.imageUrl,
-        rank: project.rank,
-      })),
-    ) ?? []
+    (query.data as InfiniteData<BootcampListResponse>)?.pages
+      ?.flatMap((page) =>
+        page.data.map((project) => ({
+          id: project.id,
+          year: project.year,
+          imageUrl: project.imageUrl,
+          rank: project.rank,
+        })),
+      )
+      .sort((a, b) => {
+        const Arank = a.rank === 0 ? 4 : a.rank
+        const Brank = b.rank === 0 ? 4 : b.rank
+        return Arank - Brank
+      }) ?? []
 
   useEffect(() => {
     const body = document.body
