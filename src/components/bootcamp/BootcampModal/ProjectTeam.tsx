@@ -13,7 +13,9 @@ const ProjectTeam = ({ ProjectDetail }: ProjectDetailProps) => {
         <p className="font-bold text-xl text-primary w-[50px]">Leader</p>
         <p className="text-lg">
           {ProjectDetail.members
-            .filter((member) => member.isLeader === true)
+            .filter(
+              (member) => member.isLeader === true && member.name !== 'admin',
+            )
             .map((member) => member.name)
             .join(' ')}
         </p>
@@ -22,7 +24,9 @@ const ProjectTeam = ({ ProjectDetail }: ProjectDetailProps) => {
         <p className="font-bold text-xl text-primary w-[50px]">Backend</p>
         <p className="text-lg">
           {ProjectDetail.members
-            .filter((member) => member.position === 'BE')
+            .filter(
+              (member) => member.position === 'BE' && member.name !== 'admin',
+            )
             .map((member) => member.name)
             .join(' ')}
         </p>
@@ -31,7 +35,9 @@ const ProjectTeam = ({ ProjectDetail }: ProjectDetailProps) => {
         <p className="font-bold text-xl text-primary w-[50px]">Frontend</p>
         <p className="text-lg">
           {ProjectDetail.members
-            .filter((member) => member.position === 'FE')
+            .filter(
+              (member) => member.position === 'FE' && member.name !== 'admin',
+            )
             .map((member) => member.name)
             .join(' ')}
         </p>
@@ -40,7 +46,9 @@ const ProjectTeam = ({ ProjectDetail }: ProjectDetailProps) => {
         <p className="font-bold text-xl text-primary w-[50px]">DevOps</p>
         <p className="text-lg">
           {ProjectDetail.members
-            .filter((member) => member.position === 'DEV')
+            .filter(
+              (member) => member.position === 'DEV' && member.name !== 'admin',
+            )
             .map((member) => member.name)
             .join(' ')}
         </p>
