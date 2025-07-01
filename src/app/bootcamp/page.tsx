@@ -57,6 +57,8 @@ const BootcampPage = () => {
       }) ?? []
 
   useEffect(() => {
+    if (typeof window === 'undefined') return
+
     const body = document.body
 
     if (showRegistModal || openModal) {
