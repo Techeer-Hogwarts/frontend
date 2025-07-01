@@ -34,7 +34,7 @@ const ProjectItem = ({
           alt="bootcamp project Image"
           fill
           className="object-cover object-top rounded-2xl"
-          sizes="25vw"
+          sizes="20vw"
         />
 
         {bootcamp.rank === 1 && (

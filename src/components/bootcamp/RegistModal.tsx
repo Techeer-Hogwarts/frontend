@@ -64,8 +64,6 @@ const RegistModal: React.FC<RegistModalProps> = ({
       { key: 'projectExplain', label: '프로젝트 소개' },
       { key: 'team', label: '팀명' },
       { key: 'githubUrl', label: 'GitHub 링크' },
-      { key: 'mediumUrl', label: 'Medium 링크' },
-      { key: 'webUrl', label: '웹사이트 링크' },
     ]
 
     for (const field of requiredFields) {
