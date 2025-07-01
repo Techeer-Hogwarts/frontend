@@ -51,7 +51,26 @@ const BootcampPage = () => {
     ) ?? []
 
   useEffect(() => {
-    document.body.style.overflow = showRegistModal || openModal ? 'hidden' : ''
+    const body = document.body
+
+    if (showRegistModal || openModal) {
+      const scrollY = window.scrollY
+      body.style.position = 'fixed'
+      body.style.top = `-${scrollY}px`
+      body.style.left = '0'
+      body.style.right = '0'
+      body.style.overflowY = 'scroll'
+      body.dataset.scrollY = scrollY.toString()
+    } else {
+      const scrollY = body.dataset.scrollY
+      body.style.position = ''
+      body.style.top = ''
+      body.style.left = ''
+      body.style.right = ''
+      body.style.overflowY = ''
+      delete body.dataset.scrollY
+      window.scrollTo(0, parseInt(scrollY || '0'))
+    }
   }, [showRegistModal, openModal])
 
   useEffect(() => {
