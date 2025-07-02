@@ -17,7 +17,7 @@ const ProjectItem = ({
   setSelectedID,
   setOpenModal,
 }: ProjectItemProps) => {
-  const isWebm = bootcamp.imageUrl.includes('/0webm/')
+  const isWebm = bootcamp.imageUrl.includes('webm')
   return (
     <div
       key={bootcamp.id}
