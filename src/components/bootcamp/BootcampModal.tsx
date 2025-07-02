@@ -18,7 +18,7 @@ const BootcampModal = ({ id, onClose }: BootcampModalProps) => {
   const [isEditing, setIsEditing] = useState(false)
   const { data: project } = useGetBootcampDetail(id)
   if (!project) return null
-  const isWebm = project.imageUrl.includes('/0webm/')
+  const isWebm = project.imageUrl.includes('webm')
 
   if (isEditing) {
     return (
