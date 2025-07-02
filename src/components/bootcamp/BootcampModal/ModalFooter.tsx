@@ -19,20 +19,30 @@ const ModalFooter = ({ ProjectDetail }: ModalFooterProps) => {
       >
         <Git />
       </Link>
-      <Link
-        href={ProjectDetail.mediumUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        <Medium />
-      </Link>
-      <Link
-        href={ProjectDetail.webUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        <Links />
-      </Link>
+
+      {ProjectDetail.mediumUrl ? (
+        <Link
+          href={ProjectDetail.mediumUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <Medium />
+        </Link>
+      ) : (
+        <Medium style={{ opacity: 0.5, cursor: 'not-allowed' }} />
+      )}
+
+      {ProjectDetail.webUrl ? (
+        <Link
+          href={ProjectDetail.webUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <Links />
+        </Link>
+      ) : (
+        <Links style={{ opacity: 0.5, cursor: 'not-allowed' }} />
+      )}
     </div>
   )
 }

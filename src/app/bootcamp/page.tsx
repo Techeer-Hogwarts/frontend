@@ -41,17 +41,44 @@ const BootcampPage = () => {
   const query = useGetBootcampList({ isAward, year, limit: 10 })
 
   const allProjects =
-    (query.data as InfiniteData<BootcampListResponse>)?.pages?.flatMap((page) =>
-      page.data.map((project) => ({
-        id: project.id,
-        year: project.year,
-        imageUrl: project.imageUrl,
-        rank: project.rank,
-      })),
-    ) ?? []
+    (query?.data as InfiniteData<BootcampListResponse>)?.pages
+      ?.flatMap((page) =>
+        page.data.map((project) => ({
+          id: project.id,
+          year: project.year,
+          imageUrl: project.imageUrl,
+          rank: project.rank,
+        })),
+      )
+      .sort((a, b) => {
+        const Arank = a.rank === 0 ? 4 : a.rank
+        const Brank = b.rank === 0 ? 4 : b.rank
+        return Arank - Brank
+      }) ?? []
 
   useEffect(() => {
-    document.body.style.overflow = showRegistModal || openModal ? 'hidden' : ''
+    if (typeof window === 'undefined') return
+
+    const body = document.body
+
+    if (showRegistModal || openModal) {
+      const scrollY = window.scrollY
+      body.style.position = 'fixed'
+      body.style.top = `-${scrollY}px`
+      body.style.left = '0'
+      body.style.right = '0'
+      body.style.overflowY = 'scroll'
+      body.dataset.scrollY = scrollY.toString()
+    } else {
+      const scrollY = body.dataset.scrollY
+      body.style.position = ''
+      body.style.top = ''
+      body.style.left = ''
+      body.style.right = ''
+      body.style.overflowY = ''
+      delete body.dataset.scrollY
+      window.scrollTo(0, parseInt(scrollY || '0'))
+    }
   }, [showRegistModal, openModal])
 
   useEffect(() => {

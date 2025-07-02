@@ -18,6 +18,7 @@ import AddmemberModal from './AddMemberModal'
 import { createBootcamp } from '@/api/bootcamp/createBootcamp'
 import { updateBootcamp } from '@/api/bootcamp/updateBootcamp'
 import { useQueryClient } from '@tanstack/react-query'
+import Loading from './Loading'
 
 interface RegistModalProps {
   onClose: () => void
@@ -35,6 +36,7 @@ const RegistModal: React.FC<RegistModalProps> = ({
     initialData?.members || [],
   )
   const [IsModalOpen, setIsModalOpen] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   const [formData, setFormData] = useState({
     name: initialData?.name || '',
     projectExplain: initialData?.projectExplain || '',
@@ -64,8 +66,6 @@ const RegistModal: React.FC<RegistModalProps> = ({
       { key: 'projectExplain', label: '프로젝트 소개' },
       { key: 'team', label: '팀명' },
       { key: 'githubUrl', label: 'GitHub 링크' },
-      { key: 'mediumUrl', label: 'Medium 링크' },
-      { key: 'webUrl', label: '웹사이트 링크' },
     ]
 
     for (const field of requiredFields) {
@@ -85,6 +85,7 @@ const RegistModal: React.FC<RegistModalProps> = ({
       return
     }
 
+    setIsLoading(true)
     try {
       const cleanedMembers = members
         .filter(
@@ -114,6 +115,8 @@ const RegistModal: React.FC<RegistModalProps> = ({
       onClose()
     } catch (err) {
       console.error('에러 발생:', err)
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -127,6 +130,7 @@ const RegistModal: React.FC<RegistModalProps> = ({
 
   return (
     <>
+      {isLoading && <Loading mode={mode} />}
       {IsModalOpen ? (
         <AddmemberModal
           onClose={() => setIsModalOpen(false)}
@@ -153,6 +157,7 @@ const RegistModal: React.FC<RegistModalProps> = ({
               mode={mode}
               onClose={onClose}
               onSubmit={handleSubmit}
+              // isLoading={isLoading}
             />
           </div>
         </div>

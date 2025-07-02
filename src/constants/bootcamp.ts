@@ -12,8 +12,7 @@ export const BootCampTapOptions = [
   '5기',
   '4기',
   '3기',
-  '2기',
-  '1기',
+  '2기 - 1기',
 ]
 
 export const allBootcampProject = [

@@ -8,9 +8,11 @@ const ProjectTeamName = ({ formData, handleChange }) => {
         type="text"
         value={formData.team}
         onChange={(e) => {
-          const value = e.target.value.toUpperCase()
-          if (/^[A-Z]?$/.test(value)) {
-            handleChange('team', value)
+          const value = e.target.value
+          if (/^[a-zA-Z]?$/.test(value)) {
+            handleChange('team', value.toUpperCase())
+          } else {
+            alert('영어 알파벳 한 글자만 입력 가능합니다.')
           }
         }}
         maxLength={1}
