@@ -64,7 +64,7 @@ export default function ProfileCard({
             <div className="flex items-center">
               <p className="text-[0.8135rem] text-darkgray">
                 {/* &nbsp;|&nbsp; */}
-                {school.length > 10 ? `${school.substring(0, 10)}...` : school}
+                {school?.length > 10 ? `${school.substring(0, 10)}...` : school}
                 &nbsp;| {grade}
               </p>
             </div>
@@ -85,17 +85,19 @@ export default function ProfileCard({
         <hr className="w-full my-[0.4rem] border-lightgray" />
         <div className="flex gap-2 h-[2.813rem]">
           {projectTeams && projectTeams.length > 0 ? (
-            projectTeams.slice(0, 5).map((team, idx) => (
-              <Image
-                key={idx}
-                src={team.mainImage}
-                alt={`Project #${idx + 1}`}
-                width={45}
-                height={45}
-                className="w-[2.813rem] h-[2.813rem] bg-lightgray rounded-md object-cover"
-              />
-            ))
-           ) : (
+            projectTeams
+              .slice(0, 5)
+              .map((team, idx) => (
+                <Image
+                  key={idx}
+                  src={team.mainImage}
+                  alt={`Project #${idx + 1}`}
+                  width={45}
+                  height={45}
+                  className="w-[2.813rem] h-[2.813rem] bg-lightgray rounded-md object-cover"
+                />
+              ))
+          ) : (
             <p className="flex justify-center items-center text-gray text-[0.7rem] w-full">
               프로젝트를 등록하세요.
             </p>
