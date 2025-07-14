@@ -21,6 +21,7 @@ const BOOTCAMP_OPTIONS = {
     '2023년 겨울',
     '2024년 여름',
     '2024년 겨울',
+    '2025년 여름',
   ],
   values: [
     'SUMMER_2022',
@@ -29,6 +30,7 @@ const BOOTCAMP_OPTIONS = {
     'WINTER_2023',
     'SUMMER_2024',
     'WINTER_2024',
+    'SUMMER_2025',
   ],
 }
 const PARTNERS_OPTIONS = {
