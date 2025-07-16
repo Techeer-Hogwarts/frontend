@@ -35,6 +35,10 @@ export default function Calendar({
   const expandEvents = (events: CalendarEventCardProps[]) => {
     const expanded: CalendarEventCardProps[] = []
 
+    if (!Array.isArray(events)) {
+      return expanded
+    }
+
     events.forEach((event) => {
       const start = dayjs(event.startDate)
       const end = dayjs(event.endDate)
@@ -54,7 +58,7 @@ export default function Calendar({
     return expanded
   }
 
-  const expandedEvents = events ? expandEvents(events) : []
+  const expandedEvents = Array.isArray(events) ? expandEvents(events) : []
 
   const handleDayClick = (date: string) => {
     setSelectedDate(date)
@@ -92,9 +96,8 @@ export default function Calendar({
       daysArray.push(
         <div key={i} className="w-[138px] min-h-[183px] border-t-2">
           <div
-            className={`w-full h-full text-2xl font-bold p-3 cursor-pointer hover:bg-lightgray/50 flex flex-col items-start ${
-              isToday ? 'border-primary bg-lightgray/30' : ''
-            }`}
+            className={`w-full h-full text-2xl font-bold p-3 cursor-pointer hover:bg-lightgray/50 flex flex-col items-start ${isToday ? 'border-primary bg-lightgray/30' : ''
+              }`}
             onClick={() => handleDayClick(currentDay)}
           >
             {i}

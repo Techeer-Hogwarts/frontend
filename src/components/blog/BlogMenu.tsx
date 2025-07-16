@@ -3,12 +3,14 @@
 import { MdDeleteOutline } from 'react-icons/md'
 import { MdBookmarkBorder } from 'react-icons/md'
 import { useBookmark } from '@/app/blog/_lib/useBookmark'
+import { useDeleteBlogAPI } from '@/api/blog/blog'
 
 interface BlogMenuProps {
   id: string
   onDelete: (id: string) => void
   setModalOpen: (open: boolean) => void
   setModalMessage: (message: string) => void
+  setShowMenu: (show: boolean) => void
 }
 
 interface BookmarkProps {
@@ -20,28 +22,29 @@ export default function BlogMenu({
   onDelete,
   setModalOpen,
   setModalMessage,
+  setShowMenu,
 }: BlogMenuProps) {
-  // const blogDelete = async () => {
-  //   try {
-  //     const response = await fetch(
-  //       `https://api.techeerzip.cloud/api/v1/blogs/${id}`,
-  //       {
-  //         method: 'DELETE',
-  //         headers: {
-  //           'Content-Type': 'application/json',
-  //         },
-  //       },
-  //     )
-  //     if (!response.ok) {
-  //       throw new Error('세션 삭제에 실패했습니다.')
-  //     }
+  const deleteBlogMutation = useDeleteBlogAPI()
 
-  //     await response.json()
-  //     onDelete(id)
-  //   } catch (error) {
-  //     console.error('세션 삭제 중 오류 발생:', error)
-  //   }
-  // }
+  const handleDeleteBlog = async () => {
+    if (window.confirm('정말로 이 블로그를 삭제하시겠습니까?')) {
+      try {
+        await deleteBlogMutation.mutateAsync(id)
+        setModalMessage('블로그가 삭제되었습니다.')
+        setModalOpen(true)
+        setTimeout(() => setModalOpen(false), 2000)
+        onDelete(id)
+        setShowMenu(false)
+      } catch (error) {
+        console.error('블로그 삭제 중 오류 발생:', error)
+        setModalMessage('블로그 삭제에 실패했습니다.')
+        setModalOpen(true)
+        setTimeout(() => setModalOpen(false), 2000)
+        setShowMenu(false)
+      }
+    }
+  }
+
   const { postBookmark, fetchBookmarks } = useBookmark()
   const addCancelBookmark = async (
     id: any,
@@ -66,10 +69,12 @@ export default function BlogMenu({
       }
       setModalOpen(true)
       setTimeout(() => setModalOpen(false), 2000)
+      setShowMenu(false)
     } catch (err) {
       setModalMessage('오류가 발생했습니다.')
       setModalOpen(true)
       setTimeout(() => setModalOpen(false), 2000)
+      setShowMenu(false)
     }
   }
 
@@ -86,14 +91,17 @@ export default function BlogMenu({
         <MdBookmarkBorder className="w-4 h-4" />
         북마크
       </button>
-      {/* <button
+      <button
         type="button"
         className="flex items-center justify-start gap-1 py-1 pl-3 hover:bg-black/10"
-        onClick={blogDelete}
+        onClick={(e) => {
+          e.stopPropagation()
+          handleDeleteBlog()
+        }}
       >
         <MdDeleteOutline className="w-4 h-4" />
         삭제
-      </button> */}
+      </button>
     </div>
   )
 }

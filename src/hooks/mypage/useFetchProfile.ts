@@ -1,6 +1,5 @@
 'use client'
 
-import React from 'react'
 import { fetchUserProfile } from '@/api/mypage/myprofile'
 import { useQuery } from '@tanstack/react-query'
 import { useState, useEffect } from 'react'

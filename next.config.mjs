@@ -1,7 +1,7 @@
 import { withSentryConfig } from '@sentry/nextjs'
 /** @type {import('next').NextConfig} */
 
-const API_BASE_URL = process.env.API_BASE_URL || 'https://api.yje.kr'
+const API_BASE_URL = process.env.API_BASE_URL || 'https://api.techeerzip.cloud/'
 
 const nextConfig = {
   images: {
@@ -18,7 +18,14 @@ const nextConfig = {
         port: '',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'techeer-bucket.s3.ap-northeast-2.amazonaws.com',
+        port: '',
+        pathname: '/**',
+      },
     ],
+    transpilePackages: ['framer-motion'],
   },
 
   reactStrictMode: true,
@@ -28,10 +35,12 @@ const nextConfig = {
       'example.com',
       'avatars.slack-edge.com',
       'techeerzip-bucket.s3.ap-southeast-2.amazonaws.com',
+      'techeer-bucket.s3.ap-northeast-2.amazonaws.com',
       'images.velog.io',
       'encore.cloud',
       'github.com',
       'cdn.discordapp.com',
+      'bootcamp.com',
     ], // 허용할 외부 도메인 추가
   },
 

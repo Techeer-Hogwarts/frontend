@@ -6,6 +6,7 @@ export interface Experience {
   endDate: string | null
   category: string
   isFinished: boolean
+  description: string | ""
 }
 
 export interface Team {

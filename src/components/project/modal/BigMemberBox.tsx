@@ -27,6 +27,13 @@ const BigMemberBox = ({
   // 단일 문자열로 역할 관리 (초기값: teamRole)
   const [selectedRole, setSelectedRole] = useState<string>(teamRole)
 
+  const roleMap: Record<string, string> = {
+    Frontend: 'FRONTEND',
+    Backend: 'BACKEND',
+    DevOps: 'DEVOPS',
+    FullStack: 'FULLSTACK',
+    DataEngineer: 'DATA_ENGINEER',
+  }
   // 리더 토글
   const handleToggleLeader = () => {
     const newIsLeader = !isLeader
@@ -47,7 +54,7 @@ const BigMemberBox = ({
       setSelectedRole(role)
     }
     // (B) onUpdate에 isLeader + newRole 전달
-    onUpdate(isLeader, newRole)
+    onUpdate(isLeader, roleMap[newRole] || '')
   }
 
   return (

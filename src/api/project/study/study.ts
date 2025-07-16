@@ -8,7 +8,7 @@ interface StudyMember {
   id: number
   name: string
   isDeleted: boolean
-  isLeader: boolean
+  leader: boolean
   studyTeamId: number
   userId: number
   email: string
@@ -23,8 +23,8 @@ interface StudyDetail {
   rule: string
   goal: string
   studyExplain: string
-  isRecruited: boolean
-  isFinished: boolean
+  recruited: boolean
+  finished: boolean
   projectExplain: string
   resultImages: ResultImage[]
   studyMember: StudyMember[]
@@ -68,7 +68,6 @@ export const handleAddStudy = async (data) => {
 
     if (response.ok) {
       const result = await response.json()
-
       return result
     }
   } catch (error: any) {
@@ -78,7 +77,6 @@ export const handleAddStudy = async (data) => {
 
 // 스터디 수정하기
 export const handleEditStudy = async (data, projectId) => {
-
   try {
     const response = await fetch(`/api/v1/studyTeams/${projectId}`, {
       method: 'PATCH',
@@ -156,8 +154,7 @@ export const handleApplyStudy = async (data) => {
       throw new Error(`POST 요청 실패: ${response.status}`)
     }
 
-    const result = await response.json()
-    return result
+    return response
   } catch (error: any) {
     throw error
   }
@@ -174,8 +171,7 @@ export const handleDenyStudy = async (studyTeamId) => {
       throw new Error(`PATCH 요청 실패: ${response.status}`)
     }
 
-    const result = await response.json()
-    return result
+    return response
   } catch (error: any) {
     throw error
   }
@@ -193,7 +189,7 @@ export const handleCloseStudy = async (studyTeamId) => {
       throw new Error(`PATCH 요청 실패: ${response.status}`)
     }
 
-    return true
+    return response
   } catch (error: any) {
     throw error
   }
@@ -211,8 +207,7 @@ export const deleteStudyTeam = async (projectId) => {
       throw new Error(`PATCH 요청 실패: ${response.status}`)
     }
 
-    const result = await response.json()
-    return result
+    return response
   } catch (error: any) {
     throw error
   }
@@ -256,8 +251,7 @@ export const acceptStudyApplicant = async (data) => {
       throw new Error(`PATCH 요청 실패: ${response.status}`)
     }
 
-    const result = await response.json()
-    return result
+    return response
   } catch (error: any) {
     throw error
   }
@@ -279,8 +273,7 @@ export const denyStudyApplicant = async (data) => {
       throw new Error(`PATCH 요청 실패: ${response.status}`)
     }
 
-    const result = await response.json()
-    return result
+    return response
   } catch (error: any) {
     throw error
   }

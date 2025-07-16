@@ -1,112 +1,74 @@
-type TeamType = 'project' | 'study'
+import {
+  GetAllTeamsFilter,
+  TeamsResponse,
+  UserProfile,
+} from '@/types/project/project'
 
-interface TeamBase {
-  id: number
-  isDeleted: boolean
-  isRecruited: boolean
-  isFinished: boolean
-  name: string
-  createdAt: string
-}
-
-interface ProjectTeam extends TeamBase {
-  type: 'project'
-  frontendNum: number
-  backendNum: number
-  devopsNum: number
-  fullStackNum: number
-  dataEngineerNum: number
-  projectExplain: string
-  mainImages: string[]
-  teamStacks: { stackName: string; isMain: boolean }[]
-}
-
-interface StudyTeam extends TeamBase {
-  type: 'study'
-  recruitNum: number
-  studyExplain: string
-}
-
-type Team = ProjectTeam | StudyTeam
-
-interface TeamsResponse {
-  allTeams: Team[]
-}
-
-interface ProjectTeam {
-  id: number
-  name: string
-  resultImages: string[]
-}
-
-interface Experience {
-  id: number
-  position: string
-  companyName: string
-  startDate: string
-  endDate: string | null
-  category: string
-  isFinished: boolean
-}
-
-interface UserProfile {
-  id: number
-  profileImage: string
-  name: string
-  nickname: string
-  email: string
-  school: string
-  grade: string
-  mainPosition: string
-  subPosition: string
-  githubUrl: string | null
-  mediumUrl: string | null
-  velogUrl: string | null
-  tistoryUrl: string | null
-  isLft: boolean
-  year: number
-  stack: string[]
-  projectTeams: ProjectTeam[]
-  experiences: Experience[]
-}
-
-//프로젝트 페이지 불러오기
-export interface GetAllTeamsFilter {
-  isRecruited?: boolean
-  isFinished?: boolean
-  teamTypes?: string[] // 예: ['project', 'study']
-  positions?: string[] // 예: ['frontend', 'backend', ...]
-}
-
+// 통일된 팀 목록 조회 API 함수
 export const getAllTeams = async (
   filter?: GetAllTeamsFilter,
 ): Promise<TeamsResponse> => {
   try {
-    let queryStr = ''
-    if (filter) {
-      const params = new URLSearchParams()
+    const searchParams = new URLSearchParams()
 
-      if (filter.isRecruited !== undefined) {
-        params.append('isRecruited', filter.isRecruited.toString())
-      }
-      if (filter.isFinished !== undefined) {
-        params.append('isFinished', filter.isFinished.toString())
-      }
-      if (filter.teamTypes && filter.teamTypes.length > 0) {
-        filter.teamTypes.forEach((type) => {
-          params.append('teamTypes', type)
-        })
-      }
-      if (filter.positions && filter.positions.length > 0) {
-        filter.positions.forEach((position) => {
-          params.append('positions', position)
-        })
-      }
+    // 기본 파라미터
+    searchParams.append('limit', (filter?.limit || 12).toString())
+    searchParams.append('sortType', filter?.sortType || 'UPDATE_AT_DESC')
 
-      queryStr = '?' + params.toString()
+    // 커서 데이터 처리 - 팀 타입 유무에 따라 다르게 처리
+    if (filter?.id !== undefined) {
+      searchParams.append('id', filter.id.toString())
     }
 
-    const response = await fetch(`/api/v1/projectTeams/allTeams${queryStr}`, {
+    // 팀 타입이 없는 경우 (전체보기): 모든 정렬에서 dateCursor 사용
+    if (!filter?.teamTypes || filter.teamTypes.length === 0) {
+      if (filter?.dateCursor) {
+        searchParams.append('dateCursor', filter.dateCursor)
+      }
+      // 조회수순일 때 countCursor도 함께 사용
+      if (
+        filter?.sortType === 'VIEW_COUNT_DESC' &&
+        filter?.countCursor !== undefined
+      ) {
+        searchParams.append('countCursor', filter.countCursor.toString())
+      }
+    }
+    // 팀 타입이 있는 경우 (프로젝트/스터디): 기존 로직
+    else {
+      if (filter?.sortType === 'UPDATE_AT_DESC' && filter?.dateCursor) {
+        searchParams.append('dateCursor', filter.dateCursor)
+      } else if (
+        filter?.sortType === 'VIEW_COUNT_DESC' &&
+        filter?.countCursor !== undefined
+      ) {
+        searchParams.append('countCursor', filter.countCursor.toString())
+      }
+    }
+
+    // 필터링 조건
+    if (filter?.teamTypes && filter.teamTypes.length > 0) {
+      filter.teamTypes.forEach((type) => {
+        searchParams.append('teamTypes', type)
+      })
+    }
+
+    if (filter?.positions && filter.positions.length > 0) {
+      filter.positions.forEach((position) => {
+        searchParams.append('positions', position)
+      })
+    }
+
+    if (filter?.isRecruited !== undefined && filter?.isRecruited !== null) {
+      searchParams.append('isRecruited', filter.isRecruited.toString())
+    }
+
+    if (filter?.isFinished !== undefined && filter?.isFinished !== null) {
+      searchParams.append('isFinished', filter.isFinished.toString())
+    }
+
+    const url = `/api/v1/projectTeams/allTeams?${searchParams.toString()}`
+
+    const response = await fetch(url, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -115,21 +77,67 @@ export const getAllTeams = async (
     })
 
     if (!response.ok) {
-      throw new Error(`GET 요청 실패: ${response.status}`)
+      const errorText = await response.text()
+      throw new Error(`GET 요청 실패: ${response.status} - ${errorText}`)
     }
 
     const result = await response.json()
 
-    // teamTypes 필터가 있을 경우 응답이 분리되어 올 수 있으므로 두 배열을 합칩니다.
-    if (result.projectTeams !== undefined && result.studyTeams !== undefined) {
-      return { allTeams: [...result.projectTeams, ...result.studyTeams] }
+    // 응답 구조 정규화
+    if (result.teams) {
+      return {
+        allTeams: result.teams,
+        nextInfo: result.nextInfo,
+      }
     }
 
-    // 그 외 응답 구조(예: allTeams 키가 있는 경우)
     return result as TeamsResponse
   } catch (error: any) {
     throw error
   }
+}
+
+// 첫 번째 페이지 조회용 헬퍼 함수
+export const getInitialTeams = async (
+  filters?: Omit<GetAllTeamsFilter, 'id' | 'dateCursor' | 'countCursor'>,
+): Promise<TeamsResponse> => {
+  return getAllTeams({
+    ...filters,
+    limit: filters?.limit || 12,
+    // 커서 정보 없음 (첫 페이지)
+    id: undefined,
+    dateCursor: undefined,
+    countCursor: undefined,
+  })
+}
+
+// 다음 페이지 조회용 헬퍼 함수
+export const getNextTeams = async (
+  nextInfo: TeamsResponse['nextInfo'],
+  filters?: Omit<GetAllTeamsFilter, 'id' | 'dateCursor' | 'countCursor'>,
+): Promise<TeamsResponse> => {
+  if (!nextInfo || !nextInfo.hasNext) {
+    return { allTeams: [], nextInfo: undefined }
+  }
+
+  return getAllTeams({
+    ...filters,
+    limit: filters?.limit || 12,
+    // 커서 정보 설정 - 팀 타입 유무에 따라 다르게 처리
+    id: nextInfo.id,
+    // 전체보기: 모든 정렬에서 dateCursor 사용
+    // 팀 타입 있음: UPDATE_AT_DESC에서만 dateCursor 사용
+    dateCursor:
+      !filters?.teamTypes || filters.teamTypes.length === 0
+        ? nextInfo.dateCursor
+        : nextInfo.sortType === 'UPDATE_AT_DESC'
+          ? nextInfo.dateCursor
+          : undefined,
+    countCursor: ['VIEW_COUNT_DESC'].includes(nextInfo.sortType)
+      ? nextInfo.countCursor
+      : undefined,
+    sortType: nextInfo.sortType as any,
+  })
 }
 
 // 테커 모든 인원 조회

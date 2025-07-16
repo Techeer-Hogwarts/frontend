@@ -21,10 +21,15 @@ export const deleteSession = async (id: string) => {
 }
 
 // 세션 금주의 데이터 조회
-export const getBestSessions = async (limit: number) => {
-  const response = await fetch(
-    `/api/v1/sessions/best?offset=0&limit=${limit}`,
-    {
+export const getBestSessions = async (limit: number, cursorId?: number) => {
+  const params = new URLSearchParams()
+  params.append('limit', String(limit))
+
+   if (cursorId) {
+    params.append('cursorId', String(cursorId))
+  }
+
+    const response = await fetch(`/api/v1/sessions/best?${params.toString()}`, {
       method: 'GET',
       credentials: 'include',
     },
@@ -34,7 +39,8 @@ export const getBestSessions = async (limit: number) => {
     throw new Error('금주의 세션 데이터를 가져오는 데 실패했습니다.')
   }
 
-  return response.json()
+  const result = await response.json()
+  return result
 }
 
 // 세션 데이터 조회
@@ -44,18 +50,24 @@ export const getSessions = async (
   date: string[],
   position: string[],
   setAuthModalOpen: any,
+  sortBy: string,
+  cursorId?: number,
 ) => {
   const baseUrl = '/api/v1/sessions'
-  const params = {
+  const params: Record<string, string> = {
     category,
-    offset: '0',
-    limit: String(newLimit),
+    size: String(newLimit),
   }
 
   // 파라미터 생성
   const searchParams = new URLSearchParams(params)
   date.forEach((d) => searchParams.append('date', d))
   position.forEach((p) => searchParams.append('position', p))
+  searchParams.append('sortBy', sortBy)
+  if (cursorId) {
+    searchParams.append('cursorId', String(cursorId))
+  }
+
   const url = `${baseUrl}?${searchParams.toString()}`
 
   const response = await fetch(url, {
@@ -69,7 +81,8 @@ export const getSessions = async (
   if (!response.ok) {
     throw new Error('세션 데이터를 가져오는 데 실패했습니다.')
   }
-  return response.json()
+  const result = await response.json()
+  return result
 }
 
 // 개별 세션 데이터 조회
@@ -82,7 +95,7 @@ export const getSingleSession = async (id: string) => {
     throw new Error('단일 세션 데이터를 가져오는 데 실패했습니다.')
   }
   const result = await response.json()
-  return result
+  return result.data || result
 }
 
 // 세션 데이터 수정

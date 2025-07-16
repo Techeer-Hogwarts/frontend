@@ -3,17 +3,17 @@
 import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import BigMemberBox from './BigMemberBox'
-import { useQuery } from '@tanstack/react-query'
-import { getAllUsers } from '@/api/project/common'
+import { getSearchResults } from '@/api/search/getSearch' // 검색 API import
 import { useAuthStore } from '@/store/authStore'
 
-interface Member {
+export interface Member {
   id: number
   name: string
   year: number
   profileImage?: string | null
   isLeader: boolean
   teamRole?: string
+  position?: string
 }
 
 interface MemberModalProps {
@@ -31,15 +31,11 @@ export default function ProjectMemberModal({
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const [name, setName] = useState('')
   const [members, setMembers] = useState<Member[]>([])
+  const [searchResults, setSearchResults] = useState<Member[]>([]) // 검색 결과
+  const [isSearching, setIsSearching] = useState(false) // 검색 로딩 상태
 
   // (A) 현재 사용자
   const { user } = useAuthStore()
-
-  // (B) 모든 사용자 목록
-  const { data: allUsers } = useQuery({
-    queryKey: ['getAllUsers'],
-    queryFn: getAllUsers,
-  })
 
   // (C) 모달 열릴 때: 현재 사용자가 상위 컴포넌트에 없으면 자동 추가
   useEffect(() => {
@@ -69,19 +65,77 @@ export default function ProjectMemberModal({
     }
   }, [user, existingMembers])
 
-  // (D) 드롭다운에 표시할 유저 필터
-  const filteredUsers = allUsers?.filter((u) => {
-    // 1) 이미 모달 내부(members)에 추가된 유저는 제외
-    const inModal = members.some((m) => m.id === u.id)
-    if (inModal) return false
+  // (D) 검색 함수
+  const handleSearch = async (query: string) => {
+    if (!query.trim()) {
+      setSearchResults([])
+      setIsDropdownOpen(false)
+      return
+    }
 
-    // 2) 이미 상위(existingMembers)에 있으면 제외
-    const inExisting = existingMembers.some((em) => em.userId === u.id)
-    if (inExisting) return false
+    setIsSearching(true)
 
-    // 3) 이름 검색
-    return u.name.toLowerCase().includes(name.toLowerCase())
-  })
+    try {
+      const response = await getSearchResults('user', query)
+
+      // API 응답에서 results 배열 추출
+      const results = response?.results || []
+
+      // 검색 결과에서 이미 추가된 멤버들 필터링
+      const filteredResults = results.filter((user: any) => {
+        // id를 숫자로 변환 (API 응답에서 문자열로 올 수 있음)
+        const userId = typeof user.id === 'string' ? parseInt(user.id) : user.id
+
+        // 1) 이미 모달 내부(members)에 추가된 유저는 제외
+        const inModal = members.some((m) => m.id === userId)
+        if (inModal) {
+          return false
+        }
+
+        // 2) 이미 상위(existingMembers)에 있으면 제외
+        const inExisting = existingMembers.some(
+          (em) => em.userId === userId || em.id === userId,
+        )
+        if (inExisting) {
+          return false
+        }
+        return true
+      })
+
+      // Member 타입에 맞게 데이터 변환
+      const transformedResults = filteredResults.map((user: any) => ({
+        id: typeof user.id === 'string' ? parseInt(user.id) : user.id,
+        name: user.name || '',
+        year:
+          typeof user.year === 'string' ? parseInt(user.year) : user.year || 0,
+        profileImage: user.profileImage || null,
+        isLeader: false,
+        teamRole: '',
+      }))
+
+      setSearchResults(transformedResults)
+      setIsDropdownOpen(true)
+    } catch (error) {
+      setSearchResults([])
+      setIsDropdownOpen(false)
+    } finally {
+      setIsSearching(false)
+    }
+  }
+
+  // 입력값 변경 시 검색 실행 (디바운싱)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (name.trim()) {
+        handleSearch(name)
+      } else {
+        setSearchResults([])
+        setIsDropdownOpen(false)
+      }
+    }, 300) // 300ms 디바운싱
+
+    return () => clearTimeout(timer)
+  }, [name, members, existingMembers]) // members와 existingMembers 변경 시에도 재검색
 
   // 드롭다운 외부 클릭 시 닫기
   useEffect(() => {
@@ -105,6 +159,8 @@ export default function ProjectMemberModal({
         { ...user, isLeader: false, teamRole: '' },
       ])
     }
+    setName('') // 검색어 초기화
+    setSearchResults([]) // 검색 결과 초기화
     setIsDropdownOpen(false)
   }
 
@@ -126,7 +182,7 @@ export default function ProjectMemberModal({
     )
   }
 
-  // (H) “저장하기” 버튼 활성화 조건:
+  // (H) "저장하기" 버튼 활성화 조건:
   // 1) members.length > 0
   // 2) 모든 멤버가 teamRole을 가지고 있어야 함 (비어있으면 안 됨)
   const canSave = members.length > 0 && members.every((m) => m.teamRole?.trim())
@@ -147,33 +203,44 @@ export default function ProjectMemberModal({
         </p>
 
         {/* 이름 검색 */}
-        <div className="mb-6">
+        <div className="mb-6 relative">
           <p className="text-left mb-3">이름을 입력해주세요</p>
-          <input
-            type="text"
-            className="w-full h-[2rem] border border-gray rounded-sm px-2 focus:outline-none"
-            value={name}
-            onChange={(e) => {
-              setName(e.target.value)
-              setIsDropdownOpen(true)
-            }}
-            onClick={() => setIsDropdownOpen((prev) => !prev)}
-            ref={dropDownRef}
-          />
+          <div className="relative">
+            <input
+              type="text"
+              className="w-full h-[2rem] border border-gray rounded-sm px-2 focus:outline-none"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="팀원 이름을 검색하세요"
+              ref={dropDownRef}
+            />
 
-          {/* 드롭다운 */}
-          {isDropdownOpen && filteredUsers && filteredUsers.length > 0 && (
+            {/* 검색 로딩 표시 */}
+            {isSearching && (
+              <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
+                <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+              </div>
+            )}
+          </div>
+
+          {name.trim() && (
             <div
-              className="absolute w-[32.375rem] bg-white border border-gray mt-1 max-h-48 overflow-y-auto z-10 rounded-sm"
+              className="absolute w-full bg-white border border-gray mt-1 max-h-48 overflow-y-auto z-50 rounded-sm shadow-lg"
               style={{
                 scrollbarWidth: 'thin',
                 scrollbarColor: 'rgba(0, 0, 0, 0.2) transparent',
               }}
             >
-              {filteredUsers.map((u) => (
+              {!isSearching && searchResults.length === 0 && (
+                <div className="p-3 text-center text-gray">
+                  검색 결과가 없습니다.
+                </div>
+              )}
+
+              {searchResults.map((u) => (
                 <div
                   key={u.id}
-                  className="flex items-center gap-2 p-2 cursor-pointer hover:bg-lightprimary"
+                  className="flex items-center gap-2 p-2 cursor-pointer hover:bg-lightprimary border-b border-lightgray last:border-b-0"
                   onClick={() => handleAddMember(u)}
                 >
                   <Image
