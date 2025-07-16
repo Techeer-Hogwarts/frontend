@@ -142,6 +142,7 @@ export default function AddSessionModal({
                   '2023년 겨울',
                   '2024년 여름',
                   '2024년 겨울',
+                  '2025년 여름',
                 ]}
                 options={[
                   'SUMMER_2022',
@@ -150,6 +151,7 @@ export default function AddSessionModal({
                   'WINTER_2023',
                   'SUMMER_2024',
                   'WINTER_2024',
+                  'SUMMER_2025',
                 ]}
                 onSelect={handleDropdownChange}
               />

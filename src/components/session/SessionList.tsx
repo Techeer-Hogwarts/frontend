@@ -46,6 +46,7 @@ const BootcampPeriod = [
   'WINTER_2023',
   'SUMMER_2024',
   'WINTER_2024',
+  'SUMMER_2025',
 ]
 const Position = ['FRONTEND', 'BACKEND', 'DEVOPS', 'OTHERS']
 
@@ -138,7 +139,6 @@ export default function SessionList() {
         return [...prev, ...newItems]
       })
     }
-
   }, [sessionsResponse, isLoading, cursorId])
 
   useEffect(() => {
@@ -152,8 +152,10 @@ export default function SessionList() {
     // 무한 스크롤 트리거
 
     if (inView && hasNext && !isLoading) {
-      if (sessionsResponse?.nextCursor &&
-        (sessionsResponse.nextCursor !== cursorId)) {
+      if (
+        sessionsResponse?.nextCursor &&
+        sessionsResponse.nextCursor !== cursorId
+      ) {
         setCursorId(sessionsResponse.nextCursor)
       }
     }
@@ -161,7 +163,7 @@ export default function SessionList() {
 
   return (
     <div>
-      <div className='flex justify-between'>
+      <div className="flex justify-between">
         <div className="flex items-center justify-start gap-8">
           <div className="flex justify-start gap-3">
             {activeOption === '부트캠프' && (
@@ -170,13 +172,17 @@ export default function SessionList() {
                   title="부트캠프 기간"
                   options={BootcampPeriod}
                   selectedOptions={selectedFilters.bootcamp}
-                  setSelectedOptions={(value) => updateFilter('bootcamp', value)}
+                  setSelectedOptions={(value) =>
+                    updateFilter('bootcamp', value)
+                  }
                 />
                 <Dropdown
                   title="포지션"
                   options={Position}
                   selectedOptions={selectedFilters.position}
-                  setSelectedOptions={(value) => updateFilter('position', value)}
+                  setSelectedOptions={(value) =>
+                    updateFilter('position', value)
+                  }
                 />
               </>
             )}
@@ -186,43 +192,53 @@ export default function SessionList() {
                   title="파트너스 기간"
                   options={PartnersPeriod}
                   selectedOptions={selectedFilters.partners}
-                  setSelectedOptions={(value) => updateFilter('partners', value)}
+                  setSelectedOptions={(value) =>
+                    updateFilter('partners', value)
+                  }
                 />
                 <Dropdown
                   title="포지션"
                   options={Position}
                   selectedOptions={selectedFilters.position}
-                  setSelectedOptions={(value) => updateFilter('position', value)}
+                  setSelectedOptions={(value) =>
+                    updateFilter('position', value)
+                  }
                 />
               </>
             )}
             {activeOption === '전체보기' && (
               <>
-                  <Dropdown
+                <Dropdown
                   title="파트너스 기간"
                   options={PartnersPeriod}
                   selectedOptions={selectedFilters.partners}
-                  setSelectedOptions={(value) => updateFilter('partners', value)}
+                  setSelectedOptions={(value) =>
+                    updateFilter('partners', value)
+                  }
                 />
                 <Dropdown
                   title="부트캠프 기간"
                   options={BootcampPeriod}
                   selectedOptions={selectedFilters.bootcamp}
-                  setSelectedOptions={(value) => updateFilter('bootcamp', value)}
+                  setSelectedOptions={(value) =>
+                    updateFilter('bootcamp', value)
+                  }
                 />
                 <Dropdown
                   title="포지션"
                   options={Position}
                   selectedOptions={selectedFilters.position}
-                  setSelectedOptions={(value) => updateFilter('position', value)}
+                  setSelectedOptions={(value) =>
+                    updateFilter('position', value)
+                  }
                 />
               </>
             )}
           </div>
         </div>
-        { activeOption !== '금주의 세션' && (
+        {activeOption !== '금주의 세션' && (
           <Dropdown
-            title={selectedSortBy[0] || '최신순'} 
+            title={selectedSortBy[0] || '최신순'}
             options={sortByOptions}
             selectedOptions={selectedSortBy}
             setSelectedOptions={setSelectedSortBy}
@@ -273,7 +289,8 @@ export default function SessionList() {
           />
         )}
         {!authModalOpen &&
-          (error || (sessionsResponse && !isLoading && allSessions.length === 0)) && (
+          (error ||
+            (sessionsResponse && !isLoading && allSessions.length === 0)) && (
             <EmptyLottie
               text="세션 데이터가 없습니다."
               text2="다시 조회해주세요."
