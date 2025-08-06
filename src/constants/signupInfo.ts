@@ -39,6 +39,7 @@ export const GENERATION = [
   '7기',
   '8기',
   '9기',
+  '10기',
 ]
 
 export const POSITION = [

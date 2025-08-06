@@ -25,7 +25,7 @@ export default function Page() {
     'FULL_STACK',
     'DATA_ENGINEER',
   ]
-  const yearOptions = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
+  const yearOptions = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
   const gradeOptions = ['1학년', '2학년', '3학년', '4학년', '졸업']
   const universityOptions = [
     '강원대학교',
@@ -93,7 +93,7 @@ export default function Page() {
             /> */}
         </div>
         <div className="flex w-full h-[1px] mb-5 bg-gray"></div>
-        <div className='flex justify-between'>
+        <div className="flex justify-between">
           <div className="flex justify-start gap-3">
             <Dropdown
               title="포지션"
@@ -120,15 +120,15 @@ export default function Page() {
               setSelectedOptions={setSelectedGrade}
             />
           </div>
-            <Dropdown
-              title={selectedSortBy[0] || '기수순'} 
-              options={sortByOptions}
-              selectedOptions={selectedSortBy}
-              setSelectedOptions={setSelectedSortBy}
-              singleSelect={true}
-            />
+          <Dropdown
+            title={selectedSortBy[0] || '기수순'}
+            options={sortByOptions}
+            selectedOptions={selectedSortBy}
+            setSelectedOptions={setSelectedSortBy}
+            singleSelect={true}
+          />
         </div>
-        
+
         {[
           selectedPosition,
           selectedYear,
