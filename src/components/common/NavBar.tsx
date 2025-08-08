@@ -140,7 +140,7 @@ export default function NavBar() {
         ['profile', 'resume', 'blog'].includes(item.key),
       )
     } else {
-      return navItems.filter((item) => item.key === 'blog')
+      return navItems.filter((item) => ['bootcamp', 'blog'].includes(item.key))
     }
   })()
 
@@ -341,11 +341,14 @@ export default function NavBar() {
                 </button>
                 {isDropdownOpen && (
                   <div className="absolute right-0 mt-2 w-40 bg-white rounded-md shadow-md z-50 border border-gray">
-                    {/* 테커 전환 아직 미구현 */}
+                    {/* 테커 전환 */}
                     {user.roleId === 5 && (
-                      <button className="block w-full text-left px-3 py-[10px] text-[14px] hover:rounded-t-md hover:bg-lightgray">
+                      <Link
+                        href="/techeerjoin"
+                        className="block w-full text-left px-3 py-[10px] text-[14px] hover:rounded-t-md hover:bg-lightgray"
+                      >
                         테커 전환
-                      </button>
+                      </Link>
                     )}
                     <button
                       onClick={handleLogout}
