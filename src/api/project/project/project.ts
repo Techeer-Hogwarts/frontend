@@ -36,7 +36,7 @@ export const handleAddProject = async (data: any) => {
     })
     formData.append('createProjectTeamRequest', json)
 
-    const response = await fetch('/api/v1/projectTeams', {
+    const response = await fetch('/projectTeams', {
       method: 'POST',
       credentials: 'include',
       body: formData,
@@ -57,7 +57,7 @@ export const handleAddProject = async (data: any) => {
 // 프로젝트 상세 조회
 export const getProjectDetail = async (projectTeamId) => {
   try {
-    const response = await fetch(`/api/v1/projectTeams/${projectTeamId}`, {
+    const response = await fetch(`/projectTeams/${projectTeamId}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -77,12 +77,9 @@ export const getProjectDetail = async (projectTeamId) => {
 // 프로젝트 참여 멤버 가져오기
 export const getProjectMember = async (projectTeamId) => {
   try {
-    const response = await fetch(
-      `/api/v1//projectTeams/${projectTeamId}/members`,
-      {
-        method: 'GET',
-      },
-    )
+    const response = await fetch(`/projectTeams/${projectTeamId}/members`, {
+      method: 'GET',
+    })
     if (!response.ok) {
       throw new Error(`GET 요청 실패: ${response.status}`)
     }
@@ -96,13 +93,10 @@ export const getProjectMember = async (projectTeamId) => {
 //프로젝트 지원자 보기
 export const getProjectApplicants = async (projectTeamId) => {
   try {
-    const response = await fetch(
-      `/api/v1/projectTeams/${projectTeamId}/applicants`,
-      {
-        method: 'GET',
-        credentials: 'include',
-      },
-    )
+    const response = await fetch(`/projectTeams/${projectTeamId}/applicants`, {
+      method: 'GET',
+      credentials: 'include',
+    })
 
     if (!response.ok) {
       throw new Error(`GET 요청 실패: ${response.status}`)
@@ -140,7 +134,7 @@ export const handleEditProject = async (projectId: number, data: any) => {
     formData.append('updateProjectTeamRequest', json)
 
     // 4) PATCH 전송
-    const response = await fetch(`/api/v1/projectTeams/${projectId}`, {
+    const response = await fetch(`/projectTeams/${projectId}`, {
       method: 'PATCH',
       credentials: 'include',
       body: formData, // multipart/form-data
@@ -160,13 +154,10 @@ export const handleEditProject = async (projectId: number, data: any) => {
 //프로젝트 공고 마감
 export const handleCloseProject = async (projectTeamId) => {
   try {
-    const response = await fetch(
-      `/api/v1/projectTeams/close/${projectTeamId}`,
-      {
-        method: 'PATCH',
-        credentials: 'include',
-      },
-    )
+    const response = await fetch(`/projectTeams/close/${projectTeamId}`, {
+      method: 'PATCH',
+      credentials: 'include',
+    })
 
     if (!response.ok) {
       throw new Error(`PATCH 요청 실패: ${response.status}`)
@@ -181,7 +172,7 @@ export const handleCloseProject = async (projectTeamId) => {
 //프로젝트 공고 삭제
 export const deleteProjectTeam = async (projectId) => {
   try {
-    const response = await fetch(`/api/v1/projectTeams/delete/${projectId}`, {
+    const response = await fetch(`/projectTeams/delete/${projectId}`, {
       method: 'PATCH',
       credentials: 'include',
     })
@@ -199,7 +190,7 @@ export const deleteProjectTeam = async (projectId) => {
 // 프로젝트 지원하기
 export const handleApplyProject = async (data) => {
   try {
-    const response = await fetch(`/api/v1/projectTeams/apply`, {
+    const response = await fetch(`/projectTeams/apply`, {
       method: 'POST',
       credentials: 'include',
       headers: {
@@ -221,7 +212,7 @@ export const handleApplyProject = async (data) => {
 // 프로젝트 지원 취소하기
 export const handleDenyProject = async (projectId) => {
   try {
-    const response = await fetch(`/api/v1/projectTeams/${projectId}/cancel`, {
+    const response = await fetch(`/projectTeams/${projectId}/cancel`, {
       method: 'PATCH',
       credentials: 'include',
     })
@@ -239,7 +230,7 @@ export const handleDenyProject = async (projectId) => {
 // 프로젝트 지원자 수락
 export const acceptProjectApplicant = async (data) => {
   try {
-    const response = await fetch(`/api/v1/projectTeams/accept`, {
+    const response = await fetch(`/projectTeams/accept`, {
       method: 'PATCH',
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
@@ -259,7 +250,7 @@ export const acceptProjectApplicant = async (data) => {
 // 프로젝트 지원 거부
 export const denyProjectApplicant = async (data) => {
   try {
-    const response = await fetch(`/api/v1/projectTeams/reject`, {
+    const response = await fetch(`/projectTeams/reject`, {
       method: 'PATCH',
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
@@ -278,7 +269,7 @@ export const denyProjectApplicant = async (data) => {
 
 //스택 조회
 export async function getStacks() {
-  const response = await fetch('/api/v1/stacks', {
+  const response = await fetch('/stacks', {
     method: 'GET',
     credentials: 'include',
   })

@@ -44,7 +44,7 @@ const ChangePassword = () => {
     setTimeExpired(false)
 
     try {
-      const response = await fetch('/api/v1/auth/email', {
+      const response = await fetch('/auth/email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -99,7 +99,7 @@ const ChangePassword = () => {
     }
 
     try {
-      const response = await fetch('/api/v1/users/password/reset', {
+      const response = await fetch('/users/password/reset', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

@@ -49,12 +49,12 @@ export default function EmailVerification({
     setTimeExpired(false)
 
     try {
-      const response = await fetch('/api/v1/auth/email', {
+      const response = await fetch('/auth/email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email,
-          techeer: isTecheerSignup
+          techeer: isTecheerSignup,
         }),
       })
 
@@ -98,7 +98,7 @@ export default function EmailVerification({
 
     setIsVerifying(true)
     try {
-      const response = await fetch('/api/v1/auth/code', {
+      const response = await fetch('/auth/code', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, code }),

@@ -2,7 +2,7 @@ import { SessionFormData } from '@/types/\bsession/session'
 
 // 세션 데이터 삭제
 export const deleteSession = async (id: string) => {
-  const response = await fetch(`/api/v1/sessions/${id}`, {
+  const response = await fetch(`/sessions/${id}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
@@ -25,15 +25,14 @@ export const getBestSessions = async (limit: number, cursorId?: number) => {
   const params = new URLSearchParams()
   params.append('limit', String(limit))
 
-   if (cursorId) {
+  if (cursorId) {
     params.append('cursorId', String(cursorId))
   }
 
-    const response = await fetch(`/api/v1/sessions/best?${params.toString()}`, {
-      method: 'GET',
-      credentials: 'include',
-    },
-  )
+  const response = await fetch(`/sessions/best?${params.toString()}`, {
+    method: 'GET',
+    credentials: 'include',
+  })
 
   if (!response.ok) {
     throw new Error('금주의 세션 데이터를 가져오는 데 실패했습니다.')
@@ -53,7 +52,7 @@ export const getSessions = async (
   sortBy: string,
   cursorId?: number,
 ) => {
-  const baseUrl = '/api/v1/sessions'
+  const baseUrl = '/sessions'
   const params: Record<string, string> = {
     category,
     size: String(newLimit),
@@ -87,7 +86,7 @@ export const getSessions = async (
 
 // 개별 세션 데이터 조회
 export const getSingleSession = async (id: string) => {
-  const response = await fetch(`/api/v1/sessions/${id}`, {
+  const response = await fetch(`/sessions/${id}`, {
     method: 'GET',
     credentials: 'include',
   })
@@ -103,7 +102,7 @@ export const updateSession = async (data: {
   id: string
   payload: SessionFormData
 }) => {
-  const response = await fetch(`/api/v1/sessions/${data.id}`, {
+  const response = await fetch(`/sessions/${data.id}`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
@@ -124,7 +123,7 @@ export const updateSession = async (data: {
 
 // 세션 데이터 업로드
 export const postSession = async (data: SessionFormData) => {
-  const response = await fetch('/api/v1/sessions', {
+  const response = await fetch('/sessions', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

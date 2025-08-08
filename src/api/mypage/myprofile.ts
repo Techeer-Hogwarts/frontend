@@ -1,5 +1,5 @@
 export const fetchUserProfile = async () => {
-  const response = await fetch(`/api/v1/users`, {
+  const response = await fetch(`/users`, {
     method: 'GET',
     credentials: 'include',
   })

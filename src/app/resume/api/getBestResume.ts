@@ -11,7 +11,7 @@ export const fetchBestResumes = async (
       params.append('cursorId', String(cursorId))
     }
 
-     const response = await fetch(`/api/v1/resumes/best?${params.toString()}`, {
+    const response = await fetch(`/resumes/best?${params.toString()}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

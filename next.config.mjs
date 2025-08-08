@@ -1,7 +1,7 @@
 import { withSentryConfig } from '@sentry/nextjs'
 /** @type {import('next').NextConfig} */
 
-const API_BASE_URL = process.env.API_BASE_URL || 'https://api.techeerzip.cloud/'
+const API_BASE_URL = process.env.API_BASE_URL || 'https://api.techeerzip.cloud/api/v3'
 
 const nextConfig = {
   images: {
@@ -47,8 +47,8 @@ const nextConfig = {
   async rewrites() {
     return [
       {
-        source: '/api/v1/:path*',
-        destination: `${API_BASE_URL}/api/v3/:path*`,
+        source: '/:path*',
+        destination: `${API_BASE_URL}/:path*`,
       },
       {
         source: '/api/v2/:path*',

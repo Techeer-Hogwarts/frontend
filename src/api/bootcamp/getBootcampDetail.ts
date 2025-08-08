@@ -1,5 +1,5 @@
 export const getBootcampDetail = async (bootcampId: number) => {
-  const res = await fetch(`/api/v1/bootcamps/${bootcampId}`, {
+  const res = await fetch(`/bootcamps/${bootcampId}`, {
     method: 'GET',
     credentials: 'include',
   })

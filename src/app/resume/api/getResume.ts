@@ -1,6 +1,6 @@
 export const fetchResumeById = async (resumeId: number): Promise<any> => {
   try {
-    const response = await fetch(`/api/v1/resumes/${resumeId}`, {
+    const response = await fetch(`/resumes/${resumeId}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

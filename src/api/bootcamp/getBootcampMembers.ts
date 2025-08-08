@@ -8,10 +8,10 @@ export const getBootcampMembers =
   async (): Promise<GetBootcampMembersResponse> => {
     const queryParams = new URLSearchParams({
       limit: '200',
-      sortBy: 'name'
+      sortBy: 'name',
     })
 
-    const res = await fetch(`/api/v1/users/profiles/bootcampMember?${queryParams}`, {
+    const res = await fetch(`/users/profiles/bootcampMember?${queryParams}`, {
       method: 'GET',
       credentials: 'include',
     })

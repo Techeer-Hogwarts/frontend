@@ -1,5 +1,5 @@
 export default async function getCurrentUser() {
-  const res = await fetch('/api/v1/users', {
+  const res = await fetch('/users', {
     method: 'GET',
     credentials: 'include', //사용자 식별, 로그인 확인
   })

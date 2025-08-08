@@ -62,7 +62,9 @@ export const useSignupHandler = () => {
       if (!formData.jobExperience) return '정규직 경험 여부를 선택해주세요.'
     }
     if (!formData.isVerified) return '이메일 인증을 완료해주세요.'
-    if (!isTecheer && !formData.joinReason) { return alert('가입 동기를 선택해주세요.')}
+    if (!isTecheer && !formData.joinReason) {
+      return alert('가입 동기를 선택해주세요.')
+    }
     return ''
   }
 
@@ -79,7 +81,7 @@ export const useSignupHandler = () => {
       const error = validateStepOne()
       if (error) return alert(error)
     }
-    
+
     if (step < 2) setStep(step + 1)
   }
 
@@ -179,7 +181,7 @@ export const useSignupHandler = () => {
         JSON.stringify(requestPayload),
       )
 
-      const response = await fetch('/api/v1/users/signup', {
+      const response = await fetch('/users/signup', {
         method: 'POST',
         body: formDataToSend,
       })
@@ -214,7 +216,7 @@ export const useSignupHandler = () => {
     }
 
     try {
-      const response = await fetch('/api/v1/users/signup/external', {
+      const response = await fetch('/users/signup/external', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
