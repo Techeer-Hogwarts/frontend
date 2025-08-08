@@ -24,7 +24,7 @@ export const handleLikeClick = async (
 
   try {
     const likeStatus = !likes[resumeId]?.isLiked
-    const response = await fetch('/likes', {
+    const response = await fetch('/api/likes', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

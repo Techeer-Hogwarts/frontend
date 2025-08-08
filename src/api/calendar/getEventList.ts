@@ -28,7 +28,7 @@ const getEvents = async ({
 
   if (limit !== undefined) params.append('limit', limit.toString())
 
-  const response = await fetch(`/events?${params}`, {
+  const response = await fetch(`/api/events?${params}`, {
     method: 'GET',
     headers: { 'Content-Type': 'application/json' },
   })

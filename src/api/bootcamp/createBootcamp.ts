@@ -30,7 +30,7 @@ export const createBootcamp = async (data: {
     formData.append('image', data.imageUrl)
   }
 
-  const res = await fetch('/bootcamps', {
+  const res = await fetch('/api/bootcamps', {
     method: 'POST',
     body: formData,
     credentials: 'include',

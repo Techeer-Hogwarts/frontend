@@ -39,7 +39,7 @@ export async function getResumeList({
     params.append('limit', limit.toString())
     params.append('sortBy', sortBy)
 
-    const response = await fetch(`/resumes?${params.toString()}`, {
+    const response = await fetch(`/api/resumes?${params.toString()}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

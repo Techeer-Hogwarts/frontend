@@ -13,7 +13,7 @@ export const handleBookmarkClick = async (
   // 북마크 상태 업데이트를 서버 응답 후로 변경
   try {
     const bookmarkStatus = !bookmarks[resumeId]?.isMarked
-    const response = await fetch('/bookmarks', {
+    const response = await fetch('/api/bookmarks', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

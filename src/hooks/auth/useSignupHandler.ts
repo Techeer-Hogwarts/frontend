@@ -181,7 +181,7 @@ export const useSignupHandler = () => {
         JSON.stringify(requestPayload),
       )
 
-      const response = await fetch('/users/signup', {
+      const response = await fetch('/api/users/signup', {
         method: 'POST',
         body: formDataToSend,
       })
@@ -216,7 +216,7 @@ export const useSignupHandler = () => {
     }
 
     try {
-      const response = await fetch('/users/signup/external', {
+      const response = await fetch('/api/users/signup/external', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

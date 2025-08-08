@@ -104,7 +104,7 @@ export const useAddStudy = () => {
       }
 
       const formData = prepareFormData(studyData)
-      const response = await fetch('/studyTeams', {
+      const response = await fetch('/api/studyTeams', {
         method: 'POST',
         credentials: 'include',
         body: formData,

@@ -60,7 +60,7 @@ export const useAuthStore = create<AuthState>()(
       setUser: (user: User | null) => set({ user }),
       checkAuth: async () => {
         try {
-          const response = await fetch('/users', {
+          const response = await fetch('/api/users', {
             method: 'GET',
             credentials: 'include',
           })
@@ -77,7 +77,7 @@ export const useAuthStore = create<AuthState>()(
       },
       logout: async () => {
         try {
-          const response = await fetch('/auth/logout', {
+          const response = await fetch('/api/auth/logout', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',

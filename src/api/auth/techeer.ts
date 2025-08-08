@@ -1,5 +1,5 @@
 export const upgradeTecheer = async (formData: FormData) => {
-  const response = await fetch(`/users/techeer`, {
+  const response = await fetch(`/api/users/techeer`, {
     method: 'PATCH',
     credentials: 'include',
     body: formData,

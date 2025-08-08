@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query'
 
-const API_URL = '/likes'
+const API_URL = '/api/likes'
 
 // 좋아요 추가/제거 API
 export const postLike = async (

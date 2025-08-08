@@ -27,7 +27,7 @@ export async function getProfileList({
       params.append('cursorId', cursorId.toString())
     }
 
-    const response = await fetch(`/users/profiles?${params.toString()}`, {
+    const response = await fetch(`/api/users/profiles?${params.toString()}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

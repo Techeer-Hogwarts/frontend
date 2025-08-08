@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 const deleteEvent = async (eventId: number) => {
-  const response = await fetch(`/events/${eventId}`, {
+  const response = await fetch(`/api/events/${eventId}`, {
     method: 'DELETE',
     headers: { 'Content-Type': 'application/json' },
     credentials: 'include',

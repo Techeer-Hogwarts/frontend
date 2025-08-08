@@ -2,7 +2,7 @@ import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query'
 
 // 블로그 조회수 증가 API
 const putBlog = async (id: number) => {
-  const response = await fetch(`/blogs/${id}`, {
+  const response = await fetch(`/api/blogs/${id}`, {
     method: 'PUT',
     credentials: 'include',
   })
@@ -27,7 +27,7 @@ export const usePutBlogAPI = () => {
 
 // 블로그 삭제 API
 const deleteBlog = async (id: string) => {
-  const response = await fetch(`/blogs/${id}`, {
+  const response = await fetch(`/api/blogs/${id}`, {
     method: 'DELETE',
     credentials: 'include',
     headers: {
@@ -110,7 +110,7 @@ export const useGetBlogsAPI = (
 // 블로그 글 추가 API
 export const postBlogAPI = async (url: string) => {
   const blogUrl = encodeURIComponent(url)
-  const response = await fetch(`/blogs?url=${blogUrl}`, {
+  const response = await fetch(`/api/blogs?url=${blogUrl}`, {
     method: 'POST',
     credentials: 'include',
   })

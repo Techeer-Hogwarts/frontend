@@ -1,5 +1,5 @@
 export const deleteBootcamp = async (bootcampId: number) => {
-  const res = await fetch(`/bootcamps/${bootcampId}`, {
+  const res = await fetch(`/api/bootcamps/${bootcampId}`, {
     method: 'DELETE',
     credentials: 'include',
   })

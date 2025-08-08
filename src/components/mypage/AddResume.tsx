@@ -81,7 +81,7 @@ export default function AddResume({ setModal, fetchData }: AddResumeProps) {
 
       formDataToSend.append('request', JSON.stringify(requestData))
 
-      const response = await fetch('/resumes', {
+      const response = await fetch('/api/resumes', {
         method: 'POST',
         body: formDataToSend,
         credentials: 'include',

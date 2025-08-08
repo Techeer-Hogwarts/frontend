@@ -103,7 +103,7 @@ export default function Profile({ profile }: ProfileProps) {
       return
     }
     try {
-      const response = await fetch('/users/profileImage', {
+      const response = await fetch('/api/users/profileImage', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -252,7 +252,7 @@ export default function Profile({ profile }: ProfileProps) {
     }
 
     try {
-      const response = await fetch('/users', {
+      const response = await fetch('/api/users', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',

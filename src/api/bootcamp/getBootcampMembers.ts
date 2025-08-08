@@ -11,10 +11,13 @@ export const getBootcampMembers =
       sortBy: 'name',
     })
 
-    const res = await fetch(`/users/profiles/bootcampMember?${queryParams}`, {
-      method: 'GET',
-      credentials: 'include',
-    })
+    const res = await fetch(
+      `/api/users/profiles/bootcampMember?${queryParams}`,
+      {
+        method: 'GET',
+        credentials: 'include',
+      },
+    )
 
     if (!res.ok) {
       throw new Error('부트캠프 멤버 정보를 불러오지 못했습니다.')

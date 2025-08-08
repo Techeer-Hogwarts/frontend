@@ -30,7 +30,7 @@ const BootcampHeader: React.FC<BootcampHeaderProps> = ({ ModalOpen }) => {
     }
     const fetchBootcampInfo = async () => {
       try {
-        const res = await fetch('/bootcamps?cursorId=0&limit=10', {
+        const res = await fetch('/api/bootcamps?cursorId=0&limit=10', {
           method: 'GET',
           credentials: 'include',
         })

@@ -33,7 +33,7 @@ export const updateBootcamp = async (
     formData.append('image', data.imageUrl)
   }
 
-  const res = await fetch(`/bootcamps/${bootcampId}`, {
+  const res = await fetch(`/api/bootcamps/${bootcampId}`, {
     method: 'PUT',
     body: formData,
     credentials: 'include',
