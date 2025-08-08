@@ -7,7 +7,7 @@ import { useAuthStore } from '@/store/authStore'
 export const useTecheerJoin = () => {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
-  const { user } = useAuthStore()
+  const { user, logout } = useAuthStore()
 
   const {
     formData,
@@ -156,6 +156,10 @@ export const useTecheerJoin = () => {
       await upgradeTecheer(formDataToSend)
 
       alert('테커 전환이 완료되었습니다!')
+
+      // 테커 전환 완료 후 로그아웃 처리
+      await logout()
+
       router.push('/')
     } catch (err: any) {
       console.error('테커 전환 오류:', err)

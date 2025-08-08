@@ -23,5 +23,12 @@ export const upgradeTecheer = async (formData: FormData) => {
     throw error
   }
 
-  return await response.json()
+  // 성공 응답 처리 - JSON이 있으면 파싱하고, 없으면 빈 객체 반환
+  try {
+    const text = await response.text()
+    return text ? JSON.parse(text) : {}
+  } catch (error) {
+    // JSON 파싱 실패시 빈 객체 반환
+    return {}
+  }
 }
