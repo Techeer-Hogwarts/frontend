@@ -20,8 +20,8 @@ interface ProfileProps {
     recruitExplain?: string
     projectExplain?: string
     studyExplain?: string
-    isRecruited?: boolean
-    isFinished?: boolean
+    recruited?: boolean
+    finished?: boolean
     resultImages?: any[]
     mainImages?: MainImage[]
   }
@@ -31,7 +31,7 @@ export default function ProjectProfile({
   variant,
   projectDetail,
 }: ProfileProps) {
-  const isFinished = projectDetail?.isFinished
+  const isFinished = projectDetail?.finished
 
   // project에서는 첫 mainImageUrl, study에서는 gradient box
   const mainImageUrl =
