@@ -2,7 +2,7 @@ import { SessionFormData } from '@/types/\bsession/session'
 
 // 세션 데이터 삭제
 export const deleteSession = async (id: string) => {
-  const response = await fetch(`/sessions/${id}`, {
+  const response = await fetch(`/api/sessions/${id}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
@@ -29,7 +29,7 @@ export const getBestSessions = async (limit: number, cursorId?: number) => {
     params.append('cursorId', String(cursorId))
   }
 
-  const response = await fetch(`/sessions/best?${params.toString()}`, {
+  const response = await fetch(`/api/sessions/best?${params.toString()}`, {
     method: 'GET',
     credentials: 'include',
   })
@@ -86,7 +86,7 @@ export const getSessions = async (
 
 // 개별 세션 데이터 조회
 export const getSingleSession = async (id: string) => {
-  const response = await fetch(`/sessions/${id}`, {
+  const response = await fetch(`/api/sessions/${id}`, {
     method: 'GET',
     credentials: 'include',
   })
@@ -102,7 +102,7 @@ export const updateSession = async (data: {
   id: string
   payload: SessionFormData
 }) => {
-  const response = await fetch(`/sessions/${data.id}`, {
+  const response = await fetch(`/api/sessions/${data.id}`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
@@ -123,7 +123,7 @@ export const updateSession = async (data: {
 
 // 세션 데이터 업로드
 export const postSession = async (data: SessionFormData) => {
-  const response = await fetch('/sessions', {
+  const response = await fetch('/api/sessions', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
