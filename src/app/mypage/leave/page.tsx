@@ -16,7 +16,7 @@ export default function Page() {
     setIsError(false)
 
     try {
-      const response = await fetch('/api/v1/users', {
+      const response = await fetch('/api/users', {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',

@@ -33,7 +33,7 @@ export const fetchUserResumes = async (
     params.append('limit', limit.toString())
 
     const queryString = params.toString()
-    const url = `/api/v1/resumes/user/${userId}${queryString ? `?${queryString}` : ''}`
+    const url = `/api/resumes/user/${userId}${queryString ? `?${queryString}` : ''}`
 
     const response = await fetch(url, {
       method: 'GET',

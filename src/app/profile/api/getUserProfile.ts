@@ -1,7 +1,7 @@
 export async function fetchUserProfile(userId: number) {
   try {
     // API 경로를 동적 경로로 설정
-    const response = await fetch(`/api/v1/users/${userId}`, {
+    const response = await fetch(`/api/users/${userId}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

@@ -81,7 +81,7 @@ export default function AddResume({ setModal, fetchData }: AddResumeProps) {
 
       formDataToSend.append('request', JSON.stringify(requestData))
 
-      const response = await fetch('/api/v1/resumes', {
+      const response = await fetch('/api/resumes', {
         method: 'POST',
         body: formDataToSend,
         credentials: 'include',
@@ -236,7 +236,10 @@ export default function AddResume({ setModal, fetchData }: AddResumeProps) {
             disabled={isLoading}
           >
             {isLoading ? (
-              <Lottie animationData={loading} style={{ width: 40, height: 40 }} />
+              <Lottie
+                animationData={loading}
+                style={{ width: 40, height: 40 }}
+              />
             ) : (
               '등록'
             )}

@@ -24,7 +24,7 @@ export const handleLikeClick = async (
 
   try {
     const likeStatus = !likes[resumeId]?.isLiked
-    const response = await fetch('/api/v1/likes', {
+    const response = await fetch('/api/likes', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -38,5 +38,5 @@ export const handleLikeClick = async (
     if (!response.ok) {
       throw new Error('Like request failed')
     }
-  } catch (error) { }
+  } catch (error) {}
 }

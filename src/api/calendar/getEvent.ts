@@ -2,7 +2,7 @@ import { CalendarEventCardProps } from '@/components/calender/CalendarEventCard'
 import { useQuery } from '@tanstack/react-query'
 
 const getEvent = async (eventId: number): Promise<CalendarEventCardProps> => {
-  const response = await fetch(`/api/v1/events/${eventId}`, {
+  const response = await fetch(`/api/events/${eventId}`, {
     method: 'GET',
     headers: { 'Content-Type': 'application/json' },
   })

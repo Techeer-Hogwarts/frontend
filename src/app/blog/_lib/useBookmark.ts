@@ -1,4 +1,4 @@
-const API_URL = '/api/v1/bookmarks'
+const API_URL = '/api/bookmarks'
 
 export function useBookmark() {
   const postBookmark = async (

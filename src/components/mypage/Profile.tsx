@@ -103,7 +103,7 @@ export default function Profile({ profile }: ProfileProps) {
       return
     }
     try {
-      const response = await fetch('/api/v1/users/profileImage', {
+      const response = await fetch('/api/users/profileImage', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -160,7 +160,7 @@ export default function Profile({ profile }: ProfileProps) {
       alert('학년을 선택해주세요.')
       return
     }
-    
+
     if (!mainPosition) {
       alert('메인 포지션을 선택해주세요.')
       return
@@ -177,14 +177,14 @@ export default function Profile({ profile }: ProfileProps) {
     try {
       // 인턴
       for (const delId of deletedInternshipIds) {
-        await fetch(`/api/v1/users/experience/${delId}`, {
+        await fetch(`/users/experience/${delId}`, {
           method: 'DELETE',
           credentials: 'include',
         })
       }
       // 정규직
       for (const delId of deletedFullTimeIds) {
-        await fetch(`/api/v1/users/experience/${delId}`, {
+        await fetch(`/users/experience/${delId}`, {
           method: 'DELETE',
           credentials: 'include',
         })
@@ -252,7 +252,7 @@ export default function Profile({ profile }: ProfileProps) {
     }
 
     try {
-      const response = await fetch('/api/v1/users', {
+      const response = await fetch('/api/users', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',

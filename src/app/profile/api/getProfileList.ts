@@ -7,7 +7,7 @@ export async function getProfileList({
   grade = [],
   cursorId,
   limit: limit,
-  sortBy = 'year'
+  sortBy = 'year',
 }: ProfileQueryParams) {
   try {
     // URLSearchParams에 배열 데이터를 추가하는 함수
@@ -19,7 +19,7 @@ export async function getProfileList({
     if (university.length > 0)
       university.forEach((u) => params.append('university', u))
     if (grade.length > 0) grade.forEach((g) => params.append('grade', g))
-    
+
     params.append('limit', (limit ?? 12).toString()) // undefined 방지
     params.append('sortBy', sortBy)
 
@@ -27,16 +27,13 @@ export async function getProfileList({
       params.append('cursorId', cursorId.toString())
     }
 
-    const response = await fetch(
-      `/api/v1/users/profiles?${params.toString()}`,
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        // credentials: 'include',
+    const response = await fetch(`/api/users/profiles?${params.toString()}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
       },
-    )
+      // credentials: 'include',
+    })
     const result = await response.json()
 
     if (!response.ok) {

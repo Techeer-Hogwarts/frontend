@@ -11,6 +11,7 @@ export interface InputFieldProps {
   required?: boolean // 필수 여부 (*)
   showIcon?: boolean
   isChecked?: boolean
+  disabled?: boolean
 }
 
 const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
@@ -23,6 +24,7 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
       required = false,
       showIcon = false,
       isChecked = false,
+      disabled = false,
       onChange,
       value,
     },
@@ -50,8 +52,11 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
           placeholder={placeholder}
           onChange={onChange}
           value={value}
+          disabled={disabled}
           ref={ref} // forwardRef로 전달된 ref를 input에 연결
-          className="w-full h-10 px-4 border border-gray rounded-[0.25rem] focus:outline-none focus:border-primary"
+          className={`w-full h-10 px-4 border border-gray rounded-[0.25rem] focus:outline-none focus:border-primary ${
+            disabled ? 'bg-gray-100 cursor-not-allowed' : ''
+          }`}
         />
       </div>
     )

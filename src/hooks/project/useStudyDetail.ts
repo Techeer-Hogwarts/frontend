@@ -39,6 +39,9 @@ export const useStudyDetail = (studyId: number) => {
     queryKey: ['getStudyApplicants', studyId],
     queryFn: () => getStudyApplicants(studyId),
     enabled: !!studyId,
+    staleTime: Infinity, // 새로고침 전까지 캐시 유지
+    gcTime: 1000 * 60 * 10, // 10분간 캐시 유지
+    retry: false, // 404 에러시 재시도 안함
   })
 
   // 스터디 멤버 여부 확인
