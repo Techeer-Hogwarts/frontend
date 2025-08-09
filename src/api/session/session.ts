@@ -52,7 +52,7 @@ export const getSessions = async (
   sortBy: string,
   cursorId?: number,
 ) => {
-  const baseUrl = '/sessions'
+  const baseUrl = '/api/sessions'
   const params: Record<string, string> = {
     category,
     size: String(newLimit),
