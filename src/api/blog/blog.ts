@@ -60,9 +60,9 @@ const getBlogs = async (
   cursor?: number,
   sortBy?: string,
 ) => {
-  let url = '/blogs'
+  let url = '/api/blogs'
   if (category === '금주의 블로그') {
-    url = '/blogs/best'
+    url = '/api/blogs/best'
   }
 
   const params: Record<string, string> = {
