@@ -39,6 +39,7 @@ export default function Mypage() {
       {/** 우측 컨텐츠 영역 */}
       {activeTab === 'home' && (
         <Home
+          techStacks={profile?.techStacks}
           projectTeams={profile?.projectTeams}
           studyTeams={profile?.studyTeams}
           experiences={profile?.experiences}
