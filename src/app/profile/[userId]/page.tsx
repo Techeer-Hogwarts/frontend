@@ -51,6 +51,7 @@ export default function Page({ params }: { params: { userId: string } }) {
       {/** 우측 컨텐츠 영역 */}
       {activeTab === 'home' && (
         <Home
+          techStacks={profileData?.techStacks}
           projectTeams={profileData?.projectTeams}
           studyTeams={profileData?.studyTeams}
           experiences={profileData?.experiences}

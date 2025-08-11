@@ -9,6 +9,20 @@ export interface Experience {
   description: string | ""
 }
 
+export interface StackItem {
+  id: number
+  name: string
+  category: string
+}
+
+export interface TechStacks {
+  backend?: StackItem[]
+  frontend?: StackItem[]
+  database?: StackItem[]
+  devops?: StackItem[]
+  other?: StackItem[]
+}
+
 export interface Team {
   id: number
   name: string
@@ -34,4 +48,5 @@ export interface ProfileData {
   projectTeams?: Team[]
   studyTeams?: Team[]
   experiences?: Experience[]
+  techStacks?: TechStacks
 }
