@@ -9,7 +9,6 @@ import Settings from '@/components/mypage/Settings'
 import Bookmark from '@/components/mypage/Bookmark'
 import MypageTap from '@/components/mypage/MypageTap'
 import ProfileBox from '@/components/profile/ProfileBox'
-import AuthModal from '@/components/common/AuthModal'
 import { useFetchProfile } from '@/hooks/mypage/useFetchProfile'
 
 export default function Mypage() {
@@ -17,15 +16,10 @@ export default function Mypage() {
     'home' | 'profile' | 'resume' | 'bookmark' | 'likes' | 'settings'
   >('home')
 
-  const { profile, authModalOpen, loading, setAuthModalOpen, error } =
-    useFetchProfile()
+  const { profile, loading, error } = useFetchProfile()
 
   return (
     <div className="flex gap-[4.375rem] mt-10">
-      <AuthModal
-        isOpen={authModalOpen}
-        onClose={() => setAuthModalOpen(false)}
-      />
       {/** 좌측 영역 */}
       <div className="flex flex-col w-[15rem] gap-6 ">
         <ProfileBox
