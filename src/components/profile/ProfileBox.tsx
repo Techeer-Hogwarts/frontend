@@ -128,7 +128,7 @@ export default function ProfileBox({
             <span className="h-[1.25rem] border-r border-gray" />
             <div>{profile.grade}</div>
             <span className="h-[1.25rem] border-r border-gray" />
-            <div>{profile.year}기</div>
+            <div>{profile.year == 0 ? 'Leader' : `${profile.year}기`}</div>
           </div>
 
           {/* 포지션/경력 (mainPosition, subPosition) */}
