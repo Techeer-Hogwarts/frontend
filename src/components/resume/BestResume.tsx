@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import { fetchBestResumes } from '@/app/resume/api/getBestResume'
+import { fetchBestResumes } from '@/app/(protected)/resume/api/getBestResume'
 import { useInView } from 'react-intersection-observer'
 
 interface ResumeData {
@@ -19,7 +19,7 @@ interface ResumeData {
 }
 
 interface ResumeFolderProps {
-  setAuthModalOpen: (open: boolean) => void 
+  setAuthModalOpen: (open: boolean) => void
 }
 export default function BestResume({ setAuthModalOpen }: ResumeFolderProps) {
   const [resumes, setResumes] = useState<ResumeData[]>([]) // 빈 배열로 초기화
@@ -38,7 +38,11 @@ export default function BestResume({ setAuthModalOpen }: ResumeFolderProps) {
 
     try {
       setIsLoadingMore(true)
-      const response = await fetchBestResumes(cursorId || undefined, limit, setAuthModalOpen)
+      const response = await fetchBestResumes(
+        cursorId || undefined,
+        limit,
+        setAuthModalOpen,
+      )
       const newResumes: ResumeData[] = response.data || []
 
       setResumes((prev) => {
@@ -49,7 +53,6 @@ export default function BestResume({ setAuthModalOpen }: ResumeFolderProps) {
 
       if (response.hasNext !== undefined) setHasNext(response.hasNext)
       if (response.nextCursor !== undefined) setCursorId(response.nextCursor)
-
     } catch (error) {
       console.error('인기 이력서 불러오기 실패:', error)
     } finally {
@@ -113,7 +116,7 @@ export default function BestResume({ setAuthModalOpen }: ResumeFolderProps) {
                 </button>
               )
             })}
-           {hasNext && <div ref={ref} className="h-2" />}
+          {hasNext && <div ref={ref} className="h-2" />}
         </div>
       )}
     </div>

@@ -6,7 +6,7 @@ import CareerToggle from '@/components/signup/CareerToggle'
 import InputField from '@/components/common/InputField'
 import Link from 'next/link'
 import Lottie from 'lottie-react'
-import loading from '../../../public/loading.json'
+import loading from '../../../../public/loading.json'
 import { useTecheerJoin } from '@/hooks/auth/useTecheerJoin'
 import {
   UNIVERSITIES,

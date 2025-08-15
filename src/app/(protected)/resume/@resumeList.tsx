@@ -5,8 +5,8 @@ import ResumeFolder from '@/components/resume/ResumeFolder'
 import SkeletonResumeFolder from '@/components/resume/SkeletonResume'
 import { useCallback, useEffect, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
-import { useLike } from '../blog/_lib/useLike'
-import { useBookmark } from '../blog/_lib/useBookmark'
+import { useLike } from '../../blog/_lib/useLike'
+import { useBookmark } from '../../blog/_lib/useBookmark'
 import { getResumeList } from './api/getResumeList'
 
 // Resume 타입 가져오기

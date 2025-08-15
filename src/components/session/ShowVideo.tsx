@@ -51,10 +51,6 @@ export default function ShowVideo() {
   }
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <AuthModal
-        isOpen={authModalOpen}
-        onClose={() => setAuthModalOpen(false)}
-      />
       {!authModalOpen && (
         <div className="relative p-4 rounded-lg">
           <iframe
