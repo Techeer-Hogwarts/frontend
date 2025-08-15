@@ -2,7 +2,7 @@ import Image from 'next/image'
 import CareerTag from '../common/CareerTag'
 import PositionTag from '../common/PositionTag'
 import { useEffect, useState } from 'react'
-import { fetchUserResumes } from '@/app/resume/api/getUserResume'
+import { fetchUserResumes } from '@/app/(protected)/resume/api/getUserResume'
 import { useRouter } from 'next/navigation'
 
 interface Resume {

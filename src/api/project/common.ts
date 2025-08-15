@@ -66,7 +66,7 @@ export const getAllTeams = async (
       searchParams.append('isFinished', filter.isFinished.toString())
     }
 
-    const url = `/api/v1/projectTeams/allTeams?${searchParams.toString()}`
+    const url = `/api/projectTeams/allTeams?${searchParams.toString()}`
 
     const response = await fetch(url, {
       method: 'GET',
@@ -143,7 +143,7 @@ export const getNextTeams = async (
 // 테커 모든 인원 조회
 export const getAllUsers = async () => {
   try {
-    const response = await fetch(`/api/v1/users/profiles?offset=0&limit=200`, {
+    const response = await fetch(`/api/users/profiles?offset=0&limit=200`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -165,7 +165,7 @@ export const getAllUsers = async () => {
 //사용자 정보 가져오기
 export const getMyInfo = async (): Promise<UserProfile> => {
   try {
-    const response = await fetch(`/api/v1/users`, {
+    const response = await fetch(`/api/users`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

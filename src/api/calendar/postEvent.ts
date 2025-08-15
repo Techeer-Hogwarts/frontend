@@ -9,7 +9,7 @@ export interface EventData {
 }
 
 const postEvent = async (eventData: EventData): Promise<void> => {
-  const response = await fetch('/api/v1/events', {
+  const response = await fetch('/api/events', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(eventData),

@@ -9,7 +9,7 @@ import { useTapBarStore } from '@/store/tapBarStore'
 import { useInView } from 'react-intersection-observer'
 import { useBookmark } from '@/app/blog/_lib/useBookmark'
 import Skeleton from './Skeleton'
-import { useGetResumeQuery } from '@/app/resume/query/useGetResumeQuery'
+import { useGetResumeQuery } from '@/app/(protected)/resume/query/useGetResumeQuery'
 import ResumeFolder from './ResumeFolder'
 import SkeletonResumeFolder from '../resume/SkeletonResume'
 import { IoReturnDownBack } from 'react-icons/io5'
@@ -144,16 +144,17 @@ export default function Bookmark() {
       </div>
       {isLoading ? (
         <div
-          className={`grid gap-7 mt-5 ${activeOption === '이력서' ? 'grid-cols-3' : 'grid-cols-2'
-            }`}
+          className={`grid gap-7 mt-5 ${
+            activeOption === '이력서' ? 'grid-cols-3' : 'grid-cols-2'
+          }`}
         >
           {activeOption === '이력서'
             ? Array.from({ length: 6 }).map((_, index) => (
-              <SkeletonResumeFolder key={index} />
-            ))
+                <SkeletonResumeFolder key={index} />
+              ))
             : Array.from({ length: 4 }).map((_, index) => (
-              <Skeleton key={index} />
-            ))}
+                <Skeleton key={index} />
+              ))}
         </div>
       ) : bookmarks.length === 0 ? (
         // grid 외부에 빈 상태 컴포넌트를 flex 컨테이너로 중앙 정렬 처리
@@ -162,8 +163,9 @@ export default function Bookmark() {
         </div>
       ) : (
         <div
-          className={`grid gap-7 mt-5 ${activeOption === '이력서' ? 'grid-cols-3' : 'grid-cols-2'
-            }`}
+          className={`grid gap-7 mt-5 ${
+            activeOption === '이력서' ? 'grid-cols-3' : 'grid-cols-2'
+          }`}
         >
           {bookmarks.map((bookmark: any) => {
             if (activeOption === '블로그') {

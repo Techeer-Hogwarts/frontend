@@ -2,7 +2,7 @@ import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query'
 
 // 블로그 조회수 증가 API
 const putBlog = async (id: number) => {
-  const response = await fetch(`/api/v1/blogs/${id}`, {
+  const response = await fetch(`/api/blogs/${id}`, {
     method: 'PUT',
     credentials: 'include',
   })
@@ -27,11 +27,11 @@ export const usePutBlogAPI = () => {
 
 // 블로그 삭제 API
 const deleteBlog = async (id: string) => {
-  const response = await fetch(`/api/v1/blogs/${id}`, {
+  const response = await fetch(`/api/blogs/${id}`, {
     method: 'DELETE',
     credentials: 'include',
     headers: {
-      'accept': '*/*',
+      accept: '*/*',
     },
   })
 
@@ -54,10 +54,15 @@ export const useDeleteBlogAPI = () => {
 }
 
 // 블로그 인기글 조회와 목록 조회 API
-const getBlogs = async (newLimit: number, category: string, cursor?: number, sortBy?: string) => {
-  let url = '/api/v1/blogs'
+const getBlogs = async (
+  newLimit: number,
+  category: string,
+  cursor?: number,
+  sortBy?: string,
+) => {
+  let url = '/api/blogs'
   if (category === '금주의 블로그') {
-    url = '/api/v1/blogs/best'
+    url = '/api/blogs/best'
   }
 
   const params: Record<string, string> = {
@@ -89,7 +94,12 @@ const getBlogs = async (newLimit: number, category: string, cursor?: number, sor
   return result
 }
 
-export const useGetBlogsAPI = (newLimit: number, category: string, cursor?: number, sortBy?: string) => {
+export const useGetBlogsAPI = (
+  newLimit: number,
+  category: string,
+  cursor?: number,
+  sortBy?: string,
+) => {
   return useQuery({
     queryKey: ['blogs', newLimit, category, cursor, sortBy],
     queryFn: () => getBlogs(newLimit, category, cursor, sortBy),
@@ -100,7 +110,7 @@ export const useGetBlogsAPI = (newLimit: number, category: string, cursor?: numb
 // 블로그 글 추가 API
 export const postBlogAPI = async (url: string) => {
   const blogUrl = encodeURIComponent(url)
-  const response = await fetch(`/api/v1/blogs?url=${blogUrl}`, {
+  const response = await fetch(`/api/blogs?url=${blogUrl}`, {
     method: 'POST',
     credentials: 'include',
   })
