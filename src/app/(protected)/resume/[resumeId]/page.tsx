@@ -6,10 +6,8 @@ import Image from 'next/image'
 
 import ProfileBox from '@/components/profile/ProfileBox'
 import Other from '@/components/resume/OtherResume'
-import { fetchResumeById } from '@/app/resume/api/getResume'
+import { fetchResumeById } from '@/app/(protected)/resume/api/getResume'
 import EmptyLottie from '@/components/common/EmptyLottie'
-import AuthModal from '@/components/common/AuthModal'
-import { useAuthStore } from '@/store/authStore'
 
 import Skeleton from '@/components/resume/Skeleton'
 
@@ -37,18 +35,12 @@ export default function Detail() {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  // 인증 모달
-  const [authModalOpen, setAuthModalOpen] = useState(false)
-
   // 이력서 데이터
   const [resume, setResume] = useState<ResumeData | null>(null)
   const [profileData, setProfileData] = useState<any>(null)
 
   // OtherResume 표시
   const [showOther, setShowOther] = useState(false)
-
-  // 사용자 인증
-  const { user } = useAuthStore()
 
   // 2) 이력서 데이터 로드
   useEffect(() => {
@@ -69,17 +61,6 @@ export default function Detail() {
     }
     loadResume()
   }, [resumeId])
-
-  // 3) 로딩 끝난 뒤 로그인 상태 확인
-  useEffect(() => {
-    if (!isLoading) {
-      if (user === null) {
-        setAuthModalOpen(true)
-      } else {
-        setAuthModalOpen(false)
-      }
-    }
-  }, [isLoading, user])
 
   // Other 컴포넌트 표시 토글
   const handleToggleOther = () => {
@@ -152,12 +133,6 @@ export default function Detail() {
 
   return (
     <>
-      {/* 인증 모달 */}
-      <AuthModal
-        isOpen={authModalOpen}
-        onClose={() => setAuthModalOpen(false)}
-      />
-
       {isLoading ? (
         // 로딩 중: 왼/오른쪽 모두 스켈레톤
         <Skeleton />

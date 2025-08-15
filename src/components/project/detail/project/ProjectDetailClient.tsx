@@ -62,12 +62,6 @@ export default function ProjectDetailClient({
 
   return (
     <div className="relative flex justify-between mt-[2.75rem] gap-[3.313rem]">
-      {/* 모달들 */}
-      <AuthModal
-        isOpen={authModalOpen}
-        onClose={() => setAuthModalOpen(false)}
-      />
-
       {isModalOpen && modalType && (
         <BaseModal
           text={MODAL_TEXT_MAP[modalType]}

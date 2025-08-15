@@ -34,7 +34,9 @@ export default function ProfileCard({
       {/* 탭 부분 */}
       <div className="flex items-end">
         <div className="relative w-[3rem] h-[1.25rem] bg-lightprimary flex items-center justify-center rounded-t-md shadow-cardtop">
-          <span className="text-pink text-[0.75rem]">{year}기</span>
+          <span className="text-pink text-[0.75rem]">
+            {year == 0 ? 'Leader' : `${year}기`}
+          </span>
         </div>
         <div
           className="w-1 h-[0.95rem] bg-lightprimary"

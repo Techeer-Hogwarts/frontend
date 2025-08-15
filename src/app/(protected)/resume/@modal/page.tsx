@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import UpdateSVG from '../../../../public/update.svg'
+import UpdateSVG from '../../../../../public/update.svg'
 
 const UpadateModal = () => {
   const router = useRouter() // useRouter 훅을 사용하여 라우터 객체 얻기

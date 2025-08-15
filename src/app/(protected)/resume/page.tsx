@@ -2,14 +2,13 @@
 
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import Star from '../../../public/star.svg'
+import Star from '../../../../public/star.svg'
 import Dropdown from '@/components/common/Dropdown'
 import TapBar from '@/components/common/TapBar'
 import BestResume from '@/components/resume/BestResume'
 import FilterBtn from '@/components/session/FilterBtn'
 import ResumeList from './@resumeList'
 import SearchBar from '@/components/common/SearchBar'
-import AuthModal from '@/components/common/AuthModal'
 import { useTapBarStore } from '@/store/tapBarStore'
 
 export default function Resume() {
@@ -59,12 +58,6 @@ export default function Resume() {
 
   return (
     <div className="flex flex-col max-w-[75rem] w-[75rem] mt-[3.56rem]">
-      {/* AuthModal 추가 */}
-      <AuthModal
-        isOpen={authModalOpen}
-        onClose={() => setAuthModalOpen(false)}
-      />
-
       {/** 배너 */}
       <div className="flex justify-between gap-10 mb-[2.84rem]">
         <div className="flex flex-col">
