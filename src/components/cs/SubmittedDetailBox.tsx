@@ -60,9 +60,9 @@ export default function SubmittedDetailBox({ id }: SubmittedDetailBoxProps) {
         <p className="text-gray-700 leading-relaxed">
           tanstack-query에서 staleTime과 gcTime은 데이터를 캐싱하고 관리하는 데
           중요한 두 가지 설정 값입니다. <br />
-          먼저 staleTime은 데이터를 얼마나 오랜 시간 '신선한 상태'로
-          유지되는지를 정하는 시간이고, gcTime은 해당 쿼리를 사용하는 곳이 없게
-          된 이후에도 캐시 데이터를 얼마 동안 유지할지를 정하는 시간입니다.
+          먼저 staleTime은 데이터를 얼마나 오랜 시간 신선한 상태로 유지되는지를
+          정하는 시간이고, gcTime은 해당 쿼리를 사용하는 곳이 없게 된 이후에도
+          캐시 데이터를 얼마 동안 유지할지를 정하는 시간입니다.
         </p>
       </div>
 
