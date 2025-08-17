@@ -44,7 +44,33 @@ const comments = [
 ]
 
 export default function SubmittedDetailBox({ id }: SubmittedDetailBoxProps) {
-  const { data: problemDetail } = useCsProblemDetailQuery(Number(id))
+  const {
+    data: problemDetail,
+    isLoading,
+    error,
+  } = useCsProblemDetailQuery(Number(id))
+
+  if (isLoading) {
+    return (
+      <div className="max-w-[1200px] mx-auto mt-[3.56rem]">
+        <h1 className="text-[2rem] font-bold mb-5">오늘의 CS</h1>
+        <div className="border border-gray bg-filterbg px-6 py-8 rounded-xl text-xl font-semibold mb-10">
+          <p>문제를 불러오는 중...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (error || !problemDetail) {
+    return (
+      <div className="max-w-[1200px] mx-auto mt-[3.56rem]">
+        <h1 className="text-[2rem] font-bold mb-5">오늘의 CS</h1>
+        <div className="border border-red-300 bg-red-50 px-6 py-8 rounded-xl text-xl font-semibold mb-10">
+          <p>문제를 불러오는데 실패했습니다.</p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="max-w-[1200px] mx-auto mt-[3.56rem]">
