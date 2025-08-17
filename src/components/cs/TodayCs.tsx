@@ -47,7 +47,7 @@ export default function TodayCSBox() {
           onClick={() => router.push(`/cs/${todayCs.problemId}`)}
           className="w-[12.5rem] h-[2.5rem] bg-primary text-white rounded-xl hover:bg-darkPrimary"
         >
-          CS 풀기
+          {todayCs.isAnswered ? '답변 보러가기' : 'CS 풀기'}
         </button>
       </div>
 

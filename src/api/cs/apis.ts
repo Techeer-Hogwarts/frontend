@@ -3,6 +3,7 @@ import {
   CsProblemListParams,
   CsProblemListResponse,
   CsProblemDetail,
+  CsAnswerSubmitRequest,
 } from './types'
 
 const CS_API_BASE = '/api/today-cs'
@@ -48,4 +49,22 @@ export const getCsProblemDetail = async (
   }
 
   return response.json()
+}
+
+// CS 답변 제출
+export const submitCsAnswer = async (
+  problemId: number,
+  data: CsAnswerSubmitRequest,
+): Promise<void> => {
+  const response = await fetch(`${CS_API_BASE}/problems/${problemId}/answers`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  })
+
+  if (!response.ok) {
+    throw new Error('CS 답변 제출에 실패했습니다.')
+  }
 }
