@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { FaRegThumbsUp, FaChevronDown } from 'react-icons/fa'
+import { useCsProblemDetailQuery } from '@/api/cs'
 
 interface SubmittedDetailBoxProps {
   id: string
@@ -43,26 +44,21 @@ const comments = [
 ]
 
 export default function SubmittedDetailBox({ id }: SubmittedDetailBoxProps) {
+  const { data: problemDetail } = useCsProblemDetailQuery(Number(id))
+
   return (
     <div className="max-w-[1200px] mx-auto mt-[3.56rem]">
       <h1 className="text-[2rem] font-bold mb-5">오늘의 CS</h1>
-      <p className="text-primary text-lg mb-3">2025년 03월 28일</p>
+      {/* <p className="text-primary text-lg mb-3">2025년 03월 28일</p> */}
 
       <div className="border border-gray bg-filterbg px-6 py-8 rounded-xl text-xl font-semibold mb-10">
-        <p>
-          tanstack-query에서 stale time과 gc time의 차이점에 대해서
-          설명해주세요.
-        </p>
+        <p>{problemDetail.content}</p>
       </div>
 
       <div className="mb-10">
         <h2 className="text-xl font-bold mb-4">정답</h2>
         <p className="text-gray-700 leading-relaxed">
-          tanstack-query에서 staleTime과 gcTime은 데이터를 캐싱하고 관리하는 데
-          중요한 두 가지 설정 값입니다. <br />
-          먼저 staleTime은 데이터를 얼마나 오랜 시간 신선한 상태로 유지되는지를
-          정하는 시간이고, gcTime은 해당 쿼리를 사용하는 곳이 없게 된 이후에도
-          캐시 데이터를 얼마 동안 유지할지를 정하는 시간입니다.
+          {problemDetail.solution}
         </p>
       </div>
 
