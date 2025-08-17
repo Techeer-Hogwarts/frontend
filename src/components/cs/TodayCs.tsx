@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import PreviousCSSection from './PreviousCsSection'
+import CsQuestionList from './CsQuestionList'
 import { useTodayCsQuery } from '@/api/cs'
 
 export default function TodayCSBox() {
@@ -12,7 +12,7 @@ export default function TodayCSBox() {
     return (
       <div className="max-w-[1200px] mx-auto mt-[3.56rem]">
         <div className="flex items-center space-x-4 mb-5">
-          <h1 className="text-[2rem] font-bold">오늘의 CS</h1>
+          <h1 className="text-[2rem] font-bold">최신 CS</h1>
         </div>
         <div className="border border-primary px-6 py-8 rounded-xl text-xl font-semibold">
           <p>CS 문제를 불러오는 중...</p>
@@ -25,7 +25,7 @@ export default function TodayCSBox() {
     return (
       <div className="max-w-[1200px] mx-auto mt-[3.56rem]">
         <div className="flex items-center space-x-4 mb-5">
-          <h1 className="text-[2rem] font-bold">오늘의 CS</h1>
+          <h1 className="text-[2rem] font-bold">최신 CS</h1>
         </div>
         <div className="border border-red-300 bg-red-50 px-6 py-8 rounded-xl text-xl font-semibold">
           <p>CS 문제를 불러오는데 실패했습니다.</p>
@@ -37,7 +37,7 @@ export default function TodayCSBox() {
   return (
     <div className="max-w-[1200px] mx-auto mt-[3.56rem]">
       <div className="flex items-center space-x-4 mb-5">
-        <h1 className="text-[2rem] font-bold">오늘의 CS</h1>
+        <h1 className="text-[2rem] font-bold">최신 CS</h1>
         {/* <p className="text-lg text-gray">2025년 03월 28일</p> */}
       </div>
 
@@ -51,7 +51,7 @@ export default function TodayCSBox() {
         </button>
       </div>
 
-      <PreviousCSSection />
+      <CsQuestionList />
     </div>
   )
 }

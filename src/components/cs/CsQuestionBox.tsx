@@ -9,7 +9,7 @@ interface ProblemListProps {
   solvedFilter: 'solved' | 'unsolved' | null
 }
 
-export default function ProblemList({
+export default function CsQuestionBox({
   problems,
   solvedFilter,
 }: ProblemListProps) {
