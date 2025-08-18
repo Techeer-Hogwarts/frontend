@@ -9,8 +9,8 @@ export interface CsProblem {
 export interface CsProblemDetail {
   id: number
   content: string
-  solution: string
-  isAnswered: boolean
+  solution: string | null
+  answered: boolean
 }
 
 // CS 문제 목록 조회 파라미터

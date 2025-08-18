@@ -53,7 +53,7 @@ export default function SubmittedDetailBox({ id }: SubmittedDetailBoxProps) {
   if (isLoading) {
     return (
       <div className="max-w-[1200px] mx-auto mt-[3.56rem]">
-        <h1 className="text-[2rem] font-bold mb-5">최신 CS</h1>
+        <h1 className="text-[2rem] font-bold mb-5"> CS 문제</h1>
         <div className="border border-gray bg-filterbg px-6 py-8 rounded-xl text-xl font-semibold mb-10">
           <p>문제를 불러오는 중...</p>
         </div>
@@ -64,7 +64,7 @@ export default function SubmittedDetailBox({ id }: SubmittedDetailBoxProps) {
   if (error || !problemDetail) {
     return (
       <div className="max-w-[1200px] mx-auto mt-[3.56rem]">
-        <h1 className="text-[2rem] font-bold mb-5">최신 CS</h1>
+        <h1 className="text-[2rem] font-bold mb-5">CS 문제</h1>
         <div className="border border-red-300 bg-red-50 px-6 py-8 rounded-xl text-xl font-semibold mb-10">
           <p>문제를 불러오는데 실패했습니다.</p>
         </div>
@@ -74,7 +74,7 @@ export default function SubmittedDetailBox({ id }: SubmittedDetailBoxProps) {
 
   return (
     <div className="max-w-[1200px] mx-auto mt-[3.56rem]">
-      <h1 className="text-[2rem] font-bold mb-5">최신 CS</h1>
+      <h1 className="text-[2rem] font-bold mb-5">CS 문제</h1>
       {/* <p className="text-primary text-lg mb-3">2025년 03월 28일</p> */}
 
       <div className="border border-gray bg-filterbg px-6 py-8 rounded-xl text-xl font-semibold mb-10">
@@ -83,9 +83,13 @@ export default function SubmittedDetailBox({ id }: SubmittedDetailBoxProps) {
 
       <div className="mb-10">
         <h2 className="text-xl font-bold mb-4">정답</h2>
-        <p className="text-gray-700 leading-relaxed">
-          {problemDetail.solution}
-        </p>
+        {problemDetail.solution ? (
+          <p className="text-darkgray leading-relaxed">
+            {problemDetail.solution}
+          </p>
+        ) : (
+          <p className="text-darkgray">아직 정답이 공개되지 않았습니다.</p>
+        )}
       </div>
 
       <div className="mb-8">
