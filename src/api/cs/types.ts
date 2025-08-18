@@ -97,3 +97,13 @@ export interface CsCommentListResponse {
   hasNext: boolean
   nextCursor: number | null
 }
+
+// 답변 수정 요청 타입
+export interface CsAnswerUpdateRequest {
+  content: string
+}
+
+// 답변 수정 응답 타입 (성공 시 빈 응답)
+export interface CsAnswerUpdateResponse {
+  // 성공 시 200 상태코드만 반환
+}

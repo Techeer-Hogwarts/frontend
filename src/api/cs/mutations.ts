@@ -1,7 +1,16 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { csKeys } from './keys'
-import { submitCsAnswer, submitCsComment } from './apis'
-import { CsAnswerSubmitRequest, CsCommentSubmitRequest } from './types'
+import {
+  submitCsAnswer,
+  submitCsComment,
+  updateCsAnswer,
+  deleteCsAnswer,
+} from './apis'
+import {
+  CsAnswerSubmitRequest,
+  CsCommentSubmitRequest,
+  CsAnswerUpdateRequest,
+} from './types'
 
 // CS 답변 제출
 export const useSubmitCsAnswerMutation = () => {
@@ -43,6 +52,36 @@ export const useSubmitCsCommentMutation = () => {
       queryClient.invalidateQueries({
         queryKey: csKeys.commentList(variables.answerId, {}),
       })
+    },
+  })
+}
+
+// 답변 수정 mutation
+export const useUpdateCsAnswerMutation = () => {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: ({
+      answerId,
+      data,
+    }: {
+      answerId: number
+      data: CsAnswerUpdateRequest
+    }) => updateCsAnswer(answerId, data),
+    onSuccess: () => {
+      // 답변 목록 무효화
+      queryClient.invalidateQueries({ queryKey: csKeys.answers() })
+    },
+  })
+}
+
+// 답변 삭제 mutation
+export const useDeleteCsAnswerMutation = () => {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (answerId: number) => deleteCsAnswer(answerId),
+    onSuccess: () => {
+      // 답변 목록 무효화
+      queryClient.invalidateQueries({ queryKey: csKeys.answers() })
     },
   })
 }

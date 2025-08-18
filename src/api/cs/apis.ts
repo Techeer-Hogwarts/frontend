@@ -10,6 +10,7 @@ import {
   CsComment,
   CsCommentListParams,
   CsCommentListResponse,
+  CsAnswerUpdateRequest,
 } from './types'
 
 const CS_API_BASE = '/api/today-cs'
@@ -134,4 +135,35 @@ export const getCsCommentList = async (
   }
 
   return response.json()
+}
+
+// 답변 수정 API
+export const updateCsAnswer = async (
+  answerId: number,
+  data: CsAnswerUpdateRequest,
+): Promise<void> => {
+  const response = await fetch(`${CS_API_BASE}/answers/${answerId}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include',
+    body: JSON.stringify(data),
+  })
+
+  if (!response.ok) {
+    throw new Error('Failed to update answer')
+  }
+}
+
+// 답변 삭제 API
+export const deleteCsAnswer = async (answerId: number): Promise<void> => {
+  const response = await fetch(`${CS_API_BASE}/answers/${answerId}`, {
+    method: 'DELETE',
+    credentials: 'include',
+  })
+
+  if (!response.ok) {
+    throw new Error('Failed to delete answer')
+  }
 }

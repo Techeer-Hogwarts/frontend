@@ -3,8 +3,10 @@
 import { useState } from 'react'
 import { FaRegThumbsUp, FaChevronDown, FaChevronUp } from 'react-icons/fa'
 import { CsAnswer } from '@/api/cs'
+import { useUpdateCsAnswerMutation } from '@/api/cs/mutations'
 import CommentInput from './CommentInput'
 import CommentList from './CommentList'
+import AnswerMenu from './AnswerMenu'
 
 interface AnswerCardProps {
   answer: CsAnswer
@@ -19,6 +21,11 @@ export default function AnswerCard({
   const [showReplyInput, setShowReplyInput] = useState(false)
   const [showFeedback, setShowFeedback] = useState(false)
   const [isExpanded, setIsExpanded] = useState(false)
+  const [isEditing, setIsEditing] = useState(false)
+  const [editContent, setEditContent] = useState(answer.content)
+  const [displayContent, setDisplayContent] = useState(answer.content)
+
+  const updateAnswerMutation = useUpdateCsAnswerMutation()
 
   const handleReplyToggle = () => {
     setShowReplies(!showReplies)
@@ -37,9 +44,36 @@ export default function AnswerCard({
   }
 
   const handleCommentSubmitted = () => {
-    // 댓글 제출 성공 시 입력창 닫기
     setShowReplyInput(false)
   }
+
+  const handleEdit = () => {
+    setIsEditing(true)
+    setEditContent(answer.content)
+  }
+
+  const handleSaveEdit = async () => {
+    try {
+      await updateAnswerMutation.mutateAsync({
+        answerId: answer.id,
+        data: { content: editContent },
+      })
+      setIsEditing(false)
+      setDisplayContent(editContent)
+    } catch (error) {
+      console.error('답변 수정 실패:', error)
+      alert('답변 수정에 실패했습니다.')
+    }
+  }
+
+  const handleCancelEdit = () => {
+    setEditContent(answer.content)
+    setIsEditing(false)
+  }
+
+  // 수정 내용이 원본과 같은지 확인
+  const hasChanges = editContent.trim() !== answer.content.trim()
+  const isEmpty = editContent.trim() === ''
 
   const shouldShowExpandButton = (content: string) => {
     return content.length > 200
@@ -48,7 +82,7 @@ export default function AnswerCard({
   const fallbackProfile = '/profile.png'
 
   return (
-    <div className=" mb-6">
+    <div className="mb-6">
       <div className="flex items-start gap-3 mb-4">
         <img
           src={answer.user.profileImage || fallbackProfile}
@@ -56,39 +90,79 @@ export default function AnswerCard({
           className="rounded-full w-10 h-10"
         />
         <div className="flex-1">
-          <div className="flex items-center gap-2 mb-2">
-            <p className="font-semibold">{answer.user.name}</p>
-            <span className="text-xs text-gray">
-              {new Date(answer.updateAt).toLocaleDateString('ko-KR', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-              })}
-            </span>
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2">
+              <p className="font-semibold">{answer.user.name}</p>
+              <span className="text-xs text-gray">
+                {new Date(answer.updateAt).toLocaleDateString('ko-KR', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                  hour: '2-digit',
+                  minute: '2-digit',
+                })}
+              </span>
+            </div>
+            {isMyAnswer && (
+              <AnswerMenu answerId={answer.id} onEdit={handleEdit} />
+            )}
           </div>
           <div className="flex gap-4">
             <div className="flex-1">
-              <div className="mb-2">
-                <p
-                  className={`text-sm leading-relaxed whitespace-pre-wrap ${
-                    !isExpanded && shouldShowExpandButton(answer.content)
-                      ? 'line-clamp-2'
-                      : ''
-                  }`}
-                >
-                  {answer.content}
-                </p>
-                {shouldShowExpandButton(answer.content) && (
-                  <button
-                    onClick={handleExpandAnswer}
-                    className="text-gray text-sm mt-2 hover:underline"
+              {isEditing ? (
+                <div className="mb-4 text-sm">
+                  <textarea
+                    value={editContent}
+                    onChange={(e) => setEditContent(e.target.value)}
+                    className="w-full h-20 border border-gray rounded-xl p-3 resize-none focus:outline-none focus:border-primary"
+                    rows={4}
+                    placeholder="답변을 입력하세요..."
+                  />
+                  <div className="flex justify-end gap-2 mt-1">
+                    <button
+                      onClick={handleCancelEdit}
+                      className="px-3 py-1 rounded-full text-darkgray hover:bg-lightgray disabled:opacity-50"
+                    >
+                      취소
+                    </button>
+                    <button
+                      onClick={handleSaveEdit}
+                      className={`px-3 py-1 rounded-full ${
+                        !updateAnswerMutation.isPending &&
+                        hasChanges &&
+                        !isEmpty
+                          ? 'bg-primary text-white hover:bg-darkPrimary'
+                          : 'bg-gray text-darkgray'
+                      }`}
+                      disabled={
+                        updateAnswerMutation.isPending || !hasChanges || isEmpty
+                      }
+                    >
+                      {updateAnswerMutation.isPending ? '저장 중...' : '저장'}
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="mb-2">
+                  <p
+                    className={`text-sm leading-relaxed whitespace-pre-wrap ${
+                      !isExpanded && shouldShowExpandButton(displayContent)
+                        ? 'line-clamp-2'
+                        : ''
+                    }`}
                   >
-                    {isExpanded ? '접기' : '자세히 보기'}
-                  </button>
-                )}
-              </div>
+                    {displayContent}
+                  </p>
+                  {shouldShowExpandButton(displayContent) && (
+                    <button
+                      onClick={handleExpandAnswer}
+                      className="text-gray text-sm mt-2 hover:underline"
+                    >
+                      {isExpanded ? '접기' : '자세히 보기'}
+                    </button>
+                  )}
+                </div>
+              )}
               <div className="flex gap-2 items-center text-sm">
                 {/* <button className="flex items-center gap-1 hover:text-primary">
                   <FaRegThumbsUp className="text-sm" /> {answer.likeCount}
