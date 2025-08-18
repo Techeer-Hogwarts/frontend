@@ -17,6 +17,7 @@ export default function AnswerCard({
 }: AnswerCardProps) {
   const [showReplies, setShowReplies] = useState(false)
   const [showReplyInput, setShowReplyInput] = useState(false)
+  const [showFeedback, setShowFeedback] = useState(false)
   const [isExpanded, setIsExpanded] = useState(false)
 
   const handleReplyToggle = () => {
@@ -25,6 +26,10 @@ export default function AnswerCard({
 
   const handleReplyInputToggle = () => {
     setShowReplyInput(!showReplyInput)
+  }
+
+  const handleFeedbackToggle = () => {
+    setShowFeedback(!showFeedback)
   }
 
   const handleExpandAnswer = () => {
@@ -94,6 +99,13 @@ export default function AnswerCard({
                 >
                   답글
                 </button>
+                <button
+                  onClick={handleFeedbackToggle}
+                  className="text-primary flex items-center gap-1 px-2 py-1 rounded-full hover:bg-lightprimary"
+                >
+                  AI 피드백
+                  {showFeedback ? <FaChevronUp /> : <FaChevronDown />}
+                </button>
                 {answer.commentCount > 0 && (
                   <button
                     onClick={handleReplyToggle}
@@ -104,9 +116,6 @@ export default function AnswerCard({
                   </button>
                 )}
               </div>
-            </div>
-            <div className="border border-primary bg-filterbg rounded-xl text-sm font-semibold text-primary w-12 h-12 flex items-center justify-center">
-              {answer.score}
             </div>
           </div>
         </div>
@@ -119,6 +128,23 @@ export default function AnswerCard({
             answer={answer}
             onCommentSubmitted={handleCommentSubmitted}
           />
+        </div>
+      )}
+
+      {/* AI 피드백 섹션 */}
+      {showFeedback && (
+        <div className="mt-4 ml-11">
+          <div className="bg-filterbg border border-gray rounded-xl text-sm p-4">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="font-semibold">AI 피드백</span>
+            </div>
+            <div className="flex gap-2 items-center">
+              <div className="border border-primary bg-white rounded-xl font-semibold text-primary w-12 h-8 flex items-center justify-center">
+                {answer.score}
+              </div>
+              <p className="text-darkgray">{answer.feedback}</p>
+            </div>
+          </div>
         </div>
       )}
 
