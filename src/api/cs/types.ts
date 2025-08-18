@@ -37,3 +37,36 @@ export interface TodayCsResponse {
 export interface CsAnswerSubmitRequest {
   content: string
 }
+
+// CS 답변 목록 조회 파라미터
+export interface CsAnswerListParams {
+  cursor?: number
+  size?: number
+  sortBy?: 'UPDATE_AT_DESC' | 'LIKE_COUNT_DESC'
+}
+
+// CS 답변 사용자 정보
+export interface CsAnswerUser {
+  profileImage: string | null
+  name: string
+}
+
+// CS 답변 정보
+export interface CsAnswer {
+  id: number
+  content: string
+  score: number
+  feedback: string
+  likeCount: number
+  user: CsAnswerUser
+  updateAt: string
+  commentCount: number
+}
+
+// CS 답변 목록 응답
+export interface CsAnswerListResponse {
+  answers: CsAnswer[]
+  hasNext: boolean
+  nextCursor: number | null
+  myAnswer: CsAnswer | null
+}

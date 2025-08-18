@@ -4,6 +4,8 @@ import {
   CsProblemListResponse,
   CsProblemDetail,
   CsAnswerSubmitRequest,
+  CsAnswerListParams,
+  CsAnswerListResponse,
 } from './types'
 
 const CS_API_BASE = '/api/today-cs'
@@ -67,4 +69,25 @@ export const submitCsAnswer = async (
   if (!response.ok) {
     throw new Error('CS 답변 제출에 실패했습니다.')
   }
+}
+
+// CS 답변 목록 조회
+export const getCsAnswerList = async (
+  problemId: number,
+  params: CsAnswerListParams,
+): Promise<CsAnswerListResponse> => {
+  const searchParams = new URLSearchParams()
+
+  if (params.cursor) searchParams.append('cursor', params.cursor.toString())
+  if (params.size) searchParams.append('size', params.size.toString())
+  if (params.sortBy) searchParams.append('sortBy', params.sortBy)
+
+  const url = `${CS_API_BASE}/problems/${problemId}/answers${searchParams.toString() ? `?${searchParams.toString()}` : ''}`
+  const response = await fetch(url)
+
+  if (!response.ok) {
+    throw new Error('CS 답변 목록을 불러오는데 실패했습니다.')
+  }
+
+  return response.json()
 }

@@ -10,4 +10,9 @@ export const csKeys = {
   problems: () => [...csKeys.all, 'problems'] as const,
   problemList: (params: any) => [...csKeys.problems(), 'list', params] as const,
   problemDetail: (id: number) => [...csKeys.problems(), 'detail', id] as const,
+
+  // 답변 관련 키
+  answers: () => [...csKeys.all, 'answers'] as const,
+  answerList: (problemId: number, params: any) =>
+    [...csKeys.answers(), 'list', problemId, params] as const,
 } as const
