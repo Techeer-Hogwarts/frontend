@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { FaRegThumbsUp, FaChevronDown, FaChevronUp } from 'react-icons/fa'
+import { useSubmitCsCommentMutation } from '@/api/cs'
 import { CsAnswer } from '@/api/cs'
 
 interface AnswerCardProps {
@@ -18,6 +19,8 @@ export default function AnswerCard({
   const [replyInput, setReplyInput] = useState('')
   const [isExpanded, setIsExpanded] = useState(false)
 
+  const submitCommentMutation = useSubmitCsCommentMutation()
+
   const handleReplyToggle = () => {
     setShowReplies(!showReplies)
   }
@@ -33,11 +36,22 @@ export default function AnswerCard({
     setReplyInput(value)
   }
 
-  const handleReplySubmit = () => {
-    // TODO: 답글 제출 API 호출
-    console.log('답글 제출:', answer.id, replyInput)
-    setReplyInput('')
-    setShowReplyInput(false)
+  const handleReplySubmit = async () => {
+    if (!replyInput.trim()) return
+
+    try {
+      await submitCommentMutation.mutateAsync({
+        answerId: answer.id,
+        data: { content: replyInput.trim() },
+      })
+
+      // 성공 시 입력창 초기화 및 닫기
+      setReplyInput('')
+      setShowReplyInput(false)
+    } catch (error) {
+      console.error('댓글 제출 실패:', error)
+      alert('댓글 제출에 실패했습니다. 다시 시도해주세요.')
+    }
   }
 
   const handleReplyCancel = () => {
@@ -50,8 +64,7 @@ export default function AnswerCard({
   }
 
   const shouldShowExpandButton = (content: string) => {
-    // 3줄 정도의 텍스트 길이를 대략적으로 계산 (한 줄당 약 50자)
-    return content.length > 150
+    return content.length > 200
   }
 
   return (
@@ -134,24 +147,26 @@ export default function AnswerCard({
               className="w-full h-16 border border-gray rounded-xl p-3 resize-none focus:outline-none focus:border-primary"
               value={replyInput}
               onChange={(e) => handleReplyInputChange(e.target.value)}
+              disabled={submitCommentMutation.isPending}
             />
             <div className="flex justify-end gap-2 mt-1">
               <button
                 onClick={handleReplyCancel}
-                className="px-3 py-1 rounded-full text-darkgray hover:bg-lightgray"
+                disabled={submitCommentMutation.isPending}
+                className="px-3 py-1 rounded-full text-darkgray hover:bg-lightgray disabled:opacity-50"
               >
                 취소
               </button>
               <button
                 onClick={handleReplySubmit}
-                disabled={!replyInput.trim()}
+                disabled={!replyInput.trim() || submitCommentMutation.isPending}
                 className={`px-3 py-1 rounded-full ${
-                  replyInput.trim()
+                  replyInput.trim() && !submitCommentMutation.isPending
                     ? 'bg-primary text-white hover:bg-darkPrimary'
                     : 'bg-gray text-darkgray'
                 }`}
               >
-                답글
+                {submitCommentMutation.isPending ? '제출 중...' : '답글'}
               </button>
             </div>
           </div>

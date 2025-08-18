@@ -70,3 +70,17 @@ export interface CsAnswerListResponse {
   nextCursor: number | null
   myAnswer: CsAnswer | null
 }
+
+// CS 댓글 작성 요청 타입
+export interface CsCommentSubmitRequest {
+  content: string
+}
+
+// CS 댓글 정보
+export interface CsComment {
+  id: number
+  content: string
+  likeCount: number
+  user: CsAnswerUser
+  createdAt: string
+}

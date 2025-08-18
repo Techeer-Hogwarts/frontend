@@ -6,6 +6,8 @@ import {
   CsAnswerSubmitRequest,
   CsAnswerListParams,
   CsAnswerListResponse,
+  CsCommentSubmitRequest,
+  CsComment,
 } from './types'
 
 const CS_API_BASE = '/api/today-cs'
@@ -87,6 +89,26 @@ export const getCsAnswerList = async (
 
   if (!response.ok) {
     throw new Error('CS 답변 목록을 불러오는데 실패했습니다.')
+  }
+
+  return response.json()
+}
+
+// CS 댓글 작성
+export const submitCsComment = async (
+  answerId: number,
+  data: CsCommentSubmitRequest,
+): Promise<CsComment> => {
+  const response = await fetch(`${CS_API_BASE}/answers/${answerId}/comments`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  })
+
+  if (!response.ok) {
+    throw new Error('CS 댓글 작성에 실패했습니다.')
   }
 
   return response.json()
