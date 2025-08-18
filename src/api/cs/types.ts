@@ -84,3 +84,16 @@ export interface CsComment {
   user: CsAnswerUser
   createdAt: string
 }
+
+// CS 댓글 목록 조회 파라미터
+export interface CsCommentListParams {
+  cursor?: number
+  size?: number
+}
+
+// CS 댓글 목록 응답
+export interface CsCommentListResponse {
+  comments: CsComment[]
+  hasNext: boolean
+  nextCursor: number | null
+}

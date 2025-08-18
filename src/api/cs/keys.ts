@@ -15,4 +15,9 @@ export const csKeys = {
   answers: () => [...csKeys.all, 'answers'] as const,
   answerList: (problemId: number, params: any) =>
     [...csKeys.answers(), 'list', problemId, params] as const,
+
+  // 댓글 관련 키
+  comments: () => [...csKeys.all, 'comments'] as const,
+  commentList: (answerId: number, params: any) =>
+    [...csKeys.comments(), 'list', answerId, params] as const,
 } as const

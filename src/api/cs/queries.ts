@@ -1,11 +1,16 @@
 import { useQuery, useInfiniteQuery } from '@tanstack/react-query'
 import { csKeys } from './keys'
-import { CsProblemListParams, CsAnswerListParams } from './types'
+import {
+  CsProblemListParams,
+  CsAnswerListParams,
+  CsCommentListParams,
+} from './types'
 import {
   getTodayCs,
   getCsProblemList,
   getCsProblemDetail,
   getCsAnswerList,
+  getCsCommentList,
 } from './apis'
 
 // 오늘의 CS 문제 조회
@@ -58,5 +63,22 @@ export const useCsAnswerListQuery = (
     staleTime: 5 * 60 * 1000, // 5분
     gcTime: 10 * 60 * 1000, // 10분
     enabled: !!problemId, // problemId가 있을 때만 실행
+  })
+}
+
+// CS 댓글 목록 조회 (무한 스크롤)
+export const useCsCommentListQuery = (
+  answerId: number,
+  params: Omit<CsCommentListParams, 'cursor'>,
+) => {
+  return useInfiniteQuery({
+    queryKey: csKeys.commentList(answerId, params),
+    queryFn: ({ pageParam }) =>
+      getCsCommentList(answerId, { ...params, cursor: pageParam }),
+    initialPageParam: undefined as number | undefined,
+    getNextPageParam: (lastPage) => lastPage.nextCursor,
+    staleTime: 5 * 60 * 1000, // 5분
+    gcTime: 10 * 60 * 1000, // 10분
+    enabled: !!answerId, // answerId가 있을 때만 실행
   })
 }

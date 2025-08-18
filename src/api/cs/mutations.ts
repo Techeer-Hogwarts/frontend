@@ -39,9 +39,9 @@ export const useSubmitCsCommentMutation = () => {
       data: CsCommentSubmitRequest
     }) => submitCsComment(answerId, data),
     onSuccess: (data, variables) => {
-      // 댓글 작성 성공 시 답변 목록 쿼리 무효화
+      // 댓글 작성 성공 시 댓글 목록과 답변 목록 쿼리 무효화
       queryClient.invalidateQueries({
-        queryKey: csKeys.answerList(variables.answerId, {}),
+        queryKey: csKeys.commentList(variables.answerId, {}),
       })
     },
   })
