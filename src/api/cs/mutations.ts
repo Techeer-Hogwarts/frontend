@@ -5,12 +5,10 @@ import {
   submitCsComment,
   updateCsAnswer,
   deleteCsAnswer,
+  updateCsComment,
+  deleteCsComment,
 } from './apis'
-import {
-  CsAnswerSubmitRequest,
-  CsCommentSubmitRequest,
-  CsAnswerUpdateRequest,
-} from './types'
+import { CsAnswerSubmitRequest, CsCommentSubmitRequest } from './types'
 
 // CS 답변 제출
 export const useSubmitCsAnswerMutation = () => {
@@ -65,7 +63,7 @@ export const useUpdateCsAnswerMutation = () => {
       data,
     }: {
       answerId: number
-      data: CsAnswerUpdateRequest
+      data: CsAnswerSubmitRequest
     }) => updateCsAnswer(answerId, data),
     onSuccess: () => {
       // 답변 목록 무효화
@@ -82,6 +80,40 @@ export const useDeleteCsAnswerMutation = () => {
     onSuccess: () => {
       // 답변 목록 무효화
       queryClient.invalidateQueries({ queryKey: csKeys.answers() })
+    },
+  })
+}
+
+// 댓글 수정 mutation
+export const useUpdateCsCommentMutation = () => {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: ({
+      commentId,
+      data,
+    }: {
+      commentId: number
+      data: CsCommentSubmitRequest
+    }) => updateCsComment(commentId, data),
+    onSuccess: (data, variables) => {
+      // 댓글 목록 무효화 - 모든 댓글 목록 쿼리 무효화
+      queryClient.invalidateQueries({
+        queryKey: csKeys.comments(),
+      })
+    },
+  })
+}
+
+// 댓글 삭제 mutation
+export const useDeleteCsCommentMutation = () => {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (commentId: number) => deleteCsComment(commentId),
+    onSuccess: (data, variables) => {
+      // 댓글 목록 무효화 - 모든 댓글 목록 쿼리 무효화
+      queryClient.invalidateQueries({
+        queryKey: csKeys.comments(),
+      })
     },
   })
 }

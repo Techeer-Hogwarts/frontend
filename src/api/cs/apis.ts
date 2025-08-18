@@ -10,7 +10,6 @@ import {
   CsComment,
   CsCommentListParams,
   CsCommentListResponse,
-  CsAnswerUpdateRequest,
 } from './types'
 
 const CS_API_BASE = '/api/today-cs'
@@ -140,7 +139,7 @@ export const getCsCommentList = async (
 // 답변 수정 API
 export const updateCsAnswer = async (
   answerId: number,
-  data: CsAnswerUpdateRequest,
+  data: CsAnswerSubmitRequest,
 ): Promise<void> => {
   const response = await fetch(`${CS_API_BASE}/answers/${answerId}`, {
     method: 'PUT',
@@ -165,5 +164,38 @@ export const deleteCsAnswer = async (answerId: number): Promise<void> => {
 
   if (!response.ok) {
     throw new Error('Failed to delete answer')
+  }
+}
+
+// 댓글 수정 API
+export const updateCsComment = async (
+  commentId: number,
+  data: CsCommentSubmitRequest,
+): Promise<CsComment> => {
+  const response = await fetch(`${CS_API_BASE}/comments/${commentId}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include',
+    body: JSON.stringify(data),
+  })
+
+  if (!response.ok) {
+    throw new Error('Failed to update comment')
+  }
+
+  return response.json()
+}
+
+// 댓글 삭제 API
+export const deleteCsComment = async (commentId: number): Promise<void> => {
+  const response = await fetch(`${CS_API_BASE}/comments/${commentId}`, {
+    method: 'DELETE',
+    credentials: 'include',
+  })
+
+  if (!response.ok) {
+    throw new Error('Failed to delete comment')
   }
 }
