@@ -67,7 +67,7 @@ export default function ProfileBox({
           {/* 프로필 사진 */}
           <div className="flex w-[11rem] h-[11rem] bg-gray-200 rounded-xl overflow-hidden">
             <Image
-              src={profile.profileImage || '/pro.png'}
+              src={profile.profileImage || '/profile.png'}
               width={176}
               height={176}
               alt="ProfileInfo"

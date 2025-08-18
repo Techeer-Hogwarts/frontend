@@ -26,15 +26,15 @@ export default function CommentList({ answer }: CommentListProps) {
   const allComments =
     commentListData?.pages.flatMap((page) => page.comments) || []
 
+  const fallbackProfile = '/profile.png'
+
   return (
     <div className="space-y-3">
       {/* 댓글 목록 */}
       {allComments.map((comment) => (
         <div key={comment.id} className="flex items-start gap-3">
           <img
-            src={
-              comment.user.profileImage || 'https://i.pravatar.cc/40?u=comment'
-            }
+            src={comment.user.profileImage || fallbackProfile}
             alt="avatar"
             className="rounded-full w-8 h-8"
           />
@@ -62,7 +62,7 @@ export default function CommentList({ answer }: CommentListProps) {
           <button
             onClick={handleLoadMore}
             disabled={isFetchingNextPage}
-            className="text-sm text-primary px-2 py-1 rounded-full hover:bg-lightprimary flex items-center gap-1 disabled:opacity-50"
+            className="text-xs text-primary hover:text-darkPrimary flex items-center gap-1 disabled:opacity-50"
           >
             <FaChevronRight className="text-sm" />
             {isFetchingNextPage ? '로딩 중...' : '답글 더보기'}

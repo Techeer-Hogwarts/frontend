@@ -40,11 +40,13 @@ export default function AnswerCard({
     return content.length > 200
   }
 
+  const fallbackProfile = '/profile.png'
+
   return (
     <div className=" mb-6">
       <div className="flex items-start gap-3 mb-4">
         <img
-          src={answer.user.profileImage || 'https://i.pravatar.cc/40?u=user'}
+          src={answer.user.profileImage || fallbackProfile}
           alt="avatar"
           className="rounded-full w-10 h-10"
         />
