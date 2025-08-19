@@ -8,6 +8,9 @@ import { AiOutlineSync } from 'react-icons/ai'
 import { RxQuestionMarkCircled } from 'react-icons/rx'
 import MyExperienceSection from './MyExperienceSection'
 import { useRouter } from 'next/navigation'
+import { deleteExperience } from '@/api/mypage/deleteExperience'
+import { getProfileImg } from '@/api/mypage/getProfileImg'
+import { updateProfile } from '@/api/mypage/updateProfile'
 
 interface Experience {
   id?: number
@@ -102,48 +105,32 @@ export default function Profile({ profile }: ProfileProps) {
       setSyncMessage('이메일 정보가 없습니다.')
       return
     }
+    
     try {
-      const response = await fetch('/api/users/profileImage', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ email }),
-      })
-
-      if (!response.ok) {
-        const errData = await response.json().catch(() => null)
-        setSyncIsError(true)
-        setSyncMessage(`동기화 실패: ${errData?.message || '알 수 없는 오류'}`)
-        return
-      }
-      const data = await response.json()
+      const data = await getProfileImg({ email })
       setProfileImage(data.profileImage)
       setSyncIsError(false)
       setSyncMessage('프로필 사진 동기화가 완료되었습니다.')
-    } catch (err) {
+    } catch (err: any) {
       setSyncIsError(true)
       setSyncMessage('네트워크 오류가 발생했습니다.')
     }
   }
 
-  // 삭제 요청: 인턴 / 정규직
-  //  - MyExperienceSection에서 삭제 버튼을 누르면 호출됨
   const handleDeleteInternExp = (id: number) => {
-    // 이미 DB에 있던 항목이면, DELETE API를 위해 id를 저장
-    if (id) {
+    if (id && id > 0) {
       setDeletedInternshipIds((prev) => [...prev, id])
     }
     setInternshipExperiences((prev) => prev.filter((item) => item.id !== id))
   }
 
   const handleDeleteFullTimeExp = (id: number) => {
-    if (id) {
+    if (id && id > 0) {
       setDeletedFullTimeIds((prev) => [...prev, id])
     }
     setFullTimeExperiences((prev) => prev.filter((item) => item.id !== id))
   }
 
-  // 최종 수정 로직
   const handleProfileUpdate = async () => {
     setUpdateMessage('')
 
@@ -173,64 +160,59 @@ export default function Profile({ profile }: ProfileProps) {
 
     const finalSchool = school === '해당 없음' ? customSchool.trim() : school
 
-    // 경력 삭제
     try {
-      // 인턴
       for (const delId of deletedInternshipIds) {
-        await fetch(`/users/experience/${delId}`, {
-          method: 'DELETE',
-          credentials: 'include',
-        })
+        await deleteExperience(delId)
       }
-      // 정규직
       for (const delId of deletedFullTimeIds) {
-        await fetch(`/users/experience/${delId}`, {
-          method: 'DELETE',
-          credentials: 'include',
-        })
+        await deleteExperience(delId)
       }
     } catch (err) {
       alert('경력 삭제 중 오류가 발생했습니다.')
       return
     }
 
-    const finalInternships = internshipExperiences.map((exp) => {
-      // 음수 ID => 새로 추가된 항목
-      if (exp.id && exp.id < 0) {
-        const { id, ...rest } = exp
-        return {
-          ...rest,
-          category: '인턴',
+    const finalInternships = internshipExperiences
+      .filter((exp) => !deletedInternshipIds.includes(exp.id!))
+      .map((exp) => {
+        // 음수 ID => 새로 추가된 항목
+        if (exp.id && exp.id < 0) {
+          const { id, ...rest } = exp
+          return {
+            ...rest,
+            category: '인턴',
+          }
+        } else {
+          // 양수 ID => 기존 항목
+          const { id, ...rest } = exp
+          return {
+            experienceId: id,
+            ...rest,
+            category: '인턴',
+          }
         }
-      } else {
-        // 양수 ID => 기존 항목
-        const { id, ...rest } = exp
-        return {
-          experienceId: id, // id → experienceId
-          ...rest,
-          category: '인턴',
-        }
-      }
-    })
+      })
 
-    const finalFullTimes = fullTimeExperiences.map((exp) => {
-      if (exp.id && exp.id < 0) {
-        // 새 항목
-        const { id, ...rest } = exp
-        return {
-          ...rest,
-          category: '정규직',
+    const finalFullTimes = fullTimeExperiences
+      .filter((exp) => !deletedFullTimeIds.includes(exp.id!))
+      .map((exp) => {
+        if (exp.id && exp.id < 0) {
+          // 새 항목
+          const { id, ...rest } = exp
+          return {
+            ...rest,
+            category: '정규직',
+          }
+        } else {
+          // 기존 항목
+          const { id, ...rest } = exp
+          return {
+            experienceId: id,
+            ...rest,
+            category: '정규직',
+          }
         }
-      } else {
-        // 기존 항목
-        const { id, ...rest } = exp
-        return {
-          experienceId: id, // id → experienceId
-          ...rest,
-          category: '정규직',
-        }
-      }
-    })
+      })
 
     // PATCH "수정/추가" 처리
     const payload = {
@@ -252,25 +234,11 @@ export default function Profile({ profile }: ProfileProps) {
     }
 
     try {
-      const response = await fetch('/api/users', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify(payload),
-      })
-
-      if (!response.ok) {
-        if (response.status === 400) {
-          alert('항목을 모두 입력해주세요.')
-          return
-        }
-        return
-      }
-
+      await updateProfile(payload)
       setUpdateMessage('프로필 업데이트가 완료되었습니다.')
       window.location.reload()
     } catch (error: any) {
-      alert('네트워크 오류가 발생했습니다.')
+      setUpdateMessage('네트워크 오류가 발생했습니다.')
     }
   }
 

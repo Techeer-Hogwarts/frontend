@@ -50,3 +50,28 @@ export interface ProfileData {
   experiences?: Experience[]
   techStacks?: TechStacks
 }
+
+export interface GetProfileImageRequest {
+  email: string
+}
+
+export interface GetProfileImageResponse {
+  profileImage: string
+}
+
+// Experience 타입에 experienceId 필드 추가
+export type UpdateExperienceRequest = Omit<Experience, 'id'> & {
+  experienceId?: number
+}
+
+// ProfileData에서 필요한 필드만 추출
+export type UpdateProfileRequest = Pick<ProfileData, 
+  'year' | 'isLft' | 'school' | 'grade' | 'mainPosition' | 'subPosition' | 'githubUrl' | 'mediumUrl' | 'velogUrl' | 'tistoryUrl'
+>
+
+export interface UpdateProfilePayload {
+  updateRequest: UpdateProfileRequest
+  experienceRequest: {
+    experiences: UpdateExperienceRequest[]
+  }
+}
