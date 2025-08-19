@@ -1,3 +1,5 @@
+'use client'
+
 import AnswerCard from './AnswerCard'
 import { useSubmittedDetailBox } from '@/hooks/cs/useSubmittedDetailBox'
 import { useInfiniteScroll } from '@/hooks/cs/useInfiniteScroll'

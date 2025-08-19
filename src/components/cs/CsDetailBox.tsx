@@ -1,3 +1,5 @@
+'use client'
+
 import { useCsDetailBox } from '@/hooks/cs/useCsDetailBox'
 
 interface CSDetailBoxProps {

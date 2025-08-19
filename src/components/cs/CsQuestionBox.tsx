@@ -1,3 +1,5 @@
+'use client'
+
 import { FaCheckCircle, FaRegCircle } from 'react-icons/fa'
 import { CsProblem } from '@/api/cs'
 import { useCsQuestionBox } from '@/hooks/cs/useCsQuestionBox'

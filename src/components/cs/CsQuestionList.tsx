@@ -1,3 +1,5 @@
+'use client'
+
 import ProblemFilterTabs from './Filter'
 import CsQuestionBox from './CsQuestionBox'
 import { useCsQuestionList } from '@/hooks/cs/useCsQuestionList'

@@ -1,3 +1,5 @@
+'use client'
+
 import { BsThreeDotsVertical } from 'react-icons/bs'
 import { useMenu } from '@/hooks/cs/useMenu'
 import DeleteConfirmModal from './DeleteConfirmModal'
