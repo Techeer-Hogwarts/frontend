@@ -33,12 +33,9 @@ interface HomeProps {
 
 
 
-// ISO 형식 날짜 문자열을 "YYYY-MM-DD" 형식으로 변환하는 함수
 const convertDate = (rawDate: string): string => {
   if (!rawDate) return ''
-  const date = new Date(rawDate)
-  if (isNaN(date.getTime())) return ''
-  return date.toISOString().substring(0, 10)
+  return rawDate.split('T')[0]
 }
 
 export default function Home({

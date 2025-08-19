@@ -29,12 +29,9 @@ export default function ExperienceItem({
   experienceType,
   btnPadding,
 }: ExperienceItemProps) {
-  // 날짜 문자열을 "YYYY-MM-DD"로 맞춰주는 헬퍼 함수
   const convertDate = (rawDate: string | null): string => {
     if (!rawDate) return ''
-    const d = new Date(rawDate)
-    if (Number.isNaN(d.getTime())) return ''
-    return d.toISOString().substring(0, 10)
+    return rawDate.split('T')[0]
   }
 
   const handleCompanyNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -123,7 +120,7 @@ export default function ExperienceItem({
           />
 
           {/* 종료일 or "현재 재직중" */}
-          {isWorking ? (
+          {isWorking && !data.endDate ? (
             <div className="w-full h-9 px-4 border border-gray rounded-md bg-gray-100 flex items-center justify-center text-gray-400">
               현재 재직중
             </div>
