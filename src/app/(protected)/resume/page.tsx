@@ -34,7 +34,7 @@ export default function Resume() {
     'FULL_STACK',
     'DATA_ENGINEER',
   ]
-  const yearOptions = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
+  const yearOptions = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
   const category = ['전체', '이력서', '포트폴리오', 'ICT', 'OTHER']
   const sortByOptions = [
     { label: '최신순', value: 'CREATEDAT' },
