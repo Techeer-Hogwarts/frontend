@@ -6,7 +6,7 @@ import { CsAnswer } from '@/api/cs'
 import { useUpdateCsAnswerMutation } from '@/api/cs/mutations'
 import CommentInput from './CommentInput'
 import CommentList from './CommentList'
-import AnswerMenu from './AnswerMenu'
+import Menu from './Menu'
 
 interface AnswerCardProps {
   answer: CsAnswer
@@ -104,7 +104,7 @@ export default function AnswerCard({
               </span>
             </div>
             {isMyAnswer && (
-              <AnswerMenu answerId={answer.id} onEdit={handleEdit} />
+              <Menu id={answer.id} type="answer" onEdit={handleEdit} />
             )}
           </div>
           <div className="flex gap-4">

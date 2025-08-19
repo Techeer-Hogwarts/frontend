@@ -4,7 +4,8 @@ import { useState } from 'react'
 import { useCsCommentListQuery, useUpdateCsCommentMutation } from '@/api/cs'
 import { CsAnswer, CsComment } from '@/api/cs'
 import { FaChevronRight } from 'react-icons/fa'
-import CommentMenu from './CommentMenu'
+import { useAuthStore } from '@/store/authStore'
+import Menu from './Menu'
 
 interface CommentListProps {
   answer: CsAnswer
@@ -13,6 +14,7 @@ interface CommentListProps {
 export default function CommentList({ answer }: CommentListProps) {
   const [editingCommentId, setEditingCommentId] = useState<number | null>(null)
   const [editContent, setEditContent] = useState('')
+  const { user } = useAuthStore()
 
   const {
     data: commentListData,
@@ -94,10 +96,14 @@ export default function CommentList({ answer }: CommentListProps) {
                   })}
                 </span>
               </div>
-              <CommentMenu
-                commentId={comment.id}
-                onEdit={() => handleEdit(comment)}
-              />
+              {user?.name === comment.user.name &&
+                user?.profileImage === comment.user.profileImage && (
+                  <Menu
+                    id={comment.id}
+                    type="comment"
+                    onEdit={() => handleEdit(comment)}
+                  />
+                )}
             </div>
             {editingCommentId === comment.id ? (
               <div className="mb-2">

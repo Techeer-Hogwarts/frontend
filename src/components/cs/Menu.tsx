@@ -1,20 +1,42 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { BsThreeDotsVertical } from 'react-icons/bs'
-import { useDeleteCsAnswerMutation } from '@/api/cs/mutations'
+import {
+  useDeleteCsCommentMutation,
+  useDeleteCsAnswerMutation,
+} from '@/api/cs/mutations'
 import DeleteConfirmModal from './DeleteConfirmModal'
 
-interface AnswerMenuProps {
-  answerId: number
+interface CommentMenuProps {
+  id: number
+  type: 'comment' | 'answer'
   onEdit: () => void
 }
 
-export default function AnswerMenu({ answerId, onEdit }: AnswerMenuProps) {
+export default function CommentMenu({ id, type, onEdit }: CommentMenuProps) {
   const [showMenu, setShowMenu] = useState(false)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const menuRef = useRef<HTMLDivElement>(null)
 
+  const deleteCommentMutation = useDeleteCsCommentMutation()
   const deleteAnswerMutation = useDeleteCsAnswerMutation()
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setShowMenu(false)
+      }
+    }
+
+    if (showMenu) {
+      document.addEventListener('mousedown', handleClickOutside)
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [showMenu])
 
   const handleMenuToggle = () => {
     setShowMenu(!showMenu)
@@ -32,16 +54,19 @@ export default function AnswerMenu({ answerId, onEdit }: AnswerMenuProps) {
 
   const handleDeleteConfirm = async () => {
     try {
-      await deleteAnswerMutation.mutateAsync(answerId)
+      if (type === 'comment') {
+        await deleteCommentMutation.mutateAsync(id)
+      } else {
+        await deleteAnswerMutation.mutateAsync(id)
+      }
     } catch (error) {
-      console.error('답변 삭제 실패:', error)
-      alert('답변 삭제에 실패했습니다.')
+      alert(`${type === 'comment' ? '댓글' : '답변'} 삭제에 실패했습니다.`)
     }
   }
 
   return (
     <>
-      <div className="relative">
+      <div className="relative" ref={menuRef}>
         <button onClick={handleMenuToggle} className="p-1">
           <BsThreeDotsVertical className="text-darkgray" />
         </button>
@@ -67,8 +92,8 @@ export default function AnswerMenu({ answerId, onEdit }: AnswerMenuProps) {
         isOpen={showDeleteModal}
         onClose={() => setShowDeleteModal(false)}
         onConfirm={handleDeleteConfirm}
-        title="답변 삭제"
-        message="정말로 이 답변을 삭제하시겠습니까?"
+        title={`${type === 'comment' ? '댓글' : '답변'} 삭제`}
+        message={`정말로 이 ${type === 'comment' ? '댓글' : '답변'}을 삭제하시겠습니까?`}
       />
     </>
   )
