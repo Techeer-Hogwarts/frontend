@@ -66,8 +66,12 @@ export type UpdateExperienceRequest = Omit<Experience, 'id'> & {
 
 // ProfileData에서 필요한 필드만 추출
 export type UpdateProfileRequest = Pick<ProfileData, 
-  'year' | 'isLft' | 'school' | 'grade' | 'mainPosition' | 'subPosition' | 'githubUrl' | 'mediumUrl' | 'velogUrl' | 'tistoryUrl'
->
+  'year' | 'isLft' | 'school' | 'grade' | 'mainPosition' | 'subPosition' | 'githubUrl'
+> & {
+  mediumUrl?: string
+  velogUrl?: string
+  tistoryUrl?: string
+}
 
 export interface UpdateProfilePayload {
   updateRequest: UpdateProfileRequest
