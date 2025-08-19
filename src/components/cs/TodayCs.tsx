@@ -1,12 +1,10 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
 import CsQuestionList from './CsQuestionList'
-import { useTodayCsQuery } from '@/api/cs'
+import { useTodayCs } from '@/hooks/cs/useTodayCs'
 
 export default function TodayCSBox() {
-  const router = useRouter()
-  const { data: todayCs, isLoading, error } = useTodayCsQuery()
+  const { todayCs, isLoading, error, handleNavigateToProblem } = useTodayCs()
 
   if (isLoading) {
     return (
@@ -44,7 +42,7 @@ export default function TodayCSBox() {
       <div className="flex justify-between items-center mb-[3.5rem] border border-primary px-6 py-8 rounded-xl text-xl font-semibold">
         <p className="max-w-[56.25rem]">{todayCs.content}</p>
         <button
-          onClick={() => router.push(`/cs/${todayCs.problemId}`)}
+          onClick={handleNavigateToProblem}
           className="w-[12.5rem] h-[2.5rem] bg-primary text-white rounded-xl hover:bg-darkPrimary"
         >
           {todayCs.isAnswered ? '답변 보러가기' : 'CS 풀기'}

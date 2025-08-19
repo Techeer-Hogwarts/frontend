@@ -1,56 +1,28 @@
-'use client'
-
-import { useEffect, useRef, useCallback } from 'react'
-import { useCsProblemDetailQuery, useCsAnswerListQuery } from '@/api/cs'
 import AnswerCard from './AnswerCard'
+import { useSubmittedDetailBox } from '@/hooks/cs/useSubmittedDetailBox'
+import { useInfiniteScroll } from '@/hooks/cs/useInfiniteScroll'
 
 interface SubmittedDetailBoxProps {
   id: string
 }
 
 export default function SubmittedDetailBox({ id }: SubmittedDetailBoxProps) {
-  const observerRef = useRef<HTMLDivElement>(null)
-
   const {
-    data: problemDetail,
-    isLoading: problemLoading,
-    error: problemError,
-  } = useCsProblemDetailQuery(Number(id))
-
-  const {
-    data: answerListData,
-    isLoading: answerLoading,
-    error: answerError,
+    problemDetail,
+    problemLoading,
+    problemError,
+    allAnswers,
+    myAnswer,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = useCsAnswerListQuery(Number(id), {
-    size: 10,
-    sortBy: 'UPDATE_AT_DESC',
+  } = useSubmittedDetailBox({ id })
+
+  const { ref } = useInfiniteScroll({
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
   })
-
-  // Intersection Observer를 사용한 무한 스크롤
-  const handleObserver = useCallback(
-    (entries: IntersectionObserverEntry[]) => {
-      const target = entries[0]
-      if (target.isIntersecting && hasNextPage && !isFetchingNextPage) {
-        fetchNextPage()
-      }
-    },
-    [fetchNextPage, hasNextPage, isFetchingNextPage],
-  )
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(handleObserver, {
-      threshold: 0.1,
-    })
-
-    if (observerRef.current) {
-      observer.observe(observerRef.current)
-    }
-
-    return () => observer.disconnect()
-  }, [handleObserver])
 
   if (problemLoading) {
     return (
@@ -73,10 +45,6 @@ export default function SubmittedDetailBox({ id }: SubmittedDetailBoxProps) {
       </div>
     )
   }
-
-  // 모든 답변을 하나의 배열로 합치기 (내 답변 + 다른 답변들)
-  const allAnswers = answerListData?.pages.flatMap((page) => page.answers) || []
-  const myAnswer = answerListData?.pages[0]?.myAnswer
 
   return (
     <div className="max-w-[1200px] mx-auto mt-[3.56rem]">
@@ -102,28 +70,32 @@ export default function SubmittedDetailBox({ id }: SubmittedDetailBoxProps) {
         )}
       </div>
 
-      <div className="mb-8">
-        <h2 className="text-xl font-bold mb-4">
-          답변 {allAnswers.length + (myAnswer ? 1 : 0)}개
-        </h2>
-
-        {/* 내 답변을 상단에 고정 */}
-        {myAnswer && <AnswerCard answer={myAnswer} isMyAnswer={true} />}
-
-        {/* 다른 답변들 */}
-        {allAnswers.map((answer) => (
-          <AnswerCard key={answer.id} answer={answer} />
-        ))}
-
-        {/* 무한 스크롤을 위한 관찰 요소 */}
-        {hasNextPage && (
-          <div
-            ref={observerRef}
-            className="flex justify-center items-center py-4"
-          >
-            {isFetchingNextPage && <div>답변을 불러오는 중...</div>}
+      <div className="mb-10">
+        <h2 className="text-xl font-bold mb-4">답변</h2>
+        {myAnswer && (
+          <div className="mb-6">
+            <h3 className="text-lg font-semibold mb-3 text-primary">내 답변</h3>
+            <AnswerCard answer={myAnswer} isMyAnswer={true} />
           </div>
         )}
+        {allAnswers.length > 0 && (
+          <div>
+            <h3 className="text-lg font-semibold mb-3">다른 답변들</h3>
+            {allAnswers.map((answer) => (
+              <AnswerCard key={answer.id} answer={answer} />
+            ))}
+          </div>
+        )}
+        {allAnswers.length === 0 && !myAnswer && (
+          <div className="text-center py-8 text-gray">
+            아직 답변이 없습니다.
+          </div>
+        )}
+      </div>
+
+      {/* 무한 스크롤 감지 요소 */}
+      <div ref={ref} className="h-10 flex items-center justify-center">
+        {isFetchingNextPage && <div className="text-gray">로딩 중...</div>}
       </div>
     </div>
   )

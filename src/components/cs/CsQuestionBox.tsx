@@ -1,8 +1,6 @@
-'use client'
-
-import { useRouter } from 'next/navigation'
 import { FaCheckCircle, FaRegCircle } from 'react-icons/fa'
 import { CsProblem } from '@/api/cs'
+import { useCsQuestionBox } from '@/hooks/cs/useCsQuestionBox'
 
 interface ProblemListProps {
   problems: CsProblem[]
@@ -13,21 +11,17 @@ export default function CsQuestionBox({
   problems,
   solvedFilter,
 }: ProblemListProps) {
-  const router = useRouter()
-
-  const filtered =
-    solvedFilter === null
-      ? problems
-      : problems.filter((p) =>
-          solvedFilter === 'solved' ? p.isAnswered : !p.isAnswered,
-        )
+  const { filtered, handleNavigateToProblem } = useCsQuestionBox({
+    problems,
+    solvedFilter,
+  })
 
   return (
     <ul className="space-y-5">
       {filtered.map((p) => (
         <li
           key={p.problemId}
-          onClick={() => router.push(`/cs/${p.problemId}`)}
+          onClick={() => handleNavigateToProblem(p.problemId)}
           className={`cursor-pointer border rounded-xl px-6 py-7 border-gray ${p.isAnswered ? 'bg-filterbg' : 'bg-white'}`}
         >
           <div className="flex justify-between items-center">

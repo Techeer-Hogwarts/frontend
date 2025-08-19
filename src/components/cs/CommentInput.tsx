@@ -1,8 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import { useSubmitCsCommentMutation } from '@/api/cs'
 import { CsAnswer } from '@/api/cs'
+import { useCommentInput } from '@/hooks/cs/useCommentInput'
 
 interface CommentInputProps {
   answer: CsAnswer
@@ -13,35 +12,13 @@ export default function CommentInput({
   answer,
   onCommentSubmitted,
 }: CommentInputProps) {
-  const [replyInput, setReplyInput] = useState('')
-
-  const submitCommentMutation = useSubmitCsCommentMutation()
-
-  const handleReplyInputChange = (value: string) => {
-    setReplyInput(value)
-  }
-
-  const handleReplySubmit = async () => {
-    if (!replyInput.trim()) return
-
-    try {
-      await submitCommentMutation.mutateAsync({
-        answerId: answer.id,
-        data: { content: replyInput.trim() },
-      })
-
-      // 성공 시 입력창 초기화
-      setReplyInput('')
-      onCommentSubmitted?.()
-    } catch (error) {
-      console.error('댓글 제출 실패:', error)
-      alert('댓글 제출에 실패했습니다. 다시 시도해주세요.')
-    }
-  }
-
-  const handleReplyCancel = () => {
-    setReplyInput('')
-  }
+  const {
+    replyInput,
+    submitCommentMutation,
+    handleReplyInputChange,
+    handleReplySubmit,
+    handleReplyCancel,
+  } = useCommentInput({ answer, onCommentSubmitted })
 
   return (
     <div className="flex items-start gap-3 text-sm">

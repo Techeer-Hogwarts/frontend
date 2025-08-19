@@ -1,5 +1,3 @@
-'use client'
-
 interface DeleteConfirmModalProps {
   isOpen: boolean
   onClose: () => void

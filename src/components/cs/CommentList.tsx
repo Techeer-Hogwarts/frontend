@@ -1,10 +1,8 @@
 'use client'
 
-import { useState } from 'react'
-import { useCsCommentListQuery, useUpdateCsCommentMutation } from '@/api/cs'
-import { CsAnswer, CsComment } from '@/api/cs'
 import { FaChevronRight } from 'react-icons/fa'
-import { useAuthStore } from '@/store/authStore'
+import { CsAnswer } from '@/api/cs'
+import { useCommentList } from '@/hooks/cs/useCommentList'
 import Menu from './Menu'
 
 interface CommentListProps {
@@ -12,61 +10,22 @@ interface CommentListProps {
 }
 
 export default function CommentList({ answer }: CommentListProps) {
-  const [editingCommentId, setEditingCommentId] = useState<number | null>(null)
-  const [editContent, setEditContent] = useState('')
-  const { user } = useAuthStore()
-
   const {
-    data: commentListData,
-    fetchNextPage,
+    editingCommentId,
+    editContent,
+    setEditContent,
+    allComments,
     hasNextPage,
     isFetchingNextPage,
-  } = useCsCommentListQuery(answer.id, {
-    size: 3,
-  })
-
-  const updateCommentMutation = useUpdateCsCommentMutation()
-
-  const handleLoadMore = () => {
-    fetchNextPage()
-  }
-
-  const handleEdit = (comment: CsComment) => {
-    setEditingCommentId(comment.id)
-    setEditContent(comment.content)
-  }
-
-  const handleSaveEdit = async () => {
-    if (!editingCommentId) return
-
-    try {
-      await updateCommentMutation.mutateAsync({
-        commentId: editingCommentId,
-        data: { content: editContent },
-      })
-      setEditingCommentId(null)
-      setEditContent('')
-    } catch (error) {
-      console.error('댓글 수정 실패:', error)
-      alert('댓글 수정에 실패했습니다.')
-    }
-  }
-
-  const handleCancelEdit = () => {
-    setEditingCommentId(null)
-    setEditContent('')
-  }
-
-  // 수정 내용이 원본과 같은지 확인
-  const hasChanges = (comment: CsComment) => {
-    return editContent.trim() !== comment.content.trim()
-  }
-
-  const isEmpty = editContent.trim() === ''
-
-  // 모든 댓글을 하나의 배열로 합치기
-  const allComments =
-    commentListData?.pages.flatMap((page) => page.comments) || []
+    updateCommentMutation,
+    handleLoadMore,
+    handleEdit,
+    handleSaveEdit,
+    handleCancelEdit,
+    hasChanges,
+    isEmpty,
+    isMyComment,
+  } = useCommentList({ answer })
 
   const fallbackProfile = '/profile.png'
 
@@ -96,14 +55,13 @@ export default function CommentList({ answer }: CommentListProps) {
                   })}
                 </span>
               </div>
-              {user?.name === comment.user.name &&
-                user?.profileImage === comment.user.profileImage && (
-                  <Menu
-                    id={comment.id}
-                    type="comment"
-                    onEdit={() => handleEdit(comment)}
-                  />
-                )}
+              {isMyComment(comment) && (
+                <Menu
+                  id={comment.id}
+                  type="comment"
+                  onEdit={() => handleEdit(comment)}
+                />
+              )}
             </div>
             {editingCommentId === comment.id ? (
               <div className="mb-2">
