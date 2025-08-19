@@ -64,10 +64,14 @@ export type UpdateExperienceRequest = Omit<Experience, 'id'> & {
   experienceId?: number
 }
 
-// ProfileData에서 필요한 필드만 추출
-export type UpdateProfileRequest = Pick<ProfileData, 
-  'year' | 'isLft' | 'school' | 'grade' | 'mainPosition' | 'subPosition' | 'githubUrl'
-> & {
+export interface UpdateProfileRequest {
+  year: number
+  isLft: boolean
+  school: string
+  grade: string
+  mainPosition: string
+  subPosition: string
+  githubUrl: string
   mediumUrl?: string
   velogUrl?: string
   tistoryUrl?: string
