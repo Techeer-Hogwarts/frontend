@@ -11,35 +11,7 @@ import { useRouter } from 'next/navigation'
 import { deleteExperience } from '@/api/mypage/deleteExperience'
 import { getProfileImg } from '@/api/mypage/getProfileImg'
 import { updateProfile } from '@/api/mypage/updateProfile'
-
-interface Experience {
-  id?: number
-  position: string
-  companyName: string
-  startDate: string
-  endDate: string | null
-  category?: string
-  isCurrentJob?: boolean
-  description?: string
-  isFinished?: boolean
-}
-
-interface ProfileData {
-  profileImage: string
-  name: string
-  email: string
-  school: string
-  grade: string
-  year: number
-  mainPosition: string
-  subPosition: string
-  githubUrl: string
-  mediumUrl: string
-  velogUrl: string
-  tistoryUrl: string
-  isLft: boolean
-  experiences?: Experience[]
-}
+import { Experience, ProfileData } from '@/types/mypage/mypage.types'
 
 interface ProfileProps {
   profile: ProfileData | null
@@ -173,20 +145,19 @@ export default function Profile({ profile }: ProfileProps) {
     }
 
     const finalInternships = internshipExperiences
-      .filter((exp) => !deletedInternshipIds.includes(exp.id!))
+      .filter((exp) => exp.id !== undefined && !deletedInternshipIds.includes(exp.id))
       .map((exp) => {
-        // 음수 ID => 새로 추가된 항목
-        if (exp.id && exp.id < 0) {
+        // 양수 ID만 기존 경력, 그 외는 신규 경력
+        if (exp.id && exp.id > 0) {
           const { id, ...rest } = exp
           return {
+            experienceId: id,
             ...rest,
             category: '인턴',
           }
         } else {
-          // 양수 ID => 기존 항목
           const { id, ...rest } = exp
           return {
-            experienceId: id,
             ...rest,
             category: '인턴',
           }
@@ -194,20 +165,18 @@ export default function Profile({ profile }: ProfileProps) {
       })
 
     const finalFullTimes = fullTimeExperiences
-      .filter((exp) => !deletedFullTimeIds.includes(exp.id!))
+      .filter((exp) => exp.id !== undefined && !deletedFullTimeIds.includes(exp.id))
       .map((exp) => {
-        if (exp.id && exp.id < 0) {
-          // 새 항목
+        if (exp.id && exp.id > 0) {
           const { id, ...rest } = exp
           return {
+            experienceId: id,
             ...rest,
             category: '정규직',
           }
         } else {
-          // 기존 항목
           const { id, ...rest } = exp
           return {
-            experienceId: id,
             ...rest,
             category: '정규직',
           }

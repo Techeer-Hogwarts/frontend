@@ -4,9 +4,9 @@ export interface Experience {
   companyName: string
   startDate: string
   endDate: string | null
-  category: string
-  isFinished: boolean
-  description: string | ""
+  category?: string
+  isFinished?: boolean
+  description?: string
 }
 
 export interface StackItem {

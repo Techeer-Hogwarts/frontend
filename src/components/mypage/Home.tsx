@@ -4,7 +4,7 @@ import AddBtn from './AddBtn'
 import Carousel from './Carousel'
 import Stack from './Stack'
 import { usePathname } from 'next/navigation'
-import { TechStacks } from '@/types/mypage/mypage.types'
+import { TechStacks, Experience } from '@/types/mypage/mypage.types'
 
 
 interface Team {
@@ -14,24 +14,12 @@ interface Team {
   mainImage?: string
 }
 
-interface Experience {
-  id?: number
-  companyName: string
-  startDate: string
-  endDate: string | null
-  position: string
-  category: string
-  isFinished: boolean
-}
-
 interface HomeProps {
   techStacks?: TechStacks
   projectTeams?: Team[]
   studyTeams?: Team[]
   experiences?: Experience[]
 }
-
-
 
 const convertDate = (rawDate: string): string => {
   if (!rawDate) return ''
