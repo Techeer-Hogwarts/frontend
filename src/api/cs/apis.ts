@@ -171,7 +171,7 @@ export const deleteCsAnswer = async (answerId: number): Promise<void> => {
 export const updateCsComment = async (
   commentId: number,
   data: CsCommentSubmitRequest,
-): Promise<CsComment> => {
+): Promise<void> => {
   const response = await fetch(`${CS_API_BASE}/comments/${commentId}`, {
     method: 'PUT',
     headers: {
@@ -184,8 +184,6 @@ export const updateCsComment = async (
   if (!response.ok) {
     throw new Error('Failed to update comment')
   }
-
-  return response.json()
 }
 
 // 댓글 삭제 API
