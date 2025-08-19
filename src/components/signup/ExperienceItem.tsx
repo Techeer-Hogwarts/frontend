@@ -10,7 +10,7 @@ export interface Experience {
   startDate: string
   endDate: string | null
   category?: string
-  finished?: boolean
+  isFinished?: boolean
   description?: string
 }
 
@@ -57,13 +57,13 @@ export default function ExperienceItem({
 
   // 재직중 체크박스 토글
   const handleIsFinishedToggle = () => {
-    const newIsFinished = !data.finished
+    const newIsFinished = !data.isFinished
     // 만약 새로 토글 후 재직중(false)이 되면 endDate=null 처리
     const newEndDate = newIsFinished ? data.endDate : null
 
     onChange({
       ...data,
-      finished: newIsFinished,
+      isFinished: newIsFinished,
       endDate: newEndDate,
     })
   }
@@ -74,7 +74,7 @@ export default function ExperienceItem({
       position: pos,
     })
   }
-  const isWorking = !data.finished
+  const isWorking = !data.isFinished
 
   return (
     <div className="relative p-4 bg-filterbg rounded-md mt-4">
