@@ -4,6 +4,8 @@ import ProblemFilterTabs from './Filter'
 import CsQuestionBox from './CsQuestionBox'
 import { useCsQuestionList } from '@/hooks/cs/useCsQuestionList'
 import { useInfiniteScroll } from '@/hooks/cs/useInfiniteScroll'
+import { useMemo } from 'react'
+import { CsProblem } from '@/api/cs'
 
 export default function CsQuestionList() {
   const {
@@ -22,6 +24,22 @@ export default function CsQuestionList() {
     hasNextPage,
     isFetchingNextPage,
   })
+
+  // 필터링된 문제 목록
+  const filteredProblems = useMemo(() => {
+    if (!solvedFilter) return allProblems
+
+    return allProblems.filter((problem: CsProblem) => {
+      if (solvedFilter === 'solved') return problem.isAnswered
+      if (solvedFilter === 'unsolved') return !problem.isAnswered
+      return true
+    })
+  }, [allProblems, solvedFilter])
+
+  // 문제 클릭 핸들러
+  const handleNavigateToProblem = (problemId: number) => {
+    window.location.href = `/cs/${problemId}`
+  }
 
   if (isLoading) {
     return (
@@ -59,7 +77,16 @@ export default function CsQuestionList() {
         solvedFilter={solvedFilter}
         setSolvedFilter={setSolvedFilter}
       />
-      <CsQuestionBox problems={allProblems} solvedFilter={solvedFilter} />
+
+      <ul className="space-y-5">
+        {filteredProblems.map((problem) => (
+          <CsQuestionBox
+            key={problem.problemId}
+            problem={problem}
+            onNavigate={handleNavigateToProblem}
+          />
+        ))}
+      </ul>
 
       {/* 무한스크롤 감지 요소 */}
       {hasNextPage && (
