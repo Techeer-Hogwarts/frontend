@@ -30,6 +30,8 @@ export default function AnswerCard({
     setEditContent,
     displayContent,
     editTextareaRef,
+    contentRef,
+    shouldShowExpandButton,
     updateAnswerMutation,
     handleReplyToggle,
     handleReplyInputToggle,
@@ -41,7 +43,6 @@ export default function AnswerCard({
     handleCancelEdit,
     hasChanges,
     isEmpty,
-    shouldShowExpandButton,
   } = useAnswerCard({ answer, onRefresh, problemId })
 
   const fallbackProfile = '/profile.png'
@@ -115,15 +116,16 @@ export default function AnswerCard({
               ) : (
                 <div className="mb-2">
                   <p
+                    ref={contentRef}
                     className={`leading-relaxed whitespace-pre-wrap ${
-                      !isExpanded && shouldShowExpandButton(displayContent)
-                        ? 'line-clamp-2'
+                      !isExpanded && shouldShowExpandButton
+                        ? 'line-clamp-3'
                         : ''
                     }`}
                   >
                     {displayContent}
                   </p>
-                  {shouldShowExpandButton(displayContent) && (
+                  {shouldShowExpandButton && (
                     <button
                       onClick={handleExpandAnswer}
                       className="text-gray text-sm mt-2 hover:underline"

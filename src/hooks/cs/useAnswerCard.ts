@@ -23,9 +23,11 @@ export const useAnswerCard = ({
   const [isEditing, setIsEditing] = useState(false)
   const [editContent, setEditContent] = useState(answer.content)
   const [displayContent, setDisplayContent] = useState(answer.content)
+  const [shouldShowExpandButton, setShouldShowExpandButton] = useState(false)
 
   const updateAnswerMutation = useUpdateCsAnswerMutation()
   const intervalRef = useRef<NodeJS.Timeout | null>(null)
+  const contentRef = useRef<HTMLParagraphElement>(null)
 
   // 자동 높이 조절 훅 사용 (편집 모드일 때만 활성화)
   const editTextareaRef = useAutoResizeTextarea(editContent, isEditing)
@@ -63,6 +65,24 @@ export const useAnswerCard = ({
       }
     }
   }, [])
+
+  // 줄 수 확인 함수
+  const checkLineCount = () => {
+    if (contentRef.current) {
+      const element = contentRef.current
+      const lineHeight = parseInt(window.getComputedStyle(element).lineHeight)
+      const height = element.scrollHeight
+      const lineCount = Math.ceil(height / lineHeight)
+      setShouldShowExpandButton(lineCount > 3)
+    }
+  }
+
+  // 내용이 변경될 때마다 줄 수 확인
+  useEffect(() => {
+    // DOM이 업데이트된 후 줄 수 확인
+    const timer = setTimeout(checkLineCount, 0)
+    return () => clearTimeout(timer)
+  }, [displayContent])
 
   const handleReplyToggle = () => {
     setShowReplies(!showReplies)
@@ -111,10 +131,6 @@ export const useAnswerCard = ({
   const hasChanges = editContent.trim() !== answer.content.trim()
   const isEmpty = editContent.trim() === ''
 
-  const shouldShowExpandButton = (content: string) => {
-    return content.length > 200
-  }
-
   return {
     showReplies,
     showReplyInput,
@@ -125,6 +141,8 @@ export const useAnswerCard = ({
     setEditContent,
     displayContent,
     editTextareaRef,
+    contentRef,
+    shouldShowExpandButton,
     updateAnswerMutation,
     handleReplyToggle,
     handleReplyInputToggle,
@@ -136,6 +154,5 @@ export const useAnswerCard = ({
     handleCancelEdit,
     hasChanges,
     isEmpty,
-    shouldShowExpandButton,
   }
 }
