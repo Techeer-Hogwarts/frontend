@@ -14,6 +14,7 @@ export default function CommentInput({
 }: CommentInputProps) {
   const {
     replyInput,
+    textareaRef,
     submitCommentMutation,
     handleReplyInputChange,
     handleReplySubmit,
@@ -21,11 +22,12 @@ export default function CommentInput({
   } = useCommentInput({ answer, onCommentSubmitted })
 
   return (
-    <div className="flex items-start gap-3 text-sm">
+    <div className="flex items-start gap-3">
       <div className="flex-1">
         <textarea
+          ref={textareaRef}
           placeholder="답글을 작성해주세요"
-          className="w-full h-16 border border-gray rounded-xl p-3 resize-none focus:outline-none focus:border-primary"
+          className="w-full min-h-[4rem] border border-gray rounded-xl p-3 resize-none focus:outline-none focus:border-primary overflow-hidden"
           value={replyInput}
           onChange={(e) => handleReplyInputChange(e.target.value)}
           disabled={submitCommentMutation.isPending}

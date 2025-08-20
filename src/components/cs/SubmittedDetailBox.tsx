@@ -3,6 +3,8 @@
 import AnswerCard from './AnswerCard'
 import { useSubmittedDetailBox } from '@/hooks/cs/useSubmittedDetailBox'
 import { useInfiniteScroll } from '@/hooks/cs/useInfiniteScroll'
+import ProblemHeader from './ProblemHeader'
+import ProblemStatus from './ProblemStatus'
 
 interface SubmittedDetailBoxProps {
   id: string
@@ -18,6 +20,7 @@ export default function SubmittedDetailBox({ id }: SubmittedDetailBoxProps) {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
+    refreshAnswers, // 새로고침 함수 추가
   } = useSubmittedDetailBox({ id })
 
   const { ref } = useInfiniteScroll({
@@ -27,32 +30,19 @@ export default function SubmittedDetailBox({ id }: SubmittedDetailBoxProps) {
   })
 
   if (problemLoading) {
-    return (
-      <div className="max-w-[1200px] mx-auto mt-[3.56rem]">
-        <h1 className="text-[2rem] font-bold mb-5"> CS 문제</h1>
-        <div className="border border-gray bg-filterbg px-6 py-8 rounded-xl text-xl font-semibold mb-10">
-          <p>문제를 불러오는 중...</p>
-        </div>
-      </div>
-    )
+    return <ProblemStatus problemId={Number(id)} updatedAt="" type="loading" />
   }
 
   if (problemError || !problemDetail) {
-    return (
-      <div className="max-w-[1200px] mx-auto mt-[3.56rem]">
-        <h1 className="text-[2rem] font-bold mb-5">CS 문제</h1>
-        <div className="border border-red-300 bg-red-50 px-6 py-8 rounded-xl text-xl font-semibold mb-10">
-          <p>문제를 불러오는데 실패했습니다.</p>
-        </div>
-      </div>
-    )
+    return <ProblemStatus problemId={Number(id)} updatedAt="" type="error" />
   }
 
   return (
     <div className="max-w-[1200px] mx-auto mt-[3.56rem]">
-      <h1 className="text-[2rem] font-bold mb-5">CS 문제</h1>
-      {/* <p className="text-primary text-lg mb-3">2025년 03월 28일</p> */}
-
+      <ProblemHeader
+        problemId={Number(id)}
+        updatedAt={problemDetail.updatedAt}
+      />
       <div className="border border-gray bg-filterbg px-6 py-8 rounded-xl text-xl font-semibold mb-10">
         <p>{problemDetail.content}</p>
       </div>
@@ -76,15 +66,23 @@ export default function SubmittedDetailBox({ id }: SubmittedDetailBoxProps) {
         <h2 className="text-xl font-bold mb-4">답변</h2>
         {myAnswer && (
           <div className="mb-6">
-            <h3 className="text-lg font-semibold mb-3 text-primary">내 답변</h3>
-            <AnswerCard answer={myAnswer} isMyAnswer={true} />
+            <AnswerCard
+              answer={myAnswer}
+              isMyAnswer={true}
+              problemId={Number(id)}
+              onRefresh={refreshAnswers} // 새로고침 함수 전달
+            />
           </div>
         )}
         {allAnswers.length > 0 && (
           <div>
-            <h3 className="text-lg font-semibold mb-3">다른 답변들</h3>
             {allAnswers.map((answer) => (
-              <AnswerCard key={answer.id} answer={answer} />
+              <AnswerCard
+                key={answer.id}
+                answer={answer}
+                problemId={Number(id)}
+                onRefresh={refreshAnswers} // 새로고침 함수 전달
+              />
             ))}
           </div>
         )}

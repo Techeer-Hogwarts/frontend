@@ -2,15 +2,18 @@
 
 import CsQuestionList from './CsQuestionList'
 import { useTodayCs } from '@/hooks/cs/useTodayCs'
+import { useProblemDate } from '@/hooks/cs/useProblemDate'
 
 export default function TodayCSBox() {
   const { todayCs, isLoading, error, handleNavigateToProblem } = useTodayCs()
+
+  const { getProblemDate } = useProblemDate(todayCs?.updatedAt || '')
 
   if (isLoading) {
     return (
       <div className="max-w-[1200px] mx-auto mt-[3.56rem]">
         <div className="flex items-center space-x-4 mb-5">
-          <h1 className="text-[2rem] font-bold">최신 CS</h1>
+          <h1 className="text-[2rem] font-bold">금주의 CS</h1>
         </div>
         <div className="border border-primary px-6 py-8 rounded-xl text-xl font-semibold">
           <p>CS 문제를 불러오는 중...</p>
@@ -23,7 +26,7 @@ export default function TodayCSBox() {
     return (
       <div className="max-w-[1200px] mx-auto mt-[3.56rem]">
         <div className="flex items-center space-x-4 mb-5">
-          <h1 className="text-[2rem] font-bold">최신 CS</h1>
+          <h1 className="text-[2rem] font-bold">금주의 CS</h1>
         </div>
         <div className="border border-red-300 bg-red-50 px-6 py-8 rounded-xl text-xl font-semibold">
           <p>CS 문제를 불러오는데 실패했습니다.</p>
@@ -35,8 +38,8 @@ export default function TodayCSBox() {
   return (
     <div className="max-w-[1200px] mx-auto mt-[3.56rem]">
       <div className="flex items-center space-x-4 mb-5">
-        <h1 className="text-[2rem] font-bold">최신 CS</h1>
-        {/* <p className="text-lg text-gray">2025년 03월 28일</p> */}
+        <h1 className="text-[2rem] font-bold">금주의 CS</h1>
+        <p className="text-lg text-gray">{getProblemDate()}</p>
       </div>
 
       <div className="flex justify-between items-center mb-[3.5rem] border border-primary px-6 py-8 rounded-xl text-xl font-semibold">

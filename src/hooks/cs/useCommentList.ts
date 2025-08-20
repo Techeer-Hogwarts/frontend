@@ -5,6 +5,7 @@ import { useCsCommentListQuery, useUpdateCsCommentMutation } from '@/api/cs'
 import { CsAnswer, CsComment } from '@/api/cs'
 import { useAuthStore } from '@/store/authStore'
 import { useLoadMore } from './useLoadMore'
+import { useAutoResizeTextarea } from '@/hooks/cs/useAutoResizeTextarea'
 
 interface UseCommentListProps {
   answer: CsAnswer
@@ -14,6 +15,9 @@ export const useCommentList = ({ answer }: UseCommentListProps) => {
   const [editingCommentId, setEditingCommentId] = useState<number | null>(null)
   const [editContent, setEditContent] = useState('')
   const { user } = useAuthStore()
+
+  // 자동 높이 조절 훅 사용 (편집 중일 때만 활성화)
+  const editTextareaRef = useAutoResizeTextarea(editContent, !!editingCommentId)
 
   const {
     data: commentListData,
@@ -78,6 +82,7 @@ export const useCommentList = ({ answer }: UseCommentListProps) => {
     editingCommentId,
     editContent,
     setEditContent,
+    editTextareaRef,
     commentListData,
     fetchNextPage,
     hasNextPage,

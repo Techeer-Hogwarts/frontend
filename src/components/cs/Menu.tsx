@@ -8,9 +8,15 @@ interface CommentMenuProps {
   id: number
   type: 'comment' | 'answer'
   onEdit: () => void
+  problemId?: number // 문제 ID 추가
 }
 
-export default function CommentMenu({ id, type, onEdit }: CommentMenuProps) {
+export default function CommentMenu({
+  id,
+  type,
+  onEdit,
+  problemId,
+}: CommentMenuProps) {
   const {
     showMenu,
     showDeleteModal,
@@ -19,7 +25,7 @@ export default function CommentMenu({ id, type, onEdit }: CommentMenuProps) {
     handleDeleteClick,
     handleDeleteConfirm,
     handleCloseDeleteModal,
-  } = useMenu({ id, type, onEdit })
+  } = useMenu({ id, type, onEdit, problemId })
 
   return (
     <>

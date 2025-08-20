@@ -1,6 +1,8 @@
 'use client'
 
 import { useCsDetailBox } from '@/hooks/cs/useCsDetailBox'
+import ProblemHeader from './ProblemHeader'
+import ProblemStatus from './ProblemStatus'
 
 interface CSDetailBoxProps {
   id: string
@@ -18,35 +20,22 @@ export default function CSDetailBox({ id }: CSDetailBoxProps) {
   } = useCsDetailBox({ id })
 
   if (isLoading) {
-    return (
-      <div className="max-w-[1200px] mx-auto mt-[3.56rem]">
-        <h1 className="text-[2rem] font-bold mb-5">CS 문제</h1>
-        <div className="border border-gray bg-filterbg px-6 py-8 rounded-xl text-xl font-semibold mb-10">
-          <p>문제를 불러오는 중...</p>
-        </div>
-      </div>
-    )
+    return <ProblemStatus problemId={Number(id)} updatedAt="" type="loading" />
   }
 
   if (error || !problemDetail) {
-    return (
-      <div className="max-w-[1200px] mx-auto mt-[3.56rem]">
-        <h1 className="text-[2rem] font-bold mb-5">CS 문제</h1>
-        <div className="border border-red-300 bg-red-50 px-6 py-8 rounded-xl text-xl font-semibold mb-10">
-          <p>문제를 불러오는데 실패했습니다.</p>
-        </div>
-      </div>
-    )
+    return <ProblemStatus problemId={Number(id)} updatedAt="" type="error" />
   }
 
   return (
     <div className="max-w-[1200px] mx-auto mt-[3.56rem]">
-      <h1 className="text-[2rem] font-bold mb-5">CS 문제</h1>
-      {/* <p className="text-primary text-lg mb-3">2025년 03월 28일</p> */}
+      <ProblemHeader
+        problemId={Number(id)}
+        updatedAt={problemDetail.updatedAt}
+      />
       <div className="border border-gray bg-filterbg px-6 py-8 rounded-xl text-xl font-semibold mb-10">
         <p>{problemDetail.content}</p>
       </div>
-
       <div className="mb-5">
         <p className="text-xl font-semibold text-primary mb-3">답변</p>
         <textarea
