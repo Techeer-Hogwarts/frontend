@@ -15,6 +15,8 @@ export default function CsQuestionList() {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
+    solvedCount,
+    unsolvedCount,
   } = useCsQuestionList()
 
   const { ref } = useInfiniteScroll({
@@ -58,6 +60,8 @@ export default function CsQuestionList() {
       <ProblemFilterTabs
         solvedFilter={solvedFilter}
         setSolvedFilter={setSolvedFilter}
+        solvedCount={solvedCount}
+        unsolvedCount={unsolvedCount}
       />
       <CsQuestionBox problems={allProblems} solvedFilter={solvedFilter} />
 

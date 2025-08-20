@@ -1,9 +1,16 @@
 interface FilterProps {
   solvedFilter: 'solved' | 'unsolved' | null
   setSolvedFilter: (filter: 'solved' | 'unsolved' | null) => void
+  solvedCount: number
+  unsolvedCount: number
 }
 
-export default function Filter({ solvedFilter, setSolvedFilter }: FilterProps) {
+export default function Filter({
+  solvedFilter,
+  setSolvedFilter,
+  solvedCount,
+  unsolvedCount,
+}: FilterProps) {
   const toggleFilter = (filter: 'solved' | 'unsolved') => {
     if (solvedFilter === filter) {
       setSolvedFilter(null)
@@ -18,13 +25,13 @@ export default function Filter({ solvedFilter, setSolvedFilter }: FilterProps) {
         className={`px-3 py-1 rounded-full text-darkgray border ${solvedFilter === 'solved' ? 'bg-lightgray border-lightgray' : 'bg-white border-gray'}`}
         onClick={() => toggleFilter('solved')}
       >
-        푼 문제 21
+        푼 문제 {solvedCount}
       </button>
       <button
         className={`px-3 py-1 rounded-full text-darkgray border ${solvedFilter === 'unsolved' ? 'bg-lightgray border-lightgray' : 'bg-white border-gray'}`}
         onClick={() => toggleFilter('unsolved')}
       >
-        안 푼 문제 36
+        안 푼 문제 {unsolvedCount}
       </button>
     </div>
   )
