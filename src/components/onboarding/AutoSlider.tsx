@@ -21,11 +21,11 @@ export default function AutoSlider({
         )}
       >
         {[...Array(2)].map((_, i) => (
-          <div className="flex gap-10" key={i}>
+          <div className="flex" key={i}>
             {logos.map((logo, index) => (
               <Image
                 key={`${i}-${index}`}
-                className="object-contain shrink-0"
+                className="object-contain shrink-0 pr-10"
                 src={`/images/onboarding/${logo}.png`}
                 alt={logo}
                 width={173}
