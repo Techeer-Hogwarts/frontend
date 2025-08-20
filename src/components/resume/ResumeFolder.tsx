@@ -103,11 +103,6 @@ export default function ResumeFolder({
     })
     .replace(/\.$/, '')
 
-  //이력서 타이틀 설정
-  const resumeTitle = resume.title.split('-').slice(-1).join(' ')
-  const truncatedTitle =
-    resumeTitle.length > 16 ? resumeTitle.slice(0, 16) + '...' : resumeTitle
-
   return (
     <div className="flex flex-wrap gap-12">
       <Link
@@ -117,7 +112,9 @@ export default function ResumeFolder({
       >
         {/** 이름/기수 */}
         <div className="flex flex-row justify-between mt-3 mx-1">
-          <span className="font-semibold text-[1.25rem]">{truncatedTitle}</span>
+          <span className="font-semibold text-[1.25rem] w-full truncate">
+            {resume.title}
+          </span>
         </div>
         <span className="flex w-[14rem] border-t border-darkgray"></span>
         {/** 포지션/경력 */}
