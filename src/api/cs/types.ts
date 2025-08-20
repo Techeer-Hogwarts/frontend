@@ -3,6 +3,7 @@ export interface CsProblem {
   problemId: number
   content: string
   isAnswered: boolean
+  updatedAt: string
 }
 
 // CS 문제 상세 타입

@@ -18,6 +18,25 @@ export default function CsQuestionBox({
     solvedFilter,
   })
 
+  // 문제의 날짜를 계산하는 함수
+  const getProblemDate = (problem: CsProblem) => {
+    let targetDate: Date
+    // 백엔드에서 제공하는 실제 날짜 사용
+    targetDate = new Date(problem.updatedAt)
+
+    const year = targetDate.getFullYear()
+    const month = targetDate.getMonth() + 1
+
+    // 월의 첫 번째 날
+    const firstDayOfMonth = new Date(year, month - 1, 1)
+    // 월의 첫 번째 날이 주의 몇 번째 날인지 계산
+    const firstDayWeekday = firstDayOfMonth.getDay()
+    // 해당 날짜가 월의 몇 번째 주인지 계산
+    const weekOfMonth = Math.ceil((targetDate.getDate() + firstDayWeekday) / 7)
+
+    return `${year}년 ${month}월 ${weekOfMonth}주차`
+  }
+
   return (
     <ul className="space-y-5">
       {filtered.map((p) => (
@@ -47,13 +66,7 @@ export default function CsQuestionBox({
                 >
                   {p.content}
                 </p>
-                <p className="text-gray">
-                  {new Date().toLocaleDateString('ko-KR', {
-                    year: 'numeric',
-                    month: '2-digit',
-                    day: '2-digit',
-                  })}
-                </p>
+                <p className="text-gray">{getProblemDate(p)}</p>
               </div>
             </div>
           </button>

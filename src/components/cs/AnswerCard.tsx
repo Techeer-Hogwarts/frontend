@@ -184,17 +184,17 @@ export default function AnswerCard({
             </div>
             {answer.score !== null && answer.feedback !== null ? (
               <div className="flex gap-2 items-center">
-                <div className="border border-primary bg-white rounded-xl font-semibold text-primary px-4 py-2 flex items-center justify-center">
+                <div className="border border-primary bg-white rounded-xl font-semibold text-primary w-12 h-10 flex items-center justify-center">
                   {answer.score}
                 </div>
-                <p className="text-darkgray">{answer.feedback}</p>
+                <p className="w-full text-darkgray">{answer.feedback}</p>
               </div>
             ) : (
               <div className="flex gap-2 items-center">
-                <div className="border border-primary bg-white rounded-xl font-semibold text-primary w-12 h-8 flex items-center justify-center">
+                <div className="border border-primary bg-white rounded-xl font-semibold text-primary w-12 h-10 flex items-center justify-center">
                   -
                 </div>
-                <p className="text-darkgray">
+                <p className="w-full text-darkgray">
                   AI가 답변을 분석하고 있습니다. 잠시만 기다려주세요...
                 </p>
               </div>
