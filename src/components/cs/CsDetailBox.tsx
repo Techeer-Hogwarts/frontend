@@ -1,6 +1,8 @@
 'use client'
 
 import { useCsDetailBox } from '@/hooks/cs/useCsDetailBox'
+import { useTodayCsQuery } from '@/api/cs/queries'
+import { useProblemDate } from '@/hooks/cs/useProblemDate'
 
 interface CSDetailBoxProps {
   id: string
@@ -17,10 +19,23 @@ export default function CSDetailBox({ id }: CSDetailBoxProps) {
     handleSubmit,
   } = useCsDetailBox({ id })
 
+  // 오늘의 CS 문제 조회 (금주의 CS 판단용)
+  const { data: todayCs } = useTodayCsQuery()
+
+  // 현재 문제가 금주의 CS인지 판단
+  const isCurrentWeekCS = todayCs?.problemId === Number(id)
+
+  // 공통 훅 사용
+  const { getProblemDate } = useProblemDate(problemDetail?.updatedAt || '')
+
   if (isLoading) {
     return (
       <div className="max-w-[1200px] mx-auto mt-[3.56rem]">
-        <h1 className="text-[2rem] font-bold mb-5">CS 문제</h1>
+        <div className="flex items-center space-x-4 mb-5">
+          <h1 className="text-[2rem] font-bold">
+            {isCurrentWeekCS ? '금주의 CS' : '이전 CS'}
+          </h1>
+        </div>
         <div className="border border-gray bg-filterbg px-6 py-8 rounded-xl text-xl font-semibold mb-10">
           <p>문제를 불러오는 중...</p>
         </div>
@@ -31,7 +46,11 @@ export default function CSDetailBox({ id }: CSDetailBoxProps) {
   if (error || !problemDetail) {
     return (
       <div className="max-w-[1200px] mx-auto mt-[3.56rem]">
-        <h1 className="text-[2rem] font-bold mb-5">CS 문제</h1>
+        <div className="flex items-center space-x-4 mb-5">
+          <h1 className="text-[2rem] font-bold">
+            {isCurrentWeekCS ? '금주의 CS' : '이전 CS'}
+          </h1>
+        </div>
         <div className="border border-red-300 bg-red-50 px-6 py-8 rounded-xl text-xl font-semibold mb-10">
           <p>문제를 불러오는데 실패했습니다.</p>
         </div>
@@ -41,8 +60,13 @@ export default function CSDetailBox({ id }: CSDetailBoxProps) {
 
   return (
     <div className="max-w-[1200px] mx-auto mt-[3.56rem]">
-      <h1 className="text-[2rem] font-bold mb-5">CS 문제</h1>
-      {/* <p className="text-primary text-lg mb-3">2025년 03월 28일</p> */}
+      <div className="flex items-center space-x-4 mb-5">
+        <h1 className="text-[2rem] font-bold">
+          {isCurrentWeekCS ? '금주의 CS' : '이전 CS'}
+        </h1>
+        <p className="text-lg text-gray">{getProblemDate()}</p>
+      </div>
+
       <div className="border border-gray bg-filterbg px-6 py-8 rounded-xl text-xl font-semibold mb-10">
         <p>{problemDetail.content}</p>
       </div>

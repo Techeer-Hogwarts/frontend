@@ -12,6 +12,7 @@ export interface CsProblemDetail {
   content: string
   solution: string | null
   answered: boolean
+  updatedAt: string
 }
 
 // CS 문제 목록 조회 파라미터
@@ -32,6 +33,7 @@ export interface TodayCsResponse {
   problemId: number
   content: string
   isAnswered: boolean
+  updatedAt: string
 }
 
 // CS 답변 제출 요청 타입
