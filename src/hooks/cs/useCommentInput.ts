@@ -1,8 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import { useSubmitCsCommentMutation } from '@/api/cs'
+import { useSubmitCsCommentMutation } from '@/api/cs/mutations'
 import { CsAnswer } from '@/api/cs'
+import { useAutoResizeTextarea } from '@/hooks/cs/useAutoResizeTextarea'
 
 interface UseCommentInputProps {
   answer: CsAnswer
@@ -14,6 +15,9 @@ export const useCommentInput = ({
   onCommentSubmitted,
 }: UseCommentInputProps) => {
   const [replyInput, setReplyInput] = useState('')
+
+  // 자동 높이 조절 훅 사용
+  const textareaRef = useAutoResizeTextarea(replyInput)
 
   const submitCommentMutation = useSubmitCsCommentMutation()
 
@@ -35,7 +39,7 @@ export const useCommentInput = ({
       onCommentSubmitted?.()
     } catch (error) {
       console.error('댓글 제출 실패:', error)
-      alert('댓글 제출에 실패했습니다. 다시 시도해주세요.')
+      alert('댓글 제출에 실패했습니다.')
     }
   }
 
@@ -45,6 +49,7 @@ export const useCommentInput = ({
 
   return {
     replyInput,
+    textareaRef,
     submitCommentMutation,
     handleReplyInputChange,
     handleReplySubmit,

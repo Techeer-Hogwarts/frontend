@@ -14,6 +14,7 @@ export default function CommentList({ answer }: CommentListProps) {
     editingCommentId,
     editContent,
     setEditContent,
+    editTextareaRef,
     allComments,
     hasNextPage,
     isFetchingNextPage,
@@ -37,15 +38,13 @@ export default function CommentList({ answer }: CommentListProps) {
           <img
             src={comment.user.profileImage || fallbackProfile}
             alt="avatar"
-            className="rounded-full w-8 h-8"
+            className="rounded-full w-8 h-8 object-cover"
           />
           <div className="flex-1">
             <div className="flex items-center justify-between mb-1">
               <div className="flex items-center gap-2">
-                <span className="font-semibold text-sm">
-                  {comment.user.name}
-                </span>
-                <span className="text-xs text-gray">
+                <span className="font-semibold">{comment.user.name}</span>
+                <span className="text-sm text-gray">
                   {new Date(comment.createdAt).toLocaleDateString('ko-KR', {
                     year: 'numeric',
                     month: 'long',
@@ -66,22 +65,22 @@ export default function CommentList({ answer }: CommentListProps) {
             {editingCommentId === comment.id ? (
               <div className="mb-2">
                 <textarea
+                  ref={editTextareaRef}
                   value={editContent}
                   onChange={(e) => setEditContent(e.target.value)}
-                  className="w-full p-2 border border-gray rounded-lg resize-none text-sm"
-                  rows={2}
+                  className="w-full min-h-[3rem] p-2 border border-gray rounded-lg resize-none focus:outline-none focus:border-primary overflow-hidden"
                   placeholder="댓글을 입력하세요..."
                 />
-                <div className="flex justify-end gap-1 mt-2">
+                <div className="flex justify-end gap-2 mt-2">
                   <button
                     onClick={handleCancelEdit}
-                    className="px-3 py-1 rounded-full text-xs hover:bg-gray"
+                    className="px-3 py-1 rounded-full hover:bg-gray"
                   >
                     취소
                   </button>
                   <button
                     onClick={handleSaveEdit}
-                    className={`px-3 py-1 rounded-full text-xs ${
+                    className={`px-3 py-1 rounded-full ${
                       !updateCommentMutation.isPending &&
                       hasChanges(comment) &&
                       !isEmpty
@@ -99,7 +98,7 @@ export default function CommentList({ answer }: CommentListProps) {
                 </div>
               </div>
             ) : (
-              <p className="text-sm">{comment.content}</p>
+              <p>{comment.content}</p>
             )}
           </div>
         </div>
@@ -111,7 +110,7 @@ export default function CommentList({ answer }: CommentListProps) {
           <button
             onClick={handleLoadMore}
             disabled={isFetchingNextPage}
-            className="text-xs text-primary hover:text-darkPrimary flex items-center gap-1 disabled:opacity-50"
+            className="text-sm text-primary hover:text-darkPrimary flex items-center gap-1 disabled:opacity-50"
           >
             <FaChevronRight className="text-sm" />
             {isFetchingNextPage ? '로딩 중...' : '답글 더보기'}

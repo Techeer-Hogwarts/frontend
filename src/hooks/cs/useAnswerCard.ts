@@ -3,13 +3,19 @@
 import { useState, useEffect, useRef } from 'react'
 import { useUpdateCsAnswerMutation } from '@/api/cs/mutations'
 import { CsAnswer } from '@/api/cs'
+import { useAutoResizeTextarea } from '@/hooks/cs/useAutoResizeTextarea'
 
 interface UseAnswerCardProps {
   answer: CsAnswer
   onRefresh?: () => void // 새로고침 콜백 추가
+  problemId?: number // 문제 ID 추가
 }
 
-export const useAnswerCard = ({ answer, onRefresh }: UseAnswerCardProps) => {
+export const useAnswerCard = ({
+  answer,
+  onRefresh,
+  problemId,
+}: UseAnswerCardProps) => {
   const [showReplies, setShowReplies] = useState(false)
   const [showReplyInput, setShowReplyInput] = useState(false)
   const [showFeedback, setShowFeedback] = useState(false)
@@ -20,6 +26,9 @@ export const useAnswerCard = ({ answer, onRefresh }: UseAnswerCardProps) => {
 
   const updateAnswerMutation = useUpdateCsAnswerMutation()
   const intervalRef = useRef<NodeJS.Timeout | null>(null)
+
+  // 자동 높이 조절 훅 사용 (편집 모드일 때만 활성화)
+  const editTextareaRef = useAutoResizeTextarea(editContent, isEditing)
 
   // AI 피드백이 null일 때 1분마다 자동 새로고침
   useEffect(() => {
@@ -115,6 +124,7 @@ export const useAnswerCard = ({ answer, onRefresh }: UseAnswerCardProps) => {
     editContent,
     setEditContent,
     displayContent,
+    editTextareaRef,
     updateAnswerMutation,
     handleReplyToggle,
     handleReplyInputToggle,

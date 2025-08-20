@@ -29,6 +29,7 @@ export default function AnswerCard({
     editContent,
     setEditContent,
     displayContent,
+    editTextareaRef,
     updateAnswerMutation,
     handleReplyToggle,
     handleReplyInputToggle,
@@ -41,7 +42,7 @@ export default function AnswerCard({
     hasChanges,
     isEmpty,
     shouldShowExpandButton,
-  } = useAnswerCard({ answer, onRefresh })
+  } = useAnswerCard({ answer, onRefresh, problemId })
 
   const fallbackProfile = '/profile.png'
 
@@ -51,13 +52,13 @@ export default function AnswerCard({
         <img
           src={answer.user.profileImage || fallbackProfile}
           alt="avatar"
-          className="rounded-full w-10 h-10"
+          className="rounded-full w-10 h-10 object-cover"
         />
         <div className="flex-1">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
               <p className="font-semibold">{answer.user.name}</p>
-              <span className="text-xs text-gray">
+              <span className="text-sm text-gray">
                 {new Date(answer.updateAt).toLocaleDateString('ko-KR', {
                   year: 'numeric',
                   month: 'long',
@@ -79,12 +80,12 @@ export default function AnswerCard({
           <div className="flex gap-4">
             <div className="flex-1">
               {isEditing ? (
-                <div className="mb-4 text-sm">
+                <div className="mb-4">
                   <textarea
+                    ref={editTextareaRef}
                     value={editContent}
                     onChange={(e) => setEditContent(e.target.value)}
-                    className="w-full h-20 border border-gray rounded-xl p-3 resize-none focus:outline-none focus:border-primary"
-                    rows={4}
+                    className="w-full min-h-[5rem] border border-gray rounded-xl p-3 resize-none focus:outline-none focus:border-primary overflow-hidden"
                     placeholder="답변을 입력하세요..."
                   />
                   <div className="flex justify-end gap-2 mt-1">
@@ -114,7 +115,7 @@ export default function AnswerCard({
               ) : (
                 <div className="mb-2">
                   <p
-                    className={`text-sm leading-relaxed whitespace-pre-wrap ${
+                    className={`leading-relaxed whitespace-pre-wrap ${
                       !isExpanded && shouldShowExpandButton(displayContent)
                         ? 'line-clamp-2'
                         : ''
@@ -177,13 +178,13 @@ export default function AnswerCard({
       {/* AI 피드백 섹션 */}
       {showFeedback && (
         <div className="mt-4 ml-11">
-          <div className="bg-filterbg border border-gray rounded-xl text-sm p-4">
+          <div className="bg-filterbg border border-gray rounded-xl p-4">
             <div className="flex items-center gap-2 mb-2">
               <span className="font-semibold">AI 피드백</span>
             </div>
             {answer.score !== null && answer.feedback !== null ? (
               <div className="flex gap-2 items-center">
-                <div className="border border-primary bg-white rounded-xl font-semibold text-primary w-12 h-8 flex items-center justify-center">
+                <div className="border border-primary bg-white rounded-xl font-semibold text-primary px-4 py-2 flex items-center justify-center">
                   {answer.score}
                 </div>
                 <p className="text-darkgray">{answer.feedback}</p>
