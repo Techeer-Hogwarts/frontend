@@ -10,11 +10,15 @@ import Menu from './Menu'
 interface AnswerCardProps {
   answer: CsAnswer
   isMyAnswer?: boolean
+  problemId?: number
+  onRefresh?: () => void // 새로고침 콜백 추가
 }
 
 export default function AnswerCard({
   answer,
   isMyAnswer = false,
+  problemId,
+  onRefresh,
 }: AnswerCardProps) {
   const {
     showReplies,
@@ -37,7 +41,7 @@ export default function AnswerCard({
     hasChanges,
     isEmpty,
     shouldShowExpandButton,
-  } = useAnswerCard({ answer })
+  } = useAnswerCard({ answer, onRefresh })
 
   const fallbackProfile = '/profile.png'
 
@@ -64,7 +68,12 @@ export default function AnswerCard({
               </span>
             </div>
             {isMyAnswer && (
-              <Menu id={answer.id} type="answer" onEdit={handleEdit} />
+              <Menu
+                id={answer.id}
+                type="answer"
+                onEdit={handleEdit}
+                problemId={problemId}
+              />
             )}
           </div>
           <div className="flex gap-4">
@@ -172,12 +181,23 @@ export default function AnswerCard({
             <div className="flex items-center gap-2 mb-2">
               <span className="font-semibold">AI 피드백</span>
             </div>
-            <div className="flex gap-2 items-center">
-              <div className="border border-primary bg-white rounded-xl font-semibold text-primary w-12 h-8 flex items-center justify-center">
-                {answer.score}
+            {answer.score !== null && answer.feedback !== null ? (
+              <div className="flex gap-2 items-center">
+                <div className="border border-primary bg-white rounded-xl font-semibold text-primary w-12 h-8 flex items-center justify-center">
+                  {answer.score}
+                </div>
+                <p className="text-darkgray">{answer.feedback}</p>
               </div>
-              <p className="text-darkgray">{answer.feedback}</p>
-            </div>
+            ) : (
+              <div className="flex gap-2 items-center">
+                <div className="border border-primary bg-white rounded-xl font-semibold text-primary w-12 h-8 flex items-center justify-center">
+                  -
+                </div>
+                <p className="text-darkgray">
+                  AI가 답변을 분석하고 있습니다. 잠시만 기다려주세요...
+                </p>
+              </div>
+            )}
           </div>
         </div>
       )}

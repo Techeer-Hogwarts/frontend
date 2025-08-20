@@ -1,14 +1,15 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useUpdateCsAnswerMutation } from '@/api/cs/mutations'
 import { CsAnswer } from '@/api/cs'
 
 interface UseAnswerCardProps {
   answer: CsAnswer
+  onRefresh?: () => void // 새로고침 콜백 추가
 }
 
-export const useAnswerCard = ({ answer }: UseAnswerCardProps) => {
+export const useAnswerCard = ({ answer, onRefresh }: UseAnswerCardProps) => {
   const [showReplies, setShowReplies] = useState(false)
   const [showReplyInput, setShowReplyInput] = useState(false)
   const [showFeedback, setShowFeedback] = useState(false)
@@ -18,6 +19,41 @@ export const useAnswerCard = ({ answer }: UseAnswerCardProps) => {
   const [displayContent, setDisplayContent] = useState(answer.content)
 
   const updateAnswerMutation = useUpdateCsAnswerMutation()
+  const intervalRef = useRef<NodeJS.Timeout | null>(null)
+
+  // AI 피드백이 null일 때 1분마다 자동 새로고침
+  useEffect(() => {
+    // AI 피드백이 null이고 피드백을 보여주는 상태일 때만 자동 새로고침
+    if ((answer.score === null || answer.feedback === null) && onRefresh) {
+      intervalRef.current = setInterval(() => {
+        onRefresh()
+      }, 60000) // 1분 후에 새로고침
+
+      // 컴포넌트 언마운트 시 인터벌 정리
+      return () => {
+        if (intervalRef.current) {
+          clearInterval(intervalRef.current)
+          intervalRef.current = null
+        }
+      }
+    } else {
+      // AI 피드백이 있는 상태면 인터벌 정리
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current)
+        intervalRef.current = null
+      }
+    }
+  }, [answer.score, answer.feedback, onRefresh])
+
+  // 컴포넌트 언마운트 시 인터벌 정리 (페이지를 벗어날 때)
+  useEffect(() => {
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current)
+        intervalRef.current = null
+      }
+    }
+  }, [])
 
   const handleReplyToggle = () => {
     setShowReplies(!showReplies)

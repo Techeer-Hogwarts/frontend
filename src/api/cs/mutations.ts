@@ -27,6 +27,8 @@ export const useSubmitCsAnswerMutation = () => {
       queryClient.invalidateQueries({
         queryKey: csKeys.problemDetail(variables.problemId),
       })
+      // 답변 목록 무효화 추가
+      queryClient.invalidateQueries({ queryKey: csKeys.answers() })
       queryClient.invalidateQueries({ queryKey: csKeys.today() })
       queryClient.invalidateQueries({ queryKey: csKeys.problemList({}) })
     },
@@ -47,6 +49,7 @@ export const useSubmitCsCommentMutation = () => {
     }) => submitCsComment(answerId, data),
     onSuccess: (data, variables) => {
       // 댓글 작성 성공 시 댓글 목록과 답변 목록 쿼리 무효화
+      queryClient.invalidateQueries({ queryKey: csKeys.answers() })
       queryClient.invalidateQueries({
         queryKey: csKeys.commentList(variables.answerId, {}),
       })
@@ -76,10 +79,22 @@ export const useUpdateCsAnswerMutation = () => {
 export const useDeleteCsAnswerMutation = () => {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: (answerId: number) => deleteCsAnswer(answerId),
-    onSuccess: () => {
+    mutationFn: ({
+      answerId,
+      problemId,
+    }: {
+      answerId: number
+      problemId: number
+    }) => deleteCsAnswer(answerId),
+    onSuccess: (data, variables) => {
       // 답변 목록 무효화
       queryClient.invalidateQueries({ queryKey: csKeys.answers() })
+      // 문제 상세 조회 무효화
+      queryClient.invalidateQueries({
+        queryKey: csKeys.problemDetail(variables.problemId),
+      })
+      // 문제 목록 무효화
+      queryClient.invalidateQueries({ queryKey: csKeys.problemList({}) })
     },
   })
 }
@@ -97,6 +112,7 @@ export const useUpdateCsCommentMutation = () => {
     }) => updateCsComment(commentId, data),
     onSuccess: (data, variables) => {
       // 댓글 목록 무효화 - 모든 댓글 목록 쿼리 무효화
+      queryClient.invalidateQueries({ queryKey: csKeys.answers() })
       queryClient.invalidateQueries({
         queryKey: csKeys.comments(),
       })
@@ -111,6 +127,7 @@ export const useDeleteCsCommentMutation = () => {
     mutationFn: (commentId: number) => deleteCsComment(commentId),
     onSuccess: (data, variables) => {
       // 댓글 목록 무효화 - 모든 댓글 목록 쿼리 무효화
+      queryClient.invalidateQueries({ queryKey: csKeys.answers() })
       queryClient.invalidateQueries({
         queryKey: csKeys.comments(),
       })

@@ -55,8 +55,8 @@ export interface CsAnswerUser {
 export interface CsAnswer {
   id: number
   content: string
-  score: number
-  feedback: string
+  score: number | null
+  feedback: string | null
   likeCount: number
   user: CsAnswerUser
   updateAt: string

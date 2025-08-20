@@ -10,9 +10,10 @@ interface UseMenuProps {
   id: number
   type: 'comment' | 'answer'
   onEdit: () => void
+  problemId?: number // 문제 ID 추가
 }
 
-export const useMenu = ({ id, type, onEdit }: UseMenuProps) => {
+export const useMenu = ({ id, type, onEdit, problemId }: UseMenuProps) => {
   const [showMenu, setShowMenu] = useState(false)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
@@ -55,7 +56,13 @@ export const useMenu = ({ id, type, onEdit }: UseMenuProps) => {
       if (type === 'comment') {
         await deleteCommentMutation.mutateAsync(id)
       } else {
-        await deleteAnswerMutation.mutateAsync(id)
+        // 답변 삭제 시 문제 ID도 함께 전달
+        if (problemId) {
+          await deleteAnswerMutation.mutateAsync({ answerId: id, problemId })
+        } else {
+          // 문제 ID가 없는 경우 기존 방식으로 호출 (하위 호환성)
+          await deleteAnswerMutation.mutateAsync({ answerId: id, problemId: 0 })
+        }
       }
     } catch (error) {
       alert(`${type === 'comment' ? '댓글' : '답변'} 삭제에 실패했습니다.`)

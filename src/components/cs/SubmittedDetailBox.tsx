@@ -18,6 +18,7 @@ export default function SubmittedDetailBox({ id }: SubmittedDetailBoxProps) {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
+    refreshAnswers, // 새로고침 함수 추가
   } = useSubmittedDetailBox({ id })
 
   const { ref } = useInfiniteScroll({
@@ -77,14 +78,24 @@ export default function SubmittedDetailBox({ id }: SubmittedDetailBoxProps) {
         {myAnswer && (
           <div className="mb-6">
             <h3 className="text-lg font-semibold mb-3 text-primary">내 답변</h3>
-            <AnswerCard answer={myAnswer} isMyAnswer={true} />
+            <AnswerCard
+              answer={myAnswer}
+              isMyAnswer={true}
+              problemId={Number(id)}
+              onRefresh={refreshAnswers} // 새로고침 함수 전달
+            />
           </div>
         )}
         {allAnswers.length > 0 && (
           <div>
             <h3 className="text-lg font-semibold mb-3">다른 답변들</h3>
             {allAnswers.map((answer) => (
-              <AnswerCard key={answer.id} answer={answer} />
+              <AnswerCard
+                key={answer.id}
+                answer={answer}
+                problemId={Number(id)}
+                onRefresh={refreshAnswers} // 새로고침 함수 전달
+              />
             ))}
           </div>
         )}
