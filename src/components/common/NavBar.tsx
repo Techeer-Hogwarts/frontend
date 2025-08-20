@@ -74,7 +74,7 @@ export default function NavBar() {
     session: '세션',
     profile: '프로필',
     bootcamp: '부트캠프',
-    cs: 'CS',
+    cs: '금주의 CS',
   }
   const handleSelectResult = async (
     selectedTitle: string,

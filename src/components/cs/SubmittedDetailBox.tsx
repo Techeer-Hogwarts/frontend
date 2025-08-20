@@ -77,7 +77,6 @@ export default function SubmittedDetailBox({ id }: SubmittedDetailBoxProps) {
         <h2 className="text-xl font-bold mb-4">답변</h2>
         {myAnswer && (
           <div className="mb-6">
-            <h3 className="text-lg font-semibold mb-3 text-primary">내 답변</h3>
             <AnswerCard
               answer={myAnswer}
               isMyAnswer={true}
@@ -88,7 +87,6 @@ export default function SubmittedDetailBox({ id }: SubmittedDetailBoxProps) {
         )}
         {allAnswers.length > 0 && (
           <div>
-            <h3 className="text-lg font-semibold mb-3">다른 답변들</h3>
             {allAnswers.map((answer) => (
               <AnswerCard
                 key={answer.id}

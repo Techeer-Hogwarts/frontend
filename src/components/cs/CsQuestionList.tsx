@@ -15,8 +15,6 @@ export default function CsQuestionList() {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-    solvedCount,
-    unsolvedCount,
   } = useCsQuestionList()
 
   const { ref } = useInfiniteScroll({
@@ -29,7 +27,7 @@ export default function CsQuestionList() {
     return (
       <section>
         <div className="flex justify-between">
-          <h2 className="text-[2rem] font-bold">CS List</h2>
+          <h2 className="text-[2rem] font-bold">이전 CS</h2>
         </div>
         <div className="border-t my-5" />
         <div className="text-center py-8">로딩 중...</div>
@@ -41,7 +39,7 @@ export default function CsQuestionList() {
     return (
       <section>
         <div className="flex justify-between">
-          <h2 className="text-[2rem] font-bold">CS List</h2>
+          <h2 className="text-[2rem] font-bold">이전 CS</h2>
         </div>
         <div className="border-t my-5" />
         <div className="text-center py-8 text-red-500">
@@ -54,14 +52,12 @@ export default function CsQuestionList() {
   return (
     <section>
       <div className="flex justify-between">
-        <h2 className="text-[2rem] font-bold">CS List</h2>
+        <h2 className="text-[2rem] font-bold">이전 CS</h2>
       </div>
       <div className="border-t my-5" />
       <ProblemFilterTabs
         solvedFilter={solvedFilter}
         setSolvedFilter={setSolvedFilter}
-        solvedCount={solvedCount}
-        unsolvedCount={unsolvedCount}
       />
       <CsQuestionBox problems={allProblems} solvedFilter={solvedFilter} />
 
