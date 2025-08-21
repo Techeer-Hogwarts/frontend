@@ -60,14 +60,13 @@ const getBlogs = async (
   cursor?: number,
   sortBy?: string,
 ) => {
-  let url = '/api/blogs'
-  if (category === '금주의 블로그') {
-    url = '/api/blogs/best'
-  }
+  const url = '/api/blogs'
 
   const params: Record<string, string> = {
     limit: newLimit.toString(),
-    ...(category !== '전체보기' && category ? { category } : {}),
+    ...(category !== '전체보기' && category
+      ? { category: category === '금주의 블로그' ? 'BEST' : category
+       } : {}),
     ...(sortBy ? { sortBy } : {}),
   }
 
