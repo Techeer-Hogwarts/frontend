@@ -51,19 +51,17 @@ export default function ShowVideo() {
   }
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <AuthModal
-        isOpen={authModalOpen}
-        onClose={() => setAuthModalOpen(false)}
-      />
       {!authModalOpen && (
         <div className="relative p-4 rounded-lg">
           <iframe
             src={sessionUrl}
-            allow="autoplay"
+            allow="autoplay; fullscreen"
+            allowFullScreen
             width="640"
             height="480"
             title="Session Video"
           />
+
           <button
             onClick={() => (window.location.href = '/session')}
             className="absolute z-40 flex items-center justify-center text-white text-gray-500 rounded-full top-6 right-6 w-7 h-7 bg-black/60 hover:text-white/70"

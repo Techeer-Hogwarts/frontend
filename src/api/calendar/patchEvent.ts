@@ -5,7 +5,7 @@ const patchEvent = async (
   eventId: number,
   eventData: EventData,
 ): Promise<void> => {
-  const response = await fetch(`/api/v1/events/${eventId}`, {
+  const response = await fetch(`/api/events/${eventId}`, {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(eventData),

@@ -6,13 +6,14 @@ import BigMemberBox from './BigMemberBox'
 import { getSearchResults } from '@/api/search/getSearch' // 검색 API import
 import { useAuthStore } from '@/store/authStore'
 
-interface Member {
+export interface Member {
   id: number
   name: string
   year: number
   profileImage?: string | null
   isLeader: boolean
   teamRole?: string
+  position?: string
 }
 
 interface MemberModalProps {

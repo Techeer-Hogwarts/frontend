@@ -6,7 +6,6 @@ import AddCalendarBtn from '@/components/calender/AddCalendarBtn'
 import AddCalenderModal from '@/components/calender/AddCalendarModal'
 import Calendar from '@/components/calender/Calendar'
 import FilterBtn from '@/components/calender/FilterBtn'
-import AuthModal from '@/components/common/AuthModal'
 import BookmarkModal from '@/components/common/BookmarkModal'
 import getCurrentUser from '@/api/calendar/getCurrentUser'
 
@@ -78,10 +77,6 @@ export default function CalendarClient({
 
   return (
     <div className="flex flex-col items-center">
-      <AuthModal
-        isOpen={authModalOpen}
-        onClose={() => setAuthModalOpen(false)}
-      />
       <BookmarkModal
         isOpen={modalOpen}
         message="내가 만든 일정만 삭제할 수 있습니다."

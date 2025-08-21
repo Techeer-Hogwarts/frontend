@@ -2,7 +2,7 @@ import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query'
 
 // 블로그 조회수 증가 API
 const putBlog = async (id: number) => {
-  const response = await fetch(`/api/v1/blogs/${id}`, {
+  const response = await fetch(`/api/blogs/${id}`, {
     method: 'PUT',
     credentials: 'include',
   })
@@ -27,7 +27,7 @@ export const usePutBlogAPI = () => {
 
 // 블로그 삭제 API
 const deleteBlog = async (id: string) => {
-  const response = await fetch(`/api/v1/blogs/${id}`, {
+  const response = await fetch(`/api/blogs/${id}`, {
     method: 'DELETE',
     credentials: 'include',
     headers: {
@@ -60,9 +60,10 @@ const getBlogs = async (
   cursor?: number,
   sortBy?: string,
 ) => {
-  let url = '/api/v1/blogs'
+
+  let url = '/api/blogs'
   if (category === '금주의 블로그') {
-    url = '/api/v1/blogs/best'
+    url = '/api/blogs/best'
   }
 
   const params: Record<string, string> = {
@@ -110,7 +111,7 @@ export const useGetBlogsAPI = (
 // 블로그 글 추가 API
 export const postBlogAPI = async (url: string) => {
   const blogUrl = encodeURIComponent(url)
-  const response = await fetch(`/api/v1/blogs?url=${blogUrl}`, {
+  const response = await fetch(`/api/blogs?url=${blogUrl}`, {
     method: 'POST',
     credentials: 'include',
   })
@@ -151,7 +152,7 @@ export const postBlogChallengeAPI = async (): Promise<PostResult> => {
   }
 
   try {
-    const response = await fetch('/api/v1/tech-blogging/apply', {
+    const response = await fetch('/api/tech-blogging/apply', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -183,7 +184,7 @@ export const postBlogChallengeAPI = async (): Promise<PostResult> => {
 
 // 블로깅 챌린지 기간 조회 API
 export const getBlogChallengeTermsAPI = async () => {
-  const response = await fetch('/api/v1/tech-blogging/terms', {
+  const response = await fetch('/api/tech-blogging/terms', {
     method: 'GET',
     credentials: 'include',
   })
@@ -198,7 +199,7 @@ export const getBlogChallengeTermsAPI = async () => {
 
 // 블로깅 챌린지 특정 기간 조회 API
 export const getBlogChallengeByTermAPI = async (termId: number) => {
-  const response = await fetch(`/api/v1/tech-blogging/terms/${termId}`, {
+  const response = await fetch(`/api/tech-blogging/terms/${termId}`, {
     method: 'GET',
     credentials: 'include',
   })
@@ -214,7 +215,7 @@ export const getBlogChallengeByTermAPI = async (termId: number) => {
 // 블로깅 챌린지 기간 및 회차 요약 API
 export const getBlogChallengeSummaryAPI = async (termId: number) => {
   const response = await fetch(
-    `/api/v1/tech-blogging/terms/${termId}/summary`,
+    `/api/tech-blogging/terms/${termId}/summary`,
     {
       method: 'GET',
       credentials: 'include',
@@ -233,7 +234,7 @@ export const getBlogChallengeSummaryAPI = async (termId: number) => {
 export const getBlogChallengeAttendanceAPI = async (termId?: number) => {
   const query = termId !== undefined ? `?termId=${termId}` : ''
   const response = await fetch(
-    `/api/v1/tech-blogging/terms/attendance${query}`,
+    `/api/tech-blogging/terms/attendance${query}`,
     {
       method: 'GET',
       credentials: 'include',
@@ -273,7 +274,7 @@ export const getBlogChallengeBlogsAPI = async (
   queryParams.append('sortBy', sortBy)
 
   const response = await fetch(
-    `/api/v1/tech-blogging/rounds/blogs?${queryParams.toString()}`,
+    `/api/tech-blogging/rounds/blogs?${queryParams.toString()}`,
     {
       method: 'GET',
       credentials: 'include',

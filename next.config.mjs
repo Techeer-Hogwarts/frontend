@@ -1,7 +1,8 @@
 import { withSentryConfig } from '@sentry/nextjs'
 /** @type {import('next').NextConfig} */
 
-const API_BASE_URL = process.env.API_BASE_URL || 'https://api.techeerzip.cloud'
+const API_BASE_URL =
+  process.env.API_BASE_URL || 'https://api.yje.kr/api'
 
 const nextConfig = {
   images: {
@@ -18,6 +19,12 @@ const nextConfig = {
         port: '',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'techeer-bucket.s3.ap-northeast-2.amazonaws.com',
+        port: '',
+        pathname: '/**',
+      },
     ],
     transpilePackages: ['framer-motion'],
   },
@@ -29,22 +36,24 @@ const nextConfig = {
       'example.com',
       'avatars.slack-edge.com',
       'techeerzip-bucket.s3.ap-southeast-2.amazonaws.com',
+      'techeer-bucket.s3.ap-northeast-2.amazonaws.com',
       'images.velog.io',
       'encore.cloud',
       'github.com',
       'cdn.discordapp.com',
+      'bootcamp.com',
     ], // 허용할 외부 도메인 추가
   },
 
   async rewrites() {
     return [
       {
-        source: '/api/v1/:path*',
-        destination: `${API_BASE_URL}/api/v3/:path*`,
+        source: '/api/v2/:path*',
+        destination: `${API_BASE_URL}/v2/:path*`,
       },
       {
-        source: '/api/v2/:path*',
-        destination: `${API_BASE_URL}/api/v2/:path*`,
+        source: '/api/:path*',
+        destination: `${API_BASE_URL}/v3/:path*`,
       },
     ]
   },

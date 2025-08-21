@@ -34,8 +34,13 @@ export const useProjectDetail = (projectId: number) => {
   // React Query: 프로젝트 지원자 목록
   const { data: projectApplicants, error: applicantsError } = useQuery({
     queryKey: ['getProjectApplicants', projectId],
-    queryFn: () => getProjectApplicants(projectId),
+    queryFn: () => {
+      return getProjectApplicants(projectId)
+    },
     enabled: projectId !== null,
+    staleTime: Infinity, // 새로고침 전까지 캐시 유지
+    gcTime: 1000 * 60 * 10, // 10분간 캐시 유지
+    retry: false, // 404 에러시 재시도 안함
   })
 
   // 계산된 값들

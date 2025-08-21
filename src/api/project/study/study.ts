@@ -60,7 +60,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL
 // 스터디 추가하기
 export const handleAddStudy = async (data) => {
   try {
-    const response = await fetch(`/api/v1/studyTeams`, {
+    const response = await fetch(`/api/studyTeams`, {
       method: 'POST',
       credentials: 'include',
       body: data,
@@ -78,7 +78,7 @@ export const handleAddStudy = async (data) => {
 // 스터디 수정하기
 export const handleEditStudy = async (data, projectId) => {
   try {
-    const response = await fetch(`/api/v1/studyTeams/${projectId}`, {
+    const response = await fetch(`/api/studyTeams/${projectId}`, {
       method: 'PATCH',
       credentials: 'include',
       body: data,
@@ -100,7 +100,7 @@ export const getStudyDetail = async (
   studyTeamId: number,
 ): Promise<GetStudyDetailResponse> => {
   try {
-    const response = await fetch(`/api/v1/studyTeams/${studyTeamId}`, {
+    const response = await fetch(`/api/studyTeams/${studyTeamId}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -123,7 +123,7 @@ export const getStudyMember = async (
   studyTeamId: number,
 ): Promise<GetStudyApplicantsResponse> => {
   try {
-    const response = await fetch(`/api/v1/studyTeams/${studyTeamId}/members`, {
+    const response = await fetch(`/api/studyTeams/${studyTeamId}/members`, {
       method: 'GET',
     })
 
@@ -141,7 +141,7 @@ export const getStudyMember = async (
 // 스터디 지원하기
 export const handleApplyStudy = async (data) => {
   try {
-    const response = await fetch(`/api/v1/studyTeams/apply`, {
+    const response = await fetch(`/api/studyTeams/apply`, {
       method: 'POST',
       credentials: 'include',
       headers: {
@@ -162,7 +162,7 @@ export const handleApplyStudy = async (data) => {
 // 스터디 지원 취소하기
 export const handleDenyStudy = async (studyTeamId) => {
   try {
-    const response = await fetch(`/api/v1/studyTeams/${studyTeamId}/cancel`, {
+    const response = await fetch(`/api/studyTeams/${studyTeamId}/cancel`, {
       method: 'PATCH',
       credentials: 'include',
     })
@@ -180,7 +180,7 @@ export const handleDenyStudy = async (studyTeamId) => {
 //스터디 공고 마감
 export const handleCloseStudy = async (studyTeamId) => {
   try {
-    const response = await fetch(`/api/v1/studyTeams/close/${studyTeamId}`, {
+    const response = await fetch(`/api/studyTeams/close/${studyTeamId}`, {
       method: 'PATCH',
       credentials: 'include',
     })
@@ -198,7 +198,7 @@ export const handleCloseStudy = async (studyTeamId) => {
 //스터디 공고 삭제
 export const deleteStudyTeam = async (projectId) => {
   try {
-    const response = await fetch(`/api/v1/studyTeams/delete/${projectId}`, {
+    const response = await fetch(`/api/studyTeams/delete/${projectId}`, {
       method: 'PATCH',
       credentials: 'include',
     })
@@ -216,13 +216,10 @@ export const deleteStudyTeam = async (projectId) => {
 //스터디 지원자 보기
 export const getStudyApplicants = async (studyTeamId) => {
   try {
-    const response = await fetch(
-      `/api/v1/studyTeams/${studyTeamId}/applicants`,
-      {
-        method: 'GET',
-        credentials: 'include',
-      },
-    )
+    const response = await fetch(`/api/studyTeams/${studyTeamId}/applicants`, {
+      method: 'GET',
+      credentials: 'include',
+    })
 
     if (!response.ok) {
       throw new Error(`GET 요청 실패: ${response.status}`)
@@ -238,7 +235,7 @@ export const getStudyApplicants = async (studyTeamId) => {
 // 스터디 지원자 수락
 export const acceptStudyApplicant = async (data) => {
   try {
-    const response = await fetch(`/api/v1/studyTeams/applicants/accept`, {
+    const response = await fetch(`/api/studyTeams/applicants/accept`, {
       method: 'PATCH',
       credentials: 'include',
       headers: {
@@ -260,7 +257,7 @@ export const acceptStudyApplicant = async (data) => {
 // 스터디 지원 거부
 export const denyStudyApplicant = async (data) => {
   try {
-    const response = await fetch(`/api/v1/studyTeams/applicants/reject`, {
+    const response = await fetch(`/api/studyTeams/applicants/reject`, {
       method: 'PATCH',
       credentials: 'include',
       headers: {

@@ -3,8 +3,10 @@
 import React from 'react'
 import Image from 'next/image'
 import { getPositionStyle } from '@/styles/positionStyles'
+import Link from 'next/link'
 
 interface MemberType {
+  userId: number
   name: string
   leader: boolean
   teamRole?: string
@@ -40,12 +42,12 @@ export default function Member({ variant, members }: MemberProps) {
       <div className="text-[1.125rem] font-semibold mb-3">팀원</div>
       <div className={containerClass}>
         {members.map((member) => {
-          const { name, leader, teamRole, profileImage } = member
+          const { name, leader, teamRole, profileImage, userId } = member
           const displayRole = teamRole === 'DATA_ENGINEER' ? 'DATA' : teamRole
           const { bg, textColor } = getPositionStyle(teamRole)
 
           return (
-            <div key={name}>
+            <Link href={`/profile/${userId}`} key={name}>
               <div className="relative w-[4.75rem] h-[7.4375rem] flex flex-col items-center justify-center">
                 <Image
                   src={profileImage}
@@ -78,7 +80,7 @@ export default function Member({ variant, members }: MemberProps) {
                   </div>
                 )}
               </div>
-            </div>
+            </Link>
           )
         })}
       </div>
