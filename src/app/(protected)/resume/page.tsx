@@ -1,13 +1,14 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import Star from '../../../../public/star.svg'
 import Dropdown from '@/components/common/Dropdown'
 import TapBar from '@/components/common/TapBar'
 import BestResume from '@/components/resume/BestResume'
 import FilterBtn from '@/components/session/FilterBtn'
 import ResumeList from './@resumeList'
+import ResumeFolder from '@/components/resume/ResumeFolder'
 import SearchBar from '@/components/common/SearchBar'
 import { useTapBarStore } from '@/store/tapBarStore'
 
@@ -148,12 +149,45 @@ export default function Resume() {
       )}
       {/** 이력서 폴더 */}
       <div className="mt-[2.84rem]">
-        <ResumeList
-          position={selectedPosition}
-          year={selectedYear}
-          category={activeOption}
-          sortBy={selectedSortBy}
-        />
+        {Array.isArray(searchResults) && searchResults.length > 0 ? (
+          <div className="grid grid-cols-4 gap-8">
+            {searchResults.map((r: any) => (
+              <ResumeFolder
+                key={r.id}
+                likeCount={0}
+                resume={{
+                  id: r.id,
+                  createdAt: r.createdAt,
+                  title: r.title,
+                  category: r.category || '',
+                  position: r.position || '',
+                  likeCount: 0,
+                  year: r.year || '',
+                  user: {
+                    id: r.userID || 0,
+                    name: r.userName || '',
+                    profileImage: r.userProfileImage || '',
+                    year: r.year || 0,
+                    mainPosition: r.position || '',
+                  },
+                  likeList: [],
+                  bookmarkList: [],
+                }}
+                likeList={[]}
+                onLikeUpdate={() => {}}
+                bookmarkList={[]}
+                onBookmarkUpdate={() => {}}
+              />
+            ))}
+          </div>
+        ) : (
+          <ResumeList
+            position={selectedPosition}
+            year={selectedYear}
+            category={activeOption}
+            sortBy={selectedSortBy}
+          />
+        )}
       </div>
     </div>
   )
