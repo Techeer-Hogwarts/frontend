@@ -366,6 +366,7 @@ export default function Profile({ profile }: ProfileProps) {
                 '한서대학교',
                 '한성대학교',
                 '호서대학교',
+                '홍익대학교',
                 '해당 없음',
               ]}
               value={school}

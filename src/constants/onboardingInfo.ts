@@ -20,6 +20,7 @@ export const logos4 = [
   'toss',
   'Karrot',
   'coupang',
+  'catchtable',
   'krafton',
   'uju',
   'musinsa',

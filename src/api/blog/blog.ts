@@ -60,15 +60,13 @@ const getBlogs = async (
   cursor?: number,
   sortBy?: string,
 ) => {
-
-  let url = '/api/blogs'
-  if (category === '금주의 블로그') {
-    url = '/api/blogs/best'
-  }
+  const url = '/api/blogs'
 
   const params: Record<string, string> = {
     limit: newLimit.toString(),
-    ...(category !== '전체보기' && category ? { category } : {}),
+    ...(category !== '전체보기' && category
+      ? { category: category === '금주의 블로그' ? 'BEST' : category }
+      : {}),
     ...(sortBy ? { sortBy } : {}),
   }
 
@@ -214,13 +212,10 @@ export const getBlogChallengeByTermAPI = async (termId: number) => {
 
 // 블로깅 챌린지 기간 및 회차 요약 API
 export const getBlogChallengeSummaryAPI = async (termId: number) => {
-  const response = await fetch(
-    `/api/tech-blogging/terms/${termId}/summary`,
-    {
-      method: 'GET',
-      credentials: 'include',
-    },
-  )
+  const response = await fetch(`/api/tech-blogging/terms/${termId}/summary`, {
+    method: 'GET',
+    credentials: 'include',
+  })
   if (!response.ok) {
     const errorData = await response.json()
     throw new Error(
@@ -233,13 +228,10 @@ export const getBlogChallengeSummaryAPI = async (termId: number) => {
 // 블로깅 챌린지 출석 현황 조회 API
 export const getBlogChallengeAttendanceAPI = async (termId?: number) => {
   const query = termId !== undefined ? `?termId=${termId}` : ''
-  const response = await fetch(
-    `/api/tech-blogging/terms/attendance${query}`,
-    {
-      method: 'GET',
-      credentials: 'include',
-    },
-  )
+  const response = await fetch(`/api/tech-blogging/terms/attendance${query}`, {
+    method: 'GET',
+    credentials: 'include',
+  })
   if (!response.ok) {
     const errorData = await response.json()
     throw new Error(
