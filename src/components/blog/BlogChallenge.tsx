@@ -9,6 +9,7 @@ import Dropdown from '../common/Dropdown'
 import EmptyLottie from '../common/EmptyLottie'
 import ParticipantProgressList from './ParticipantProgressList'
 import { useEffect, useState } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
 import {
   getBlogChallengeBlogsAPI,
   getBlogChallengeSummaryAPI,
@@ -23,6 +24,7 @@ import { useBlogChallengeState } from '@/hooks/blog/useBlogChallengeState'
 const sortOptions = ['최신순', '조회순', '가나다순']
 
 export function BlogChallenge() {
+  const queryClient = useQueryClient()
   const {
     terms,
     setTerms,
@@ -55,10 +57,15 @@ export function BlogChallenge() {
 
   const dropdownHandlers = {
     year: (selectedNames) => {
-      const selected = selectedNames[0]
-      setSelectedYear([selected])
-      const foundTerm = terms.find((t) => t.termName === selected)
-      if (foundTerm) setSelectedTermId(foundTerm.termId)
+      setSelectedYear(selectedNames)
+      if (selectedNames.length === 0) {
+        // 기간이 선택되지 않으면 selectedTermId를 null로 설정
+        setSelectedTermId(null)
+      } else {
+        const selected = selectedNames[0]
+        const foundTerm = terms.find((t) => t.termName === selected)
+        if (foundTerm) setSelectedTermId(foundTerm.termId)
+      }
     },
     time: (selectedNames) => setSelectedTime(selectedNames),
     sort: (selectedNames) => setSelectedSort(selectedNames),
@@ -68,6 +75,8 @@ export function BlogChallenge() {
     const result = await postBlogChallengeAPI()
     if (result.success) {
       toast.success(result.message)
+      // 지원하기 완료 후 attendance 쿼리 무효화하여 참여 현황 업데이트
+      queryClient.invalidateQueries({ queryKey: ['attendance'] })
     } else {
       toast.error(result.message)
     }
@@ -88,6 +97,7 @@ export function BlogChallenge() {
 
   const fetchBlogs = async (cursor, sortBy = '최신순') => {
     if (isLoading || !hasNext) return
+
     setIsLoading(true)
 
     try {
@@ -103,7 +113,7 @@ export function BlogChallenge() {
         sortByValue,
         5,
         cursor,
-        selectedTermId || undefined,
+        selectedTermId,
         roundId,
       )
 
@@ -215,21 +225,21 @@ export function BlogChallenge() {
       </div>
 
       <div className="flex flex-col items-center">
-        <Image
-          src="/images/blog/blogchallengebanner.png"
-          alt="blog-challenge"
-          width={1200}
-          height={200}
-          className="mt-5 object-cover"
-        />
-        <button
-          className="bg-[#FE9142] text-white px-9 py-1 rounded-xl hover:bg-[#FE9142]/80 flex items-center justify-center"
-          onClick={handleApplyClick}
-        >
-          지원하기
-        </button>
-
-        <ParticipantProgressList />
+        <div className="w-[1200px] mx-auto mt-5 flex items-center">
+          <div className="flex-1"></div>
+          <p className="text-2xl font-bold text-center text-[#FE9142] flex-1">
+            블로깅 챌린지 참여 현황
+          </p>
+          <div className="flex-1 flex justify-end">
+            <button
+              className="text-lg bg-[#FE9142] text-white px-9 py-1 rounded-xl hover:bg-darkPrimary flex items-center justify-center"
+              onClick={handleApplyClick}
+            >
+              지원하기
+            </button>
+          </div>
+        </div>
+        <ParticipantProgressList selectedTermId={selectedTermId} />
 
         {blogs.length === 0 && !isLoading ? (
           <EmptyLottie

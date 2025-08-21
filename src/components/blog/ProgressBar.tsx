@@ -19,12 +19,12 @@ const getColorClass = (status: number) => {
 export default function ProgressBar({ userName, sequence }: ProgressBarProps) {
   return (
     <div className="flex justify-center gap-[2px] items-center">
-      <span className="mr-2 font-medium">{userName}</span>
-      <div className="flex gap-[2px]">
+      <span className="mr-2 text-xl">{userName}</span>
+      <div className="flex gap-1">
         {sequence.map((status, index) => (
           <span
             key={index}
-            className={`w-5 h-5 rounded-sm ${getColorClass(status)}`}
+            className={`w-7 h-7 rounded-sm ${getColorClass(status)}`}
           />
         ))}
       </div>

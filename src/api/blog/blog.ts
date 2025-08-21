@@ -130,23 +130,19 @@ export const postBlogChallengeAPI = async (): Promise<PostResult> => {
   const month = now.getMonth() + 1
   const currentYear = now.getFullYear()
 
-  let year: number
+  let year: number = currentYear
   let firstHalf: boolean
 
-  if (month >= 3 && month <= 7) {
-    year = currentYear
+  if (month >= 3 && month <= 8) {
     firstHalf = true
   } else if (month >= 9 && month <= 12) {
-    year = currentYear
     firstHalf = false
   } else if (month >= 1 && month <= 2) {
     year = currentYear - 1
     firstHalf = false
   } else {
-    return {
-      success: false,
-      message: '다음 블로깅 챌린지는 9월부터 시작됩니다',
-    }
+    year = currentYear
+    firstHalf = false
   }
 
   try {
@@ -161,6 +157,10 @@ export const postBlogChallengeAPI = async (): Promise<PostResult> => {
 
     if (response.status === 200) {
       return { success: true, message: '블로깅 챌린지에 신청 완료!' }
+    }
+
+    if (response.status === 404) {
+      return { success: false, message: '존재하지 않는 챌린지 기간입니다.' }
     }
 
     if (response.status === 409) {
@@ -227,7 +227,8 @@ export const getBlogChallengeSummaryAPI = async (termId: number) => {
 
 // 블로깅 챌린지 출석 현황 조회 API
 export const getBlogChallengeAttendanceAPI = async (termId?: number) => {
-  const query = termId !== undefined ? `?termId=${termId}` : ''
+  const query =
+    termId !== undefined && termId !== null ? `?termId=${termId}` : ''
   const response = await fetch(`/api/tech-blogging/terms/attendance${query}`, {
     method: 'GET',
     credentials: 'include',
@@ -250,15 +251,16 @@ export const getBlogChallengeBlogsAPI = async (
 ) => {
   const queryParams = new URLSearchParams()
 
-  if (termId !== undefined) {
+  // termId가 null이거나 undefined이면 현재 진행중인 챌린지 블로그 조회
+  if (termId !== undefined && termId !== null) {
     queryParams.append('termId', termId.toString())
   }
 
-  if (roundId !== undefined) {
+  if (roundId !== undefined && roundId !== null) {
     queryParams.append('roundId', roundId.toString())
   }
 
-  if (cursorId !== undefined) {
+  if (cursorId !== undefined && cursorId !== null) {
     queryParams.append('cursorId', cursorId.toString())
   }
 
