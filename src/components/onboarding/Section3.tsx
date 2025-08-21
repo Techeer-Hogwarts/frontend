@@ -276,27 +276,27 @@ export default function Section3() {
       </div>
       <div className="mt-96 flex flex-col items-center">
         <span className="flex items-center mb-10 font-logo text-3xl justify-center text-white rounded-[2rem] w-[350px] h-[60px] mt-40 border-[3px] border-[#F57601]">
-          AWARDS - WINTER 2024
+          AWARDS - SUMMER 2025
         </span>
         <div className="flex gap-24 ">
           <iframe
             width="464"
             height="320"
-            src="https://www.youtube.com/embed/S6Wfo1eIWFo?si=1xXZWIQYC88MvTr6"
+            src="https://www.youtube.com/embed/1QpcfX3ojxg"
             title="YouTube video player"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen; web-share"
           ></iframe>
           <iframe
             width="464"
             height="320"
-            src="https://www.youtube.com/embed/USokIeaEH88?si=p2EKt9qdgHxrjEDB"
+            src="https://www.youtube.com/embed/R5s1C-IRLTE"
             title="YouTube video player"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen; web-share"
           ></iframe>
           <iframe
             width="464"
             height="320"
-            src="https://www.youtube.com/embed/XAjsyjMs9qk?si=gSEzH0kQ2zAmFEfd"
+            src="https://www.youtube.com/embed/uyt9KrMvWGU"
             title="YouTube video player"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen; web-share"
           ></iframe>
@@ -306,6 +306,13 @@ export default function Section3() {
           INTERVIEW
         </span>
         <div className="flex justify-center gap-24 mb-60">
+          <iframe
+            width="464"
+            height="320"
+            src="https://www.youtube.com/embed/4KjA2y8rkAI"
+            title="YouTube video player"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen; web-share"
+          ></iframe>
           <iframe
             width="464"
             height="320"
