@@ -10,7 +10,7 @@ export interface Experience {
   startDate: string
   endDate: string | null
   category?: string
-  finished?: boolean
+  isFinished?: boolean
   description?: string
 }
 
@@ -29,12 +29,9 @@ export default function ExperienceItem({
   experienceType,
   btnPadding,
 }: ExperienceItemProps) {
-  // 날짜 문자열을 "YYYY-MM-DD"로 맞춰주는 헬퍼 함수
   const convertDate = (rawDate: string | null): string => {
     if (!rawDate) return ''
-    const d = new Date(rawDate)
-    if (Number.isNaN(d.getTime())) return ''
-    return d.toISOString().substring(0, 10)
+    return rawDate.split('T')[0]
   }
 
   const handleCompanyNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -60,13 +57,13 @@ export default function ExperienceItem({
 
   // 재직중 체크박스 토글
   const handleIsFinishedToggle = () => {
-    const newIsFinished = !data.finished
+    const newIsFinished = !data.isFinished
     // 만약 새로 토글 후 재직중(false)이 되면 endDate=null 처리
     const newEndDate = newIsFinished ? data.endDate : null
 
     onChange({
       ...data,
-      finished: newIsFinished,
+      isFinished: newIsFinished,
       endDate: newEndDate,
     })
   }
@@ -77,7 +74,7 @@ export default function ExperienceItem({
       position: pos,
     })
   }
-  const isWorking = !data.finished
+  const isWorking = !data.isFinished
 
   return (
     <div className="relative p-4 bg-filterbg rounded-md mt-4">
@@ -88,28 +85,28 @@ export default function ExperienceItem({
       >
         ×
       </button>
-      
-      <div className="flex flex-col space-y-2">
-        <div className='flex justify-between items-center'>
-            {/* 회사명 */}
-            <input
-              type="text"
-              value={data.companyName}
-              onChange={handleCompanyNameChange}
-              placeholder="회사명을 입력해주세요"
-              className="w-3/5 h-9 px-4 border border-gray rounded-md focus:outline-none focus:border-primary"
-            />
 
-            {/* 재직중 체크박스 */}
-            <div className="flex items-end mr-4">
-              <input
-                type="checkbox"
-                checked={isWorking}
-                onChange={handleIsFinishedToggle}
-                className="w-4 h-4 mr-1 border border-gray rounded"
-              />
-              <label className="text-xs text-gray">재직중이신가요?</label>
-            </div>
+      <div className="flex flex-col space-y-2">
+        <div className="flex justify-between items-center">
+          {/* 회사명 */}
+          <input
+            type="text"
+            value={data.companyName}
+            onChange={handleCompanyNameChange}
+            placeholder="회사명을 입력해주세요"
+            className="w-3/5 h-9 px-4 border border-gray rounded-md focus:outline-none focus:border-primary"
+          />
+
+          {/* 재직중 체크박스 */}
+          <div className="flex items-end mr-4">
+            <input
+              type="checkbox"
+              checked={isWorking}
+              onChange={handleIsFinishedToggle}
+              className="w-4 h-4 mr-1 border border-gray rounded"
+            />
+            <label className="text-xs text-gray">재직중이신가요?</label>
+          </div>
         </div>
 
         {/* 날짜 입력 (시작일/종료일) */}
@@ -123,7 +120,7 @@ export default function ExperienceItem({
           />
 
           {/* 종료일 or "현재 재직중" */}
-          {isWorking ? (
+          {isWorking && !data.endDate ? (
             <div className="w-full h-9 px-4 border border-gray rounded-md bg-gray-100 flex items-center justify-center text-gray-400">
               현재 재직중
             </div>
@@ -152,7 +149,7 @@ export default function ExperienceItem({
           )}
         </div>
 
-        <div className='flex mt-3'>
+        <div className="flex mt-3">
           <textarea
             onChange={(e) =>
               onChange({
@@ -160,12 +157,10 @@ export default function ExperienceItem({
                 description: e.target.value,
               })
             }
-            placeholder='회사에서 자신의 기여에 대해 간단하게 적어주세요.(선택)'
+            placeholder="회사에서 자신의 기여에 대해 간단하게 적어주세요.(선택)"
             value={data.description || ''}
-            className='w-full min-h-[110px] max-h-[110px] background-transparent border border-gray rounded-md py-2 px-3 focus:outline-none focus:border-primary resize-none'>
-
-          </textarea>
-
+            className="w-full min-h-[110px] max-h-[110px] background-transparent border border-gray rounded-md py-2 px-3 focus:outline-none focus:border-primary resize-none"
+          ></textarea>
         </div>
       </div>
     </div>

@@ -4,9 +4,9 @@ export interface Experience {
   companyName: string
   startDate: string
   endDate: string | null
-  category: string
-  isFinished: boolean
-  description: string | ""
+  category?: string
+  isFinished?: boolean
+  description?: string
 }
 
 export interface StackItem {
@@ -49,4 +49,37 @@ export interface ProfileData {
   studyTeams?: Team[]
   experiences?: Experience[]
   techStacks?: TechStacks
+}
+
+export interface GetProfileImageRequest {
+  email: string
+}
+
+export interface GetProfileImageResponse {
+  profileImage: string
+}
+
+// Experience 타입에 experienceId 필드 추가
+export type UpdateExperienceRequest = Omit<Experience, 'id'> & {
+  experienceId?: number
+}
+
+export interface UpdateProfileRequest {
+  year: number
+  isLft: boolean
+  school: string
+  grade: string
+  mainPosition: string
+  subPosition: string
+  githubUrl: string
+  mediumUrl?: string
+  velogUrl?: string
+  tistoryUrl?: string
+}
+
+export interface UpdateProfilePayload {
+  updateRequest: UpdateProfileRequest
+  experienceRequest: {
+    experiences: UpdateExperienceRequest[]
+  }
 }

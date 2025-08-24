@@ -4,7 +4,7 @@ import AddBtn from './AddBtn'
 import Carousel from './Carousel'
 import Stack from './Stack'
 import { usePathname } from 'next/navigation'
-import { TechStacks } from '@/types/mypage/mypage.types'
+import { TechStacks, Experience } from '@/types/mypage/mypage.types'
 
 
 interface Team {
@@ -14,16 +14,6 @@ interface Team {
   mainImage?: string
 }
 
-interface Experience {
-  id?: number
-  companyName: string
-  startDate: string
-  endDate: string | null
-  position: string
-  category: string
-  isFinished: boolean
-}
-
 interface HomeProps {
   techStacks?: TechStacks
   projectTeams?: Team[]
@@ -31,14 +21,9 @@ interface HomeProps {
   experiences?: Experience[]
 }
 
-
-
-// ISO 형식 날짜 문자열을 "YYYY-MM-DD" 형식으로 변환하는 함수
 const convertDate = (rawDate: string): string => {
   if (!rawDate) return ''
-  const date = new Date(rawDate)
-  if (isNaN(date.getTime())) return ''
-  return date.toISOString().substring(0, 10)
+  return rawDate.split('T')[0]
 }
 
 export default function Home({
