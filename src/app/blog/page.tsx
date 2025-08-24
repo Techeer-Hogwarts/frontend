@@ -1,11 +1,32 @@
+'use client'
+
 import TapBar from '@/components/common/TapBar'
 import AddBtn from '@/components/common/AddBtn'
 import BlogList from '@/components/blog/BlogList'
 import SearchBar from '@/components/common/SearchBar'
+import { useTapBarStore } from '@/store/tapBarStore'
+import { BlogChallenge } from '@/components/blog/BlogChallenge'
+import { useAuthStore } from '@/store/authStore'
+import { useEffect, useState } from 'react'
 
-const category = ['전체보기', 'TECHEER', 'SHARED', '금주의 블로그']
+const baseCategory = ['전체보기', 'TECHEER', 'SHARED', '금주의 블로그']
 
 export default function Page() {
+  const { activeOption } = useTapBarStore()
+  const { isLoggedIn, checkAuth } = useAuthStore()
+  const [category, setCategory] = useState(baseCategory)
+
+  useEffect(() => {
+    checkAuth().then(() => {
+      setCategory((prev) => {
+        if (isLoggedIn && !prev.includes('블로깅 챌린지')) {
+          return [...prev, '블로깅 챌린지']
+        }
+        return prev
+      })
+    })
+  }, [isLoggedIn])
+
   return (
     <div className="flex justify-center h-auto min-h-screen">
       <div className="flex flex-col">
@@ -21,8 +42,14 @@ export default function Page() {
             onSearchResult={null}
           />
         </div>
-        <div className="flex w-full h-[1px] mt-5 bg-gray" />
-        <BlogList />
+        <div className="flex w-full h-[1px] mt-5 bg-gray mb-[1rem]" />
+
+        {/* 조건부 렌더링 */}
+        {activeOption === '블로깅 챌린지' && isLoggedIn ? (
+          <BlogChallenge />
+        ) : (
+          <BlogList />
+        )}
       </div>
       <AddBtn />
     </div>

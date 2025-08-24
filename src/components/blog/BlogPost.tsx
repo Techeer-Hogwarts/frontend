@@ -2,7 +2,6 @@
 
 'use client'
 
-import Link from 'next/link'
 import Image from 'next/image'
 import BlogMenu from './BlogMenu'
 import BookmarkModal from '../common/BookmarkModal'
@@ -35,7 +34,7 @@ export default function BlogPost({
   const [likeCount, setLikeCount] = useState(initialLikeCount)
 
   const clickLike = async () => {
-     try {
+    try {
       const newIsLike = !isLike
       const newLikeCount = newIsLike ? likeCount + 1 : likeCount - 1
 
@@ -50,13 +49,12 @@ export default function BlogPost({
       setIsLike(!isLike)
       setLikeCount(isLike ? likeCount : likeCount - 1)
     }
-
   }
   useEffect(() => {
-      if (Array.isArray(likeList)) {
-        setIsLike(likeList.some((bookmark: any) => bookmark.id === id))
-      }
-    }, [likeList, id])
+    if (Array.isArray(likeList)) {
+      setIsLike(likeList.some((bookmark) => String(bookmark.id) === String(id)))
+    }
+  }, [likeList, id])
   const putBlogMutation = usePutBlogAPI()
 
   const profile =
@@ -130,38 +128,39 @@ export default function BlogPost({
             </div>
             <p className="text-xs px-5 mb-1 text-black/30">{formattedDate}</p>
           </div>
-        
+
           <div className="flex justify-between mt-3 pl-5 pr-2 pb-1">
             <div className="flex items-center">
               <img
                 src={profile.image}
                 alt="profile"
-                className="w-5 h-5 rounded-full"
+                className="w-5 h-5 rounded-full mr-2"
                 onError={(e: any) => {
                   e.target.src = '/images/session/thumbnail.png'
                 }}
               />
-              <span className="ml-2 text-xs font-semibold">{profile.name}</span>
+
+              <span className="text-xs font-semibold">{profile.name}</span>
             </div>
             <div className="flex items-center space-x-1">
               <span className="text-sm">{likeCount}</span>
-                <button type="button" onClick={clickLike}>
-                  {isLike ? (
-                    <Image
-                      src="/images/like-on.svg"
-                      alt="like-on"
-                      width={24}
-                      height={24}
-                    />
-                  ) : (
-                    <Image
-                      src="/images/like-off.svg"
-                      alt="like-off"
-                      width={24}
-                      height={24}
-                    />
-                  )}
-                </button>
+              <button type="button" onClick={clickLike}>
+                {isLike ? (
+                  <Image
+                    src="/images/like-on.svg"
+                    alt="like-on"
+                    width={24}
+                    height={24}
+                  />
+                ) : (
+                  <Image
+                    src="/images/like-off.svg"
+                    alt="like-off"
+                    width={24}
+                    height={24}
+                  />
+                )}
+              </button>
             </div>
           </div>
         </div>
