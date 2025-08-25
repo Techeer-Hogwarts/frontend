@@ -197,8 +197,10 @@ export default function ScheduleSection() {
                       </div>
                       <div className="flex justify-end mt-2">
                         <Link
-                          href="/calendar"
+                          href={event.eventUrl || '/calendar'}
                           className="text-xs text-gray hover:text-primary flex items-center gap-1"
+                          target="_blank"
+                          rel="noopener noreferrer"
                         >
                           <img
                             src="/images/home/Goto.svg"
