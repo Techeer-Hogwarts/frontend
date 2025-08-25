@@ -52,7 +52,7 @@ export const getAllTeams = async (
       })
     }
 
-    if (filter?.positions && filter.positions.length > 0) {
+    if (filter?.positions && filter.teamTypes.length > 0) {
       filter.positions.forEach((position) => {
         searchParams.append('positions', position)
       })

@@ -7,6 +7,88 @@ export default function ProjectCard({ team }: { team: ProjectTeam }) {
   // 인원표시 제한을 위해 count 변수 사용
   let count = 0
 
+  // 조건부 렌더링을 위한 배열 생성
+  const renderMemberCounts = () => {
+    const counts = []
+
+    if (team.frontendNum > 0 && count < 3) {
+      counts.push(
+        <div
+          key={`project-${team.id}-frontend-${count++}`}
+          className="bg-lightblue text-blue py-[0.1rem] rounded-lg text-[13px] text-center"
+        >
+          Frontend : {team.frontendNum}명
+        </div>,
+      )
+    }
+
+    if (team.backendNum > 0 && count < 3) {
+      counts.push(
+        <div
+          key={`project-${team.id}-backend-${count++}`}
+          className="bg-lightgreen text-green py-[0.1rem] rounded-lg text-[13px] text-center"
+        >
+          Backend : {team.backendNum}명
+        </div>,
+      )
+    }
+
+    if (team.devopsNum > 0 && count < 3) {
+      counts.push(
+        <div
+          key={`project-${team.id}-devops-${count++}`}
+          className="bg-lightpink text-pink py-[0.1rem] rounded-lg text-[13px] text-center"
+        >
+          DevOps : {team.devopsNum}명
+        </div>,
+      )
+    }
+
+    if (team.fullStackNum > 0 && count < 3) {
+      counts.push(
+        <div
+          key={`project-${team.id}-fullstack-${count++}`}
+          className="bg-lightyellow text-yellow py-[0.1rem] rounded-lg text-[13px] text-center"
+        >
+          FullStack : {team.fullStackNum}명
+        </div>,
+      )
+    }
+
+    if (team.dataEngineerNum > 0 && count < 3) {
+      counts.push(
+        <div
+          key={`project-${team.id}-dataengineer-${count++}`}
+          className="bg-lightpurple text-purple py-[0.1rem] rounded-lg text-[13px] text-center"
+        >
+          Data : {team.dataEngineerNum}명
+        </div>,
+      )
+    }
+
+    return counts
+  }
+
+  // 팀 스택 렌더링을 위한 함수
+  const renderTeamStacks = () => {
+    if (!team.teamStacks || !Array.isArray(team.teamStacks)) {
+      return null
+    }
+
+    const mainStacks = team.teamStacks
+      .filter((stack) => stack.isMain)
+      .slice(0, 4)
+
+    return mainStacks.map((stack, index) => (
+      <div
+        key={`project-${team.id}-stack-${stack.stack}-${index}`}
+        className="bg-lightprimary text-pink py-[0.1rem] px-[0.3rem] rounded-md text-[13px] truncate max-w-[6.5rem]"
+      >
+        {stack.stack}
+      </div>
+    ))
+  }
+
   return (
     <Link
       href={`/project/detail/project/${team.id}`}
@@ -48,61 +130,12 @@ export default function ProjectCard({ team }: { team: ProjectTeam }) {
             {/* 모집 중일 때 */}
             {team.recruited ? (
               <div className="flex flex-col justify-end gap-2 w-full">
-                {team.frontendNum > 0 &&
-                  count < 3 &&
-                  (count++,
-                  (
-                    <div className="bg-lightblue text-blue py-[0.1rem] rounded-lg text-[13px] text-center">
-                      Frontend : {team.frontendNum}명
-                    </div>
-                  ))}
-                {team.backendNum > 0 &&
-                  count < 3 &&
-                  (count++,
-                  (
-                    <div className="bg-lightgreen text-green py-[0.1rem] rounded-lg text-[13px] text-center">
-                      Backend : {team.backendNum}명
-                    </div>
-                  ))}
-                {team.devopsNum > 0 &&
-                  count < 3 &&
-                  (count++,
-                  (
-                    <div className="bg-lightpink text-pink py-[0.1rem] rounded-lg text-[13px] text-center">
-                      DevOps : {team.devopsNum}명
-                    </div>
-                  ))}
-                {team.fullStackNum > 0 &&
-                  count < 3 &&
-                  (count++,
-                  (
-                    <div className="bg-lightyellow text-yellow py-[0.1rem] rounded-lg text-[13px] text-center">
-                      FullStack : {team.fullStackNum}명
-                    </div>
-                  ))}
-                {team.dataEngineerNum > 0 &&
-                  count < 3 &&
-                  (count++,
-                  (
-                    <div className="bg-lightpurple text-purple py-[0.1rem] rounded-lg text-[13px] text-center">
-                      Data : {team.dataEngineerNum}명
-                    </div>
-                  ))}
+                {renderMemberCounts()}
               </div>
             ) : (
               // 모집 마감 시, 대표 스택 표시
               <div className="flex flex-col gap-1 h-[6.25rem] items-start justify-end">
-                {team.teamStacks
-                  .filter((stack) => stack.isMain)
-                  .slice(0, 4)
-                  .map((stack) => (
-                    <div
-                      key={stack.stack}
-                      className="bg-lightprimary text-pink py-[0.1rem] px-[0.3rem] rounded-md text-[13px] truncate max-w-[6.5rem]"
-                    >
-                      {stack.stack}
-                    </div>
-                  ))}
+                {renderTeamStacks()}
               </div>
             )}
           </div>
