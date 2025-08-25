@@ -1,6 +1,6 @@
 import '../styles/globals.css'
 import localFont from 'next/font/local'
-import NavBar from '@/components/common/NavBar'
+import ConditionalNavBar from '@/components/common/ConditionalNavBar'
 import Footer from '@/components/common/Footer'
 import Providers from '@/utils/provider'
 import GoogleAnalytics from '@/lib/GoogleAnalytics'
@@ -34,9 +34,9 @@ export default function RootLayout({
         {process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS ? (
           <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS} />
         ) : null}
-        <NavBar />
+        <ConditionalNavBar />
         <Providers>
-          <main className="flex-1">{children}</main>
+          <main className="flex-1 w-full">{children}</main>
         </Providers>
         <Toaster position="top-center" reverseOrder={false} />
         <Footer />
