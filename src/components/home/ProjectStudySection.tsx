@@ -5,37 +5,51 @@ import TabLayout from '@/components/home/TabLayout'
 import ProjectCard from '@/components/project/ProjectCard'
 import StudyCard from '@/components/project/StudyCard'
 import { getAllTeams } from '@/api/home'
-import { ProjectStudyTeam } from '@/types/home'
+import { ProjectStudyTeam } from '@/api/home'
 
-const convertToProjectTeam = (team: ProjectStudyTeam) => ({
-  id: team.id,
-  isDeleted: team.deleted,
-  isRecruited: team.isRecruited,
-  isFinished: team.finished,
-  name: team.name,
-  createdAt: team.createdAt,
-  type: 'project' as const,
-  frontendNum: team.frontendNum,
-  backendNum: team.backendNum,
-  devopsNum: team.devopsNum,
-  fullStackNum: team.fullStackNum,
-  dataEngineerNum: team.dataEngineerNum,
-  projectExplain: team.projectExplain || '',
-  mainImages: team.mainImages,
-  teamStacks: team.teamStacks.map((stack) => ({
-    stackName: stack.stack,
-    isMain: stack.isMain,
-  })),
-})
+const convertToProjectTeam = (team: ProjectStudyTeam) => {
+  return {
+    id: team.id,
+    isDeleted: team.deleted,
+    isRecruited: team.isRecruited,
+    isFinished: team.finished,
+    name: team.name, // 실제 백엔드 데이터의 name 속성 사용
+    createdAt: team.createdAt,
+    type: 'PROJECT' as const,
+    frontendNum: team.frontendNum,
+    backendNum: team.backendNum,
+    devopsNum: team.devopsNum,
+    fullStackNum: team.fullStackNum,
+    dataEngineerNum: team.dataEngineerNum,
+    projectExplain: team.projectExplain || '',
+    mainImages: team.mainImages,
+    teamStacks: team.teamStacks.map((stack) => ({
+      stack: stack.stack,
+      isMain: stack.isMain,
+    })),
+    // ProjectTeam 타입에 필요한 추가 속성들
+    resultImages: team.mainImages,
+    deleted: team.deleted,
+    recruited: team.isRecruited,
+    finished: team.finished,
+  }
+}
 
-const convertToStudyTeam = (team: ProjectStudyTeam) => ({
-  id: team.id,
-  name: team.name,
-  isRecruited: team.isRecruited,
-  isFinished: team.finished,
-  studyExplain: team.studyExplain || '',
-  recruitNum: team.recruitNum || 0,
-})
+const convertToStudyTeam = (team: ProjectStudyTeam) => {
+  return {
+    id: team.id,
+    name: team.name, // 실제 백엔드 데이터의 name 속성 사용
+    isRecruited: team.isRecruited,
+    finished: team.finished,
+    type: 'STUDY' as const,
+    recruitNum: team.recruitNum || 0,
+    studyExplain: team.studyExplain || '', // studyExplain 속성 사용
+    deleted: team.deleted,
+    recruited: team.isRecruited,
+    resultImages: team.mainImages, // mainImages를 resultImages로 사용
+    createdAt: team.createdAt, // createdAt 속성 추가
+  }
+}
 
 export default function ProjectStudySection() {
   const [selectedTab, setSelectedTab] = useState<'project' | 'study'>('project')
@@ -71,7 +85,7 @@ export default function ProjectStudySection() {
         if (studyResponse.teams && Array.isArray(studyResponse.teams)) {
           setStudies(studyResponse.teams)
         } else {
-          setStudies([])
+          setProjects([])
         }
       } catch (error) {
         setError('팀 데이터를 가져오는데 실패했습니다.')

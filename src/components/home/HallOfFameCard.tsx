@@ -17,7 +17,7 @@ export default function HallOfFameCard({ title, member }: Props) {
       </div>
       <div className="flex items-center gap-7 w-full h-full px-2">
         <Image
-          src={member.profileImage || '/pro.png'}
+          src={member.profileImage || '/profile.png'}
           alt={`${member.name}의 프로필 이미지`}
           width={140}
           height={140}
@@ -25,7 +25,7 @@ export default function HallOfFameCard({ title, member }: Props) {
           className="rounded-[10px] object-cover"
           onError={(e) => {
             const target = e.target as HTMLImageElement
-            target.src = '/pro.png'
+            target.src = '/profile.png'
           }}
         />
         <div className="flex flex-col text-sm">

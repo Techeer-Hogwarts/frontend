@@ -6,7 +6,7 @@ import { IoSearchOutline } from 'react-icons/io5'
 import {
   getBasicSearchResults,
   getFinalSearchResults,
-} from '@/components/search/api/getSearch'
+} from '@/api/search/getSearch'
 import Link from 'next/link'
 
 const useDebounce = (value: string, delay: number) => {

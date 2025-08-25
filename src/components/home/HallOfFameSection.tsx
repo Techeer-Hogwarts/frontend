@@ -21,19 +21,9 @@ export default function HallOfFameSection() {
         const currentYear = now.getFullYear()
         const currentMonth = now.getMonth() + 1 // 0-based index
 
-        console.log('🔍 랭킹 데이터 가져오기 시작:', {
-          year: currentYear,
-          month: currentMonth,
-        })
-
-        const data = await getRankings({
-          year: currentYear,
-          month: currentMonth,
-        })
+        const data = await getRankings(currentYear, currentMonth)
         setRankings(data)
-        console.log('✅ 랭킹 데이터 가져오기 성공:', data)
       } catch (error) {
-        console.error('❌ 랭킹 데이터 가져오기 실패:', error)
         setError('랭킹 데이터를 가져오는데 실패했습니다.')
       } finally {
         setLoading(false)
@@ -57,7 +47,7 @@ export default function HallOfFameSection() {
       status: user.grade || '졸업',
       generation: `${user.year || 9}기`,
       mainPosition: user.mainPosition || 'Frontend',
-      profileImage: user.profileImage || '/pro.png',
+      profileImage: user.profileImage || '/profile.png',
     }
   }
 
@@ -82,7 +72,7 @@ export default function HallOfFameSection() {
       status: '졸업',
       generation: '9기',
       mainPosition: 'Frontend',
-      profileImage: '/pro.png',
+      profileImage: '/profile.png',
     }
 
     return (
@@ -141,6 +131,6 @@ const getDefaultMember = (): HallOfFameMember => {
     status: '졸업',
     generation: '9기',
     mainPosition: 'Frontend',
-    profileImage: '/pro.png',
+    profileImage: '/profile.png',
   }
 }

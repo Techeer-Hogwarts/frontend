@@ -4,12 +4,12 @@ import { useState, useEffect } from 'react'
 import dayjs from 'dayjs'
 import Image from 'next/image'
 import Link from 'next/link'
-import { getRecentEvents, RecentEvent } from '@/api/home'
+import { getRecentEvents, Event } from '@/api/home'
 
 export default function ScheduleSection() {
   const [currentDate, setCurrentDate] = useState(dayjs())
   const [selectedDate, setSelectedDate] = useState<Date | null>(null)
-  const [recentEvents, setRecentEvents] = useState<RecentEvent[]>([])
+  const [recentEvents, setRecentEvents] = useState<Event[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -42,10 +42,7 @@ export default function ScheduleSection() {
         setLoading(true)
         setError(null)
 
-        const events = await getRecentEvents({
-          date: dayjs().format('YYYY-MM-DD'),
-          limit: 2,
-        })
+        const events: Event[] = await getRecentEvents(2)
 
         setRecentEvents(events)
       } catch (err) {
@@ -114,7 +111,7 @@ export default function ScheduleSection() {
               <div className="grid grid-cols-7 text-sm place-items-center text-gray-500 font-bold mb-1">
                 {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((d, idx) => (
                   <div
-                    key={`${d}-${idx}`}
+                    key={`day-${d}-${idx}`}
                     className="w-8 h-8 flex items-center justify-center"
                   >
                     {d}
@@ -132,7 +129,7 @@ export default function ScheduleSection() {
 
                   return (
                     <button
-                      key={idx}
+                      key={`${day.getFullYear()}-${day.getMonth()}-${day.getDate()}-${idx}`}
                       onClick={() => setSelectedDate(day)}
                       className={`w-6 h-6 flex items-center justify-center rounded-full
                         ${isToday ? 'bg-primary text-white' : ''}
@@ -174,7 +171,7 @@ export default function ScheduleSection() {
               </div>
             ) : error ? (
               <div className="text-gray-500 text-center py-8">{error}</div>
-            ) : recentEvents.length > 0 ? (
+            ) : recentEvents && recentEvents.length > 0 ? (
               recentEvents.map((event) => {
                 const eventDate = dayjs(event.date)
                 const day = eventDate.date()
@@ -200,9 +197,7 @@ export default function ScheduleSection() {
                       </div>
                       <div className="flex justify-end mt-2">
                         <Link
-                          href={event.eventUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
+                          href="/calendar"
                           className="text-xs text-gray hover:text-primary flex items-center gap-1"
                         >
                           <img
