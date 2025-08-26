@@ -10,10 +10,7 @@ import Section4 from '@/components/onboarding/Section4'
 
 export default function Onboarding() {
   const router = useRouter()
-  const searchParams = useSearchParams()
   const { isLoggedIn, checkAuth } = useAuthStore()
-  const [isFromHome, setIsFromHome] = useState(false)
-  const [hasCheckedReferrer, setHasCheckedReferrer] = useState(false)
 
   useEffect(() => {
     const checkAuthentication = async () => {
@@ -21,30 +18,14 @@ export default function Onboarding() {
     }
 
     checkAuthentication()
-
-    // 홈페이지에서 온 경우인지 확인
-    const referrer = document.referrer
-    if (referrer.includes('/home')) {
-      setIsFromHome(true)
-    }
-    setHasCheckedReferrer(true)
   }, [checkAuth])
 
   useEffect(() => {
-    // referrer 체크가 완료되고, 홈페이지에서 온 경우가 아니고 로그인된 상태라면 홈페이지로 리다이렉트
-    if (hasCheckedReferrer && isLoggedIn === true && !isFromHome) {
-      router.replace('/home')
+    // 로그인된 상태에서도 온보딩 페이지를 볼 수 있도록 리다이렉트 제거
+    if (isLoggedIn === true) {
+    } else {
     }
-  }, [isLoggedIn, router, isFromHome, hasCheckedReferrer])
-
-  // 아직 referrer 체크 중이거나 로그인된 상태이고 홈페이지에서 온 경우가 아니라면 로딩 표시 (리다이렉트 중)
-  if (!hasCheckedReferrer || (isLoggedIn === true && !isFromHome)) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-lg text-gray-500">홈페이지로 이동 중...</div>
-      </div>
-    )
-  }
+  }, [isLoggedIn]) // router 의존성 제거
 
   // 온보딩 페이지 표시 (로그인 여부와 관계없이)
   return (

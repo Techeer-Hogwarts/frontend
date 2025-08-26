@@ -118,7 +118,11 @@ export default function MainSearchSection() {
   }
 
   const menuItems = [
-    { label: '테커 소개', icon: '/images/home/HomeIcon.svg', href: '/' },
+    {
+      label: '테커 소개',
+      icon: '/images/home/HomeIcon.svg',
+      href: '/',
+    },
     {
       label: '프로필',
       icon: '/images/home/ProfileIcon.svg',
