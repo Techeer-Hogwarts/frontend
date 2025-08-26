@@ -6,8 +6,8 @@ type TabType =
   | 'resume'
   | 'bookmark'
   | 'likes'
-  | 'settings'
   | 'statistics'
+  | 'settings'
 
 interface MypageTapProps {
   readonly activeTab: TabType
@@ -30,8 +30,8 @@ export default function MypageTap({ activeTab, setActiveTab }: MypageTapProps) {
     'resume',
     'bookmark',
     'likes',
-    'settings',
     'statistics',
+    'settings',
   ]
 
   return (
