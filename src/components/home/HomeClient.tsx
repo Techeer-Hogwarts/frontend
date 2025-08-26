@@ -14,10 +14,10 @@ export default function HomeClient() {
       <HomeNavBar />
       <div className="w-full max-w-[1400px] mx-auto px-4">
         <MainSearchSection />
+        <CsSection link="/cs" />
+        <HallOfFameSection />
         <BlogResumeSection />
         <ProjectStudySection />
-        <HallOfFameSection />
-        <CsSection link="/cs" />
         <ScheduleSection />
       </div>
     </>

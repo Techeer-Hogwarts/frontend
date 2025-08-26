@@ -91,7 +91,7 @@ export default function HallOfFameSection() {
   const zoomTopUser = rankings.zoomRanking?.user
 
   return (
-    <div className="w-full mt-8">
+    <div className="w-full mt-4">
       <div className="flex gap-8 justify-center min-h-[300px]">
         <HallOfFameCard
           title="이달의 터줌대감"

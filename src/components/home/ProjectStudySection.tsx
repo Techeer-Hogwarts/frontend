@@ -131,6 +131,7 @@ export default function ProjectStudySection() {
                       <ProjectCard
                         key={team.id}
                         team={convertToProjectTeam(team)}
+                        hideLabel={true}
                       />
                     ))
                   ) : (
@@ -150,6 +151,7 @@ export default function ProjectStudySection() {
                       <StudyCard
                         key={team.id}
                         team={convertToStudyTeam(team)}
+                        hideLabel={true}
                       />
                     ))
                   ) : (

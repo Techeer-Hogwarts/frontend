@@ -38,7 +38,7 @@ export default function CsSection({ question, link }: CSProps) {
     csProblem?.content || question || 'CS 문제를 불러오는 중입니다...'
 
   return (
-    <section className="w-full mt-8 mb-32">
+    <section className="w-full mt-16 mb-24">
       <div className="relative border border-primary rounded-xl max-w-[1200px] w-full mx-auto px-6 py-5">
         {/* 타이틀 */}
         <div className="absolute -top-3 left-4 bg-white px-2 flex items-center">

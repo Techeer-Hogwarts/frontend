@@ -96,7 +96,7 @@ export default function BlogResumeSection() {
 
   if (isLoading) {
     return (
-      <section className="w-full mt-8">
+      <section className="w-full">
         <TabLayout
           iconSrc="/images/home/Trend.svg"
           iconWidth={40}
@@ -117,7 +117,7 @@ export default function BlogResumeSection() {
   }
 
   return (
-    <section className="w-full mt-8">
+    <section className="w-full">
       <TabLayout
         iconSrc="/images/home/Trend.svg"
         iconWidth={40}

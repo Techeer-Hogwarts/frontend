@@ -30,9 +30,6 @@ export default function HallOfFameCard({ title, member }: Props) {
         />
         <div className="flex flex-col text-sm">
           <span className="font-bold">{member.name}</span>
-          <span className="text-gray-500 text-xs break-all">
-            {member.email}
-          </span>
           <span className="text-sm mt-1 flex flex-col gap-1">
             <span>{member.school}</span>
             <span className="flex gap-2">
