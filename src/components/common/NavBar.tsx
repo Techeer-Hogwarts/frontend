@@ -38,7 +38,7 @@ interface BasicResult {
   url?: string
 }
 
-export default function NavBar({ homeLink = '/' }: { homeLink?: string }) {
+export default function NavBar({ homeLink }: { homeLink?: string }) {
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const [query, setQuery] = useState('')
   const [basicResults, setBasicResults] = useState<BasicResult[]>([])
@@ -207,7 +207,7 @@ export default function NavBar({ homeLink = '/' }: { homeLink?: string }) {
     >
       <div className="flex">
         <Link
-          href={homeLink}
+          href={homeLink || (isLoggedIn ? '/home' : '/')}
           className="font-logo text-primary text-[2rem] font-extrabold mr-[2.12rem]"
         >
           TECHEER.ZIP
