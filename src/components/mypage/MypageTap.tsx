@@ -1,6 +1,13 @@
 import { Dispatch, SetStateAction } from 'react'
 
-type TabType = 'home' | 'profile' | 'resume' | 'bookmark' | 'likes' | 'settings'
+type TabType =
+  | 'home'
+  | 'profile'
+  | 'resume'
+  | 'bookmark'
+  | 'likes'
+  | 'settings'
+  | 'statistics'
 
 interface MypageTapProps {
   readonly activeTab: TabType
@@ -24,6 +31,7 @@ export default function MypageTap({ activeTab, setActiveTab }: MypageTapProps) {
     'bookmark',
     'likes',
     'settings',
+    'statistics',
   ]
 
   return (
@@ -45,6 +53,7 @@ export default function MypageTap({ activeTab, setActiveTab }: MypageTapProps) {
           {tab === 'bookmark' && '북마크'}
           {tab === 'likes' && '좋아요'}
           {tab === 'settings' && '설정'}
+          {tab === 'statistics' && '통계'}
         </button>
       ))}
     </div>
