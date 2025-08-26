@@ -1,4 +1,7 @@
 import { Line, Bar } from 'react-chartjs-2'
+import { useAuthStore } from '@/store/authStore'
+import { useGetStatisticsAPI } from '@/api/Statistics/statistics'
+
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -22,82 +25,7 @@ ChartJS.register(
   Legend,
 )
 
-const resumeStats = {
-  total: 5,
-  avg: 2,
-  date: '2025.05.05',
-}
-
-const commitData = {
-  labels: ['4월', '5월', '6월', '7월', '8월', '9월', '10월'],
-  datasets: [
-    {
-      label: '월별 커밋 개수',
-      data: [100, 80, 60, 40, 20, 10, 0],
-      borderColor: '#71D7BA',
-      backgroundColor: '#00C2FF33',
-      pointRadius: 6,
-      pointBackgroundColor: '#71D7BA',
-      borderWidth: 3,
-    },
-  ],
-}
-
-const blogData = {
-  labels: [
-    '2024-04',
-    '2024-05',
-    '2024-06',
-    '2024-07',
-    '2024-08',
-    '2024-09',
-    '2024-10',
-    '2024-11',
-    '2024-12',
-    '2025-01',
-    '2025-02',
-    '2025-03',
-  ],
-  datasets: [
-    {
-      label: '월별 블로그 글 개수',
-      data: [3, 2, 1, 2, 3, 45, 2, 1, 2, 12, 1, 2],
-      backgroundColor: '#F57601',
-      borderRadius: 8,
-      barPercentage: 0.7,
-      categoryPercentage: 0.7,
-    },
-  ],
-}
-
-const zoomData = {
-  labels: [
-    '2024-04',
-    '2024-05',
-    '2024-06',
-    '2024-07',
-    '2024-08',
-    '2024-09',
-    '2024-10',
-    '2024-11',
-    '2024-12',
-    '2025-01',
-    '2025-02',
-    '2025-03',
-  ],
-  datasets: [
-    {
-      label: '월별 줌 접속시간',
-      data: [3, 2, 1, 2, 3, 45, 2, 1, 2, 12, 1, 2],
-      backgroundColor: '#F57601',
-      borderRadius: 8,
-      barPercentage: 0.7,
-      categoryPercentage: 0.7,
-    },
-  ],
-}
-
-const chartOptions = {
+const baseChartOptions = {
   responsive: true,
   maintainAspectRatio: false,
   plugins: {
@@ -111,13 +39,171 @@ const chartOptions = {
       grid: { display: false },
     },
     y: {
+      min: 0,
       ticks: { font: { size: 15 } },
       grid: { color: '#eee', beginAtZero: true },
     },
   },
 }
 
+const blogChartOptions = {
+  ...baseChartOptions,
+  scales: {
+    ...baseChartOptions.scales,
+    y: {
+      ...baseChartOptions.scales.y,
+      min: 0,
+      max: undefined,
+      ticks: { ...baseChartOptions.scales.y.ticks, stepSize: 1 },
+    },
+  },
+}
+
+const commitChartOptions = {
+  ...baseChartOptions,
+  scales: {
+    ...baseChartOptions.scales,
+    y: {
+      ...baseChartOptions.scales.y,
+      min: 0,
+      max: undefined,
+      ticks: { ...baseChartOptions.scales.y.ticks, stepSize: 5 },
+    },
+  },
+}
+
+const zoomChartOptions = {
+  ...baseChartOptions,
+  scales: {
+    ...baseChartOptions.scales,
+    y: {
+      ...baseChartOptions.scales.y,
+      min: 0,
+      max: undefined,
+      ticks: { ...baseChartOptions.scales.y.ticks, stepSize: 1000 },
+    },
+  },
+}
+
 export default function Statistics() {
+  const userId = useAuthStore((state) => state.user?.id)
+  const year = useAuthStore((state) => state.user?.year)
+
+  const { data, isLoading, error } = useGetStatisticsAPI(userId, year)
+
+  let commitChartData = {
+    labels: [],
+    datasets: [
+      {
+        label: '월별 커밋 개수',
+        data: [],
+        borderColor: '#71D7BA',
+        backgroundColor: '#00C2FF33',
+        pointRadius: 6,
+        pointBackgroundColor: '#71D7BA',
+        borderWidth: 3,
+      },
+    ],
+  }
+  // weeklyGitHubContributions에서 월별로 합산
+  if (data?.weeklyGitHubContributions) {
+    // 1~12월 라벨 생성
+    const labels = Array.from({ length: 12 }, (_, i) => `${i + 1}월`)
+    // 월별 합계 구하기
+    const monthlyMap: { [month: number]: number } = {}
+    data.weeklyGitHubContributions.forEach((item: any) => {
+      if (!monthlyMap[item.month]) monthlyMap[item.month] = 0
+      monthlyMap[item.month] += item.contributionCount
+    })
+    // 각 월별 데이터(없는 달은 0)
+    const chartData = labels.map((_, idx) => {
+      const value = monthlyMap[idx + 1] || 0
+      return value < 0 ? 0 : value
+    })
+    commitChartData = {
+      labels,
+      datasets: [
+        {
+          label: '월별 커밋 개수',
+          data: chartData,
+          borderColor: '#71D7BA',
+          backgroundColor: '#00C2FF33',
+          pointRadius: 6,
+          pointBackgroundColor: '#71D7BA',
+          borderWidth: 3,
+        },
+      ],
+    }
+  }
+
+  // 월별 줌 접속시간 차트 데이터 생성
+  let zoomData = {
+    labels: Array.from({ length: 12 }, (_, i) => `${i + 1}월`),
+    datasets: [
+      {
+        label: '월별 줌 접속시간(분)',
+        data: Array(12).fill(0),
+        backgroundColor: '#F57601',
+        borderRadius: 8,
+        barPercentage: 0.7,
+        categoryPercentage: 0.7,
+      },
+    ],
+  }
+  if (data?.zoomStatistics) {
+    const monthlyMap: { [month: number]: number } = {}
+    data.zoomStatistics.forEach((item: any) => {
+      monthlyMap[item.month] = item.totalMinutes
+    })
+    zoomData = {
+      labels: Array.from({ length: 12 }, (_, i) => `${i + 1}월`),
+      datasets: [
+        {
+          label: '월별 줌 접속시간(분)',
+          data: Array.from({ length: 12 }, (_, i) => monthlyMap[i + 1] || 0),
+          backgroundColor: '#F57601',
+          borderRadius: 8,
+          barPercentage: 0.7,
+          categoryPercentage: 0.7,
+        },
+      ],
+    }
+  }
+
+  // monthlyBlog에서 월별 블로그 글 개수 차트 데이터 생성
+  let blogData = {
+    labels: Array.from({ length: 12 }, (_, i) => `${i + 1}월`),
+    datasets: [
+      {
+        label: '월별 블로그 글 개수',
+        data: Array(12).fill(0),
+        backgroundColor: '#F57601',
+        borderRadius: 8,
+        barPercentage: 0.7,
+        categoryPercentage: 0.7,
+      },
+    ],
+  }
+  if (data?.monthlyBlog) {
+    const monthlyMap: { [month: number]: number } = {}
+    data.monthlyBlog.forEach((item: any) => {
+      monthlyMap[item.month] = item.blogCount
+    })
+    blogData = {
+      labels: Array.from({ length: 12 }, (_, i) => `${i + 1}월`),
+      datasets: [
+        {
+          label: '월별 블로그 글 개수',
+          data: Array.from({ length: 12 }, (_, i) => monthlyMap[i + 1] || 0),
+          backgroundColor: '#F57601',
+          borderRadius: 8,
+          barPercentage: 0.7,
+          categoryPercentage: 0.7,
+        },
+      ],
+    }
+  }
+
   return (
     <div
       style={{
@@ -149,14 +235,9 @@ export default function Statistics() {
             </div>
             <div className="flex items-end justify-start">
               <div className="text-3xl font-bold text-gray-800">
-                {resumeStats.total}
+                {data?.userResume?.resumeCount ?? 0}
               </div>
-              <div
-                className="ml-2 text-xs text-black/50"
-                style={{ fontWeight: 400 }}
-              >
-                {resumeStats.date}
-              </div>
+              {/* 날짜는 API에 없으므로 생략 */}
             </div>
           </div>
         </div>
@@ -175,11 +256,11 @@ export default function Statistics() {
             }}
           >
             <div className="mt-2 text-sm font-semibold text-black">
-              7기 평균 이력서 개수
+              {year}기 평균 이력서 개수
             </div>
             <div className="flex items-end">
               <div className="text-3xl font-bold text-gray-900">
-                {resumeStats.avg}
+                {data?.userResume?.averageResumeCount ?? 0}
               </div>
               <div
                 className="ml-2 text-xs text-gray-400"
@@ -213,7 +294,27 @@ export default function Statistics() {
               월별 커밋 개수
             </div>
             <div style={{ flex: 1, width: '100%', minWidth: 0 }}>
-              <Line data={commitData} options={chartOptions} height={300} />
+              {isLoading ? (
+                <div>잔디 데이터를 불러오는 중...</div>
+              ) : error ? (
+                <div>잔디 데이터를 불러오지 못했습니다.</div>
+              ) : commitChartData.datasets[0].data.some((v) => v > 0) ? (
+                <Line
+                  data={commitChartData}
+                  options={commitChartOptions}
+                  height={300}
+                />
+              ) : (
+                <div
+                  style={{
+                    padding: '40px 0',
+                    textAlign: 'center',
+                    color: '#aaa',
+                  }}
+                >
+                  월별 커밋 데이터가 없습니다.
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -237,7 +338,19 @@ export default function Statistics() {
               월별 블로그 글 개수
             </div>
             <div style={{ flex: 1, width: '100%', minWidth: 0 }}>
-              <Bar data={blogData} options={chartOptions} height={300} />
+              {blogData.datasets[0].data.some((v) => v > 0) ? (
+                <Bar data={blogData} options={blogChartOptions} height={300} />
+              ) : (
+                <div
+                  style={{
+                    padding: '40px 0',
+                    textAlign: 'center',
+                    color: '#aaa',
+                  }}
+                >
+                  월별 블로그 데이터가 없습니다.
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -260,10 +373,10 @@ export default function Statistics() {
             }}
           >
             <div className="text-lg font-medium text-black mb-3 pl-1 pt-1">
-              월별 줌 접속시간
+              월별 줌 접속시간(분)
             </div>
             <div style={{ flex: 1, width: '100%', minWidth: 0 }}>
-              <Bar data={zoomData} options={chartOptions} height={300} />
+              <Bar data={zoomData} options={zoomChartOptions} height={300} />
             </div>
           </div>
         </div>
