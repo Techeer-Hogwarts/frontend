@@ -50,7 +50,11 @@ const BootcampPeriod = [
 ]
 const Position = ['FRONTEND', 'BACKEND', 'DEVOPS', 'OTHERS']
 
-export default function SessionList() {
+export default function SessionList({
+  searchResults,
+}: {
+  searchResults?: any
+}) {
   const { fetchLikes } = useLike()
   const { activeOption } = useTapBarStore()
   const { isOpen: authModalOpen, onOpen: openAuthModal } = useAuthModal()
@@ -296,7 +300,40 @@ export default function SessionList() {
               text2="다시 조회해주세요."
             />
           )}
-        {!authModalOpen && !error && allSessions.length > 0 && (
+        {Array.isArray(searchResults) && searchResults.length > 0 ? (
+          // 검색 결과가 있을 때
+          <div className="grid grid-cols-4 gap-8 mt-[2.84rem] w-[1200px]">
+            {searchResults.map((result: any) => {
+              // 검색 결과를 SessionPost에 맞는 형태로 변환
+              const sessionData = {
+                id: result.id,
+                title: result.title,
+                date: result.date,
+                presenter: result.presenter,
+                likeCount: parseInt(result.likeCount) || 0,
+                thumbnail: result.thumbnail,
+                fileUrl: '', // 검색 결과에 없으므로 빈 문자열
+                userId: '', // 검색 결과에 없으므로 빈 문자열
+                user: {
+                  name: result.presenter,
+                  profileImage: '',
+                },
+                videoUrl: '', // 검색 결과에 없으므로 빈 문자열
+              }
+
+              return (
+                <SessionPost
+                  key={result.id}
+                  {...sessionData}
+                  showMessage={showMessage}
+                  likeList={likeList}
+                  onLikeUpdate={handleLikeUpdate}
+                />
+              )
+            })}
+          </div>
+        ) : !authModalOpen && !error && allSessions.length > 0 ? (
+          // 정상 데이터 표시
           <div className="grid grid-cols-4 gap-8 mt-[2.84rem] w-[1200px]">
             {allSessions.map((data: Session) => (
               <SessionPost
@@ -309,7 +346,7 @@ export default function SessionList() {
             ))}
             <div ref={ref} className="h-1" />
           </div>
-        )}
+        ) : null}
       </div>
       {message && (
         <div className="fixed z-50 px-4 py-2 text-center text-white transform -translate-x-1/2 rounded-md bg-red-500/80 bottom-5 left-1/2">
