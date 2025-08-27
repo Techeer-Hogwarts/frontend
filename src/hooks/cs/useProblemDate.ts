@@ -7,7 +7,17 @@
  */
 export const useProblemDate = (updatedAt: string) => {
   const getProblemDate = () => {
+    // updatedAt이 빈 문자열이거나 유효하지 않은 경우 빈 문자열 반환
+    if (!updatedAt || updatedAt.trim() === '') {
+      return ''
+    }
+
     const targetDate = new Date(updatedAt)
+
+    // 유효하지 않은 날짜인 경우 빈 문자열 반환
+    if (isNaN(targetDate.getTime())) {
+      return ''
+    }
 
     const year = targetDate.getFullYear()
     const month = targetDate.getMonth() + 1
