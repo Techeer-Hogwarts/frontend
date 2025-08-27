@@ -74,6 +74,10 @@ export const submitCsAnswer = async (
   })
 
   if (!response.ok) {
+    if (response.status === 400) {
+      const errorData = await response.json()
+      throw new Error(errorData.errors.content)
+    }
     throw new Error('CS 답변 제출에 실패했습니다.')
   }
 }
@@ -113,6 +117,10 @@ export const submitCsComment = async (
   })
 
   if (!response.ok) {
+    if (response.status === 400) {
+      const errorData = await response.json()
+      throw new Error(errorData.errors.content)
+    }
     throw new Error('CS 댓글 작성에 실패했습니다.')
   }
 
