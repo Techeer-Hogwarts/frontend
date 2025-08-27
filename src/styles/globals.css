@@ -61,7 +61,7 @@ body {
   position: absolute;
   top: 140%;
   right: 0;
-  width: 20rem;
+  width: 24rem;
   padding: 1rem;
   border-radius: 0.75rem;
   border: 1px solid #f97316; /* 예: Tailwind primary */
