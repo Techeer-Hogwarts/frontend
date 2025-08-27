@@ -3,7 +3,7 @@
 import FilterBtn from './FilterBtn'
 import SessionPost from './SessionPost'
 import Dropdown from '../common/Dropdown'
-import EmptyLottie from '../common/EmptyLottie'
+import EmptyAnimation from '../common/EmptyAnimation'
 import BlogPostSkeleton from '../blog/BlogPostSkeleton'
 import { useEffect, useState } from 'react'
 import { useLike } from '@/app/blog/_lib/useLike'
@@ -287,7 +287,7 @@ export default function SessionList({
       )}
       <div className="flex justify-center w-[1200px]">
         {authModalOpen && (
-          <EmptyLottie
+          <EmptyAnimation
             text="세션 데이터가 없습니다."
             text2="로그인 후 다시 시도해주세요."
           />
@@ -295,7 +295,7 @@ export default function SessionList({
         {!authModalOpen &&
           (error ||
             (sessionsResponse && !isLoading && allSessions.length === 0)) && (
-            <EmptyLottie
+            <EmptyAnimation
               text="세션 데이터가 없습니다."
               text2="다시 조회해주세요."
             />

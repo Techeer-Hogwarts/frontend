@@ -6,8 +6,7 @@ import CareerToggle from '@/components/signup/CareerToggle'
 import InputField from '@/components/common/InputField'
 import EmailVerification from '@/components/common/EmailVerification'
 import Link from 'next/link'
-import Lottie from 'lottie-react'
-import loading from '../../../public/loading.json'
+
 import { useSignupHandler } from '@/hooks/auth/useSignupHandler'
 import {
   UNIVERSITIES,
@@ -46,7 +45,7 @@ const Signup = () => {
         <h2 className="text-4xl font-extrabold text-center my-10 text-primary">
           Sign up
         </h2>
-        
+
         {step === 0 && (
           <div>
             <p className="block text-lg mb-6">
@@ -55,9 +54,7 @@ const Signup = () => {
             <div className="flex justify-between space-x-5">
               <button
                 type="button"
-                onClick={() =>
-                  handleTecheerSelect(true)
-                }
+                onClick={() => handleTecheerSelect(true)}
                 className={`w-full h-10 border rounded-[0.25rem] ${
                   isTecheer === true
                     ? 'bg-primary text-white border-primary'
@@ -68,9 +65,7 @@ const Signup = () => {
               </button>
               <button
                 type="button"
-                onClick={() =>
-                  handleTecheerSelect(false)
-                }
+                onClick={() => handleTecheerSelect(false)}
                 className={`w-full h-10 border rounded-[0.25rem] ${
                   isTecheer === false
                     ? 'bg-primary text-white border-primary'
@@ -100,7 +95,7 @@ const Signup = () => {
               setIsVerified={(verified) =>
                 setFormData((prev) => ({ ...prev, isVerified: verified }))
               }
-              isTecheerSignup={ isTecheer ? true : false }
+              isTecheerSignup={isTecheer ? true : false}
             />
             <InputField
               label="비밀번호"
@@ -131,35 +126,35 @@ const Signup = () => {
                 </p>
               )}
             </div>
-            { !isTecheer && (
-                <div className="flex flex-col w-[30.25rem] space-y-9 justify-center my-auto">
-                  <div className="flex justify-between items-center">
-                    <label className="text-lg ">
-                    가입동기가 어떻게 되시나요?  <span className="text-primary"> *</span>
-                    </label>
-                    <div className="flex justify-between space-x-3 text-sm">
-                      {joinReason.map((reason) => (
-                        <button
-                          key={reason.value}
-                          onClick={() => handleSignupPurpose(reason.value)}
-                          className={`w-[6rem] h-10 border rounded-[0.25rem] ${
-                            formData.joinReason === reason.value
-                              ? 'bg-primary text-white border-primary'
-                              : 'text-gray border-gray'
-                          }`}
-                        >
-                          {reason.label}
-                        </button>
-                      ))}
-                    </div>
+            {!isTecheer && (
+              <div className="flex flex-col w-[30.25rem] space-y-9 justify-center my-auto">
+                <div className="flex justify-between items-center">
+                  <label className="text-lg ">
+                    가입동기가 어떻게 되시나요?{' '}
+                    <span className="text-primary"> *</span>
+                  </label>
+                  <div className="flex justify-between space-x-3 text-sm">
+                    {joinReason.map((reason) => (
+                      <button
+                        key={reason.value}
+                        onClick={() => handleSignupPurpose(reason.value)}
+                        className={`w-[6rem] h-10 border rounded-[0.25rem] ${
+                          formData.joinReason === reason.value
+                            ? 'bg-primary text-white border-primary'
+                            : 'text-gray border-gray'
+                        }`}
+                      >
+                        {reason.label}
+                      </button>
+                    ))}
                   </div>
                 </div>
-              )}
+              </div>
+            )}
           </div>
         )}
-        
 
-        { step === 2 && (
+        {step === 2 && (
           <div
             ref={formRef}
             className="flex flex-col w-[32.5rem] space-y-9 my-auto overflow-y-auto pr-6 h-[31.5rem]"
@@ -435,7 +430,7 @@ const Signup = () => {
             )}
             <div ref={bottomRef}></div>
           </div>
-          )}
+        )}
 
         <div className="flex flex-col my-10">
           {step === 0 ? (
@@ -448,55 +443,51 @@ const Signup = () => {
             </button>
           ) : (
             <div>
-            { !isTecheer || step === 2 ? (
-            <div className="flex flex-col space-y-2">
-              <button
-                type="button"
-                onClick={handleBack}
-                className="w-[30.25rem] h-10 text-xl border border-gray text-gray rounded-full hover:border-primary hover:text-primary"
-              >
-                이전
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  if (!isTecheer) {
-                    handleSignupExternal()
-                  } else if (step === 2) {
-                    handleSignup()
-                  }
-                }}
-                disabled={isLoading}
-                className="w-[30.25rem] h-10 text-xl border border-primary text-primary rounded-full hover:bg-primary hover:text-white flex items-center justify-center"
-              >
-                {isLoading ? (
-                  <Lottie
-                    animationData={loading}
-                    style={{ width: 40, height: 40 }}
-                  />
-                ) : (
-                  '회원가입'
-                )}
-              </button>
-            </div>
-            ) : (
-              <div className="flex flex-col space-y-2">
-
-              <button
-                type="button"
-                onClick={handleBack}
-                className="w-[30.25rem] h-10 text-xl border border-gray text-gray rounded-full hover:border-primary hover:text-primary"
-              >
-                이전
-              </button>
-               <button
-              type="button"
-              onClick={handleNext}
-              className="w-[30.25rem] h-10 text-xl border border-gray text-gray rounded-full hover:border-primary hover:text-primary"
-            >
-              다음
-            </button>
-            </div>
+              {!isTecheer || step === 2 ? (
+                <div className="flex flex-col space-y-2">
+                  <button
+                    type="button"
+                    onClick={handleBack}
+                    className="w-[30.25rem] h-10 text-xl border border-gray text-gray rounded-full hover:border-primary hover:text-primary"
+                  >
+                    이전
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (!isTecheer) {
+                        handleSignupExternal()
+                      } else if (step === 2) {
+                        handleSignup()
+                      }
+                    }}
+                    disabled={isLoading}
+                    className="w-[30.25rem] h-10 text-xl border border-primary text-primary rounded-full hover:bg-primary hover:text-white flex items-center justify-center"
+                  >
+                    {isLoading ? (
+                      <div className="w-10 h-10 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                    ) : (
+                      '회원가입'
+                    )}
+                  </button>
+                </div>
+              ) : (
+                <div className="flex flex-col space-y-2">
+                  <button
+                    type="button"
+                    onClick={handleBack}
+                    className="w-[30.25rem] h-10 text-xl border border-gray text-gray rounded-full hover:border-primary hover:text-primary"
+                  >
+                    이전
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleNext}
+                    className="w-[30.25rem] h-10 text-xl border border-gray text-gray rounded-full hover:border-primary hover:text-primary"
+                  >
+                    다음
+                  </button>
+                </div>
               )}
             </div>
           )}
