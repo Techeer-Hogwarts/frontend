@@ -86,11 +86,15 @@ export default function Page() {
             </p>
           </div>
           {/** 검색창 */}
-          <SearchBar
-            placeholder="이름 또는 키워드로 검색해보세요"
-            index="user"
-            onSearchResult={setSearchResults}
-          />
+        </div>
+        <div className="flexw-full">
+          <div className="flex justify-end mb-[1.25rem]">
+            <SearchBar
+              placeholder="이름 또는 키워드로 검색해보세요"
+              index="user"
+              onSearchResult={setSearchResults}
+            />
+          </div>
         </div>
         <div className="flex w-full h-[1px] mb-5 bg-gray"></div>
         <div className="flex justify-between">
