@@ -1,9 +1,9 @@
 'use client'
 
 import BlogPost from './BlogPost'
-import Dropdown from '../common/Dropdown'
-import EmptyLottie from '../common/EmptyLottie'
 import BlogPostSkeleton from './BlogPostSkeleton'
+import EmptyAnimation from '../common/EmptyAnimation'
+import Dropdown from '../common/Dropdown'
 import { useState } from 'react'
 import { useTapBarStore } from '@/store/tapBarStore'
 import { useBlogList } from '@/hooks/blog/useBlogList'
@@ -58,7 +58,7 @@ export default function BlogList({ searchResults }: { searchResults?: any }) {
         </div>
       ) : !isLoading && blog && blog.length === 0 ? (
         <div className="flex justify-center">
-          <EmptyLottie
+          <EmptyAnimation
             text="블로그 데이터가 없습니다."
             text2="다시 조회해주세요"
           />
@@ -78,7 +78,7 @@ export default function BlogList({ searchResults }: { searchResults?: any }) {
           </div>
           {!isLoading && blog && blog.length === 0 && (
             <div className="flex justify-center">
-              <EmptyLottie
+              <EmptyAnimation
                 text="블로그 데이터가 없습니다."
                 text2="다시 조회해주세요"
               />

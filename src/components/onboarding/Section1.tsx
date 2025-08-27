@@ -2,7 +2,7 @@ import Image from 'next/image'
 import dynamic from 'next/dynamic'
 import BootcampBtn from './BootcampBtn'
 
-const LottiePlayer = dynamic(
+const ScrollIndicator = dynamic(
   () => import('@/components/onboarding/LottiePlayer'),
   {
     ssr: false,
@@ -34,7 +34,7 @@ export default function Section1() {
         </p>
 
         <BootcampBtn />
-        <LottiePlayer />
+        <ScrollIndicator />
       </div>
     </div>
   )

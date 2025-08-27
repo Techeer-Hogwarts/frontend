@@ -22,7 +22,7 @@ import TapBar from '@/components/common/TapBar'
 import SearchBar from '@/components/common/SearchBar'
 import Dropdown from '@/components/common/Dropdown'
 import FilterBtn from '@/components/session/FilterBtn'
-import EmptyLottie from '@/components/common/EmptyLottie'
+import EmptyAnimation from '@/components/common/EmptyAnimation'
 import ProjectCard from '@/components/project/ProjectCard'
 import StudyCard from '@/components/project/StudyCard'
 import SkeletonProjectCard from '@/components/project/SkeletonProjectCard'
@@ -279,14 +279,14 @@ export default function TeamsPage() {
         </div>
       ) : error ? (
         <div className="flex flex-col items-center w-full">
-          <EmptyLottie
+          <EmptyAnimation
             text="데이터 로딩 실패"
             text2="페이지를 새로고침해주세요"
           />
         </div>
       ) : teams.length === 0 ? (
         <div className="flex justify-center w-full">
-          <EmptyLottie
+          <EmptyAnimation
             text="조건에 맞는 팀이 없습니다."
             text2="필터를 조정해보세요."
           />

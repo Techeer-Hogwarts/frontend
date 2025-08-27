@@ -1,5 +1,5 @@
 import { useGetResumeQuery } from './query/useGetResumeQuery'
-import EmptyLottie from '@/components/common/EmptyLottie'
+import EmptyAnimation from '@/components/common/EmptyAnimation'
 import { ResumeQueryParams } from '@/types/queryParams'
 import ResumeFolder from '@/components/resume/ResumeFolder'
 import SkeletonResumeFolder from '@/components/resume/SkeletonResume'
@@ -236,7 +236,7 @@ export default function ResumeList({
   if (isError || (resumeResponse && resumes.length === 0)) {
     return (
       <div className="flex justify-center">
-        <EmptyLottie
+        <EmptyAnimation
           text="이력서 데이터가 없습니다."
           text2="다시 조회해주세요"
         />
