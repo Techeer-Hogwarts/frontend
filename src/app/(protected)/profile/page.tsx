@@ -92,131 +92,127 @@ export default function Page() {
             onSearchResult={setSearchResults}
           />
         </div>
-        </div>
-        <div className="flex w-full h-[1px] mb-5 bg-gray"></div>
-        <div className="flex justify-between">
-          <div className="flex justify-start gap-3">
-            <Dropdown
-              title="포지션"
-              options={positionOptions}
-              selectedOptions={selectedPosition}
-              setSelectedOptions={setSelectedPosition}
-            />
-            <Dropdown
-              title="기수"
-              options={yearOptions} // Dropdown 컴포넌트에서 문자열로 처리
-              selectedOptions={selectedYear.map(String)} // 숫자를 문자열로 변환
-              setSelectedOptions={setSelectedYear}
-            />
-            <Dropdown
-              title="대학"
-              options={universityOptions}
-              selectedOptions={selectedUniversity}
-              setSelectedOptions={setSelectedUniversity}
-            />
-            <Dropdown
-              title="학년"
-              options={gradeOptions}
-              selectedOptions={selectedGrade}
-              setSelectedOptions={setSelectedGrade}
-            />
-          </div>
+      </div>
+      <div className="flex w-full h-[1px] mb-5 bg-gray"></div>
+      <div className="flex justify-between">
+        <div className="flex justify-start gap-3">
           <Dropdown
-            title={selectedSortBy[0] || '기수순'}
-            options={sortByOptions}
-            selectedOptions={selectedSortBy}
-            setSelectedOptions={setSelectedSortBy}
-            singleSelect={true}
+            title="포지션"
+            options={positionOptions}
+            selectedOptions={selectedPosition}
+            setSelectedOptions={setSelectedPosition}
+          />
+          <Dropdown
+            title="기수"
+            options={yearOptions} // Dropdown 컴포넌트에서 문자열로 처리
+            selectedOptions={selectedYear.map(String)} // 숫자를 문자열로 변환
+            setSelectedOptions={setSelectedYear}
+          />
+          <Dropdown
+            title="대학"
+            options={universityOptions}
+            selectedOptions={selectedUniversity}
+            setSelectedOptions={setSelectedUniversity}
+          />
+          <Dropdown
+            title="학년"
+            options={gradeOptions}
+            selectedOptions={selectedGrade}
+            setSelectedOptions={setSelectedGrade}
           />
         </div>
-
-        {[
-          selectedPosition,
-          selectedYear,
-          selectedUniversity,
-          selectedGrade,
-        ].some((arr) => arr.length > 0) && (
-          <div className="bg-filterbg flex items-center w-[75rem] h-[4.375rem] px-4 gap-4 mt-5">
-            {selectedPosition.map((item) => (
-              <FilterBtn
-                key={item}
-                title={item}
-                onClick={() => {
-                  handleRemoveFilter(item, 'position')
-                }}
-              />
-            ))}
-            {selectedYear.map((item) => (
-              <FilterBtn
-                key={item}
-                title={item.toString()}
-                onClick={() => handleRemoveFilter(item, 'year')}
-              />
-            ))}
-            {selectedUniversity.map((item) => (
-              <FilterBtn
-                key={item}
-                title={item}
-                onClick={() => handleRemoveFilter(item, 'university')}
-              />
-            ))}
-            {selectedGrade.map((item) => (
-              <FilterBtn
-                key={item}
-                title={item}
-                onClick={() => handleRemoveFilter(item, 'grade')}
-              />
-            ))}
-          </div>
-        )}
-        {Array.isArray(searchResults) && searchResults.length > 0 ? (
-          <div className="grid grid-cols-4 gap-4 mt-8">
-            {(() => {
-              console.log('Profile search results:', searchResults)
-              return null
-            })()}
-            {searchResults.map((r: any) => (
-              <ProfileCard
-                key={r.id}
-                id={r.id}
-                name={r.userName || r.name || ''}
-                mainPosition={r.position || r.mainPosition || ''}
-                profileImage={r.userProfileImage || r.profileImage || ''}
-                school={r.school || ''}
-                grade={r.grade || ''}
-                year={r.year || 0}
-                stack={r.stack || r.techStacks || []}
-                projectTeams={r.projectTeams || []}
-              />
-            ))}
-          </div>
-        ) : (
-          <>
-            {(() => {
-              console.log(
-                'Normal profile list data (not search):',
-                'ProfileList component will render with filters:',
-                {
-                  position: selectedPosition,
-                  year: selectedYear,
-                  university: selectedUniversity,
-                  grade: selectedGrade,
-                  sortBy: selectedSortBy[0],
-                },
-              )
-              return null
-            })()}
-            <ProfileList
-              key={`${selectedPosition.join(',')}_${selectedYear.join(',')}_${selectedUniversity.join(',')}_${selectedGrade.join(',')}_${selectedSortBy[0]}`}
-              position={selectedPosition}
-              year={selectedYear}
-              university={selectedUniversity}
-              grade={selectedGrade}
-              sortBy={selectedSortBy[0]}
-            />
-          </>
-        )}
+        <Dropdown
+          title={selectedSortBy[0] || '기수순'}
+          options={sortByOptions}
+          selectedOptions={selectedSortBy}
+          setSelectedOptions={setSelectedSortBy}
+          singleSelect={true}
+        />
       </div>
+
+      {[selectedPosition, selectedYear, selectedUniversity, selectedGrade].some(
+        (arr) => arr.length > 0,
+      ) && (
+        <div className="bg-filterbg flex items-center w-[75rem] h-[4.375rem] px-4 gap-4 mt-5">
+          {selectedPosition.map((item) => (
+            <FilterBtn
+              key={item}
+              title={item}
+              onClick={() => {
+                handleRemoveFilter(item, 'position')
+              }}
+            />
+          ))}
+          {selectedYear.map((item) => (
+            <FilterBtn
+              key={item}
+              title={item.toString()}
+              onClick={() => handleRemoveFilter(item, 'year')}
+            />
+          ))}
+          {selectedUniversity.map((item) => (
+            <FilterBtn
+              key={item}
+              title={item}
+              onClick={() => handleRemoveFilter(item, 'university')}
+            />
+          ))}
+          {selectedGrade.map((item) => (
+            <FilterBtn
+              key={item}
+              title={item}
+              onClick={() => handleRemoveFilter(item, 'grade')}
+            />
+          ))}
+        </div>
+      )}
+      {Array.isArray(searchResults) && searchResults.length > 0 ? (
+        <div className="grid grid-cols-4 gap-4 mt-8">
+          {(() => {
+            console.log('Profile search results:', searchResults)
+            return null
+          })()}
+          {searchResults.map((r: any) => (
+            <ProfileCard
+              key={r.id}
+              id={r.id}
+              name={r.userName || r.name || ''}
+              mainPosition={r.position || r.mainPosition || ''}
+              profileImage={r.userProfileImage || r.profileImage || ''}
+              school={r.school || ''}
+              grade={r.grade || ''}
+              year={r.year || 0}
+              stack={r.stack || r.techStacks || []}
+              projectTeams={r.projectTeams || []}
+            />
+          ))}
+        </div>
+      ) : (
+        <>
+          {(() => {
+            console.log(
+              'Normal profile list data (not search):',
+              'ProfileList component will render with filters:',
+              {
+                position: selectedPosition,
+                year: selectedYear,
+                university: selectedUniversity,
+                grade: selectedGrade,
+                sortBy: selectedSortBy[0],
+              },
+            )
+            return null
+          })()}
+          <ProfileList
+            key={`${selectedPosition.join(',')}_${selectedYear.join(',')}_${selectedUniversity.join(',')}_${selectedGrade.join(',')}_${selectedSortBy[0]}`}
+            position={selectedPosition}
+            year={selectedYear}
+            university={selectedUniversity}
+            grade={selectedGrade}
+            sortBy={selectedSortBy[0]}
+          />
+        </>
+      )}
     </div>
   )
 }
