@@ -5,7 +5,7 @@ export default function Create() {
   return (
     <div className="flex w-[50rem] h-auto px-7 gap-5 items-start">
       <Image
-        src="/pro.png"
+        src="/profile.png"
         width={50}
         height={50}
         style={{

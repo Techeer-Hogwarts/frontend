@@ -8,10 +8,12 @@ import { useTapBarStore } from '@/store/tapBarStore'
 
 export const useBlogList = (sortBy: string = '최신순') => {
   const sortByValue =
-    sortBy === '조회순' ? 'viewCount'
-    : sortBy === '가나다순' ? 'name'
-    : 'latest'
-  
+    sortBy === '조회순'
+      ? 'viewCount'
+      : sortBy === '가나다순'
+        ? 'name'
+        : 'latest'
+
   const { activeOption } = useTapBarStore()
   const limit = 12 // 고정값으로 변경
   const [cursor, setCursor] = useState<number | undefined>(undefined)
@@ -57,9 +59,7 @@ export const useBlogList = (sortBy: string = '최신순') => {
       // 무한 스크롤로 데이터 추가
       setBlog((prev) => {
         const existingIds = new Set(prev.map((blog) => blog.id))
-        const newItems = blogs.filter(
-          (blog: any) => !existingIds.has(blog.id),
-        )
+        const newItems = blogs.filter((blog: any) => !existingIds.has(blog.id))
         return [...prev, ...newItems]
       })
     }
@@ -67,8 +67,6 @@ export const useBlogList = (sortBy: string = '최신순') => {
 
   useEffect(() => {
     // 무한 스크롤 트리거
-
-
     if (inView && hasNext && !isLoading && !isFetching) {
       // 현재 응답에서 nextCursor가 있고, 이미 설정된 cursor와 다른 경우에만 업데이트
       if (blogResponse?.nextCursor && blogResponse.nextCursor !== cursor) {
@@ -86,7 +84,9 @@ export const useBlogList = (sortBy: string = '최신순') => {
     isLoading,
     isInitialLoad,
     ref,
-    likeDate: Array.isArray(likeDate) ? likeDate : likeDate?.data || likeDate?.content || [],
+    likeDate: Array.isArray(likeDate)
+      ? likeDate
+      : likeDate?.data || likeDate?.content || [],
     removeBlog,
   }
 }

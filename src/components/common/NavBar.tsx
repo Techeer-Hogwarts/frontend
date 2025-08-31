@@ -45,6 +45,7 @@ const navItems: { key: string; href: string }[] = [
   { key: 'resume', href: '/resume' },
   { key: 'blog', href: '/blog' },
   { key: 'session', href: '/session' },
+  { key: 'cs', href: '/cs' },
 ]
 
 export default function NavBar() {
@@ -73,6 +74,7 @@ export default function NavBar() {
     session: '세션',
     profile: '프로필',
     bootcamp: '부트캠프',
+    cs: '금주의 CS',
   }
   const handleSelectResult = async (
     selectedTitle: string,

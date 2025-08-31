@@ -16,7 +16,7 @@ export default function Comments({ comments }: Comment) {
           className="flex w-[47.5rem] h-auto py-3 border-2 border-transparent rounded-xl shadow-md gap-3"
         >
           <Image
-            src="/pro.png"
+            src="/profile.png"
             width={50}
             height={50}
             style={{

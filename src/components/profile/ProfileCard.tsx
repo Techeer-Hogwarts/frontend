@@ -48,15 +48,13 @@ export default function ProfileCard({
 
       <div className="flex flex-col p-[0.8rem] justify-center w-[18rem] h-[10.275rem] rounded-b-lg rounded-tr-lg shadow-card">
         <div className="flex w-full gap-2">
-          {profileImage && (
-            <Image
-              src={profileImage}
-              alt="profile"
-              width={80}
-              height={80}
-              className="w-[80px] h-[80px] object-cover bg-lightgray rounded-md"
-            />
-          )}
+          <Image
+            src={profileImage || '/profile.png'}
+            alt="profile"
+            width={80}
+            height={80}
+            className="w-[80px] h-[80px] object-cover rounded-md"
+          />
           <div className="flex flex-col w-[10.9rem]">
             {/* <p className="text-[1.01688rem] font-normal">{mainPosition}</p> */}
             <div className="flex justify-between items-center gap-2 w-full">
