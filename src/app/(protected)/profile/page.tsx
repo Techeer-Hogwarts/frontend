@@ -4,8 +4,13 @@ import { useState } from 'react'
 import Dropdown from '@/components/common/Dropdown'
 import FilterBtn from '@/components/session/FilterBtn'
 import ProfileList from './@profiletList'
+import SearchBar from '@/components/common/SearchBar'
+import ProfileCard from '@/components/profile/ProfileCard'
 
 export default function Page() {
+  // 검색어 상태 추가
+  const [searchResults, setSearchResults] = useState<any>(null)
+
   const [selectedPosition, setSelectedPosition] = useState<string[]>([])
   const [selectedYear, setSelectedYear] = useState<string[]>([])
   const [selectedUniversity, setSelectedUniversity] = useState<string[]>([])
@@ -82,6 +87,13 @@ export default function Page() {
           </div>
           {/** 검색창 */}
         </div>
+        <div className="w-full flex justify-end mb-4">
+          <SearchBar
+            placeholder="이름 또는 키워드로 검색해보세요"
+            index="user"
+            onSearchResult={setSearchResults}
+          />
+        </div>
         <div className="flex w-full h-[1px] mb-5 bg-gray"></div>
         <div className="flex justify-between">
           <div className="flex justify-start gap-3">
@@ -119,9 +131,12 @@ export default function Page() {
           />
         </div>
 
-        {[selectedPosition, selectedYear, selectedUniversity, selectedGrade].some(
-          (arr) => arr.length > 0,
-        ) && (
+        {[
+          selectedPosition,
+          selectedYear,
+          selectedUniversity,
+          selectedGrade,
+        ].some((arr) => arr.length > 0) && (
           <div className="bg-filterbg flex items-center w-[75rem] h-[4.375rem] px-4 gap-4 mt-5">
             {selectedPosition.map((item) => (
               <FilterBtn
@@ -155,14 +170,53 @@ export default function Page() {
             ))}
           </div>
         )}
-        <ProfileList
-          key={`${selectedPosition.join(',')}_${selectedYear.join(',')}_${selectedUniversity.join(',')}_${selectedGrade.join(',')}_${selectedSortBy[0]}`}
-          position={selectedPosition}
-          year={selectedYear}
-          university={selectedUniversity}
-          grade={selectedGrade}
-          sortBy={selectedSortBy[0]}
-        />
+        {Array.isArray(searchResults) && searchResults.length > 0 ? (
+          <div className="grid grid-cols-4 gap-4 mt-8">
+            {(() => {
+              console.log('Profile search results:', searchResults)
+              return null
+            })()}
+            {searchResults.map((r: any) => (
+              <ProfileCard
+                key={r.id}
+                id={r.id}
+                name={r.userName || r.name || ''}
+                mainPosition={r.position || r.mainPosition || ''}
+                profileImage={r.userProfileImage || r.profileImage || ''}
+                school={r.school || ''}
+                grade={r.grade || ''}
+                year={r.year || 0}
+                stack={r.stack || r.techStacks || []}
+                projectTeams={r.projectTeams || []}
+              />
+            ))}
+          </div>
+        ) : (
+          <>
+            {(() => {
+              console.log(
+                'Normal profile list data (not search):',
+                'ProfileList component will render with filters:',
+                {
+                  position: selectedPosition,
+                  year: selectedYear,
+                  university: selectedUniversity,
+                  grade: selectedGrade,
+                  sortBy: selectedSortBy[0],
+                },
+              )
+              return null
+            })()}
+            <ProfileList
+              key={`${selectedPosition.join(',')}_${selectedYear.join(',')}_${selectedUniversity.join(',')}_${selectedGrade.join(',')}_${selectedSortBy[0]}`}
+              position={selectedPosition}
+              year={selectedYear}
+              university={selectedUniversity}
+              grade={selectedGrade}
+              sortBy={selectedSortBy[0]}
+            />
+          </>
+        )}
       </div>
     </div>
   )
