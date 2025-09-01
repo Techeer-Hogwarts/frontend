@@ -162,7 +162,7 @@ export function BlogChallenge() {
 
       const res = await getBlogChallengeBlogsAPI(
         sortByValue,
-        5,
+        12,
         cursor,
         selectedTermId,
         roundId,
