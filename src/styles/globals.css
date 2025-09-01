@@ -57,6 +57,33 @@ body {
   background-color: #aaa; /* 마우스 올렸을 때 좀 더 어둡게 */
 }
 
+<<<<<<< HEAD
+=======
+.tooltip-box {
+  position: absolute;
+  top: 140%;
+  right: 0;
+  width: 24rem;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  border: 1px solid #f97316; /* 예: Tailwind primary */
+  background-color: white;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  z-index: 50;
+  font-size: 0.875rem;
+  color: #4b5563; /* text-darkgray */
+}
+
+.tooltip-box::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  right: 12px;
+  border-width: 8px;
+  border-style: solid;
+  border-color: transparent transparent white transparent;
+}
+>>>>>>> deadeb36f4ca0200d4adb43e8ff9d93fba51560f
 /* 스크롤바 숨기기 */
 .scrollbar-hide {
   -ms-overflow-style: none;

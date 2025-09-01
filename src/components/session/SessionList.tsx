@@ -50,10 +50,19 @@ const BootcampPeriod = [
 ]
 const Position = ['FRONTEND', 'BACKEND', 'DEVOPS', 'OTHERS']
 
+interface SearchSessionResult {
+  id: string
+  title: string
+  date: string
+  presenter: string
+  likeCount: number | string
+  thumbnail?: string
+}
+
 export default function SessionList({
   searchResults,
 }: {
-  searchResults?: any
+  searchResults?: SearchSessionResult[]
 }) {
   const { fetchLikes } = useLike()
   const { activeOption } = useTapBarStore()
@@ -67,7 +76,7 @@ export default function SessionList({
   const [limit, setLimit] = useState(12)
   const [cursorId, setCursorId] = useState<number | undefined>(undefined)
   const [hasNext, setHasNext] = useState(true)
-  const [likeList, setLikeList] = useState([])
+  const [likeList, setLikeList] = useState<string[]>([])
   const [message, setMessage] = useState<string | null>(null)
   const [allSessions, setAllSessions] = useState<Session[]>([])
   const [ref, inView] = useInView({ triggerOnce: false, threshold: 0.5 })
@@ -123,7 +132,7 @@ export default function SessionList({
     if (!sessionsResponse || isLoading) return
 
     // 응답에서 데이터와 메타정보 추출
-    const sessions = sessionsResponse?.sessions || []
+    const sessions: Session[] = (sessionsResponse?.sessions as Session[]) || []
 
     // 커서 기반 메타정보 업데이트
     if (sessionsResponse.hasNext !== undefined) {
@@ -138,7 +147,7 @@ export default function SessionList({
       setAllSessions((prev) => {
         const existingIds = new Set(prev.map((session) => session.id))
         const newItems = sessions.filter(
-          (session: any) => !existingIds.has(session.id),
+          (session) => !existingIds.has(session.id),
         )
         return [...prev, ...newItems]
       })
@@ -293,6 +302,7 @@ export default function SessionList({
           />
         )}
         {!authModalOpen &&
+          !(Array.isArray(searchResults) && searchResults.length > 0) &&
           (error ||
             (sessionsResponse && !isLoading && allSessions.length === 0)) && (
             <EmptyAnimation
@@ -303,15 +313,18 @@ export default function SessionList({
         {Array.isArray(searchResults) && searchResults.length > 0 ? (
           // 검색 결과가 있을 때
           <div className="grid grid-cols-4 gap-8 mt-[2.84rem] w-[1200px]">
-            {searchResults.map((result: any) => {
+            {searchResults.map((result) => {
               // 검색 결과를 SessionPost에 맞는 형태로 변환
               const sessionData = {
                 id: result.id,
                 title: result.title,
                 date: result.date,
                 presenter: result.presenter,
-                likeCount: parseInt(result.likeCount) || 0,
-                thumbnail: result.thumbnail,
+                likeCount:
+                  typeof result.likeCount === 'number'
+                    ? result.likeCount
+                    : parseInt(result.likeCount) || 0,
+                thumbnail: result.thumbnail || '',
                 fileUrl: '', // 검색 결과에 없으므로 빈 문자열
                 userId: '', // 검색 결과에 없으므로 빈 문자열
                 user: {
