@@ -119,50 +119,51 @@ export default function Page() {
           />
         </div>
 
-      {[selectedPosition, selectedYear, selectedUniversity, selectedGrade].some(
-        (arr) => arr.length > 0,
-      ) && (
-        <div className="bg-filterbg flex items-center w-[75rem] h-[4.375rem] px-4 gap-4 mt-5">
-          {selectedPosition.map((item) => (
-            <FilterBtn
-              key={item}
-              title={item}
-              onClick={() => {
-                handleRemoveFilter(item, 'position')
-              }}
-            />
-          ))}
-          {selectedYear.map((item) => (
-            <FilterBtn
-              key={item}
-              title={item.toString()}
-              onClick={() => handleRemoveFilter(item, 'year')}
-            />
-          ))}
-          {selectedUniversity.map((item) => (
-            <FilterBtn
-              key={item}
-              title={item}
-              onClick={() => handleRemoveFilter(item, 'university')}
-            />
-          ))}
-          {selectedGrade.map((item) => (
-            <FilterBtn
-              key={item}
-              title={item}
-              onClick={() => handleRemoveFilter(item, 'grade')}
-            />
-          ))}
-        </div>
-      )}
-      <ProfileList
-        key={`${selectedPosition.join(',')}_${selectedYear.join(',')}_${selectedUniversity.join(',')}_${selectedGrade.join(',')}_${selectedSortBy[0]}`}
-        position={selectedPosition}
-        year={selectedYear}
-        university={selectedUniversity}
-        grade={selectedGrade}
-        sortBy={selectedSortBy[0]}
-      />
+        {[selectedPosition, selectedYear, selectedUniversity, selectedGrade].some(
+          (arr) => arr.length > 0,
+        ) && (
+          <div className="bg-filterbg flex items-center w-[75rem] h-[4.375rem] px-4 gap-4 mt-5">
+            {selectedPosition.map((item) => (
+              <FilterBtn
+                key={item}
+                title={item}
+                onClick={() => {
+                  handleRemoveFilter(item, 'position')
+                }}
+              />
+            ))}
+            {selectedYear.map((item) => (
+              <FilterBtn
+                key={item}
+                title={item.toString()}
+                onClick={() => handleRemoveFilter(item, 'year')}
+              />
+            ))}
+            {selectedUniversity.map((item) => (
+              <FilterBtn
+                key={item}
+                title={item}
+                onClick={() => handleRemoveFilter(item, 'university')}
+              />
+            ))}
+            {selectedGrade.map((item) => (
+              <FilterBtn
+                key={item}
+                title={item}
+                onClick={() => handleRemoveFilter(item, 'grade')}
+              />
+            ))}
+          </div>
+        )}
+        <ProfileList
+          key={`${selectedPosition.join(',')}_${selectedYear.join(',')}_${selectedUniversity.join(',')}_${selectedGrade.join(',')}_${selectedSortBy[0]}`}
+          position={selectedPosition}
+          year={selectedYear}
+          university={selectedUniversity}
+          grade={selectedGrade}
+          sortBy={selectedSortBy[0]}
+        />
+      </div>
     </div>
   )
 }
