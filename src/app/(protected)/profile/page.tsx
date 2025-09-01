@@ -110,14 +110,14 @@ export default function Page() {
               setSelectedOptions={setSelectedGrade}
             />
           </div>
-        <Dropdown
-          title={selectedSortBy[0] || '기수순'}
-          options={sortByOptions}
-          selectedOptions={selectedSortBy}
-          setSelectedOptions={setSelectedSortBy}
-          singleSelect={true}
-        />
-      </div>
+          <Dropdown
+            title={selectedSortBy[0] || '기수순'}
+            options={sortByOptions}
+            selectedOptions={selectedSortBy}
+            setSelectedOptions={setSelectedSortBy}
+            singleSelect={true}
+          />
+        </div>
 
       {[selectedPosition, selectedYear, selectedUniversity, selectedGrade].some(
         (arr) => arr.length > 0,
