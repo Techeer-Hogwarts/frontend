@@ -1,6 +1,10 @@
+'use client'
+
 import { Line, Bar } from 'react-chartjs-2'
 import { useAuthStore } from '@/store/authStore'
 import { useGetStatisticsAPI } from '@/api/Statistics/statistics'
+import Dropdown from '@/components/common/Dropdown'
+import { useState, useMemo, useEffect } from 'react'
 
 import {
   Chart as ChartJS,
@@ -91,6 +95,35 @@ export default function Statistics() {
 
   const { data, isLoading, error } = useGetStatisticsAPI(userId, year)
 
+  // 연도 options 추출 (블로그, 커밋 데이터에서 year만 추출, 중복 제거, 내림차순 정렬)
+  const yearOptions = useMemo(() => {
+    const blogYears = data?.monthlyBlog?.map((b: any) => b.year) || []
+    const commitYears =
+      data?.weeklyGitHubContributions?.map((c: any) => c.year) || []
+    return Array.from(new Set([...blogYears, ...commitYears]))
+      .sort((a, b) => b - a)
+      .map(String)
+  }, [data])
+
+  // 선택된 연도 state (기본값: yearOptions[0] 또는 현재 year)
+  const [selectedYear, setSelectedYear] = useState<string[]>([])
+
+  useEffect(() => {
+    if (yearOptions.length > 0 && !selectedYear.length) {
+      setSelectedYear([String(yearOptions[0])])
+    }
+  }, [yearOptions])
+
+  // 연도별로 필터링된 데이터
+  const filteredBlog =
+    data?.monthlyBlog?.filter((b: any) =>
+      selectedYear.includes(String(b.year)),
+    ) || []
+  const filteredCommits =
+    data?.weeklyGitHubContributions?.filter((c: any) =>
+      selectedYear.includes(String(c.year)),
+    ) || []
+
   let commitChartData = {
     labels: [],
     datasets: [
@@ -105,17 +138,15 @@ export default function Statistics() {
       },
     ],
   }
+
   // weeklyGitHubContributions에서 월별로 합산
-  if (data?.weeklyGitHubContributions) {
-    // 1~12월 라벨 생성
+  if (filteredCommits.length > 0) {
     const labels = Array.from({ length: 12 }, (_, i) => `${i + 1}월`)
-    // 월별 합계 구하기
     const monthlyMap: { [month: number]: number } = {}
-    data.weeklyGitHubContributions.forEach((item: any) => {
+    filteredCommits.forEach((item: any) => {
       if (!monthlyMap[item.month]) monthlyMap[item.month] = 0
       monthlyMap[item.month] += item.contributionCount
     })
-    // 각 월별 데이터(없는 달은 0)
     const chartData = labels.map((_, idx) => {
       const value = monthlyMap[idx + 1] || 0
       return value < 0 ? 0 : value
@@ -184,9 +215,9 @@ export default function Statistics() {
       },
     ],
   }
-  if (data?.monthlyBlog) {
+  if (filteredBlog.length > 0) {
     const monthlyMap: { [month: number]: number } = {}
-    data.monthlyBlog.forEach((item: any) => {
+    filteredBlog.forEach((item: any) => {
       monthlyMap[item.month] = item.blogCount
     })
     blogData = {
@@ -213,7 +244,17 @@ export default function Statistics() {
         width: '100%',
       }}
     >
-      <h2 className="text-2xl font-bold mb-8 text-black">통계</h2>
+      {/* 필터(드롭다운) + 통계 제목 가로 배치 */}
+      <div className="flex items-center justify-between mb-8">
+        <h2 className="text-2xl font-bold text-black">통계</h2>
+        <Dropdown
+          title={selectedYear[0] ? `${selectedYear[0]}년` : '연도 선택'}
+          options={yearOptions}
+          selectedOptions={selectedYear}
+          setSelectedOptions={setSelectedYear}
+          singleSelect
+        />
+      </div>
       <div className="text-lg font-semibold mb-3 text-black/70">이력서</div>
       <div className="flex gap-6 mb-8">
         {/* 총 이력서 개수 카드 */}
@@ -277,6 +318,8 @@ export default function Statistics() {
         </div>
       </div>
 
+      {/* 잔디 */}
+      {/*
       <div className="w-full mb-8 flex flex-col gap-6">
         <div>
           <div className="text-lg font-semibold mb-3 text-black/70">잔디</div>
@@ -322,66 +365,69 @@ export default function Statistics() {
             </div>
           </div>
         </div>
-        <div>
-          <div className="text-lg font-semibold mb-3 text-black/70">블로그</div>
-          <div
-            style={{
-              background: '#fff',
-              borderRadius: 14,
-              boxShadow: '0 2px 8px #0001',
-              padding: 24,
-              width: '100%',
-              minWidth: 0,
-              overflow: 'hidden',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'flex-start',
-            }}
-          >
-            <div className="text-lg font-medium text-black mb-3 pl-1 pt-1">
-              월별 블로그 글 개수
-            </div>
-            <div style={{ flex: 1, width: '100%', minWidth: 0 }}>
-              {blogData.datasets[0].data.some((v) => v > 0) ? (
-                <Bar data={blogData} options={blogChartOptions} height={300} />
-              ) : (
-                <div
-                  style={{
-                    padding: '40px 0',
-                    textAlign: 'center',
-                    color: '#aaa',
-                  }}
-                >
-                  월별 블로그 데이터가 없습니다.
-                </div>
-              )}
-            </div>
+      </div>
+      */}
+      <div>
+        <div className="text-lg font-semibold mb-3 text-black/70 mt-10">
+          블로그
+        </div>
+        <div
+          style={{
+            background: '#fff',
+            borderRadius: 14,
+            boxShadow: '0 2px 8px #0001',
+            padding: 24,
+            width: '100%',
+            minWidth: 0,
+            overflow: 'hidden',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'flex-start',
+          }}
+        >
+          <div className="text-lg font-medium text-black mb-3 pl-1 pt-1">
+            월별 블로그 글 개수
+          </div>
+          <div style={{ flex: 1, width: '100%', minWidth: 0 }}>
+            {blogData.datasets[0].data.some((v) => v > 0) ? (
+              <Bar data={blogData} options={blogChartOptions} height={300} />
+            ) : (
+              <div
+                style={{
+                  padding: '40px 0',
+                  textAlign: 'center',
+                  color: '#aaa',
+                }}
+              >
+                월별 블로그 데이터가 없습니다.
+              </div>
+            )}
           </div>
         </div>
-        <div>
-          <div className="text-lg font-semibold mb-3 text-black/70">
-            테커 24시간 줌
+      </div>
+      <div>
+        <div className="text-lg font-semibold mb-3 text-black/70 mt-10">
+          테커 24시간 줌
+        </div>
+        <div
+          style={{
+            background: '#fff',
+            borderRadius: 14,
+            boxShadow: '0 2px 8px #0001',
+            padding: 24,
+            width: '100%',
+            minWidth: 0,
+            overflow: 'hidden',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'flex-start',
+          }}
+        >
+          <div className="text-lg font-medium text-black mb-3 pl-1 pt-1">
+            월별 줌 접속시간(분)
           </div>
-          <div
-            style={{
-              background: '#fff',
-              borderRadius: 14,
-              boxShadow: '0 2px 8px #0001',
-              padding: 24,
-              width: '100%',
-              minWidth: 0,
-              overflow: 'hidden',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'flex-start',
-            }}
-          >
-            <div className="text-lg font-medium text-black mb-3 pl-1 pt-1">
-              월별 줌 접속시간(분)
-            </div>
-            <div style={{ flex: 1, width: '100%', minWidth: 0 }}>
-              <Bar data={zoomData} options={zoomChartOptions} height={300} />
-            </div>
+          <div style={{ flex: 1, width: '100%', minWidth: 0 }}>
+            <Bar data={zoomData} options={zoomChartOptions} height={300} />
           </div>
         </div>
       </div>
