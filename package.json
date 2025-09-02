@@ -13,6 +13,7 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
+    "@next/third-parties": "^15.5.2",
     "@opentelemetry/api": "1.9.0",
     "@opentelemetry/core": "1.9.0",
     "@opentelemetry/sdk-trace-base": "1.9.0",
@@ -30,7 +31,7 @@
     "framer-motion": "9.0.4",
     "js-cookie": "^3.0.5",
     "msw": "^2.7.0",
-    "next": "14.2.5",
+    "next": "^15.5.2",
     "pdfjs-dist": "^4.8.69",
     "prettier": "^3.3.3",
     "react": "^18",
