@@ -183,7 +183,7 @@ export interface Applicant {
 export type ModalType = 'delete' | 'close' | 'cancel' | null
 
 export interface DetailPageProps {
-  params: {
+  params: Promise<{
     id: string
-  }
+  }>
 }

@@ -56,7 +56,7 @@ export interface EditStudyFormData {
 }
 
 export interface EditStudyPageProps {
-  params: {
+  params: Promise<{
     id: string
-  }
+  }>
 }
