@@ -16,12 +16,21 @@ export default function HallOfFameSection() {
         setLoading(true)
         setError(null)
 
-        // 현재 년도와 월 가져오기
+        // 현재 년도와 이전 달 가져오기
         const now = new Date()
         const currentYear = now.getFullYear()
         const currentMonth = now.getMonth() + 1 // 0-based index
 
-        const data = await getRankings(currentYear, currentMonth)
+        // 이전 달 계산 (1월이면 작년 12월로)
+        let previousYear = currentYear
+        let previousMonth = currentMonth - 1
+
+        if (previousMonth === 0) {
+          previousMonth = 12
+          previousYear = currentYear - 1
+        }
+
+        const data = await getRankings(previousYear, previousMonth)
         setRankings(data)
       } catch (error) {
         setError('랭킹 데이터를 가져오는데 실패했습니다.')
@@ -32,6 +41,20 @@ export default function HallOfFameSection() {
 
     fetchRankings()
   }, [])
+
+  // 기본 멤버 정보 함수
+  const getDefaultMember = (): HallOfFameMember => {
+    return {
+      id: 1,
+      name: '코난',
+      email: 'brian@naver.com',
+      school: '한국공학대',
+      status: '졸업',
+      generation: '9기',
+      mainPosition: 'Frontend',
+      profileImage: '/profile.png',
+    }
+  }
 
   // 랭킹 데이터를 HallOfFameMember 형태로 변환
   const convertToHallOfFameMember = (user: any): HallOfFameMember => {
@@ -86,9 +109,12 @@ export default function HallOfFameSection() {
     )
   }
 
-  const blogTopUser = rankings.blogRanking?.user
-  const gitTopUser = rankings.gitContributionRanking?.user
-  const zoomTopUser = rankings.zoomRanking?.user
+  // API 응답 구조에 맞게 수정
+  const blogTopUser = rankings.blogRanking?.users?.[0]?.user
+  const gitTopUser = rankings.gitContributionRanking?.users?.[0]?.user
+
+  // zoomRanking은 다른 구조 (직접 user 객체가 아님)
+  const zoomTopUser = rankings.zoomRanking || null
 
   return (
     <div className="w-full mt-4">
@@ -97,7 +123,16 @@ export default function HallOfFameSection() {
           title="이달의 터줌대감"
           member={
             zoomTopUser
-              ? convertToHallOfFameMember(zoomTopUser)
+              ? convertToHallOfFameMember({
+                  id: zoomTopUser.userId,
+                  name: zoomTopUser.userName,
+                  email: zoomTopUser.email,
+                  profileImage: zoomTopUser.profileImage,
+                  mainPosition: 'ZOOM',
+                  school: '정보 없음',
+                  grade: '정보 없음',
+                  year: zoomTopUser.year,
+                })
               : getDefaultMember()
           }
         />
