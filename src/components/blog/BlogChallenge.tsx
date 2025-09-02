@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
 import Tooltip from './Tip'
@@ -15,16 +14,20 @@ import {
   getBlogChallengeSummaryAPI,
   getBlogChallengeTermsAPI,
   postBlogChallengeAPI,
+  getBlogChallengeAttendanceAPI,
 } from '@/api/blog/blog'
 import { useGetLikesAPI } from '@/api/likes/likes'
 import { useInView } from 'react-intersection-observer'
 import { BlogChallengeProps } from '@/types/blog/BlogProps'
 import { useBlogChallengeState } from '@/hooks/blog/useBlogChallengeState'
+import { useQuery } from '@tanstack/react-query'
+import { useAuthStore } from '@/store/authStore'
 
 const sortOptions = ['최신순', '조회순', '가나다순']
 
 export function BlogChallenge() {
   const queryClient = useQueryClient()
+  const { user } = useAuthStore()
   const {
     terms,
     setTerms,
@@ -48,6 +51,54 @@ export function BlogChallenge() {
   const [isLoading, setIsLoading] = useState(false)
   const { data: likeDate } = useGetLikesAPI('BLOG', 0, 50)
   const [ref, inView] = useInView({ threshold: 0.5 })
+
+  // 현재 사용자의 참여 현황 조회
+  const { data: userProgressList = [] } = useQuery({
+    queryKey: ['attendance', selectedTermId],
+    queryFn: () => getBlogChallengeAttendanceAPI(selectedTermId),
+  })
+
+  // 현재 사용자가 이미 참여 중인지 확인
+  const isAlreadyParticipating = userProgressList.some(
+    (userProgress) => userProgress.userId === user?.id,
+  )
+
+  // 현재 챌린지 기간인지 확인
+  const isCurrentChallengePeriod = () => {
+    const now = new Date()
+    const month = now.getMonth() + 1
+    const currentYear = now.getFullYear()
+
+    let year: number = currentYear
+    let firstHalf: boolean
+
+    if (month >= 3 && month <= 8) {
+      firstHalf = true
+    } else if (month >= 9 && month <= 12) {
+      firstHalf = false
+    } else if (month >= 1 && month <= 2) {
+      year = currentYear - 1
+      firstHalf = false
+    } else {
+      year = currentYear
+      firstHalf = false
+    }
+
+    // 선택된 기간이 현재 챌린지 기간과 일치하는지 확인
+    if (selectedYear.length === 0) return true // 기간이 선택되지 않은 경우 (전체 보기)
+
+    const selectedYearValue = parseInt(selectedYear[0])
+    const selectedTimeValue = timeOptions.find((option) =>
+      selectedTime.includes(option),
+    )
+
+    // 선택된 기간이 현재 챌린지 기간과 일치하는지 확인
+    return (
+      selectedYearValue === year &&
+      ((firstHalf && selectedTimeValue === '상반기') ||
+        (!firstHalf && selectedTimeValue === '하반기'))
+    )
+  }
 
   const resetBlogs = () => {
     setBlogs([])
@@ -111,7 +162,7 @@ export function BlogChallenge() {
 
       const res = await getBlogChallengeBlogsAPI(
         sortByValue,
-        5,
+        12,
         cursor,
         selectedTermId,
         roundId,
@@ -231,12 +282,15 @@ export function BlogChallenge() {
             블로깅 챌린지 참여 현황
           </p>
           <div className="flex-1 flex justify-end">
-            <button
-              className="text-lg bg-[#FE9142] text-white px-9 py-1 rounded-xl hover:bg-darkPrimary flex items-center justify-center"
-              onClick={handleApplyClick}
-            >
-              지원하기
-            </button>
+            {/* 현재 챌린지 기간이면서 아직 참여하지 않은 경우에만 버튼 표시 */}
+            {isCurrentChallengePeriod() && !isAlreadyParticipating && (
+              <button
+                className="text-lg bg-[#FE9142] text-white px-9 py-1 rounded-xl hover:bg-darkPrimary flex items-center justify-center"
+                onClick={handleApplyClick}
+              >
+                지원하기
+              </button>
+            )}
           </div>
         </div>
         <ParticipantProgressList selectedTermId={selectedTermId} />

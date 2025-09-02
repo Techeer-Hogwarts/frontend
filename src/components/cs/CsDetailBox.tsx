@@ -24,7 +24,17 @@ export default function CSDetailBox({ id }: CSDetailBoxProps) {
   }
 
   if (error || !problemDetail) {
-    return <ProblemStatus problemId={Number(id)} updatedAt="" type="error" />
+    // 에러 메시지 추출
+    const errorMessage =
+      error instanceof Error ? error.message : '문제를 불러오는데 실패했습니다.'
+    return (
+      <ProblemStatus
+        problemId={Number(id)}
+        updatedAt=""
+        type="error"
+        message={errorMessage}
+      />
+    )
   }
 
   return (

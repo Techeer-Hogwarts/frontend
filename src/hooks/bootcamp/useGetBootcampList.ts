@@ -4,6 +4,10 @@ import { BootcampType } from '@/types/bootcamp/bootcamp'
 
 export interface BootcampListResponse {
   data: BootcampType[]
+  hasNext: boolean
+  nextCursor: number
+  currentBootcampYear: number
+  isParticipate: boolean
 }
 
 interface Params {
@@ -29,9 +33,9 @@ export const useGetBootcampList = ({ isAward, year, limit = 10 }: Params) => {
         limit,
       }),
     getNextPageParam: (lastPage) => {
-      const data = lastPage.data
-      if (!Array.isArray(data) || data.length === 0) return undefined
-      return data[data.length - 1].id
+      // API 응답의 nextCursor 값을 사용
+      if (!lastPage.hasNext) return undefined
+      return lastPage.nextCursor
     },
     initialPageParam: 0,
     staleTime: 1000 * 60 * 5,
