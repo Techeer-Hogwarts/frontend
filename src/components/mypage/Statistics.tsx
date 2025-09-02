@@ -302,9 +302,9 @@ export default function Statistics() {
             <div className="flex items-end">
               <div className="text-3xl font-bold text-gray-900">
                 {data?.userResume?.averageResumeCount !== undefined
-                  ? Number(data.userResume.averageResumeCount)
-                      .toFixed(2)
-                      .replace(/\.?0+$/, '') // 소수점 이하 0 제거
+                  ? parseFloat(
+                      Number(data.userResume.averageResumeCount).toFixed(2),
+                    )
                   : 0}
               </div>
               <div
