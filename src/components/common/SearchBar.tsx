@@ -17,6 +17,7 @@ interface SearchResultItem {
   title: string
   url: string
   createdAt: string
+  date: string
   userID: string
   userName: string
   userProfileImage: string

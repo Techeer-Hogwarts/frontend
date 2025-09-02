@@ -462,13 +462,20 @@ const Signup = () => {
                       }
                     }}
                     disabled={isLoading}
-                    className="w-[30.25rem] h-10 text-xl border border-primary text-primary rounded-full hover:bg-primary hover:text-white flex items-center justify-center"
+                    aria-busy={isLoading}
+                    aria-disabled={isLoading}
+                    aria-live="polite"
+                    className="w-[30.25rem] h-10 text-xl border border-primary text-primary rounded-full hover:bg-primary hover:text-white flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-primary"
                   >
                     {isLoading ? (
-                      <div className="w-10 h-10 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                      <div
+                        aria-hidden
+                        className="w-10 h-10 border-2 border-primary border-t-transparent rounded-full animate-spin motion-reduce:animate-none"
+                      />
                     ) : (
                       '회원가입'
                     )}
+                    {isLoading && <span className="sr-only">처리 중...</span>}
                   </button>
                 </div>
               ) : (

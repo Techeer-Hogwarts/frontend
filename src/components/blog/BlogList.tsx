@@ -29,7 +29,7 @@ export default function BlogList({ searchResults }: { searchResults?: any }) {
               id: result.id,
               title: result.title,
               category: 'SHARED', // 검색 결과에 없으므로 기본값
-              date: result.date,
+              date: result.createdAt,
               url: result.url,
               likeCount: 0, // 검색 결과에 없으므로 기본값
               userName: result.userName,

@@ -230,10 +230,14 @@ export default function TeamsPage() {
             if (result.index === 'project') {
               // ProjectTeam 타입으로 변환
               const projectTeam: ProjectTeam = {
-                id: parseInt(result.id),
+                id: parseInt(String(result.id), 10),
                 name: result.name || result.title,
                 projectExplain: result.projectExplain || '',
-                mainImages: result.mainImages || [],
+                mainImages:
+                  Array.isArray(result.mainImages) &&
+                  result.mainImages.length > 0
+                    ? result.mainImages
+                    : ['/images/session/thumbnail.png'],
                 teamStacks: result.teamStacks || [],
                 type: 'PROJECT',
                 // TeamBase 필드들
@@ -254,7 +258,7 @@ export default function TeamsPage() {
             } else {
               // StudyTeam 타입으로 변환
               const studyTeam: StudyTeam = {
-                id: parseInt(result.id),
+                id: parseInt(String(result.id), 10),
                 name: result.name || result.title,
                 studyExplain: result.projectExplain || '',
                 type: 'STUDY',
