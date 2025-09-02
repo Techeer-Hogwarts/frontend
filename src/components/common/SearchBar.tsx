@@ -3,27 +3,17 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import { searchAPI } from '../../api/search/search'
+import type { SearchResult } from '../../api/search/search'
 import { useRouter } from 'next/navigation'
 
 interface SearchBarProps {
   placeholder: string
   index: string
-  onSearchResult?: (results: SearchResultItem[]) => void
+  onSearchResult?: (results: SearchResult[]) => void
   navigateTo?: string // if provided, navigate with ?query= instead of returning results
 }
 
-interface SearchResultItem {
-  id: string
-  title: string
-  url: string
-  createdAt: string
-  date: string
-  userID: string
-  userName: string
-  userProfileImage: string
-  index: string
-  score: number
-}
+// 별도 타입 정의 제거: API의 SearchResult 사용
 
 // Typeahead/auto-complete removed: search happens only on submit or click
 
