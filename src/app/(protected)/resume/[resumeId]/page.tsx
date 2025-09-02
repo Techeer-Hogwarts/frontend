@@ -7,7 +7,6 @@ import Image from 'next/image'
 import ProfileBox from '@/components/profile/ProfileBox'
 import Other from '@/components/resume/OtherResume'
 import { fetchResumeById } from '@/app/(protected)/resume/api/getResume'
-import EmptyLottie from '@/components/common/EmptyLottie'
 
 import Skeleton from '@/components/resume/Skeleton'
 
