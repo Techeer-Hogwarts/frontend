@@ -23,7 +23,7 @@ export default function HomeNavBar() {
   }
 
   return (
-    <div className="flex items-center w-[1280px] max-w-[1280px] h-[4rem] justify-between px-4">
+    <div className="flex items-center w-full max-w-[1280px] h-[4rem] justify-between px-4 mx-auto">
       <button
         onClick={handleLogoClick}
         className="font-logo text-primary text-[2rem] font-extrabold mr-[2.12rem]"
