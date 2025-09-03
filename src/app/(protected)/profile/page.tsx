@@ -6,16 +6,19 @@ import FilterBtn from '@/components/session/FilterBtn'
 import ProfileList from './@profiletList'
 import SearchBar from '@/components/common/SearchBar'
 import ProfileCard from '@/components/profile/ProfileCard'
+import { useUrlQueryFilters } from '@/hooks/useUrlQueryFilters'
 
 export default function Page() {
   // 검색어 상태 추가
   const [searchResults, setSearchResults] = useState<any>(null)
-
-  const [selectedPosition, setSelectedPosition] = useState<string[]>([])
-  const [selectedYear, setSelectedYear] = useState<string[]>([])
-  const [selectedUniversity, setSelectedUniversity] = useState<string[]>([])
-  const [selectedGrade, setSelectedGrade] = useState<string[]>([])
-  const [selectedSortBy, setSelectedSortBy] = useState<string[]>(['기수순'])
+  const { filters, set, remove } = useUrlQueryFilters()
+  const {
+    selectedPosition,
+    selectedYear,
+    selectedUniversity,
+    selectedGrade,
+    selectedSortBy,
+  } = filters
 
   const positionOptions = [
     'FRONTEND',
@@ -61,18 +64,17 @@ export default function Page() {
   //기수 탭
   // const category = ['전체', '이력서', '포트폴리오', 'ICT', 'OTHER']
 
-  const handleRemoveFilter = (filter: string | number, type: string) => {
-    if (type === 'position') {
-      setSelectedPosition(selectedPosition.filter((item) => item !== filter))
-    } else if (type === 'year') {
-      setSelectedYear(selectedYear.filter((item) => item !== filter))
-    } else if (type === 'university') {
-      setSelectedUniversity(
-        selectedUniversity.filter((item) => item !== filter),
-      )
-    } else if (type === 'grade') {
-      setSelectedGrade(selectedGrade.filter((item) => item !== filter))
-    }
+  const handleRemoveFilter = (
+    filter: string | number,
+    type: 'position' | 'year' | 'university' | 'grade',
+  ) => {
+    const map = {
+      position: 'selectedPosition',
+      year: 'selectedYear',
+      university: 'selectedUniversity',
+      grade: 'selectedGrade',
+    } as const
+    remove(map[type], String(filter))
   }
 
   return (
@@ -101,32 +103,32 @@ export default function Page() {
               title="포지션"
               options={positionOptions}
               selectedOptions={selectedPosition}
-              setSelectedOptions={setSelectedPosition}
+              setSelectedOptions={(v) => set('selectedPosition', v)}
             />
             <Dropdown
               title="기수"
               options={yearOptions} // Dropdown 컴포넌트에서 문자열로 처리
-              selectedOptions={selectedYear.map(String)} // 숫자를 문자열로 변환
-              setSelectedOptions={setSelectedYear}
+              selectedOptions={selectedYear}
+              setSelectedOptions={(v) => set('selectedYear', v)}
             />
             <Dropdown
               title="대학"
               options={universityOptions}
               selectedOptions={selectedUniversity}
-              setSelectedOptions={setSelectedUniversity}
+              setSelectedOptions={(v) => set('selectedUniversity', v)}
             />
             <Dropdown
               title="학년"
               options={gradeOptions}
               selectedOptions={selectedGrade}
-              setSelectedOptions={setSelectedGrade}
+              setSelectedOptions={(v) => set('selectedGrade', v)}
             />
           </div>
           <Dropdown
             title={selectedSortBy[0] || '기수순'}
             options={sortByOptions}
             selectedOptions={selectedSortBy}
-            setSelectedOptions={setSelectedSortBy}
+            setSelectedOptions={(v) => set('selectedSortBy', v)}
             singleSelect={true}
           />
         </div>

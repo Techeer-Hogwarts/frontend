@@ -27,12 +27,14 @@ import ProjectCard from '@/components/project/ProjectCard'
 import StudyCard from '@/components/project/StudyCard'
 import SkeletonProjectCard from '@/components/project/SkeletonProjectCard'
 import AddBtn from '@/components/project/add/AddBtn'
+import { useUrlQueryFilters } from '@/hooks/useUrlQueryFilters'
 
 export default function TeamsPage() {
   const { activeOption } = useTapBarStore()
-  const [selectedRecruitment, setSelectedRecruitment] = useState<string[]>([])
-  const [selectedProgress, setSelectedProgress] = useState<string[]>([])
-  const [selectedPosition, setSelectedPosition] = useState<string[]>([])
+  const { filters, set, remove } = useUrlQueryFilters()
+  const selectedRecruitment = filters.selectedRecruitment ?? []
+  const selectedProgress = filters.selectedProgress ?? []
+  const selectedPosition = filters.selectedPosition ?? []
   const [selectedSort, setSelectedSort] = useState<string[]>(['최신순']) // 기본값 필수
   const [searchResults, setSearchResults] = useState<any>(null)
 
@@ -64,38 +66,38 @@ export default function TeamsPage() {
     setSelectedSort(newSelectedSort)
   }
 
-  // 필터 조립
-  const filters: TeamFilter = {}
+  // 팀 조회용 쿼리 조립 (hook의 filters와 이름 충돌 방지)
+  const query: TeamFilter = {}
 
   // 안전한 activeOption 처리
   const safeActiveOption = activeOption || '전체보기'
 
   if (safeActiveOption !== '전체보기') {
     if (safeActiveOption === '프로젝트') {
-      filters.teamTypes = ['PROJECT']
+      query.teamTypes = ['PROJECT']
     } else if (safeActiveOption === '스터디') {
-      filters.teamTypes = ['STUDY']
+      query.teamTypes = ['STUDY']
     }
   }
   if (selectedRecruitment.length === 1) {
-    filters.isRecruited = selectedRecruitment[0] === '모집 중'
+    query.isRecruited = selectedRecruitment[0] === '모집 중'
   }
   if (selectedProgress.length === 1) {
-    filters.isFinished = selectedProgress[0] === '진행 완료'
+    query.isFinished = selectedProgress[0] === '진행 완료'
   }
   if (
     (safeActiveOption === '프로젝트' || safeActiveOption === '전체보기') &&
     selectedPosition.length > 0
   ) {
-    filters.positions = selectedPosition as any
+    query.positions = selectedPosition
   }
 
   // 정렬 옵션 추가 (항상 적용됨)
-  filters.sortType = getSortType(selectedSort[0])
+  query.sortType = getSortType(selectedSort[0])
 
   // 무한스크롤 데이터 조회
   const { teams, isLoading, isLoadingMore, error, hasNext, loadMoreRef } =
-    useTeamsList(filters)
+    useTeamsList(query)
 
   // 필터 제거 (정렬 제외)
   const removeFilter = (
@@ -103,11 +105,11 @@ export default function TeamsPage() {
     type: 'recruitment' | 'progress' | 'position',
   ) => {
     if (type === 'recruitment') {
-      setSelectedRecruitment((rs) => rs.filter((r) => r !== item))
+      remove('selectedRecruitment', item)
     } else if (type === 'progress') {
-      setSelectedProgress((ps) => ps.filter((p) => p !== item))
+      remove('selectedProgress', item)
     } else if (type === 'position') {
-      setSelectedPosition((ps) => ps.filter((p) => p !== item))
+      remove('selectedPosition', item)
     }
   }
 
@@ -167,14 +169,14 @@ export default function TeamsPage() {
             title="모집여부"
             options={RECRUITMENT_OPTIONS}
             selectedOptions={selectedRecruitment}
-            setSelectedOptions={setSelectedRecruitment}
+            setSelectedOptions={(v) => set('selectedRecruitment', v)}
             singleSelect={true}
           />
           <Dropdown
             title="진행여부"
             options={PROGRESS_OPTIONS}
             selectedOptions={selectedProgress}
-            setSelectedOptions={setSelectedProgress}
+            setSelectedOptions={(v) => set('selectedProgress', v)}
             singleSelect={true}
           />
           {safeActiveOption === '프로젝트' && (
@@ -182,7 +184,7 @@ export default function TeamsPage() {
               title="포지션"
               options={POSITION_OPTIONS}
               selectedOptions={selectedPosition}
-              setSelectedOptions={setSelectedPosition}
+              setSelectedOptions={(v) => set('selectedPosition', v)}
             />
           )}
         </div>
