@@ -9,6 +9,8 @@ export type Filters = {
   selectedUniversity: string[]
   selectedGrade: string[]
   selectedSortBy: string[]
+  selectedRecruitment?: string[]
+  selectedProgress?: string[]
 }
 
 const DEFAULTS: Filters = {
@@ -17,6 +19,8 @@ const DEFAULTS: Filters = {
   selectedUniversity: [],
   selectedGrade: [],
   selectedSortBy: ['기수순'],
+  selectedRecruitment: [],
+  selectedProgress: [],
 }
 
 const MAP = {
@@ -25,6 +29,8 @@ const MAP = {
   selectedUniversity: 'university',
   selectedGrade: 'grade',
   selectedSortBy: 'sortBy',
+  selectedRecruitment: 'recruitment',
+  selectedProgress: 'progress',
 } as const satisfies Record<keyof Filters, string>
 
 function parseFromParams(params: URLSearchParams): Filters {
@@ -36,6 +42,8 @@ function parseFromParams(params: URLSearchParams): Filters {
     selectedUniversity: toArr(MAP.selectedUniversity),
     selectedGrade: toArr(MAP.selectedGrade),
     selectedSortBy: toArr(MAP.selectedSortBy),
+    selectedRecruitment: toArr(MAP.selectedRecruitment),
+    selectedProgress: toArr(MAP.selectedProgress),
   }
 
   if (parsed.selectedSortBy.length === 0) {
@@ -68,6 +76,12 @@ function mergeParams(base: URLSearchParams, filters: Filters): URLSearchParams {
   }
   if (filters.selectedGrade.length > 0) {
     addAll(MAP.selectedGrade, filters.selectedGrade)
+  }
+  if (filters.selectedRecruitment && filters.selectedRecruitment.length > 0) {
+    addAll(MAP.selectedRecruitment, filters.selectedRecruitment)
+  }
+  if (filters.selectedProgress && filters.selectedProgress.length > 0) {
+    addAll(MAP.selectedProgress, filters.selectedProgress)
   }
   if (filters.selectedSortBy.length > 0) {
     const pick = filters.selectedSortBy[0]
