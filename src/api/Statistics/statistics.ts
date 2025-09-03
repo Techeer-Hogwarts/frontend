@@ -19,10 +19,13 @@ const getStatistics = async (userId: number, year: number) => {
 
 import { useQuery } from '@tanstack/react-query'
 
-export function useGetStatisticsAPI(userId: number, year: number) {
+export function useGetStatisticsAPI(userId?: number, year?: number) {
   return useQuery({
-    queryKey: ['statistics', userId, year],
-    queryFn: () => getStatistics(userId, year),
-    enabled: !!userId && !!year,
+    queryKey: ['statistics', userId ?? null, year ?? null],
+    enabled: userId != null && year != null,
+    queryFn: () => {
+      if (userId == null || year == null) throw new Error('missing params')
+      return getStatistics(userId, year)
+    },
   })
 }

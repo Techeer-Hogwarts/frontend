@@ -93,32 +93,40 @@ export default function Statistics() {
   const userId = useAuthStore((state) => state.user?.id)
   const year = useAuthStore((state) => state.user?.year)
 
-  const { data, isLoading, error } = useGetStatisticsAPI(userId, year)
+  // 선택된 연도 state (기본값: yearOptions[0] 또는 현재 year)
+  const [selectedYear, setSelectedYear] = useState<string[]>([])
 
-  // 연도 options 추출 (블로그, 커밋 데이터에서 year만 추출, 중복 제거, 내림차순 정렬)
+  const selectedYearNum = useMemo(
+    () => (selectedYear[0] ? Number(selectedYear[0]) : undefined),
+    [selectedYear],
+  )
+  const { data, isLoading, error } = useGetStatisticsAPI(
+    userId,
+    selectedYearNum ?? year,
+  )
+
+  // 연도 options 추출 (블로그 데이터에서 year만 추출, 중복 제거, 내림차순 정렬)
   const yearOptions = useMemo(() => {
     const blogYears = data?.monthlyBlog?.map((b: any) => b.year) || []
-    const commitYears =
-      data?.weeklyGitHubContributions?.map((c: any) => c.year) || []
-    return Array.from(new Set([...blogYears, ...commitYears]))
+    return Array.from(new Set([...blogYears]))
       .sort((a, b) => b - a)
       .map(String)
   }, [data])
 
-  // 선택된 연도 state (기본값: yearOptions[0] 또는 현재 year)
-  const [selectedYear, setSelectedYear] = useState<string[]>([])
-
   useEffect(() => {
     if (yearOptions.length > 0 && !selectedYear.length) {
       setSelectedYear([String(yearOptions[0])])
+    } else if (yearOptions.length === 0 && selectedYear.length > 0) {
+      setSelectedYear([])
     }
-  }, [yearOptions])
+  }, [yearOptions, selectedYear])
 
-  // 연도별로 필터링된 데이터
+  // 블로그만 연도 필터링, 줌/이력서는 전체 데이터 사용
   const filteredBlog =
     data?.monthlyBlog?.filter((b: any) =>
-      selectedYear.includes(String(b.year)),
+      selectedYear.length === 0 ? true : selectedYear.includes(String(b.year)),
     ) || []
+  // 줌/이력서 데이터는 필터링 없이 data에서 바로 사용
   const filteredCommits =
     data?.weeklyGitHubContributions?.filter((c: any) =>
       selectedYear.includes(String(c.year)),
@@ -137,34 +145,6 @@ export default function Statistics() {
         borderWidth: 3,
       },
     ],
-  }
-
-  // weeklyGitHubContributions에서 월별로 합산
-  if (filteredCommits.length > 0) {
-    const labels = Array.from({ length: 12 }, (_, i) => `${i + 1}월`)
-    const monthlyMap: { [month: number]: number } = {}
-    filteredCommits.forEach((item: any) => {
-      if (!monthlyMap[item.month]) monthlyMap[item.month] = 0
-      monthlyMap[item.month] += item.contributionCount
-    })
-    const chartData = labels.map((_, idx) => {
-      const value = monthlyMap[idx + 1] || 0
-      return value < 0 ? 0 : value
-    })
-    commitChartData = {
-      labels,
-      datasets: [
-        {
-          label: '월별 커밋 개수',
-          data: chartData,
-          borderColor: '#71D7BA',
-          backgroundColor: '#00C2FF33',
-          pointRadius: 6,
-          pointBackgroundColor: '#71D7BA',
-          borderWidth: 3,
-        },
-      ],
-    }
   }
 
   // 월별 줌 접속시간 차트 데이터 생성
