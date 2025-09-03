@@ -59,9 +59,9 @@ function mergeParams(base: URLSearchParams, filters: Filters): URLSearchParams {
   Object.values(MAP).forEach((k) => next.delete(k))
 
   const addAll = (key: string, values: string[]) => {
-    // 중복 제거 + 캐논 정렬로 네비게이션 불필요 호출 방지
+    // 중복 제거 + 캐논 정렬(로케일 기준)로 네비게이션 불필요 호출 방지
     const uniq = Array.from(new Set(values.filter(Boolean)))
-    const canon = uniq.slice().sort()
+    const canon = uniq.slice().sort((a, b) => a.localeCompare(b, 'ko'))
     canon.forEach((v) => next.append(key, v))
   }
 
