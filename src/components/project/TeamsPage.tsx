@@ -4,7 +4,11 @@ import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useTeamsList } from '@/hooks/project/useTeamsList'
-import type { TeamFilter } from '@/types/project/project'
+import type {
+  TeamFilter,
+  ProjectTeam,
+  StudyTeam,
+} from '@/types/project/project'
 import {
   TAB_OPTIONS,
   SORT_OPTIONS,
@@ -18,7 +22,7 @@ import TapBar from '@/components/common/TapBar'
 import SearchBar from '@/components/common/SearchBar'
 import Dropdown from '@/components/common/Dropdown'
 import FilterBtn from '@/components/session/FilterBtn'
-import EmptyLottie from '@/components/common/EmptyLottie'
+import EmptyAnimation from '@/components/common/EmptyAnimation'
 import ProjectCard from '@/components/project/ProjectCard'
 import StudyCard from '@/components/project/StudyCard'
 import SkeletonProjectCard from '@/components/project/SkeletonProjectCard'
@@ -144,7 +148,13 @@ export default function TeamsPage() {
         <TapBar options={TAB_OPTIONS} />
         <SearchBar
           placeholder="이름 또는 키워드로 검색"
-          index=""
+          index={
+            safeActiveOption === '프로젝트'
+              ? 'project'
+              : safeActiveOption === '스터디'
+                ? 'study'
+                : ''
+          }
           onSearchResult={setSearchResults}
         />
       </div>
@@ -213,7 +223,58 @@ export default function TeamsPage() {
       )}
 
       {/* 팀 목록 */}
-      {isLoading ? (
+      {Array.isArray(searchResults) && searchResults.length > 0 ? (
+        // 검색 결과가 있을 때
+        <div className="grid grid-cols-4 gap-4">
+          {searchResults.map((result: any) => {
+            if (result.index === 'project') {
+              // ProjectTeam 타입으로 변환
+              const projectTeam: ProjectTeam = {
+                id: parseInt(String(result.id), 10),
+                name: result.name || result.title,
+                projectExplain: result.projectExplain || '',
+                mainImages:
+                  Array.isArray(result.mainImages) &&
+                  result.mainImages.length > 0
+                    ? result.mainImages
+                    : ['/images/session/thumbnail.png'],
+                teamStacks: result.teamStacks || [],
+                type: 'PROJECT',
+                // TeamBase 필드들
+                deleted: false,
+                recruited: true,
+                finished: false,
+                createdAt: new Date().toISOString(),
+                // ProjectTeam 전용 필드들
+                frontendNum: 0,
+                backendNum: 0,
+                devopsNum: 0,
+                fullStackNum: 0,
+                dataEngineerNum: 0,
+                // 누락된 필드 추가
+                resultImages: [],
+              }
+              return <ProjectCard key={result.id} team={projectTeam} />
+            } else {
+              // StudyTeam 타입으로 변환
+              const studyTeam: StudyTeam = {
+                id: parseInt(String(result.id), 10),
+                name: result.name || result.title,
+                studyExplain: result.projectExplain || '',
+                type: 'STUDY',
+                // TeamBase 필드들
+                deleted: false,
+                recruited: true,
+                finished: false,
+                createdAt: new Date().toISOString(),
+                // StudyTeam 전용 필드들
+                recruitNum: 0,
+              }
+              return <StudyCard key={result.id} team={studyTeam} />
+            }
+          })}
+        </div>
+      ) : isLoading ? (
         // 첫 로딩 중일 때 스켈레톤 표시
         <div className="grid grid-cols-4 gap-4">
           {Array.from({ length: 12 }).map((_, i) => (
@@ -222,14 +283,14 @@ export default function TeamsPage() {
         </div>
       ) : error ? (
         <div className="flex flex-col items-center w-full">
-          <EmptyLottie
+          <EmptyAnimation
             text="데이터 로딩 실패"
             text2="페이지를 새로고침해주세요"
           />
         </div>
       ) : teams.length === 0 ? (
         <div className="flex justify-center w-full">
-          <EmptyLottie
+          <EmptyAnimation
             text="조건에 맞는 팀이 없습니다."
             text2="필터를 조정해보세요."
           />

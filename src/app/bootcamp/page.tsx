@@ -56,6 +56,10 @@ const BootcampPage = () => {
         return Arank - Brank
       }) ?? []
 
+  // API 응답의 hasNext 값을 사용하여 무한 스크롤 제어
+  const hasNextPage =
+    query?.data?.pages?.[query.data.pages.length - 1]?.hasNext ?? false
+
   useEffect(() => {
     if (typeof window === 'undefined') return
 
@@ -82,10 +86,10 @@ const BootcampPage = () => {
   }, [showRegistModal, openModal])
 
   useEffect(() => {
-    if (inView && query.hasNextPage && !query.isFetchingNextPage) {
+    if (inView && hasNextPage && !query.isFetchingNextPage) {
       query.fetchNextPage()
     }
-  }, [inView, query.hasNextPage, query.isFetchingNextPage])
+  }, [inView, hasNextPage, query.isFetchingNextPage])
 
   return (
     <div className="flex justify-center">

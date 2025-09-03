@@ -5,32 +5,7 @@ import Image from 'next/image'
 import PositionTag from '@/components/common/PositionTag'
 import CareerTag from '@/components/common/CareerTag'
 import SkeletonProfileBox from './SkeletonProfileBox'
-
-interface ProfileData {
-  id: number
-  profileImage: string
-  name: string
-  email: string
-  school: string
-  grade: string
-  year: number
-  mainPosition: string
-  subPosition: string
-  githubUrl: string
-  mediumUrl: string
-  velogUrl: string
-  tistoryUrl: string
-  experiences?: Experience[]
-}
-
-interface Experience {
-  position: string
-  companyName: string
-  startDate: string
-  endDate: string | null
-  category: string
-  isFinished: boolean
-}
+import { ProfileData, Experience } from '@/types/mypage/mypage.types'
 
 interface ProfileBoxProps {
   profile: ProfileData | null
