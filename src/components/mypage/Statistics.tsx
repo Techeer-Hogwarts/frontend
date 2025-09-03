@@ -50,60 +50,16 @@ const baseChartOptions = {
   },
 }
 
-const blogChartOptions = {
-  ...baseChartOptions,
-  scales: {
-    ...baseChartOptions.scales,
-    y: {
-      ...baseChartOptions.scales.y,
-      min: 0,
-      max: undefined,
-      ticks: { ...baseChartOptions.scales.y.ticks, stepSize: 1 },
-    },
-  },
+interface StatisticsProps {
+  userId: number
+  year: number
 }
 
-const commitChartOptions = {
-  ...baseChartOptions,
-  scales: {
-    ...baseChartOptions.scales,
-    y: {
-      ...baseChartOptions.scales.y,
-      min: 0,
-      max: undefined,
-      ticks: { ...baseChartOptions.scales.y.ticks, stepSize: 5 },
-    },
-  },
-}
-
-const zoomChartOptions = {
-  ...baseChartOptions,
-  scales: {
-    ...baseChartOptions.scales,
-    y: {
-      ...baseChartOptions.scales.y,
-      min: 0,
-      max: undefined,
-      ticks: { ...baseChartOptions.scales.y.ticks, stepSize: 1000 },
-    },
-  },
-}
-
-export default function Statistics() {
-  const userId = useAuthStore((state) => state.user?.id)
-  const year = useAuthStore((state) => state.user?.year)
-
+export default function Statistics({ userId, year }: StatisticsProps) {
   // 선택된 연도 state (기본값: yearOptions[0] 또는 현재 year)
   const [selectedYear, setSelectedYear] = useState<string[]>([])
 
-  const selectedYearNum = useMemo(
-    () => (selectedYear[0] ? Number(selectedYear[0]) : undefined),
-    [selectedYear],
-  )
-  const { data, isLoading, error } = useGetStatisticsAPI(
-    userId,
-    selectedYearNum ?? year,
-  )
+  const { data, isLoading, error } = useGetStatisticsAPI(userId, year)
 
   // 연도 options 추출 (블로그 데이터에서 year만 추출, 중복 제거, 내림차순 정렬)
   const yearOptions = useMemo(() => {
@@ -113,13 +69,26 @@ export default function Statistics() {
       .map(String)
   }, [data])
 
+  const selectedYearNum = useMemo(
+    () =>
+      selectedYear[0] && yearOptions.includes(selectedYear[0])
+        ? Number(selectedYear[0])
+        : yearOptions.length > 0
+          ? Number(yearOptions[0])
+          : undefined,
+    [selectedYear, yearOptions],
+  )
+
   useEffect(() => {
-    if (yearOptions.length > 0 && !selectedYear.length) {
-      setSelectedYear([String(yearOptions[0])])
-    } else if (yearOptions.length === 0 && selectedYear.length > 0) {
-      setSelectedYear([])
+    if (yearOptions.length === 0) {
+      if (selectedYear.length > 0) setSelectedYear([])
+      return
     }
-  }, [yearOptions, selectedYear])
+    // selectedYear가 yearOptions에 없는 값이거나 비어있으면 첫 값으로 맞춤
+    if (selectedYear.length === 0 || !yearOptions.includes(selectedYear[0])) {
+      setSelectedYear([String(yearOptions[0])])
+    }
+  }, [yearOptions])
 
   // 블로그만 연도 필터링, 줌/이력서는 전체 데이터 사용
   const filteredBlog =
@@ -213,6 +182,51 @@ export default function Statistics() {
         },
       ],
     }
+  }
+
+  // 블로그 데이터 최대값 계산 및 y축 옵션 useMemo
+  const maxBlogValue = Math.max(...(blogData.datasets[0].data ?? [0]), 0)
+  const blogYMax = maxBlogValue <= 5 ? 5 : maxBlogValue
+  const blogChartOptions = useMemo(
+    () => ({
+      ...baseChartOptions,
+      scales: {
+        ...baseChartOptions.scales,
+        y: {
+          ...baseChartOptions.scales.y,
+          min: 0,
+          max: blogYMax,
+          ticks: { ...baseChartOptions.scales.y.ticks, stepSize: 1 },
+        },
+      },
+    }),
+    [blogYMax],
+  )
+
+  // const commitChartOptions = {
+  //   ...baseChartOptions,
+  //   scales: {
+  //     ...baseChartOptions.scales,
+  //     y: {
+  //       ...baseChartOptions.scales.y,
+  //       min: 0,
+  //       max: undefined,
+  //       ticks: { ...baseChartOptions.scales.y.ticks, stepSize: 5 },
+  //     },
+  //   },
+  // }
+
+  const zoomChartOptions = {
+    ...baseChartOptions,
+    scales: {
+      ...baseChartOptions.scales,
+      y: {
+        ...baseChartOptions.scales.y,
+        min: 0,
+        max: undefined,
+        ticks: { ...baseChartOptions.scales.y.ticks, stepSize: 1000 },
+      },
+    },
   }
 
   return (

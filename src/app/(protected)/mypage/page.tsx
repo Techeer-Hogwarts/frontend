@@ -51,7 +51,9 @@ export default function Mypage() {
       {activeTab === 'bookmark' && <Bookmark />}
       {activeTab === 'likes' && <Likes />}
       {activeTab === 'settings' && <Settings />}
-      {activeTab === 'statistics' && <Statistics />}
+      {activeTab === 'statistics' && profile?.id && profile?.year && (
+        <Statistics userId={Number(profile.id)} year={Number(profile.year)} />
+      )}
     </div>
   )
 }
