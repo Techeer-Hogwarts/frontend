@@ -1,13 +1,14 @@
-import { useGetResumeQuery } from './query/useGetResumeQuery'
+import { useGetResumeQuery } from '@/api/resume/queries' // 수정된 경로
 import EmptyLottie from '@/components/common/EmptyLottie'
-import { ResumeQueryParams } from '@/types/queryParams'
+import { ResumeQueryParams } from '@/api/resume/types' // 수정된 경로
 import ResumeFolder from '@/components/resume/ResumeFolder'
 import SkeletonResumeFolder from '@/components/resume/SkeletonResume'
 import { useCallback, useEffect, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
 import { useLike } from '../../blog/_lib/useLike'
 import { useBookmark } from '../../blog/_lib/useBookmark'
-import { getResumeList } from './api/getResumeList'
+// import { getResumeList } from './api/getResumeList'
+import { getResumeList } from '@/api/resume/apis' // 수정된 경로
 
 // Resume 타입 가져오기
 type Resume = {

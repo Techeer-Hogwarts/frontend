@@ -1,5 +1,8 @@
-import { ResumeQueryParams } from '@/types/queryParams'
+import { ResumeQueryParams } from './types'
 
+const RESUME_API_BASE = '/api/resumes'
+
+// 이력서 목록 조회
 export async function getResumeList({
   position = [],
   year = [],
@@ -39,7 +42,7 @@ export async function getResumeList({
     params.append('limit', limit.toString())
     params.append('sortBy', sortBy)
 
-    const response = await fetch(`/api/resumes?${params.toString()}`, {
+    const response = await fetch(`${RESUME_API_BASE}?${params.toString()}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -53,7 +56,7 @@ export async function getResumeList({
     }
 
     const result = await response.json()
-    console.log('getResumeList.ts:', result)
+    console.log('api/resume/apis.ts의 getResumeList:', result)
     return result
   } catch (error) {
     throw error // 에러를 호출한 함수에 다시 전달
