@@ -10,6 +10,7 @@ export interface SearchResult {
   title: string
   url: string
   createdAt: string
+  date: string
   userID: string
   userName: string
   userProfileImage: string
@@ -34,11 +35,16 @@ export const searchAPI = async ({
     }
 
     const data: { results: SearchResult[] } = await response.json()
+    // 런타임 보정: date 누락 시 createdAt으로 채움
+    const normalized: SearchResult[] = (data.results ?? []).map((item) => ({
+      ...item,
+      date: item.date ?? item.createdAt,
+    }))
 
-    if (!data.results) return null
+    if (!normalized) return null
     // 중복 제거 (같은 URL을 가진 항목 중에서 최신 항목만 남김)
     const uniqueResults = Object.values(
-      data.results.reduce(
+      normalized.reduce(
         (acc: Record<string, SearchResult>, item: SearchResult) => {
           if (
             !acc[item.url] ||

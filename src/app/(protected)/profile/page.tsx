@@ -4,19 +4,21 @@ import { useState } from 'react'
 import Dropdown from '@/components/common/Dropdown'
 import FilterBtn from '@/components/session/FilterBtn'
 import ProfileList from './@profiletList'
-import TapBar from '@/components/common/TapBar'
-import Search from '@/components/common/SearchBar'
 import SearchBar from '@/components/common/SearchBar'
+import ProfileCard from '@/components/profile/ProfileCard'
+import { useUrlQueryFilters } from '@/hooks/useUrlQueryFilters'
 
 export default function Page() {
   // 검색어 상태 추가
   const [searchResults, setSearchResults] = useState<any>(null)
-
-  const [selectedPosition, setSelectedPosition] = useState<string[]>([])
-  const [selectedYear, setSelectedYear] = useState<string[]>([])
-  const [selectedUniversity, setSelectedUniversity] = useState<string[]>([])
-  const [selectedGrade, setSelectedGrade] = useState<string[]>([])
-  const [selectedSortBy, setSelectedSortBy] = useState<string[]>(['기수순'])
+  const { filters, set, remove } = useUrlQueryFilters()
+  const {
+    selectedPosition,
+    selectedYear,
+    selectedUniversity,
+    selectedGrade,
+    selectedSortBy,
+  } = filters
 
   const positionOptions = [
     'FRONTEND',
@@ -62,18 +64,17 @@ export default function Page() {
   //기수 탭
   // const category = ['전체', '이력서', '포트폴리오', 'ICT', 'OTHER']
 
-  const handleRemoveFilter = (filter: string | number, type: string) => {
-    if (type === 'position') {
-      setSelectedPosition(selectedPosition.filter((item) => item !== filter))
-    } else if (type === 'year') {
-      setSelectedYear(selectedYear.filter((item) => item !== filter))
-    } else if (type === 'university') {
-      setSelectedUniversity(
-        selectedUniversity.filter((item) => item !== filter),
-      )
-    } else if (type === 'grade') {
-      setSelectedGrade(selectedGrade.filter((item) => item !== filter))
-    }
+  const handleRemoveFilter = (
+    filter: string | number,
+    type: 'position' | 'year' | 'university' | 'grade',
+  ) => {
+    const map = {
+      position: 'selectedPosition',
+      year: 'selectedYear',
+      university: 'selectedUniversity',
+      grade: 'selectedGrade',
+    } as const
+    remove(map[type], String(filter))
   }
 
   return (
@@ -87,11 +88,13 @@ export default function Page() {
             </p>
           </div>
           {/** 검색창 */}
-          {/* <SearchBar
-              placeholder="이름 또는 키워드로 검색해보세요"
-              index="profile"
-              onSearchResult={setSearchResults}
-            /> */}
+        </div>
+        <div className="w-full flex justify-end mb-4">
+          <SearchBar
+            placeholder="이름 또는 키워드로 검색해보세요"
+            index="user"
+            onSearchResult={setSearchResults}
+          />
         </div>
         <div className="flex w-full h-[1px] mb-5 bg-gray"></div>
         <div className="flex justify-between">
@@ -100,32 +103,32 @@ export default function Page() {
               title="포지션"
               options={positionOptions}
               selectedOptions={selectedPosition}
-              setSelectedOptions={setSelectedPosition}
+              setSelectedOptions={(v) => set('selectedPosition', v)}
             />
             <Dropdown
               title="기수"
               options={yearOptions} // Dropdown 컴포넌트에서 문자열로 처리
-              selectedOptions={selectedYear.map(String)} // 숫자를 문자열로 변환
-              setSelectedOptions={setSelectedYear}
+              selectedOptions={selectedYear}
+              setSelectedOptions={(v) => set('selectedYear', v)}
             />
             <Dropdown
               title="대학"
               options={universityOptions}
               selectedOptions={selectedUniversity}
-              setSelectedOptions={setSelectedUniversity}
+              setSelectedOptions={(v) => set('selectedUniversity', v)}
             />
             <Dropdown
               title="학년"
               options={gradeOptions}
               selectedOptions={selectedGrade}
-              setSelectedOptions={setSelectedGrade}
+              setSelectedOptions={(v) => set('selectedGrade', v)}
             />
           </div>
           <Dropdown
             title={selectedSortBy[0] || '기수순'}
             options={sortByOptions}
             selectedOptions={selectedSortBy}
-            setSelectedOptions={setSelectedSortBy}
+            setSelectedOptions={(v) => set('selectedSortBy', v)}
             singleSelect={true}
           />
         </div>
@@ -169,14 +172,53 @@ export default function Page() {
             ))}
           </div>
         )}
-        <ProfileList
-          key={`${selectedPosition.join(',')}_${selectedYear.join(',')}_${selectedUniversity.join(',')}_${selectedGrade.join(',')}_${selectedSortBy[0]}`}
-          position={selectedPosition}
-          year={selectedYear}
-          university={selectedUniversity}
-          grade={selectedGrade}
-          sortBy={selectedSortBy[0]}
-        />
+        {Array.isArray(searchResults) && searchResults.length > 0 ? (
+          <div className="grid grid-cols-4 gap-4 mt-8">
+            {(() => {
+              console.log('Profile search results:', searchResults)
+              return null
+            })()}
+            {searchResults.map((r: any) => (
+              <ProfileCard
+                key={r.id}
+                id={r.id}
+                name={r.userName || r.name || ''}
+                mainPosition={r.position || r.mainPosition || ''}
+                profileImage={r.userProfileImage || r.profileImage || ''}
+                school={r.school || ''}
+                grade={r.grade || ''}
+                year={r.year || 0}
+                stack={r.stack || r.techStacks || []}
+                projectTeams={r.projectTeams || []}
+              />
+            ))}
+          </div>
+        ) : (
+          <>
+            {(() => {
+              console.log(
+                'Normal profile list data (not search):',
+                'ProfileList component will render with filters:',
+                {
+                  position: selectedPosition,
+                  year: selectedYear,
+                  university: selectedUniversity,
+                  grade: selectedGrade,
+                  sortBy: selectedSortBy[0],
+                },
+              )
+              return null
+            })()}
+            <ProfileList
+              key={`${selectedPosition.join(',')}_${selectedYear.join(',')}_${selectedUniversity.join(',')}_${selectedGrade.join(',')}_${selectedSortBy[0]}`}
+              position={selectedPosition}
+              year={selectedYear}
+              university={selectedUniversity}
+              grade={selectedGrade}
+              sortBy={selectedSortBy[0]}
+            />
+          </>
+        )}
       </div>
     </div>
   )

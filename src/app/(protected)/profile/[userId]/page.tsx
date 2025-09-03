@@ -9,13 +9,24 @@ import ProfilepageTap from '@/components/profile/ProfilepageTap'
 import { fetchUserProfile } from '../api/getUserProfile'
 import Skeleton from '@/components/profile/Skeleton'
 
-export default function Page({ params }: { params: { userId: string } }) {
+export default function Page({
+  params,
+}: {
+  params: Promise<{ userId: string }>
+}) {
   const [activeTab, setActiveTab] = useState<'home' | 'resume'>('home')
 
   const [profileData, setProfileData] = useState<any>(null)
   const [loading, setLoading] = useState(true)
+  const [userId, setUserId] = useState<string>('')
 
-  const { userId } = params
+  useEffect(() => {
+    const getParams = async () => {
+      const resolvedParams = await params
+      setUserId(resolvedParams.userId)
+    }
+    getParams()
+  }, [params])
 
   useEffect(() => {
     if (userId) {

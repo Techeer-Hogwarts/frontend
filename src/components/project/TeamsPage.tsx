@@ -4,7 +4,11 @@ import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useTeamsList } from '@/hooks/project/useTeamsList'
-import type { TeamFilter } from '@/types/project/project'
+import type {
+  TeamFilter,
+  ProjectTeam,
+  StudyTeam,
+} from '@/types/project/project'
 import {
   TAB_OPTIONS,
   SORT_OPTIONS,
@@ -18,17 +22,19 @@ import TapBar from '@/components/common/TapBar'
 import SearchBar from '@/components/common/SearchBar'
 import Dropdown from '@/components/common/Dropdown'
 import FilterBtn from '@/components/session/FilterBtn'
-import EmptyLottie from '@/components/common/EmptyLottie'
+import EmptyAnimation from '@/components/common/EmptyAnimation'
 import ProjectCard from '@/components/project/ProjectCard'
 import StudyCard from '@/components/project/StudyCard'
 import SkeletonProjectCard from '@/components/project/SkeletonProjectCard'
 import AddBtn from '@/components/project/add/AddBtn'
+import { useUrlQueryFilters } from '@/hooks/useUrlQueryFilters'
 
 export default function TeamsPage() {
   const { activeOption } = useTapBarStore()
-  const [selectedRecruitment, setSelectedRecruitment] = useState<string[]>([])
-  const [selectedProgress, setSelectedProgress] = useState<string[]>([])
-  const [selectedPosition, setSelectedPosition] = useState<string[]>([])
+  const { filters, set, remove } = useUrlQueryFilters()
+  const selectedRecruitment = filters.selectedRecruitment ?? []
+  const selectedProgress = filters.selectedProgress ?? []
+  const selectedPosition = filters.selectedPosition ?? []
   const [selectedSort, setSelectedSort] = useState<string[]>(['최신순']) // 기본값 필수
   const [searchResults, setSearchResults] = useState<any>(null)
 
@@ -60,38 +66,38 @@ export default function TeamsPage() {
     setSelectedSort(newSelectedSort)
   }
 
-  // 필터 조립
-  const filters: TeamFilter = {}
+  // 팀 조회용 쿼리 조립 (hook의 filters와 이름 충돌 방지)
+  const query: TeamFilter = {}
 
   // 안전한 activeOption 처리
   const safeActiveOption = activeOption || '전체보기'
 
   if (safeActiveOption !== '전체보기') {
     if (safeActiveOption === '프로젝트') {
-      filters.teamTypes = ['PROJECT']
+      query.teamTypes = ['PROJECT']
     } else if (safeActiveOption === '스터디') {
-      filters.teamTypes = ['STUDY']
+      query.teamTypes = ['STUDY']
     }
   }
   if (selectedRecruitment.length === 1) {
-    filters.isRecruited = selectedRecruitment[0] === '모집 중'
+    query.isRecruited = selectedRecruitment[0] === '모집 중'
   }
   if (selectedProgress.length === 1) {
-    filters.isFinished = selectedProgress[0] === '진행 완료'
+    query.isFinished = selectedProgress[0] === '진행 완료'
   }
   if (
     (safeActiveOption === '프로젝트' || safeActiveOption === '전체보기') &&
     selectedPosition.length > 0
   ) {
-    filters.positions = selectedPosition as any
+    query.positions = selectedPosition
   }
 
   // 정렬 옵션 추가 (항상 적용됨)
-  filters.sortType = getSortType(selectedSort[0])
+  query.sortType = getSortType(selectedSort[0])
 
   // 무한스크롤 데이터 조회
   const { teams, isLoading, isLoadingMore, error, hasNext, loadMoreRef } =
-    useTeamsList(filters)
+    useTeamsList(query)
 
   // 필터 제거 (정렬 제외)
   const removeFilter = (
@@ -99,11 +105,11 @@ export default function TeamsPage() {
     type: 'recruitment' | 'progress' | 'position',
   ) => {
     if (type === 'recruitment') {
-      setSelectedRecruitment((rs) => rs.filter((r) => r !== item))
+      remove('selectedRecruitment', item)
     } else if (type === 'progress') {
-      setSelectedProgress((ps) => ps.filter((p) => p !== item))
+      remove('selectedProgress', item)
     } else if (type === 'position') {
-      setSelectedPosition((ps) => ps.filter((p) => p !== item))
+      remove('selectedPosition', item)
     }
   }
 
@@ -144,7 +150,13 @@ export default function TeamsPage() {
         <TapBar options={TAB_OPTIONS} />
         <SearchBar
           placeholder="이름 또는 키워드로 검색"
-          index=""
+          index={
+            safeActiveOption === '프로젝트'
+              ? 'project'
+              : safeActiveOption === '스터디'
+                ? 'study'
+                : ''
+          }
           onSearchResult={setSearchResults}
         />
       </div>
@@ -157,14 +169,14 @@ export default function TeamsPage() {
             title="모집여부"
             options={RECRUITMENT_OPTIONS}
             selectedOptions={selectedRecruitment}
-            setSelectedOptions={setSelectedRecruitment}
+            setSelectedOptions={(v) => set('selectedRecruitment', v)}
             singleSelect={true}
           />
           <Dropdown
             title="진행여부"
             options={PROGRESS_OPTIONS}
             selectedOptions={selectedProgress}
-            setSelectedOptions={setSelectedProgress}
+            setSelectedOptions={(v) => set('selectedProgress', v)}
             singleSelect={true}
           />
           {safeActiveOption === '프로젝트' && (
@@ -172,7 +184,7 @@ export default function TeamsPage() {
               title="포지션"
               options={POSITION_OPTIONS}
               selectedOptions={selectedPosition}
-              setSelectedOptions={setSelectedPosition}
+              setSelectedOptions={(v) => set('selectedPosition', v)}
             />
           )}
         </div>
@@ -213,7 +225,58 @@ export default function TeamsPage() {
       )}
 
       {/* 팀 목록 */}
-      {isLoading ? (
+      {Array.isArray(searchResults) && searchResults.length > 0 ? (
+        // 검색 결과가 있을 때
+        <div className="grid grid-cols-4 gap-4">
+          {searchResults.map((result: any) => {
+            if (result.index === 'project') {
+              // ProjectTeam 타입으로 변환
+              const projectTeam: ProjectTeam = {
+                id: parseInt(String(result.id), 10),
+                name: result.name || result.title,
+                projectExplain: result.projectExplain || '',
+                mainImages:
+                  Array.isArray(result.mainImages) &&
+                  result.mainImages.length > 0
+                    ? result.mainImages
+                    : ['/images/session/thumbnail.png'],
+                teamStacks: result.teamStacks || [],
+                type: 'PROJECT',
+                // TeamBase 필드들
+                deleted: false,
+                recruited: true,
+                finished: false,
+                createdAt: new Date().toISOString(),
+                // ProjectTeam 전용 필드들
+                frontendNum: 0,
+                backendNum: 0,
+                devopsNum: 0,
+                fullStackNum: 0,
+                dataEngineerNum: 0,
+                // 누락된 필드 추가
+                resultImages: [],
+              }
+              return <ProjectCard key={result.id} team={projectTeam} />
+            } else {
+              // StudyTeam 타입으로 변환
+              const studyTeam: StudyTeam = {
+                id: parseInt(String(result.id), 10),
+                name: result.name || result.title,
+                studyExplain: result.projectExplain || '',
+                type: 'STUDY',
+                // TeamBase 필드들
+                deleted: false,
+                recruited: true,
+                finished: false,
+                createdAt: new Date().toISOString(),
+                // StudyTeam 전용 필드들
+                recruitNum: 0,
+              }
+              return <StudyCard key={result.id} team={studyTeam} />
+            }
+          })}
+        </div>
+      ) : isLoading ? (
         // 첫 로딩 중일 때 스켈레톤 표시
         <div className="grid grid-cols-4 gap-4">
           {Array.from({ length: 12 }).map((_, i) => (
@@ -222,14 +285,14 @@ export default function TeamsPage() {
         </div>
       ) : error ? (
         <div className="flex flex-col items-center w-full">
-          <EmptyLottie
+          <EmptyAnimation
             text="데이터 로딩 실패"
             text2="페이지를 새로고침해주세요"
           />
         </div>
       ) : teams.length === 0 ? (
         <div className="flex justify-center w-full">
-          <EmptyLottie
+          <EmptyAnimation
             text="조건에 맞는 팀이 없습니다."
             text2="필터를 조정해보세요."
           />
