@@ -9,8 +9,8 @@ export type Filters = {
   selectedUniversity: string[]
   selectedGrade: string[]
   selectedSortBy: string[]
-  selectedRecruitment?: string[]
-  selectedProgress?: string[]
+  selectedRecruitment: string[]
+  selectedProgress: string[]
 }
 
 const DEFAULTS: Filters = {
@@ -59,9 +59,13 @@ function mergeParams(base: URLSearchParams, filters: Filters): URLSearchParams {
   Object.values(MAP).forEach((k) => next.delete(k))
 
   const addAll = (key: string, values: string[]) => {
-    // 중복 제거 + 캐논 정렬(로케일 기준)로 네비게이션 불필요 호출 방지
+    // 중복 제거 + 결정적 정렬(localeCompare with numeric)
     const uniq = Array.from(new Set(values.filter(Boolean)))
-    const canon = uniq.slice().sort((a, b) => a.localeCompare(b, 'ko'))
+    const canon = uniq
+      .slice()
+      .sort((a, b) =>
+        a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }),
+      )
     canon.forEach((v) => next.append(key, v))
   }
 
@@ -142,7 +146,7 @@ export function useUrlQueryFilters() {
     (name: K, value: string, nav: 'replace' | 'push' = 'replace') => {
       const arr = new Set((filters[name] as string[]) ?? [])
       arr.add(value)
-      set(name, Array.from(arr) as Filters[K], nav)
+      set(name, Array.from(arr), nav)
     },
     [filters, set],
   )
@@ -150,7 +154,7 @@ export function useUrlQueryFilters() {
   const remove = useCallback(
     (name: K, value: string, nav: 'replace' | 'push' = 'replace') => {
       const arr = ((filters[name] as string[]) ?? []).filter((v) => v !== value)
-      set(name, arr as Filters[K], nav)
+      set(name, arr, nav)
     },
     [filters, set],
   )
