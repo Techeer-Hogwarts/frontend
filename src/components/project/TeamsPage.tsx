@@ -34,7 +34,7 @@ export default function TeamsPage() {
   const { filters, set, remove } = useUrlQueryFilters()
   const selectedRecruitment = filters.selectedRecruitment ?? []
   const selectedProgress = filters.selectedProgress ?? []
-  const selectedPosition = filters.selectedPosition
+  const selectedPosition = filters.selectedPosition ?? []
   const [selectedSort, setSelectedSort] = useState<string[]>(['최신순']) // 기본값 필수
   const [searchResults, setSearchResults] = useState<any>(null)
 
