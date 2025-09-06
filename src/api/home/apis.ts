@@ -79,17 +79,21 @@ export const getAllTeams = async (params: {
   teamTypes?: string[]
   limit?: number
   sortType?: string
+  cursor?: number
 }): Promise<ProjectStudyTeamsResponse> => {
   const searchParams = new URLSearchParams()
 
   if (params.teamTypes && params.teamTypes.length > 0) {
     params.teamTypes.forEach((type) => searchParams.append('teamTypes', type))
   }
-  if (params.limit) {
+  if (params.limit !== undefined) {
     searchParams.append('limit', params.limit.toString())
   }
   if (params.sortType) {
     searchParams.append('sortType', params.sortType)
+  }
+  if (params.cursor !== undefined) {
+    searchParams.append('cursor', params.cursor.toString())
   }
 
   const url = `/api/projectTeams/allTeams${searchParams.toString() ? `?${searchParams.toString()}` : ''}`

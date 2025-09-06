@@ -16,7 +16,8 @@ export const useToggleLikeMutation = () => {
       type: 'blog' | 'resume' | 'project' | 'study'
       id: number
     }) => {
-      const response = await fetch(`/api/${type}s/${id}/like`, {
+      const resource = type === 'study' ? 'studies' : `${type}s`
+      const response = await fetch(`/api/${resource}/${id}/like`, {
         method: 'POST',
         credentials: 'include',
       })
@@ -52,7 +53,8 @@ export const useToggleBookmarkMutation = () => {
       type: 'blog' | 'resume' | 'project' | 'study'
       id: number
     }) => {
-      const response = await fetch(`/api/${type}s/${id}/bookmark`, {
+      const resource = type === 'study' ? 'studies' : `${type}s`
+      const response = await fetch(`/api/${resource}/${id}/bookmark`, {
         method: 'POST',
         credentials: 'include',
       })

@@ -41,9 +41,9 @@ export const useAllTeamsQuery = (params: {
 }) => {
   return useInfiniteQuery({
     queryKey: homeKeys.allTeams(params),
-    queryFn: ({ pageParam }) => getAllTeams({ ...params, limit: params.limit }),
+    queryFn: ({ pageParam }) => getAllTeams({ ...params, cursor: pageParam }),
     initialPageParam: undefined as number | undefined,
-    getNextPageParam: (lastPage) => lastPage.nextCursor,
+    getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
     staleTime: 5 * 60 * 1000, // 5분
     gcTime: 10 * 60 * 1000, // 10분
   })
@@ -52,7 +52,7 @@ export const useAllTeamsQuery = (params: {
 // 최신 블로그 포스트 조회
 export const useLatestBlogPostsQuery = (limit: number = 4) => {
   return useQuery({
-    queryKey: homeKeys.blogList({ limit }),
+    queryKey: [...homeKeys.blog(), 'latest', limit],
     queryFn: () => getLatestBlogPosts(limit),
     staleTime: 5 * 60 * 1000, // 5분
     gcTime: 10 * 60 * 1000, // 10분
@@ -62,7 +62,7 @@ export const useLatestBlogPostsQuery = (limit: number = 4) => {
 // 최신 이력서 조회
 export const useLatestResumesQuery = (limit: number = 4) => {
   return useQuery({
-    queryKey: homeKeys.resumeList({ limit }),
+    queryKey: [...homeKeys.resume(), 'latest', limit],
     queryFn: () => getLatestResumes(limit),
     staleTime: 5 * 60 * 1000, // 5분
     gcTime: 10 * 60 * 1000, // 10분
@@ -78,7 +78,7 @@ export const useBlogListQuery = (params: {
     queryKey: homeKeys.blogList(params),
     queryFn: ({ pageParam }) => getBlogList({ ...params, cursor: pageParam }),
     initialPageParam: undefined as number | undefined,
-    getNextPageParam: (lastPage) => lastPage.nextCursor,
+    getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
     staleTime: 5 * 60 * 1000, // 5분
     gcTime: 10 * 60 * 1000, // 10분
   })
@@ -93,7 +93,7 @@ export const useResumeListQuery = (params: {
     queryKey: homeKeys.resumeList(params),
     queryFn: ({ pageParam }) => getResumeList({ ...params, cursor: pageParam }),
     initialPageParam: undefined as number | undefined,
-    getNextPageParam: (lastPage) => lastPage.nextCursor,
+    getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
     staleTime: 5 * 60 * 1000, // 5분
     gcTime: 10 * 60 * 1000, // 10분
   })

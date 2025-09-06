@@ -22,7 +22,11 @@ export default function ScheduleSection() {
   const calendar: Date[][] = []
   const baseDate = new Date(year, month, 1 - startDay)
 
-  for (let week = 0; week < 5; week++) {
+  // 동적으로 주 수 계산 (4~6주)
+  const daysInMonth = new Date(year, month + 1, 0).getDate()
+  const numWeeks = Math.ceil((startDay + daysInMonth) / 7)
+
+  for (let week = 0; week < numWeeks; week++) {
     const weekRow: Date[] = []
     for (let day = 0; day < 7; day++) {
       weekRow.push(new Date(baseDate))

@@ -1,4 +1,23 @@
 // 홈 페이지 관련 queryKey 생성 함수들
+
+// 쿼리 파라미터 타입 정의
+interface TeamQueryParams {
+  teamTypes?: string[]
+  limit?: number
+  sortType?: string
+  cursor?: number
+}
+
+interface BlogQueryParams {
+  limit?: number
+  cursor?: number
+}
+
+interface ResumeQueryParams {
+  limit?: number
+  cursor?: number
+}
+
 export const homeKeys = {
   // 모든 홈 관련 키의 기본값
   all: ['home'] as const,
@@ -14,7 +33,8 @@ export const homeKeys = {
 
   // 팀 관련 키
   teams: () => [...homeKeys.all, 'teams'] as const,
-  allTeams: (params: any) => [...homeKeys.teams(), 'all', params] as const,
+  allTeams: (params: Readonly<TeamQueryParams>) =>
+    [...homeKeys.teams(), 'all', params] as const,
   projectTeams: (limit: number) =>
     [...homeKeys.teams(), 'projects', limit] as const,
   studyTeams: (limit: number) =>
@@ -22,11 +42,13 @@ export const homeKeys = {
 
   // 블로그 관련 키
   blog: () => [...homeKeys.all, 'blog'] as const,
-  blogList: (params: any) => [...homeKeys.blog(), 'list', params] as const,
+  blogList: (params: Readonly<BlogQueryParams>) =>
+    [...homeKeys.blog(), 'list', params] as const,
 
   // 이력서 관련 키
   resume: () => [...homeKeys.all, 'resume'] as const,
-  resumeList: (params: any) => [...homeKeys.resume(), 'list', params] as const,
+  resumeList: (params: Readonly<ResumeQueryParams>) =>
+    [...homeKeys.resume(), 'list', params] as const,
 
   // 랭킹 관련 키
   rankings: () => [...homeKeys.all, 'rankings'] as const,
