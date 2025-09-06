@@ -2,10 +2,98 @@ import Image from 'next/image'
 import Link from 'next/link'
 import type { ProjectTeam } from '@/types/project/project'
 
-export default function ProjectCard({ team }: { team: ProjectTeam }) {
+export default function ProjectCard({
+  team,
+  hideLabel = false,
+}: {
+  team: ProjectTeam
+  hideLabel?: boolean
+}) {
   const mainImageUrl = team.mainImages[0]
   // 인원표시 제한을 위해 count 변수 사용
   let count = 0
+
+  // 조건부 렌더링을 위한 배열 생성
+  const renderMemberCounts = () => {
+    const counts = []
+
+    if (team.frontendNum > 0 && count < 3) {
+      counts.push(
+        <div
+          key={`project-${team.id}-frontend-${count++}`}
+          className="bg-lightblue text-blue py-[0.1rem] rounded-lg text-[13px] text-center"
+        >
+          Frontend : {team.frontendNum}명
+        </div>,
+      )
+    }
+
+    if (team.backendNum > 0 && count < 3) {
+      counts.push(
+        <div
+          key={`project-${team.id}-backend-${count++}`}
+          className="bg-lightgreen text-green py-[0.1rem] rounded-lg text-[13px] text-center"
+        >
+          Backend : {team.backendNum}명
+        </div>,
+      )
+    }
+
+    if (team.devopsNum > 0 && count < 3) {
+      counts.push(
+        <div
+          key={`project-${team.id}-devops-${count++}`}
+          className="bg-lightpink text-pink py-[0.1rem] rounded-lg text-[13px] text-center"
+        >
+          DevOps : {team.devopsNum}명
+        </div>,
+      )
+    }
+
+    if (team.fullStackNum > 0 && count < 3) {
+      counts.push(
+        <div
+          key={`project-${team.id}-fullstack-${count++}`}
+          className="bg-lightyellow text-yellow py-[0.1rem] rounded-lg text-[13px] text-center"
+        >
+          FullStack : {team.fullStackNum}명
+        </div>,
+      )
+    }
+
+    if (team.dataEngineerNum > 0 && count < 3) {
+      counts.push(
+        <div
+          key={`project-${team.id}-dataengineer-${count++}`}
+          className="bg-lightpurple text-purple py-[0.1rem] rounded-lg text-[13px] text-center"
+        >
+          Data : {team.dataEngineerNum}명
+        </div>,
+      )
+    }
+
+    return counts
+  }
+
+  // 팀 스택 렌더링을 위한 함수
+  const renderTeamStacks = () => {
+    if (!team.teamStacks || !Array.isArray(team.teamStacks)) {
+      return null
+    }
+
+    const mainStacks = team.teamStacks
+      .filter((stack) => stack.isMain)
+      .slice(0, 4)
+
+    return mainStacks.map((stack, index) => (
+      <div
+        key={`project-${team.id}-stack-${stack.stack}-${index}`}
+        className="bg-lightprimary text-pink py-[0.1rem] px-[0.3rem] rounded-md text-[13px] truncate max-w-[6.5rem]"
+      >
+        {stack.stack}
+      </div>
+    ))
+  }
 
   return (
     <Link
@@ -13,20 +101,22 @@ export default function ProjectCard({ team }: { team: ProjectTeam }) {
       className="inline-block group w-[18rem] h-[11.375rem] relative"
     >
       {/* 탭 부분 */}
-      <div className="flex items-end">
-        <div className="relative w-[4.5rem] h-[1.25rem] bg-lightprimary flex items-center justify-center rounded-t-md shadow-cardtop">
-          <span className="text-pink text-[0.75rem]">프로젝트</span>
+      {!hideLabel && (
+        <div className="flex items-end">
+          <div className="relative w-[4.5rem] h-[1.25rem] bg-lightprimary flex items-center justify-center rounded-t-md shadow-cardtop">
+            <span className="text-pink text-[0.75rem]">프로젝트</span>
+          </div>
+          <div
+            className="w-1 h-[0.95rem] bg-lightprimary"
+            style={{
+              clipPath: 'polygon(0 100%, 0 0, 100% 100%)',
+            }}
+          ></div>
         </div>
-        <div
-          className="w-1 h-[0.95rem] bg-lightprimary"
-          style={{
-            clipPath: 'polygon(0 100%, 0 0, 100% 100%)',
-          }}
-        ></div>
-      </div>
+      )}
 
       {/* 폴더 본체 */}
-      <div className="flex items-center p-[1rem] gap-3 justify-center w-full h-[10.125rem] rounded-b-lg rounded-tr-lg shadow-card">
+      <div className="flex items-center p-[1rem] gap-3 justify-center w-full h-[10.125rem] rounded-lg shadow-card">
         {/* 메인 이미지 */}
         <div className="w-[8.125rem] h-[8.125rem] rounded-2xl">
           <Image
@@ -48,61 +138,12 @@ export default function ProjectCard({ team }: { team: ProjectTeam }) {
             {/* 모집 중일 때 */}
             {team.recruited ? (
               <div className="flex flex-col justify-end gap-2 w-full">
-                {team.frontendNum > 0 &&
-                  count < 3 &&
-                  (count++,
-                  (
-                    <div className="bg-lightblue text-blue py-[0.1rem] rounded-lg text-[13px] text-center">
-                      Frontend : {team.frontendNum}명
-                    </div>
-                  ))}
-                {team.backendNum > 0 &&
-                  count < 3 &&
-                  (count++,
-                  (
-                    <div className="bg-lightgreen text-green py-[0.1rem] rounded-lg text-[13px] text-center">
-                      Backend : {team.backendNum}명
-                    </div>
-                  ))}
-                {team.devopsNum > 0 &&
-                  count < 3 &&
-                  (count++,
-                  (
-                    <div className="bg-lightpink text-pink py-[0.1rem] rounded-lg text-[13px] text-center">
-                      DevOps : {team.devopsNum}명
-                    </div>
-                  ))}
-                {team.fullStackNum > 0 &&
-                  count < 3 &&
-                  (count++,
-                  (
-                    <div className="bg-lightyellow text-yellow py-[0.1rem] rounded-lg text-[13px] text-center">
-                      FullStack : {team.fullStackNum}명
-                    </div>
-                  ))}
-                {team.dataEngineerNum > 0 &&
-                  count < 3 &&
-                  (count++,
-                  (
-                    <div className="bg-lightpurple text-purple py-[0.1rem] rounded-lg text-[13px] text-center">
-                      Data : {team.dataEngineerNum}명
-                    </div>
-                  ))}
+                {renderMemberCounts()}
               </div>
             ) : (
               // 모집 마감 시, 대표 스택 표시
               <div className="flex flex-col gap-1 h-[6.25rem] items-start justify-end">
-                {team.teamStacks
-                  .filter((stack) => stack.isMain)
-                  .slice(0, 4)
-                  .map((stack) => (
-                    <div
-                      key={stack.stack}
-                      className="bg-lightprimary text-pink py-[0.1rem] px-[0.3rem] rounded-md text-[13px] truncate max-w-[6.5rem]"
-                    >
-                      {stack.stack}
-                    </div>
-                  ))}
+                {renderTeamStacks()}
               </div>
             )}
           </div>
@@ -116,18 +157,20 @@ export default function ProjectCard({ team }: { team: ProjectTeam }) {
                    opacity-0 group-hover:opacity-100 transition-opacity duration-300"
       >
         {/* 탭 부분 (오버레이) */}
-        <div className="flex items-end">
-          <div className="relative w-[4.5rem] h-[1.25rem] bg-black/70 flex items-center justify-center rounded-t-md"></div>
-          <div
-            className="w-1 h-[0.95rem] bg-black/70"
-            style={{
-              clipPath: 'polygon(0 100%, 0 0, 100% 100%)',
-            }}
-          />
-        </div>
+        {!hideLabel && (
+          <div className="flex items-end">
+            <div className="relative w-[4.5rem] h-[1.25rem] bg-black/70 flex items-center justify-center rounded-t-md"></div>
+            <div
+              className="w-1 h-[0.95rem] bg-black/70"
+              style={{
+                clipPath: 'polygon(0 100%, 0 0, 100% 100%)',
+              }}
+            />
+          </div>
+        )}
 
         {/* 폴더 본체 (오버레이) */}
-        <div className="flex items-center p-[1rem] gap-3 justify-center w-full h-[10.125rem] rounded-b-lg rounded-tr-lg bg-black/70">
+        <div className="flex items-center p-[1rem] gap-3 justify-center w-full h-[10.125rem] rounded-lg bg-black/70">
           {/* 오버레이 내용: 프로젝트 설명 등 */}
           <div className="text-white mx-4 text-sm line-clamp-4 text-center">
             {team.projectExplain || '설명이 없습니다'}
