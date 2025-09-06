@@ -5,7 +5,7 @@ import Image from 'next/image'
 import BlogPost from './BlogPost'
 import toast from 'react-hot-toast'
 import Dropdown from '../common/Dropdown'
-import EmptyLottie from '../common/EmptyLottie'
+import EmptyAnimation from '../common/EmptyAnimation'
 import ParticipantProgressList from './ParticipantProgressList'
 import { useEffect, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
@@ -296,7 +296,7 @@ export function BlogChallenge() {
         <ParticipantProgressList selectedTermId={selectedTermId} />
 
         {blogs.length === 0 && !isLoading ? (
-          <EmptyLottie
+          <EmptyAnimation
             text="블로그 데이터가 없습니다."
             text2="다시 조회해주세요"
           />

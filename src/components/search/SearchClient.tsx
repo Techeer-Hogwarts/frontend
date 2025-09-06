@@ -6,7 +6,7 @@ import BlogSection from '@/components/search/BlogSection'
 import ResumeSection from '@/components/search/ResumeSection'
 import SessionSection from '@/components/search/SessionSection'
 import SkeletonCardItem from '@/components/search/SkeletonCard'
-import EmptyLottie from '@/components/common/EmptyLottie'
+import EmptyAnimation from '@/components/common/EmptyAnimation'
 import { useSearchResults } from '@/hooks/search/useSearchResults'
 
 export default function Search() {
@@ -60,7 +60,7 @@ export default function Search() {
         </>
       ) : (
         <div className="flex justify-center">
-          <EmptyLottie
+          <EmptyAnimation
             text="검색한 데이터가 없습니다."
             text2="다시 검색해주세요"
           />

@@ -3,8 +3,8 @@ import localFont from 'next/font/local'
 import ConditionalNavBar from '@/components/common/ConditionalNavBar'
 import Footer from '@/components/common/Footer'
 import Providers from '@/utils/provider'
-import GoogleAnalytics from '@/lib/GoogleAnalytics'
 import { Toaster } from 'react-hot-toast'
+import { GoogleTagManager } from '@next/third-parties/google'
 
 const pretendard = localFont({
   src: '../../public/fonts/PretendardVariable.ttf',
@@ -31,9 +31,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={pretendard.variable}>
       <body className={`${pretendard.className} min-h-screen flex flex-col`}>
-        {process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS ? (
-          <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS} />
-        ) : null}
+        {process.env.NEXT_PUBLIC_GOOGLE_TAGMANAGER && (
+          <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GOOGLE_TAGMANAGER} />
+        )}
         <ConditionalNavBar />
         <Providers>
           <main className="flex-1 w-full">{children}</main>

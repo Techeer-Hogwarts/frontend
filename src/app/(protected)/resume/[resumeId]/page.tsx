@@ -1,13 +1,11 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useParams } from 'next/navigation'
 import Image from 'next/image'
 
 import ProfileBox from '@/components/profile/ProfileBox'
 import Other from '@/components/resume/OtherResume'
 import { fetchResumeById } from '@/app/(protected)/resume/api/getResume'
-import EmptyLottie from '@/components/common/EmptyLottie'
 
 import Skeleton from '@/components/resume/Skeleton'
 
@@ -28,8 +26,12 @@ interface ResumeData {
   }
 }
 
-export default function Detail() {
-  const { resumeId } = useParams() as { resumeId: string }
+export default function Detail({
+  params,
+}: {
+  params: Promise<{ resumeId: string }>
+}) {
+  const [resumeId, setResumeId] = useState<string>('')
 
   // 로딩 / 에러 상태
   const [isLoading, setIsLoading] = useState(true)
@@ -42,9 +44,20 @@ export default function Detail() {
   // OtherResume 표시
   const [showOther, setShowOther] = useState(false)
 
+  // params에서 resumeId 추출
+  useEffect(() => {
+    const getParams = async () => {
+      const resolvedParams = await params
+      setResumeId(resolvedParams.resumeId)
+    }
+    getParams()
+  }, [params])
+
   // 2) 이력서 데이터 로드
   useEffect(() => {
     const loadResume = async () => {
+      if (!resumeId) return
+
       try {
         setIsLoading(true)
         setError(null)

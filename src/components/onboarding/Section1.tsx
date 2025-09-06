@@ -1,14 +1,7 @@
-import Image from 'next/image'
-import dynamic from 'next/dynamic'
-import BootcampBtn from './BootcampBtn'
+'use client'
 
-const LottiePlayer = dynamic(
-  () => import('@/components/onboarding/LottiePlayer'),
-  {
-    ssr: false,
-    loading: () => <div style={{ height: '7rem' }} />,
-  },
-)
+import Image from 'next/image'
+import BootcampBtn from './BootcampBtn'
 
 export default function Section1() {
   return (
@@ -34,7 +27,6 @@ export default function Section1() {
         </p>
 
         <BootcampBtn />
-        <LottiePlayer />
       </div>
     </div>
   )

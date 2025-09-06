@@ -70,7 +70,7 @@ export interface EditProjectFormData {
 }
 
 export interface EditProjectPageProps {
-  params: {
+  params: Promise<{
     id: string
-  }
+  }>
 }

@@ -12,7 +12,7 @@ import ResumeFolder from './ResumeFolder'
 import { useGetResumeQuery } from '@/app/(protected)/resume/query/useGetResumeQuery'
 import SkeletonResumeFolder from '../resume/SkeletonResume'
 import { useBookmark } from '@/app/blog/_lib/useBookmark'
-import EmptyLottie from '../common/EmptyLottie'
+import EmptyAnimation from '../common/EmptyAnimation'
 
 const tapBarOptions = ['세션영상', '블로그', '이력서']
 
@@ -139,7 +139,7 @@ export default function Likes() {
         </div>
       ) : likes.length === 0 ? (
         <div className="flex flex-col items-center justify-center mt-20">
-          <EmptyLottie text="좋아요한 콘텐츠가 없습니다." text2="" />
+          <EmptyAnimation text="좋아요한 콘텐츠가 없습니다." text2="" />
         </div>
       ) : (
         <div
