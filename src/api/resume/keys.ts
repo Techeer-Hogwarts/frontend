@@ -1,7 +1,14 @@
 // resume 관련 queryKey 생성 함수
-export const resumeKeys = {
-  // 모든 resume 관련 키의 기본값
-  all: ['resume'] as const,
+import type { ResumeQueryParams } from './types'
 
+export const resumeKeys = {
+  // 모든 이력서 관련 키의 기본값
+  all: ['resumes'] as const,
+
+  // 이력서 목록 키
   lists: () => [...resumeKeys.all, 'list'] as const,
+  list: (params: ResumeQueryParams) => [...resumeKeys.lists(), params] as const,
+  // 페이지별 쿼리 키
+  page: (params: ResumeQueryParams, pageNumber: number) =>
+    [...resumeKeys.list(params), 'page', pageNumber] as const,
 }
