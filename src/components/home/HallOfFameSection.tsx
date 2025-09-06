@@ -156,16 +156,3 @@ export default function HallOfFameSection() {
     </div>
   )
 }
-
-const getDefaultMember = (): HallOfFameMember => {
-  return {
-    id: 1,
-    name: '코난',
-    email: 'brian@naver.com',
-    school: '한국공학대',
-    status: '졸업',
-    generation: '9기',
-    mainPosition: 'Frontend',
-    profileImage: '/profile.png',
-  }
-}
