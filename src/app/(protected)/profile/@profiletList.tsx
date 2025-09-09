@@ -2,7 +2,7 @@
 
 import ProfileCard from '@/components/profile/ProfileCard'
 import { useGetProfileQuery } from './query/useGetProfileQuery'
-import EmptyLottie from '@/components/common/EmptyLottie'
+import EmptyAnimation from '@/components/common/EmptyAnimation'
 import { ProfileQueryParams } from '@/types/queryParams'
 import { useEffect, useState } from 'react'
 import { useInView } from 'react-intersection-observer'
@@ -27,7 +27,7 @@ export default function ProfileList({
   year = [],
   university = [],
   grade = [],
-  sortBy= '기수순',
+  sortBy = '기수순',
 }: ProfileQueryParams = {}) {
   const [profiles, setProfiles] = useState<Profile[]>([])
   const [cursorId, setCursorId] = useState<number | undefined>(undefined)
@@ -88,7 +88,7 @@ export default function ProfileList({
   if (isError || (data && profiles.length === 0)) {
     return (
       <div className="flex justify-center">
-        <EmptyLottie
+        <EmptyAnimation
           text="프로필 데이터가 없습니다."
           text2="다시 조회해주세요"
         />

@@ -5,8 +5,6 @@ import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Select from '../signup/Select'
 import InputField from '../common/InputField'
-import Lottie from 'lottie-react'
-import loading from '../../../public/loading.json'
 import { useResumeUploadMutation } from '@/api/resume/mutations'
 
 interface AddResumeProps {
@@ -214,10 +212,7 @@ export default function AddResume({ setModal, fetchData }: AddResumeProps) {
             disabled={isLoading}
           >
             {isLoading ? (
-              <Lottie
-                animationData={loading}
-                style={{ width: 40, height: 40 }}
-              />
+              <div className="w-10 h-10 border-2 border-primary border-t-transparent rounded-full animate-spin" />
             ) : (
               '등록'
             )}

@@ -4,7 +4,7 @@ import CareerTag from '../common/CareerTag'
 import PositionTag from '../common/PositionTag'
 import Link from 'next/link'
 import Image from 'next/image'
-import EmptyLottie from '../common/EmptyLottie'
+import EmptyAnimation from '../common/EmptyAnimation'
 import { useLike } from '@/app/blog/_lib/useLike'
 import { useBookmark } from '@/app/blog/_lib/useBookmark'
 import {
@@ -108,7 +108,10 @@ export default function ResumeFolder({
 
   if (!resume) {
     return (
-      <EmptyLottie text="이력서 데이터가 없습니다." text2="다시 조회해주세요" />
+      <EmptyAnimation
+        text="이력서 데이터가 없습니다."
+        text2="다시 조회해주세요"
+      />
     ) // 로딩 중일 때나 resume이 없을 때 기본 UI
   }
 

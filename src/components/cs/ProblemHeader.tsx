@@ -26,7 +26,10 @@ export default function ProblemHeader({
       <h1 className="text-[2rem] font-bold">
         {isCurrentWeekCS ? '금주의 CS' : '이전 CS'}
       </h1>
-      <p className="text-lg text-gray">{getProblemDate()}</p>
+      {/* 날짜가 있을 때만 표시 */}
+      {getProblemDate() && (
+        <p className="text-lg text-gray">{getProblemDate()}</p>
+      )}
     </div>
   )
 }

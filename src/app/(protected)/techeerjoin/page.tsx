@@ -5,8 +5,7 @@ import ExperienceSection from '@/components/signup/ExperienceSection'
 import CareerToggle from '@/components/signup/CareerToggle'
 import InputField from '@/components/common/InputField'
 import Link from 'next/link'
-import Lottie from 'lottie-react'
-import loading from '../../../../public/loading.json'
+
 import { useTecheerJoin } from '@/hooks/auth/useTecheerJoin'
 import {
   UNIVERSITIES,
@@ -332,10 +331,7 @@ const TecheerUpgrade = () => {
             className="w-[30.25rem] h-10 text-xl border border-primary text-primary rounded-full hover:bg-primary hover:text-white flex items-center justify-center"
           >
             {isLoading ? (
-              <Lottie
-                animationData={loading}
-                style={{ width: 40, height: 40 }}
-              />
+              <div className="w-10 h-10 border-2 border-primary border-t-transparent rounded-full animate-spin" />
             ) : (
               '테커 전환'
             )}

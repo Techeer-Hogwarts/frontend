@@ -7,7 +7,6 @@ import Image from 'next/image'
 import ProfileBox from '@/components/profile/ProfileBox'
 import Other from '@/components/resume/OtherResume'
 import { useResumeDetailQuery } from '@/api/resume/queries'
-import EmptyLottie from '@/components/common/EmptyLottie'
 import Skeleton from '@/components/resume/Skeleton'
 
 export default function Detail() {

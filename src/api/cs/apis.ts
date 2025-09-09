@@ -51,6 +51,9 @@ export const getCsProblemDetail = async (
   const response = await fetch(`${CS_API_BASE}/problems/${problemId}`)
 
   if (!response.ok) {
+    if (response.status === 404) {
+      throw new Error('존재하지 않는 문제입니다.')
+    }
     throw new Error('CS 문제 상세 정보를 불러오는데 실패했습니다.')
   }
 
@@ -71,6 +74,10 @@ export const submitCsAnswer = async (
   })
 
   if (!response.ok) {
+    if (response.status === 400) {
+      const errorData = await response.json()
+      throw new Error(errorData.errors.content)
+    }
     throw new Error('CS 답변 제출에 실패했습니다.')
   }
 }
@@ -110,6 +117,10 @@ export const submitCsComment = async (
   })
 
   if (!response.ok) {
+    if (response.status === 400) {
+      const errorData = await response.json()
+      throw new Error(errorData.errors.content)
+    }
     throw new Error('CS 댓글 작성에 실패했습니다.')
   }
 
