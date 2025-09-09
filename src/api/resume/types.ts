@@ -46,3 +46,19 @@ export interface UserResumeResponse {
   hasNext: boolean
   nextCursor?: number
 }
+
+// 좋아요/북마크 요청 타입
+export interface LikeBookmarkRequest {
+  contentId: number
+  category: 'SESSION' | 'BLOG' | 'RESUME' | 'PROJECT' | 'STUDY'
+  likeStatus?: boolean
+  bookmarkStatus?: boolean
+}
+
+// 이력서 업로드 요청 타입
+export interface ResumeUploadRequest {
+  category: string
+  position: string
+  title: string
+  isMain: boolean
+}

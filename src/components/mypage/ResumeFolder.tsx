@@ -7,6 +7,10 @@ import Image from 'next/image'
 import EmptyLottie from '../common/EmptyLottie'
 import { useLike } from '@/app/blog/_lib/useLike'
 import { useBookmark } from '@/app/blog/_lib/useBookmark'
+import {
+  useResumeLikeMutation,
+  useResumeBookmarkMutation,
+} from '@/api/resume/mutations'
 
 interface ResumeProps {
   likeCount: number
@@ -36,6 +40,9 @@ export default function ResumeFolder({
   const [likeCount, setLikeCount] = useState(initialLikeCount)
   const [bookmarkCount, setBookmarkCount] = useState(initialLikeCount)
 
+  const likeMutation = useResumeLikeMutation()
+  const bookmarkMutation = useResumeBookmarkMutation()
+
   useEffect(() => {
     if (Array.isArray(likeList)) {
       setIsLike(likeList.some((bookmark: any) => bookmark.id === resume.id))
@@ -52,15 +59,18 @@ export default function ResumeFolder({
     try {
       const newIsLike = !isLike
       const newLikeCount = newIsLike ? likeCount + 1 : likeCount - 1
+
       // 낙관적 업데이트
       setIsLike(newIsLike)
       setLikeCount(newLikeCount)
 
-      await postLike(Number(resume.id), 'RESUME', newIsLike)
+      await likeMutation.mutateAsync({
+        contentId: Number(resume.id),
+        category: 'RESUME',
+        likeStatus: newIsLike,
+      })
 
-      if (resume.onLikeUpdate) {
-        onLikeUpdate(resume.id, newLikeCount)
-      }
+      onLikeUpdate(resume.id, newLikeCount)
     } catch (err) {
       setIsLike(!isLike)
       setLikeCount(isLike ? likeCount : likeCount - 1)
@@ -75,18 +85,21 @@ export default function ResumeFolder({
       const newBookmarkCount = newIsBookmark
         ? bookmarkCount + 1
         : bookmarkCount - 1
+
       // 낙관적 업데이트
       setIsBookmark(newIsBookmark)
       setBookmarkCount(newBookmarkCount)
 
-      await postBookmark(Number(resume.id), 'RESUME', newIsBookmark)
+      await bookmarkMutation.mutateAsync({
+        contentId: Number(resume.id),
+        category: 'RESUME',
+        bookmarkStatus: newIsBookmark,
+      })
 
-      if (resume.onBookmarkUpdate) {
-        onBookmarkUpdate(resume.id, newBookmarkCount)
-      }
+      onBookmarkUpdate(resume.id, newBookmarkCount)
     } catch (err) {
       setIsBookmark(!isBookmark)
-      setBookmarkCount(isBookmark ? likeCount : likeCount - 1)
+      setBookmarkCount(isBookmark ? bookmarkCount : bookmarkCount - 1)
       console.error(err)
     }
   }

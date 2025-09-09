@@ -7,6 +7,10 @@ import Image from 'next/image'
 import EmptyLottie from '../common/EmptyLottie'
 import { useLike } from '@/app/blog/_lib/useLike'
 import { useBookmark } from '@/app/blog/_lib/useBookmark'
+import {
+  useResumeLikeMutation,
+  useResumeBookmarkMutation,
+} from '@/api/resume/mutations'
 
 interface ResumeProps {
   likeCount: number
@@ -27,6 +31,9 @@ export default function ResumeFolder({
   // resume이 undefined일 경우 기본값을 설정합니다.
   const { postLike } = useLike()
   const { postBookmark } = useBookmark()
+
+  const likeMutation = useResumeLikeMutation()
+  const bookmarkMutation = useResumeBookmarkMutation()
 
   const [resumes, setResumes] = useState<Resume[]>([])
 
@@ -52,16 +59,20 @@ export default function ResumeFolder({
     try {
       const newIsLike = !isLike
       const newLikeCount = newIsLike ? likeCount + 1 : likeCount - 1
+
       // 낙관적 업데이트
       setIsLike(newIsLike)
       setLikeCount(newLikeCount)
 
-      await postLike(Number(resume.id), 'RESUME', newIsLike)
+      await likeMutation.mutateAsync({
+        contentId: Number(resume.id),
+        category: 'RESUME',
+        likeStatus: newIsLike,
+      })
 
-      if (resume.onLikeUpdate) {
-        onLikeUpdate(resume.id, newLikeCount)
-      }
+      onLikeUpdate(resume.id, newLikeCount)
     } catch (err) {
+      // 에러 시 롤백
       setIsLike(!isLike)
       setLikeCount(isLike ? likeCount : likeCount - 1)
       console.error(err)
@@ -75,16 +86,22 @@ export default function ResumeFolder({
       const newBookmarkCount = newIsBookmark
         ? bookmarkCount + 1
         : bookmarkCount - 1
+
       // 낙관적 업데이트
       setIsBookmark(newIsBookmark)
       setBookmarkCount(newBookmarkCount)
-      await postBookmark(Number(resume.id), 'RESUME', newIsBookmark)
-      if (resume.onBookmarkUpdate) {
-        resume.onBookmarkUpdate(resume.id, newBookmarkCount)
-      }
+
+      await bookmarkMutation.mutateAsync({
+        contentId: Number(resume.id),
+        category: 'RESUME',
+        bookmarkStatus: newIsBookmark,
+      })
+
+      onBookmarkUpdate(resume.id, newBookmarkCount)
     } catch (err) {
+      // 에러 시 롤백
       setIsBookmark(!isBookmark)
-      setBookmarkCount(isBookmark ? likeCount : likeCount - 1)
+      setBookmarkCount(isBookmark ? bookmarkCount : bookmarkCount - 1)
       console.error(err)
     }
   }

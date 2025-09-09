@@ -1,33 +1,44 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { resumeKeys } from './keys'
+import { postLike, postBookmark, uploadResume } from './apis'
+import { LikeBookmarkRequest, ResumeUploadRequest } from './types'
 
-// Resume mutations를 여기에 추가할 수 있습니다
-// 예: 이력서 업로드, 수정, 삭제 등
+// 좋아요 mutation
+export const useResumeLikeMutation = () => {
+  const queryClient = useQueryClient()
 
-// 예시 - 이력서 좋아요 mutation (필요시 추가)
-// export const useResumeLikeMutation = () => {
-//   const queryClient = useQueryClient()
-//
-//   return useMutation({
-//     mutationFn: ({ resumeId, isLike }: { resumeId: string, isLike: boolean }) =>
-//       // API 호출 함수 (실제 구현 필요)
-//       Promise.resolve(),
-//     onSuccess: () => {
-//       queryClient.invalidateQueries({ queryKey: resumeKeys.all })
-//     },
-//   })
-// }
+  return useMutation({
+    mutationFn: (data: LikeBookmarkRequest) => postLike(data),
+    onSuccess: () => {
+      // 좋아요 성공 시 관련 쿼리 무효화
+      queryClient.invalidateQueries({ queryKey: resumeKeys.all })
+    },
+  })
+}
 
-// 예시 - 이력서 북마크 mutation (필요시 추가)
-// export const useResumeBookmarkMutation = () => {
-//   const queryClient = useQueryClient()
-//
-//   return useMutation({
-//     mutationFn: ({ resumeId, isBookmark }: { resumeId: string, isBookmark: boolean }) =>
-//       // API 호출 함수 (실제 구현 필요)
-//       Promise.resolve(),
-//     onSuccess: () => {
-//       queryClient.invalidateQueries({ queryKey: resumeKeys.all })
-//     },
-//   })
-// }
+// 북마크 mutation
+export const useResumeBookmarkMutation = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (data: LikeBookmarkRequest) => postBookmark(data),
+    onSuccess: () => {
+      // 북마크 성공 시 관련 쿼리 무효화
+      queryClient.invalidateQueries({ queryKey: resumeKeys.all })
+    },
+  })
+}
+
+// 이력서 업로드 mutation
+export const useResumeUploadMutation = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ file, data }: { file: File; data: ResumeUploadRequest }) =>
+      uploadResume(file, data),
+    onSuccess: () => {
+      // 이력서 업로드 성공 시 관련 쿼리 무효화
+      queryClient.invalidateQueries({ queryKey: resumeKeys.all })
+    },
+  })
+}

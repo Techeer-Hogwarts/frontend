@@ -53,7 +53,6 @@ export async function getResumeList({
     }
 
     const result = await response.json()
-    console.log('getResumeList.ts:', result)
     return result
   } catch (error) {
     throw error // 에러를 호출한 함수에 다시 전달

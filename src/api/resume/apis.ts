@@ -1,4 +1,11 @@
-import { ResumeQueryParams, ResumeDetail, BestResumeResponse, UserResumeResponse } from './types'
+import {
+  ResumeQueryParams,
+  ResumeDetail,
+  BestResumeResponse,
+  UserResumeResponse,
+  LikeBookmarkRequest,
+  ResumeUploadRequest,
+} from './types'
 
 const RESUME_API_BASE = '/api/resumes'
 
@@ -63,7 +70,9 @@ export async function getResumeList({
 }
 
 // 이력서 상세 조회
-export const fetchResumeById = async (resumeId: number): Promise<ResumeDetail> => {
+export const fetchResumeById = async (
+  resumeId: number,
+): Promise<ResumeDetail> => {
   try {
     const response = await fetch(`${RESUME_API_BASE}/${resumeId}`, {
       method: 'GET',
@@ -99,12 +108,15 @@ export const fetchBestResumes = async (
       params.append('cursorId', String(cursorId))
     }
 
-    const response = await fetch(`${RESUME_API_BASE}/best?${params.toString()}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
+    const response = await fetch(
+      `${RESUME_API_BASE}/best?${params.toString()}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
       },
-    })
+    )
 
     // 401 Unauthorized 응답 처리
     if (response.status === 401) {
@@ -159,4 +171,78 @@ export const fetchUserResumes = async (
   } catch (error: any) {
     throw error
   }
+}
+
+// 좋아요 처리
+export const postLike = async (data: LikeBookmarkRequest): Promise<void> => {
+  const response = await fetch('/api/likes', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      contentId: data.contentId,
+      category: data.category,
+      likeStatus: data.likeStatus,
+    }),
+    credentials: 'include',
+  })
+
+  if (!response.ok) {
+    throw new Error('좋아요 처리 중 오류가 발생했습니다.')
+  }
+}
+
+// 북마크 처리
+export const postBookmark = async (
+  data: LikeBookmarkRequest,
+): Promise<void> => {
+  const response = await fetch('/api/bookmarks', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      contentId: data.contentId,
+      category: data.category,
+      bookmarkStatus: data.bookmarkStatus,
+    }),
+    credentials: 'include',
+  })
+
+  if (!response.ok) {
+    throw new Error('북마크 처리 중 오류가 발생했습니다.')
+  }
+}
+
+// 이력서 업로드
+export const uploadResume = async (
+  file: File,
+  data: ResumeUploadRequest,
+): Promise<any> => {
+  const formData = new FormData()
+  formData.append('file', file)
+  formData.append('request', JSON.stringify(data))
+
+  const response = await fetch(RESUME_API_BASE, {
+    method: 'POST',
+    body: formData,
+    credentials: 'include',
+  })
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => null)
+
+    if (response.status === 400) {
+      throw new Error('존재하지 않는 카테고리입니다.')
+    }
+
+    if (response.status === 401) {
+      throw new Error(errorData?.message || '로그인이 필요합니다.')
+    }
+
+    throw new Error(`이력서 업로드 실패: ${response.status}`)
+  }
+
+  return response.json()
 }
