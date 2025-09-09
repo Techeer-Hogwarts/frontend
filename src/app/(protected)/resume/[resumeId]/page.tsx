@@ -1,66 +1,28 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useParams } from 'next/navigation'
 import Image from 'next/image'
 
 import ProfileBox from '@/components/profile/ProfileBox'
 import Other from '@/components/resume/OtherResume'
-import { fetchResumeById } from '@/app/(protected)/resume/api/getResume'
+import { useResumeDetailQuery } from '@/api/resume/queries'
 import EmptyLottie from '@/components/common/EmptyLottie'
-
 import Skeleton from '@/components/resume/Skeleton'
-
-interface ResumeData {
-  id: number
-  createdAt: number
-  title: string
-  url: string
-  category: string
-  position: string
-  likeCount: number
-  user: {
-    id: number
-    name: string
-    profileImage: string
-    year: number
-    mainPosition: string
-  }
-}
 
 export default function Detail() {
   const { resumeId } = useParams() as { resumeId: string }
 
-  // 로딩 / 에러 상태
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-
-  // 이력서 데이터
-  const [resume, setResume] = useState<ResumeData | null>(null)
-  const [profileData, setProfileData] = useState<any>(null)
-
   // OtherResume 표시
   const [showOther, setShowOther] = useState(false)
 
-  // 2) 이력서 데이터 로드
-  useEffect(() => {
-    const loadResume = async () => {
-      try {
-        setIsLoading(true)
-        setError(null)
-
-        const data = await fetchResumeById(Number(resumeId))
-        setResume(data)
-        setProfileData(data.user)
-      } catch (err: any) {
-        console.error('이력서 가져오기 실패:', err)
-        setError(err.message || '이력서 불러오기 실패')
-      } finally {
-        setIsLoading(false)
-      }
-    }
-    loadResume()
-  }, [resumeId])
+  // 이력서 상세 데이터 조회
+  const {
+    data: resume,
+    isLoading,
+    isError,
+    error,
+  } = useResumeDetailQuery(Number(resumeId))
 
   // Other 컴포넌트 표시 토글
   const handleToggleOther = () => {
@@ -69,7 +31,7 @@ export default function Detail() {
 
   // (A) 오른쪽 영역 렌더 함수
   const renderRightSide = () => {
-    if (error || !resume) {
+    if (isError || !resume) {
       // 에러 상태 or resume가 null
       return (
         <div className="w-[55.625rem] text-center text-gray">
@@ -140,7 +102,25 @@ export default function Detail() {
         <div className="flex justify-between mt-10 gap-[4.375rem]">
           {/* 왼쪽 영역 (항상 표시) */}
           <div className="flex flex-col w-[15rem] gap-6">
-            <ProfileBox profile={profileData} loading={false} error={''} />
+            <ProfileBox
+              profile={
+                resume?.user
+                  ? {
+                      ...resume.user,
+                      email: '',
+                      school: '',
+                      grade: '',
+                      subPosition: '',
+                      githubUrl: '',
+                      mediumUrl: '',
+                      velogUrl: '',
+                      tistoryUrl: '',
+                    }
+                  : undefined
+              }
+              loading={isLoading}
+              error={isError ? 'Error' : ''}
+            />
             <div className="flex flex-col">
               <button
                 className="flex justify-between items-center w-[14.25rem] h-[2.5rem] px-4 shadow-md border-2 border-primary rounded-xl font-medium text-[1rem]"
@@ -149,8 +129,8 @@ export default function Detail() {
                 이력서 리스트
                 <Image src="/arrow.png" width={15} height={10} alt="arrow" />
               </button>
-              {showOther && profileData && (
-                <Other id={profileData.id} offset={0} limit={10} />
+              {showOther && resume?.user && (
+                <Other id={resume.user.id} offset={0} limit={10} />
               )}
             </div>
           </div>

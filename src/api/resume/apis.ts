@@ -1,4 +1,4 @@
-import { ResumeQueryParams } from './types'
+import { ResumeQueryParams, ResumeDetail, BestResumeResponse, UserResumeResponse } from './types'
 
 const RESUME_API_BASE = '/api/resumes'
 
@@ -56,9 +56,107 @@ export async function getResumeList({
     }
 
     const result = await response.json()
-    console.log('api/resume/apis.ts의 getResumeList:', result)
     return result
   } catch (error) {
     throw error // 에러를 호출한 함수에 다시 전달
+  }
+}
+
+// 이력서 상세 조회
+export const fetchResumeById = async (resumeId: number): Promise<ResumeDetail> => {
+  try {
+    const response = await fetch(`${RESUME_API_BASE}/${resumeId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+
+    if (!response.ok) {
+      throw new Error(
+        `Failed to fetch resume with id ${resumeId}. Status: ${response.status}`,
+      )
+    }
+
+    const result = await response.json()
+    return result
+  } catch (error: any) {
+    throw error
+  }
+}
+
+// 인기 이력서 조회
+export const fetchBestResumes = async (
+  cursorId?: number,
+  limit: number = 12,
+  setAuthModalOpen?: (open: boolean) => void,
+): Promise<BestResumeResponse> => {
+  try {
+    const params = new URLSearchParams()
+    params.append('limit', String(limit))
+
+    if (typeof cursorId === 'number') {
+      params.append('cursorId', String(cursorId))
+    }
+
+    const response = await fetch(`${RESUME_API_BASE}/best?${params.toString()}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+
+    // 401 Unauthorized 응답 처리
+    if (response.status === 401) {
+      setAuthModalOpen?.(true)
+      throw new Error('로그인이 필요합니다.')
+    }
+
+    if (!response.ok) {
+      throw new Error(`인기 이력서 조회 실패: ${response.status}`)
+    }
+
+    const result = await response.json()
+    return result
+  } catch (error: any) {
+    throw error
+  }
+}
+
+// 사용자 이력서 목록 조회
+export const fetchUserResumes = async (
+  userId: number,
+  cursor?: number,
+  limit: number = 10,
+): Promise<UserResumeResponse> => {
+  try {
+    // 쿼리 파라미터 구성
+    const params = new URLSearchParams()
+    if (cursor !== undefined) {
+      params.append('cursor', cursor.toString())
+    }
+    params.append('limit', limit.toString())
+
+    const queryString = params.toString()
+    const url = `${RESUME_API_BASE}/user/${userId}${queryString ? `?${queryString}` : ''}`
+
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+    })
+
+    if (!response.ok) {
+      throw new Error(
+        `Failed to fetch resumes for user. Status: ${response.status}`,
+      )
+    }
+
+    const result = await response.json()
+    return result // 새로운 API 응답 구조 그대로 반환
+  } catch (error: any) {
+    throw error
   }
 }

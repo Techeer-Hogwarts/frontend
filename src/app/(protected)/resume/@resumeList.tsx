@@ -80,7 +80,7 @@ export default function ResumeList({
       console.error(err)
       return []
     }
-  }, []) // 의존성 배열에서 fetchLikes 제거
+  }, [])
 
   const checkBookmark = useCallback(async () => {
     try {
@@ -91,7 +91,7 @@ export default function ResumeList({
       console.error(err)
       return []
     }
-  }, []) // 의존성 배열에서 fetchBookmarks 제거
+  }, [])
 
   const handleLikeUpdate = (resumeId: string, newLikeCount: number) => {
     setTimeout(() => {

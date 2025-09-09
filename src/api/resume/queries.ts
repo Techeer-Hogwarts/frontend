@@ -1,5 +1,10 @@
-import { useInfiniteQuery } from '@tanstack/react-query'
-import { getResumeList } from './apis'
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
+import {
+  getResumeList,
+  fetchResumeById,
+  fetchBestResumes,
+  fetchUserResumes,
+} from './apis'
 import { ResumeQueryParams } from './types'
 import { resumeKeys } from './keys'
 
@@ -34,5 +39,47 @@ export const useResumeListQuery = ({
       lastPage.hasNext ? lastPage.nextCursor : undefined,
     staleTime: 5 * 60 * 1000, // 5분
     gcTime: 10 * 60 * 1000, // 10분
+  })
+}
+
+// 이력서 상세 조회
+export const useResumeDetailQuery = (resumeId: number) => {
+  return useQuery({
+    queryKey: resumeKeys.detail(resumeId),
+    queryFn: () => fetchResumeById(resumeId),
+    staleTime: 10 * 60 * 1000, // 10분
+    gcTime: 30 * 60 * 1000, // 30분
+    enabled: !!resumeId, // resumeId가 있을 때만 실행
+  })
+}
+
+// 인기 이력서 목록 조회 (무한 스크롤)
+export const useBestResumeListQuery = (
+  setAuthModalOpen: (open: boolean) => void,
+  limit: number = 12,
+) => {
+  return useInfiniteQuery({
+    queryKey: resumeKeys.bestList(),
+    queryFn: ({ pageParam }) =>
+      fetchBestResumes(pageParam, limit, setAuthModalOpen),
+    initialPageParam: undefined as number | undefined,
+    getNextPageParam: (lastPage) =>
+      lastPage.hasNext ? lastPage.nextCursor : undefined,
+    staleTime: 5 * 60 * 1000, // 5분
+    gcTime: 10 * 60 * 1000, // 10분
+  })
+}
+
+// 사용자 이력서 목록 조회 (무한 스크롤)
+export const useUserResumeListQuery = (userId: number, limit: number = 10) => {
+  return useInfiniteQuery({
+    queryKey: resumeKeys.userList(userId),
+    queryFn: ({ pageParam }) => fetchUserResumes(userId, pageParam, limit),
+    initialPageParam: undefined as number | undefined,
+    getNextPageParam: (lastPage) =>
+      lastPage.hasNext ? lastPage.nextCursor : undefined,
+    staleTime: 5 * 60 * 1000, // 5분
+    gcTime: 10 * 60 * 1000, // 10분
+    enabled: !!userId, // userId가 있을 때만 실행
   })
 }
