@@ -114,6 +114,7 @@ export default function Detail() {
                       mediumUrl: '',
                       velogUrl: '',
                       tistoryUrl: '',
+                      isLft: false,
                     }
                   : undefined
               }
