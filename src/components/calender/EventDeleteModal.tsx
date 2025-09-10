@@ -1,6 +1,6 @@
 'use client'
 
-import useDeleteEvent from '@/api/calendar/deleteEvent'
+import { useDeleteEvent } from '@/api/calendar/mutations'
 
 interface EventDeleteModalProps {
   eventId: number
