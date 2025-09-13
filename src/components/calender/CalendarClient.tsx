@@ -27,12 +27,6 @@ export default function CalendarClient({
     }
   }, [user])
 
-  useEffect(() => {
-    if (user && user.id) {
-      setCurrentUserId(user.id)
-    }
-  }, [user])
-
   const handleOpenModal = async () => {
     if (!currentUserId) {
       try {

@@ -10,7 +10,6 @@ export const useDeleteEvent = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['events'] })
     },
-    onError: (error: Error) => {},
   })
 }
 
