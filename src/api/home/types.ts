@@ -104,31 +104,18 @@ export interface RankingUser {
 
 export interface RankingsResponse {
   blogRanking: {
-    year: number
-    month: number
-    users: {
-      user: RankingUser
-      count: number
-    }[]
+    user: RankingUser
+    count: number
   }
   gitContributionRanking: {
-    year: number
-    month: number
-    users: {
-      user: RankingUser
-      count: number
-    }[]
+    user: RankingUser
+    count: number
   }
   zoomRanking: {
-    userId: number
-    userName: string
-    email: string
-    profileImage: string
+    user: RankingUser
     totalMinutes: number
     totalHours: number
     attendanceDays: number
-    year: number
-    month: number
   }
 }
 

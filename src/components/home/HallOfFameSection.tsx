@@ -109,12 +109,10 @@ export default function HallOfFameSection() {
     )
   }
 
-  // API 응답 구조에 맞게 수정
-  const blogTopUser = rankings.blogRanking?.users?.[0]?.user
-  const gitTopUser = rankings.gitContributionRanking?.users?.[0]?.user
-
-  // zoomRanking은 다른 구조 (직접 user 객체가 아님)
-  const zoomTopUser = rankings.zoomRanking || null
+  // API 응답 구조에 맞게 수정 - 모든 랭킹이 user 객체를 포함
+  const blogTopUser = rankings.blogRanking?.user
+  const gitTopUser = rankings.gitContributionRanking?.user
+  const zoomTopUser = rankings.zoomRanking?.user
 
   return (
     <div className="w-full mt-4">
@@ -123,16 +121,7 @@ export default function HallOfFameSection() {
           title="이달의 터줌대감"
           member={
             zoomTopUser
-              ? convertToHallOfFameMember({
-                  id: zoomTopUser.userId,
-                  name: zoomTopUser.userName,
-                  email: zoomTopUser.email,
-                  profileImage: zoomTopUser.profileImage,
-                  mainPosition: 'ZOOM',
-                  school: '정보 없음',
-                  grade: '정보 없음',
-                  year: zoomTopUser.year,
-                })
+              ? convertToHallOfFameMember(zoomTopUser)
               : getDefaultMember()
           }
         />
