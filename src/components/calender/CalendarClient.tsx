@@ -7,7 +7,7 @@ import AddCalenderModal from '@/components/calender/AddCalendarModal'
 import Calendar from '@/components/calender/Calendar'
 import FilterBtn from '@/components/calender/FilterBtn'
 import BookmarkModal from '@/components/common/BookmarkModal'
-import getCurrentUser from '@/api/calendar/getCurrentUser'
+import { useGetCurrentUser } from '@/api/calendar/queries'
 
 export default function CalendarClient({
   CATEGORIES,
@@ -19,20 +19,17 @@ export default function CalendarClient({
   const [modalOpen, setModalOpen] = useState(false)
   const [currentUserId, setCurrentUserId] = useState<number | null>(null)
 
+  const { data: user } = useGetCurrentUser()
+
   useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const user = await getCurrentUser()
-        setCurrentUserId(user.id)
-      } catch {}
+    if (user && user.id) {
+      setCurrentUserId(user.id)
     }
-    fetchUser()
-  }, [])
+  }, [user])
 
   const handleOpenModal = async () => {
     if (!currentUserId) {
       try {
-        const user = await getCurrentUser()
         setCurrentUserId(user.id)
       } catch {
         setAuthModalOpen(true)

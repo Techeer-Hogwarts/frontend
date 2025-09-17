@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import dayjs from 'dayjs'
 import { MdOutlineCalendarMonth } from 'react-icons/md'
 import CalendarEventCard, { CalendarEventCardProps } from './CalendarEventCard'
-import useGetEvents from '@/api/calendar/getEventList'
+import { useGetEvents } from '@/api/calendar/queries'
 import EventsDetailModal from './EventsDetailModal'
 import BookmarkModal from '../common/BookmarkModal'
 
@@ -96,8 +96,9 @@ export default function Calendar({
       daysArray.push(
         <div key={i} className="w-[138px] min-h-[183px] border-t-2">
           <div
-            className={`w-full h-full text-2xl font-bold p-3 cursor-pointer hover:bg-lightgray/50 flex flex-col items-start ${isToday ? 'border-primary bg-lightgray/30' : ''
-              }`}
+            className={`w-full h-full text-2xl font-bold p-3 cursor-pointer hover:bg-lightgray/50 flex flex-col items-start ${
+              isToday ? 'border-primary bg-lightgray/30' : ''
+            }`}
             onClick={() => handleDayClick(currentDay)}
           >
             {i}

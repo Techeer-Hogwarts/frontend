@@ -7,9 +7,8 @@ import { MdOutlineCalendarMonth } from 'react-icons/md'
 import { IoIosLink } from 'react-icons/io'
 import CategoryBtn from './CategoryBtn'
 import { useEffect, useState } from 'react'
-import usePostEvent from '@/api/calendar/postEvent'
-import usePatchEvent from '@/api/calendar/patchEvent'
-import useGetEvent from '@/api/calendar/getEvent'
+import { usePostEvent, usePatchEvent } from '@/api/calendar/mutations'
+import { useGetEvent } from '@/api/calendar/queries'
 import { AddCalendarModalProps } from '@/types/calendar'
 
 export default function AddCalenderModal({
