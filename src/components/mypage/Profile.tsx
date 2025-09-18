@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import Image from 'next/image'
 import Select from '../signup/Select'
 import ProfileInputField from './ProfileInputField'
@@ -11,6 +11,7 @@ import { useRouter } from 'next/navigation'
 import { deleteExperience } from '@/api/mypage/deleteExperience'
 import { getProfileImg } from '@/api/mypage/getProfileImg'
 import { updateProfile } from '@/api/mypage/updateProfile'
+import { updateGithub } from '@/api/mypage/updateGithub'
 import { Experience, ProfileData } from '@/types/mypage/mypage.types'
 
 interface ProfileProps {
@@ -65,6 +66,9 @@ export default function Profile({ profile }: ProfileProps) {
   const [syncIsError, setSyncIsError] = useState(false)
   const [updateMessage, setUpdateMessage] = useState('')
 
+  const [githubSyncMessage, setGithubSyncMessage] = useState('')
+  const [githubSyncIsError, setGithubSyncIsError] = useState(false)
+
   const bottomRef = useRef<HTMLDivElement>(null)
 
   // 프로필 사진 동기화
@@ -77,7 +81,7 @@ export default function Profile({ profile }: ProfileProps) {
       setSyncMessage('이메일 정보가 없습니다.')
       return
     }
-    
+
     try {
       const data = await getProfileImg({ email })
       setProfileImage(data.profileImage)
@@ -86,6 +90,62 @@ export default function Profile({ profile }: ProfileProps) {
     } catch (err: any) {
       setSyncIsError(true)
       setSyncMessage('네트워크 오류가 발생했습니다.')
+    }
+  }
+
+  // GitHub URL에서 사용자명 추출
+  const extractGithubUsername = (url: string) => {
+    const match = url.match(/github\.com\/([^\/]+)/)
+    return match ? match[1] : ''
+  }
+
+  // GitHub 동기화
+  const handleGithubSync = async () => {
+    setGithubSyncMessage('')
+    setGithubSyncIsError(false)
+
+    if (!githubUrl.trim()) {
+      setGithubSyncIsError(true)
+      setGithubSyncMessage('GitHub 아이디를 입력해주세요.')
+      return
+    }
+
+    try {
+      // 1. 프로필 데이터 업데이트 (서버에 저장)
+      const finalSchool = school === '해당 없음' ? customSchool.trim() : school
+      const payload = {
+        updateRequest: {
+          year,
+          isLft: recommendation === '예',
+          school: finalSchool,
+          grade: classYear,
+          mainPosition,
+          subPosition,
+          githubUrl, // 현재 GitHub URL 저장
+          ...(mediumUrl.trim() ? { mediumUrl } : {}),
+          ...(velogUrl.trim() ? { velogUrl } : {}),
+          ...(tistoryUrl.trim() ? { tistoryUrl } : {}),
+        },
+        experienceRequest: {
+          experiences: [],
+        },
+      }
+
+      await updateProfile(payload)
+
+      // 2. GitHub 데이터 동기화
+      await updateGithub(githubUrl)
+
+      setGithubSyncIsError(false)
+      setGithubSyncMessage('GitHub 데이터 동기화가 완료되었습니다.')
+
+      // 3. 새로고침하여 최신 데이터 로드
+      window.location.reload()
+    } catch (err: any) {
+      setGithubSyncIsError(true)
+      setGithubSyncMessage(
+        err.message || 'GitHub 동기화 중 오류가 발생했습니다.',
+      )
     }
   }
 
@@ -145,7 +205,9 @@ export default function Profile({ profile }: ProfileProps) {
     }
 
     const finalInternships = internshipExperiences
-      .filter((exp) => exp.id !== undefined && !deletedInternshipIds.includes(exp.id))
+      .filter(
+        (exp) => exp.id !== undefined && !deletedInternshipIds.includes(exp.id),
+      )
       .map((exp) => {
         // 양수 ID만 기존 경력, 그 외는 신규 경력
         if (exp.id && exp.id > 0) {
@@ -165,7 +227,9 @@ export default function Profile({ profile }: ProfileProps) {
       })
 
     const finalFullTimes = fullTimeExperiences
-      .filter((exp) => exp.id !== undefined && !deletedFullTimeIds.includes(exp.id))
+      .filter(
+        (exp) => exp.id !== undefined && !deletedFullTimeIds.includes(exp.id),
+      )
       .map((exp) => {
         if (exp.id && exp.id > 0) {
           const { id, ...rest } = exp
@@ -203,7 +267,20 @@ export default function Profile({ profile }: ProfileProps) {
     }
 
     try {
+      // 1. 프로필 업데이트
       await updateProfile(payload)
+
+      // 2. GitHub 동기화 (GitHub URL이 있는 경우)
+      if (githubUrl.trim()) {
+        try {
+          await updateGithub(githubUrl)
+          setGithubSyncMessage('GitHub 데이터 동기화가 완료되었습니다.')
+        } catch (githubError: any) {
+          console.warn('GitHub 동기화 실패:', githubError)
+          // GitHub 동기화 실패해도 프로필 저장은 성공으로 처리
+        }
+      }
+
       setUpdateMessage('프로필 업데이트가 완료되었습니다.')
       window.location.reload()
     } catch (error: any) {
@@ -388,13 +465,46 @@ export default function Profile({ profile }: ProfileProps) {
         </div>
       </div>
 
-      {/* 링크 입력 */}
-      <ProfileInputField
-        title="깃허브"
-        placeholder="깃허브 주소"
-        value={githubUrl}
-        onChange={(e) => setGithubUrl(e.target.value)}
-      />
+      {/* 깃허브 */}
+      <div className="flex items-center">
+        <h3 className="text-lg w-[130px]">깃허브</h3>
+        <div className="flex gap-3 items-center">
+          <input
+            className="w-40 h-10 px-4 border border-gray rounded-[0.25rem] focus:outline-none focus:border-primary"
+            placeholder="GitHub 아이디"
+            value={extractGithubUsername(githubUrl)}
+            onChange={(e) => {
+              const username = e.target.value
+              const fullUrl = username ? `https://github.com/${username}` : ''
+              setGithubUrl(fullUrl)
+            }}
+          />
+          <div className="flex gap-2 text-sm items-center">
+            <button
+              onClick={handleGithubSync}
+              className="flex items-center justify-center text-primary w-[90px] h-10 border rounded-md border-primary"
+            >
+              <AiOutlineSync />
+              동기화
+            </button>
+            <div className="flex flex-col">
+              <div className="flex gap-1 text-sm items-center text-gray">
+                <RxQuestionMarkCircled />
+                깃허브 아이디 변경 시 동기화 됩니다.
+              </div>
+              {githubSyncMessage && (
+                <p
+                  className={`text-sm ${
+                    githubSyncIsError ? 'text-red-500' : 'text-green'
+                  }`}
+                >
+                  {githubSyncMessage}
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
       <ProfileInputField
         title="미디엄"
         placeholder="Medium 주소"
