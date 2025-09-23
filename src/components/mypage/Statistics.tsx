@@ -74,32 +74,53 @@ export default function Statistics({ userId, year }: StatisticsProps) {
       .map(String)
   }, [data])
 
-  // 월 options 추출 (커밋 데이터에서만 월 추출)
-  const monthOptions = useMemo(() => {
-    if (selectedYear.length === 0) return []
-
-    const selectedYearNum = Number(selectedYear[0])
-    const months = new Set<number>()
-
-    // 커밋 데이터에서 월 추출
-    data?.weeklyGitHubContributions?.forEach((c: any) => {
-      if (c.year === selectedYearNum) months.add(c.month)
-    })
-
-    return Array.from(months)
-      .sort((a, b) => b - a)
-      .map(String)
-  }, [data, selectedYear])
-
   const selectedYearNum = useMemo(
     () =>
       selectedYear[0] && yearOptions.includes(selectedYear[0])
         ? Number(selectedYear[0])
         : yearOptions.length > 0
           ? Number(yearOptions[0])
-          : undefined,
+          : new Date().getFullYear(),
     [selectedYear, yearOptions],
   )
+
+  // 월 options 추출 (커밋 데이터에서만 월 추출)
+  const monthOptions = useMemo(() => {
+    console.log('월 옵션 계산 중:', {
+      selectedYear,
+      selectedYearNum,
+      hasData: !!data?.weeklyGitHubContributions,
+      dataLength: data?.weeklyGitHubContributions?.length,
+    })
+
+    // selectedYear가 비어있으면 빈 배열 반환
+    if (selectedYear.length === 0) {
+      console.log('selectedYear가 비어있음, 빈 배열 반환')
+      return []
+    }
+
+    const months = new Set<number>()
+
+    // 커밋 데이터에서 월 추출
+    data?.weeklyGitHubContributions?.forEach((c: any) => {
+      console.log('커밋 데이터 확인:', {
+        year: c.year,
+        month: c.month,
+        selectedYearNum,
+        matches: c.year === selectedYearNum,
+      })
+      if (c.year === selectedYearNum) {
+        months.add(c.month)
+      }
+    })
+
+    const result = Array.from(months)
+      .sort((a, b) => b - a)
+      .map(String)
+
+    console.log('최종 월 옵션:', result)
+    return result
+  }, [data, selectedYear, selectedYearNum])
 
   useEffect(() => {
     if (yearOptions.length === 0) {
@@ -110,7 +131,7 @@ export default function Statistics({ userId, year }: StatisticsProps) {
     if (selectedYear.length === 0 || !yearOptions.includes(selectedYear[0])) {
       setSelectedYear([String(yearOptions[0])])
     }
-  }, [yearOptions])
+  }, [yearOptions, selectedYear])
 
   // 월 옵션이 변경될 때 selectedMonth 초기화
   useEffect(() => {
@@ -125,7 +146,7 @@ export default function Statistics({ userId, year }: StatisticsProps) {
     ) {
       setSelectedMonth([String(monthOptions[0])])
     }
-  }, [monthOptions])
+  }, [monthOptions, selectedMonth])
 
   // 블로그와 줌은 연도 필터링만, 커밋은 연도+월 필터링
   const filteredBlog =
@@ -144,8 +165,21 @@ export default function Statistics({ userId, year }: StatisticsProps) {
         selectedYear.length === 0 || selectedYear.includes(String(c.year))
       const monthMatch =
         selectedMonth.length === 0 || selectedMonth.includes(String(c.month))
+
+      console.log('커밋 필터링:', {
+        year: c.year,
+        month: c.month,
+        selectedYear,
+        selectedMonth,
+        yearMatch,
+        monthMatch,
+        finalMatch: yearMatch && monthMatch,
+      })
+
       return yearMatch && monthMatch
     }) || []
+
+  console.log('필터링된 커밋 데이터:', filteredCommits)
 
   // 주별 커밋 개수 차트 데이터 생성 (필터링된 데이터 사용)
   let commitChartData = {
@@ -164,8 +198,15 @@ export default function Statistics({ userId, year }: StatisticsProps) {
   }
 
   if (filteredCommits.length > 0) {
+    console.log('차트 데이터 생성 시작:', filteredCommits)
     const weeklyMap: { [week: number]: number } = {}
     filteredCommits.forEach((item: any) => {
+      console.log('주별 데이터 처리:', {
+        week: item.week,
+        contributionCount: item.contributionCount,
+        month: item.month,
+        year: item.year,
+      })
       // contributionCount를 주별로 합산
       if (weeklyMap[item.week]) {
         weeklyMap[item.week] += item.contributionCount
@@ -173,12 +214,44 @@ export default function Statistics({ userId, year }: StatisticsProps) {
         weeklyMap[item.week] = item.contributionCount
       }
     })
+    console.log('주별 맵:', weeklyMap)
+
+    // 실제 주차 데이터를 월간 주차로 변환
+    const weeks = Object.keys(weeklyMap)
+      .map(Number)
+      .sort((a, b) => a - b)
+    const minWeek = Math.min(...weeks)
+
+    // 월간 주차로 변환 (1-5주차)
+    const weeklyData = [0, 0, 0, 0, 0]
+    const weekLabels = ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5']
+
+    weeks.forEach((week) => {
+      const monthWeek = week - minWeek + 1 // 상대적 주차 (1부터 시작)
+      if (monthWeek >= 1 && monthWeek <= 5) {
+        weeklyData[monthWeek - 1] = weeklyMap[week]
+      }
+    })
+
+    // Week 4까지는 항상 표시, Week 5는 데이터가 있을 때만 표시
+    const maxWeekWithData = Math.max(...weeks) - minWeek + 1
+    const hasWeek5Data = maxWeekWithData >= 5 && weeklyData[4] > 0
+
+    const finalWeekLabels = hasWeek5Data ? weekLabels : weekLabels.slice(0, 4)
+    const finalWeekData = hasWeek5Data ? weeklyData : weeklyData.slice(0, 4)
+
+    console.log('최종 주차 데이터:', {
+      maxWeekWithData,
+      finalWeekLabels,
+      finalWeekData,
+    })
+
     commitChartData = {
-      labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5'],
+      labels: finalWeekLabels,
       datasets: [
         {
           label: '주별 커밋 개수',
-          data: Array.from({ length: 5 }, (_, i) => weeklyMap[i + 1] || 0),
+          data: finalWeekData,
           borderColor: '#71D7BA',
           backgroundColor: '#00C2FF33',
           pointRadius: 6,
