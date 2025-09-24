@@ -254,7 +254,7 @@ export default function Profile({ profile }: ProfileProps) {
         grade: classYear,
         mainPosition,
         subPosition,
-        // 수정 모드가 아닐 때만 현재 GitHub URL 사용, 수정 모드일 때는 임시 저장된 URL 사용
+        // 수정 모드일 때는 원래 URL 사용, 수정 모드가 아닐 때는 현재 URL 사용
         githubUrl: isGithubEditMode ? tempGithubUrl : githubUrl,
         ...(mediumUrl.trim() ? { mediumUrl } : {}),
         ...(velogUrl.trim() ? { velogUrl } : {}),
@@ -269,16 +269,7 @@ export default function Profile({ profile }: ProfileProps) {
       // 1. 프로필 업데이트
       await updateProfile(payload)
 
-      // 2. GitHub 동기화 (GitHub URL이 있는 경우)
-      if (githubUrl.trim()) {
-        try {
-          await updateGithub(githubUrl)
-          setGithubSyncMessage('GitHub 데이터 동기화가 완료되었습니다.')
-        } catch (githubError: any) {
-          console.warn('GitHub 동기화 실패:', githubError)
-          // GitHub 동기화 실패해도 프로필 저장은 성공으로 처리
-        }
-      }
+      // GitHub 동기화는 별도 버튼으로만 실행
 
       setUpdateMessage('프로필 업데이트가 완료되었습니다.')
       window.location.reload()
