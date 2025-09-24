@@ -68,6 +68,8 @@ export default function Profile({ profile }: ProfileProps) {
 
   const [githubSyncMessage, setGithubSyncMessage] = useState('')
   const [githubSyncIsError, setGithubSyncIsError] = useState(false)
+  const [isGithubEditMode, setIsGithubEditMode] = useState(false)
+  const [tempGithubUrl, setTempGithubUrl] = useState('')
 
   const bottomRef = useRef<HTMLDivElement>(null)
 
@@ -99,6 +101,20 @@ export default function Profile({ profile }: ProfileProps) {
     return match ? match[1] : ''
   }
 
+  // GitHub 수정 모드 토글
+  const toggleGithubEditMode = () => {
+    if (!isGithubEditMode) {
+      // 수정 모드 진입: 현재 GitHub URL을 임시 저장
+      setTempGithubUrl(githubUrl)
+    } else {
+      // 수정 모드 취소: 임시 저장된 URL로 되돌리기
+      setGithubUrl(tempGithubUrl)
+    }
+    setIsGithubEditMode(!isGithubEditMode)
+    setGithubSyncMessage('')
+    setGithubSyncIsError(false)
+  }
+
   // GitHub 동기화
   const handleGithubSync = async () => {
     setGithubSyncMessage('')
@@ -111,33 +127,15 @@ export default function Profile({ profile }: ProfileProps) {
     }
 
     try {
-      // 1. 프로필 데이터 업데이트 (서버에 저장)
-      const finalSchool = school === '해당 없음' ? customSchool.trim() : school
-      const payload = {
-        updateRequest: {
-          year,
-          isLft: recommendation === '예',
-          school: finalSchool,
-          grade: classYear,
-          mainPosition,
-          subPosition,
-          githubUrl, // 현재 GitHub URL 저장
-          ...(mediumUrl.trim() ? { mediumUrl } : {}),
-          ...(velogUrl.trim() ? { velogUrl } : {}),
-          ...(tistoryUrl.trim() ? { tistoryUrl } : {}),
-        },
-        experienceRequest: {
-          experiences: [],
-        },
-      }
-
-      await updateProfile(payload)
-
-      // 2. GitHub 데이터 동기화
+      // 1. GitHub URL 업데이트 (별도 API 사용)
       await updateGithub(githubUrl)
 
       setGithubSyncIsError(false)
       setGithubSyncMessage('GitHub 데이터 동기화가 완료되었습니다.')
+
+      // 2. 수정 모드 종료 및 임시 URL 정리
+      setIsGithubEditMode(false)
+      setTempGithubUrl('')
 
       // 3. 새로고침하여 최신 데이터 로드
       window.location.reload()
@@ -256,7 +254,8 @@ export default function Profile({ profile }: ProfileProps) {
         grade: classYear,
         mainPosition,
         subPosition,
-        githubUrl,
+        // 수정 모드가 아닐 때만 현재 GitHub URL 사용, 수정 모드일 때는 임시 저장된 URL 사용
+        githubUrl: isGithubEditMode ? tempGithubUrl : githubUrl,
         ...(mediumUrl.trim() ? { mediumUrl } : {}),
         ...(velogUrl.trim() ? { velogUrl } : {}),
         ...(tistoryUrl.trim() ? { tistoryUrl } : {}),
@@ -478,19 +477,34 @@ export default function Profile({ profile }: ProfileProps) {
               const fullUrl = username ? `https://github.com/${username}` : ''
               setGithubUrl(fullUrl)
             }}
+            readOnly={!isGithubEditMode}
+            style={{
+              color: !isGithubEditMode ? '#6b7280' : '#000000',
+            }}
           />
           <div className="flex gap-2 text-sm items-center">
-            <button
-              onClick={handleGithubSync}
-              className="flex items-center justify-center text-primary w-[90px] h-10 border rounded-md border-primary"
-            >
-              <AiOutlineSync />
-              동기화
-            </button>
+            {!isGithubEditMode ? (
+              <button
+                onClick={toggleGithubEditMode}
+                className="flex items-center justify-center text-primary w-[90px] h-10 border rounded-md border-primary"
+              >
+                수정
+              </button>
+            ) : (
+              <button
+                onClick={handleGithubSync}
+                className="flex items-center justify-center text-primary w-[90px] h-10 border rounded-md border-primary"
+              >
+                <AiOutlineSync />
+                동기화
+              </button>
+            )}
             <div className="flex flex-col">
               <div className="flex gap-1 text-sm items-center text-gray">
                 <RxQuestionMarkCircled />
-                깃허브 아이디 변경 시 동기화 됩니다.
+                {isGithubEditMode
+                  ? '깃허브 아이디 변경 시 동기화 됩니다.'
+                  : '수정 버튼을 눌러 GitHub 아이디를 변경하세요.'}
               </div>
               {githubSyncMessage && (
                 <p
