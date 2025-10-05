@@ -11,6 +11,7 @@ export type Filters = {
   selectedSortBy: string[]
   selectedRecruitment: string[]
   selectedProgress: string[]
+  selectedCategory: string
 }
 
 const DEFAULTS: Filters = {
@@ -21,6 +22,7 @@ const DEFAULTS: Filters = {
   selectedSortBy: ['기수순'],
   selectedRecruitment: [],
   selectedProgress: [],
+  selectedCategory: '전체',
 }
 
 const MAP = {
@@ -31,6 +33,7 @@ const MAP = {
   selectedSortBy: 'sortBy',
   selectedRecruitment: 'recruitment',
   selectedProgress: 'progress',
+  selectedCategory: 'category',
 } as const satisfies Record<keyof Filters, string>
 
 function parseFromParams(params: URLSearchParams): Filters {
@@ -44,6 +47,7 @@ function parseFromParams(params: URLSearchParams): Filters {
     selectedSortBy: toArr(MAP.selectedSortBy),
     selectedRecruitment: toArr(MAP.selectedRecruitment),
     selectedProgress: toArr(MAP.selectedProgress),
+    selectedCategory: params.get(MAP.selectedCategory) || DEFAULTS.selectedCategory,
   }
 
   if (parsed.selectedSortBy.length === 0) {
@@ -91,6 +95,10 @@ function mergeParams(base: URLSearchParams, filters: Filters): URLSearchParams {
     const pick = filters.selectedSortBy[0]
     if (pick !== DEFAULTS.selectedSortBy[0])
       next.append(MAP.selectedSortBy, pick)
+  }
+  
+  if (filters.selectedCategory && filters.selectedCategory !== DEFAULTS.selectedCategory) {
+    next.set(MAP.selectedCategory, filters.selectedCategory)
   }
 
   return next

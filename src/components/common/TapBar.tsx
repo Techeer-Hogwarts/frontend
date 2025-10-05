@@ -6,22 +6,39 @@ import { useTapBarStore } from '@/store/tapBarStore'
 
 interface TapBarProps {
   readonly options: string[]
+  onOptionChange?: (option: string) => void
+  initialOption?: string
 }
 
-export default function TapBar({ options }: TapBarProps) {
+export default function TapBar({ options, onOptionChange, initialOption }: TapBarProps) {
   const { activeOption, setActiveOption } = useTapBarStore()
+  
+  // URL 쿼리와 동기화된 옵션 사용
+  const currentOption = initialOption || activeOption || options[0]
+  
   useEffect(() => {
-    setActiveOption(options[0])
-  }, [])
+    if (initialOption) {
+      setActiveOption(initialOption)
+    } else if (!activeOption) {
+      setActiveOption(options[0])
+    }
+  }, [initialOption, activeOption, options, setActiveOption])
+
+  const handleOptionClick = (option: string) => {
+    setActiveOption(option)
+    if (onOptionChange) {
+      onOptionChange(option)
+    }
+  }
 
   return (
     <div className="flex items-center">
       {options.map((option) => (
         <div key={option} className="flex items-center">
           <TapBtn
-            isActive={activeOption === option}
+            isActive={currentOption === option}
             onClick={() => {
-              setActiveOption(option)
+              handleOptionClick(option)
             }}
           >
             {option}

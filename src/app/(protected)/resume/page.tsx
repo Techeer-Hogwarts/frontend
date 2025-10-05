@@ -24,8 +24,7 @@ export default function Resume() {
 
   // 드롭다운 선택된 옵션 상태 관리 (URL 동기화)
   const { filters, set, remove } = useUrlQueryFilters()
-  const { selectedPosition, selectedYear } = filters
-  const [selectedCategory, setSelectedCategory] = useState('전체')
+  const { selectedPosition, selectedYear, selectedCategory } = filters
   const [selectedSortBy, setSelectedSortBy] = useState<string>('CREATEDAT')
 
   // 드롭다운 항목 리스트
@@ -52,6 +51,9 @@ export default function Resume() {
     }
   }
   const { activeOption } = useTapBarStore()
+  
+  // activeOption과 URL 쿼리 동기화
+  const currentCategory = selectedCategory || activeOption || '전체'
 
   // 마이페이지로 이동
   const openMyPage = () => {
@@ -81,7 +83,11 @@ export default function Resume() {
       <div className="flex flex-col">
         <div className="flex justify-between">
           {/** 기수 탭 */}
-          <TapBar options={category} />
+          <TapBar 
+            options={category} 
+            onOptionChange={(option) => set('selectedCategory', option)}
+            initialOption={currentCategory}
+          />
           {/** 검색창 */}
           <SearchBar
             placeholder="이름 또는 키워드로 검색해보세요"
@@ -185,7 +191,7 @@ export default function Resume() {
           <ResumeList
             position={selectedPosition}
             year={selectedYear}
-            category={activeOption}
+            category={currentCategory}
             sortBy={selectedSortBy}
           />
         )}
