@@ -6,7 +6,9 @@ import { useEffect, useState } from 'react'
 import { useAuthStore } from '@/store/authStore'
 import { getSingleSession } from '@/api/session/session'
 
-export default function ShowVideo({ onClose }: { onClose?: () => void }) {
+export default function ShowVideo({
+  onClose,
+}: Readonly<{ onClose?: () => void }>) {
   const params = useParams()
   const sessionId = params.id as string
   const [sessionUrl, setSessionUrl] = useState('')

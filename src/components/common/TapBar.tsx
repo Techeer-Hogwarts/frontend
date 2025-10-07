@@ -1,7 +1,7 @@
 'use client'
 
 import TapBtn from './TapBtn'
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 import { useTapBarStore } from '@/store/tapBarStore'
 
 interface TapBarProps {
@@ -14,12 +14,12 @@ export default function TapBar({
   options,
   onOptionChange,
   initialOption,
-}: TapBarProps) {
+}: Readonly<TapBarProps>) {
   const { activeOption, setActiveOption } = useTapBarStore()
-  
+
   // URL 쿼리와 동기화된 옵션 사용
   const currentOption = initialOption || activeOption || options[0]
-  
+
   useEffect(() => {
     // initialOption이 있으면 store와 동기화
     if (initialOption && initialOption !== activeOption) {
