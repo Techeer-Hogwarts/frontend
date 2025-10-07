@@ -32,14 +32,15 @@ export default function Calendar({
     category: selectedCategories.length > 0 ? selectedCategories : undefined,
   })
 
-  const expandEvents = (events: CalendarEventCardProps[]) => {
+  const expandEvents = (eventsData: CalendarEventCardProps[]) => {
     const expanded: CalendarEventCardProps[] = []
 
-    if (!Array.isArray(events)) {
+    // eventsData가 배열인지 확인
+    if (!Array.isArray(eventsData)) {
       return expanded
     }
 
-    events.forEach((event) => {
+    eventsData.forEach((event) => {
       const start = dayjs(event.startDate)
       const end = dayjs(event.endDate)
       let current = start
@@ -58,7 +59,9 @@ export default function Calendar({
     return expanded
   }
 
-  const expandedEvents = Array.isArray(events) ? expandEvents(events) : []
+  // events가 배열인지 확인하고 안전하게 처리
+  const expandedEvents =
+    events && Array.isArray(events) ? expandEvents(events) : []
 
   const handleDayClick = (date: string) => {
     setSelectedDate(date)
