@@ -1,8 +1,7 @@
 import { withSentryConfig } from '@sentry/nextjs'
 /** @type {import('next').NextConfig} */
 
-const API_BASE_URL =
-  process.env.API_BASE_URL || 'https://api.yje.kr/api'
+const API_BASE_URL = process.env.API_BASE_URL || 'https://api.yje.kr/api'
 
 const nextConfig = {
   images: {
@@ -31,27 +30,16 @@ const nextConfig = {
         port: '',
         pathname: '/**',
       },
+      // GitHub 이미지 리소스(엄격히 제한)
       {
         protocol: 'https',
-        hostname: 'encore.cloud',
+        hostname: 'raw.githubusercontent.com',
         port: '',
         pathname: '/**',
       },
       {
         protocol: 'https',
-        hostname: 'github.com',
-        port: '',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'cdn.discordapp.com',
-        port: '',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'bootcamp.com',
+        hostname: 'user-images.githubusercontent.com',
         port: '',
         pathname: '/**',
       },

@@ -36,9 +36,20 @@ export default function TeamsPage() {
   const selectedPosition = filters.selectedPosition ?? []
   const [selectedSort, setSelectedSort] = useState<string[]>(['최신순']) // 기본값 필수
   const [searchResults, setSearchResults] = useState<any>(null)
-  
-  // URL 쿼리와 동기화된 탭 옵션
-  const currentTabOption = filters.selectedCategory || activeOption || '전체보기'
+
+  // URL 쿼리와 동기화된 탭 옵션 (옵션 집합과 불일치 시 기본값으로 강제)
+  const normalizedCategory = TAB_OPTIONS.includes(
+    filters.selectedCategory as (typeof TAB_OPTIONS)[number],
+  )
+    ? filters.selectedCategory
+    : undefined
+  const normalizedActiveOption = TAB_OPTIONS.includes(
+    activeOption as (typeof TAB_OPTIONS)[number],
+  )
+    ? activeOption
+    : undefined
+  const currentTabOption =
+    normalizedCategory || normalizedActiveOption || TAB_OPTIONS[0]
 
   // 정렬 옵션을 API 형태로 변환하는 함수
   const getSortType = (sortOption: string) => {
@@ -137,19 +148,14 @@ export default function TeamsPage() {
           className="flex items-center gap-2 w-[13rem] h-[3rem] rounded-xl shadow-md text-[1.1rem] font-medium justify-center hover:shadow-custom"
         >
           <span>내 프로젝트 확인하기</span>
-          <img
-            src="/star.svg"
-            alt="star"
-            width={20}
-            height={20}
-          />
+          <img src="/star.svg" alt="star" width={20} height={20} />
         </Link>
       </div>
 
       {/* 탭 & 검색 */}
       <div className="flex justify-between">
-        <TapBar 
-          options={TAB_OPTIONS} 
+        <TapBar
+          options={TAB_OPTIONS}
           onOptionChange={(option) => set('selectedCategory', option)}
           initialOption={currentTabOption}
         />
