@@ -2,11 +2,14 @@ import Image from 'next/image'
 import Link from 'next/link'
 import type { ProjectTeam } from '@/types/project/project'
 
-export default function ProjectCard({ team }: { team: ProjectTeam }) {
-  // 안전한 이미지 URL 처리
-  const mainImageUrl = team.mainImages && team.mainImages.length > 0 
-    ? team.mainImages[0] 
-    : '/images/session/thumbnail.png'
+export default function ProjectCard({
+  team,
+  hideLabel = false,
+}: {
+  team: ProjectTeam
+  hideLabel?: boolean
+}) {
+  const mainImageUrl = team.mainImages[0]
   // 인원표시 제한을 위해 count 변수 사용
   let count = 0
 
