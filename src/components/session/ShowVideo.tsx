@@ -58,7 +58,7 @@ export default function ShowVideo({ onClose }: { onClose?: () => void }) {
             allow="autoplay; fullscreen"
             allowFullScreen
             width="960"
-            height="560"
+            height="540"
             title="Session Video"
             className="rounded-lg"
           />
