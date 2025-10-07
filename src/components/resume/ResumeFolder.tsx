@@ -140,14 +140,14 @@ export default function ResumeFolder({
               {isBookmark ? (
                 <Image
                   src="/images/bookmark-on.svg"
-                  alt="like-on"
+                  alt="bookmark-on"
                   width={18}
                   height={18}
                 />
               ) : (
                 <Image
                   src="/images/bookmark-off.svg"
-                  alt="like-off"
+                  alt="bookmark-off"
                   width={18}
                   height={18}
                 />

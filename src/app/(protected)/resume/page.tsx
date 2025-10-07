@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import Star from '../../../../public/star.svg'
+import Image from 'next/image'
 import Dropdown from '@/components/common/Dropdown'
 import TapBar from '@/components/common/TapBar'
 import BestResume from '@/components/resume/BestResume'
@@ -77,7 +77,12 @@ export default function Resume() {
           <span className="text-[1.1rem] font-medium cursor-pointer">
             내 이력서 수정하기
           </span>
-          <Star />
+          <Image
+            src="/star.svg"
+            alt="star"
+            width={20}
+            height={20}
+          />
         </div>
       </div>
       <div className="flex flex-col">
