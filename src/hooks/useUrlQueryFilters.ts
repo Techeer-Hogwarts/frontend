@@ -12,6 +12,8 @@ export type Filters = {
   selectedRecruitment: string[]
   selectedProgress: string[]
   selectedCategory: string
+  selectedPartners: string[]
+  selectedBootcamp: string[]
 }
 
 const DEFAULTS: Filters = {
@@ -23,6 +25,8 @@ const DEFAULTS: Filters = {
   selectedRecruitment: [],
   selectedProgress: [],
   selectedCategory: '전체',
+  selectedPartners: [],
+  selectedBootcamp: [],
 }
 
 const MAP = {
@@ -34,6 +38,8 @@ const MAP = {
   selectedRecruitment: 'recruitment',
   selectedProgress: 'progress',
   selectedCategory: 'category',
+  selectedPartners: 'partners',
+  selectedBootcamp: 'bootcamp',
 } as const satisfies Record<keyof Filters, string>
 
 function parseFromParams(params: URLSearchParams): Filters {
@@ -48,6 +54,8 @@ function parseFromParams(params: URLSearchParams): Filters {
     selectedRecruitment: toArr(MAP.selectedRecruitment),
     selectedProgress: toArr(MAP.selectedProgress),
     selectedCategory: params.get(MAP.selectedCategory) || DEFAULTS.selectedCategory,
+    selectedPartners: toArr(MAP.selectedPartners),
+    selectedBootcamp: toArr(MAP.selectedBootcamp),
   }
 
   if (parsed.selectedSortBy.length === 0) {
@@ -99,6 +107,13 @@ function mergeParams(base: URLSearchParams, filters: Filters): URLSearchParams {
   
   if (filters.selectedCategory && filters.selectedCategory !== DEFAULTS.selectedCategory) {
     next.set(MAP.selectedCategory, filters.selectedCategory)
+  }
+  
+  if (filters.selectedPartners && filters.selectedPartners.length > 0) {
+    addAll(MAP.selectedPartners, filters.selectedPartners)
+  }
+  if (filters.selectedBootcamp && filters.selectedBootcamp.length > 0) {
+    addAll(MAP.selectedBootcamp, filters.selectedBootcamp)
   }
 
   return next

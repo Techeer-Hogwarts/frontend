@@ -10,24 +10,24 @@ interface TapBarProps {
   initialOption?: string
 }
 
-export default function TapBar({ options, onOptionChange, initialOption }: TapBarProps) {
+export default function TapBar({
+  options,
+  onOptionChange,
+  initialOption,
+}: TapBarProps) {
   const { activeOption, setActiveOption } = useTapBarStore()
-  const hasInitialized = useRef(false)
   
   // URL 쿼리와 동기화된 옵션 사용
   const currentOption = initialOption || activeOption || options[0]
   
   useEffect(() => {
-    // 초기화는 한 번만 실행
-    if (!hasInitialized.current) {
-      if (initialOption && initialOption !== activeOption) {
-        setActiveOption(initialOption)
-      } else if (!activeOption && options.length > 0) {
-        setActiveOption(options[0])
-      }
-      hasInitialized.current = true
+    // initialOption이 있으면 store와 동기화
+    if (initialOption && initialOption !== activeOption) {
+      setActiveOption(initialOption)
+    } else if (!activeOption && options.length > 0) {
+      setActiveOption(options[0])
     }
-  }, [initialOption, activeOption, options, setActiveOption])
+  }, [initialOption])
 
   const handleOptionClick = (option: string) => {
     setActiveOption(option)
