@@ -1,7 +1,6 @@
 'use client'
 
 import Tooltip from './Tip'
-import Image from 'next/image'
 import BlogPost from './BlogPost'
 import toast from 'react-hot-toast'
 import Dropdown from '../common/Dropdown'
@@ -265,7 +264,7 @@ export function BlogChallenge() {
           )}
         </div>
         <Tooltip>
-          <Image
+          <img
             src="/images/question.svg"
             alt="question"
             width={20}

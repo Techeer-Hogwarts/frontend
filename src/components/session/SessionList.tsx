@@ -11,6 +11,7 @@ import { useTapBarStore } from '@/store/tapBarStore'
 import { useInView } from 'react-intersection-observer'
 import { useAuthModal } from '@/store/useAuthModal'
 import { useSessionsQuery } from '@/hooks/session/useSessionsQuery'
+import { useUrlQueryFilters } from '@/hooks/useUrlQueryFilters'
 
 interface User {
   name: string
@@ -58,13 +59,15 @@ export default function SessionList({
   const { fetchLikes } = useLike()
   const { activeOption } = useTapBarStore()
   const { isOpen: authModalOpen, onOpen: openAuthModal } = useAuthModal()
+  const { filters, set } = useUrlQueryFilters()
 
-  const [selectedFilters, setSelectedFilters] = useState({
-    partners: [] as string[],
-    bootcamp: [] as string[],
-    position: [] as string[],
-  })
-  const [limit, setLimit] = useState(12)
+  // URL 쿼리에서 직접 필터 값 사용
+  const selectedFilters = {
+    partners: filters.selectedPartners || [],
+    bootcamp: filters.selectedBootcamp || [],
+    position: filters.selectedPosition || [],
+  }
+  const [limit] = useState(12)
   const [cursorId, setCursorId] = useState<number | undefined>(undefined)
   const [hasNext, setHasNext] = useState(true)
   const [likeList, setLikeList] = useState([])
@@ -76,7 +79,13 @@ export default function SessionList({
   const sortByOptions = ['최신순', '가나다순']
 
   const updateFilter = (key: keyof typeof selectedFilters, value: string[]) => {
-    setSelectedFilters((prev) => ({ ...prev, [key]: value }))
+    if (key === 'partners') {
+      set('selectedPartners', value)
+    } else if (key === 'bootcamp') {
+      set('selectedBootcamp', value)
+    } else if (key === 'position') {
+      set('selectedPosition', value)
+    }
   }
 
   const {
@@ -150,7 +159,13 @@ export default function SessionList({
     setCursorId(undefined)
     setHasNext(true)
     checkLike()
-  }, [activeOption, selectedFilters, selectedSortBy])
+  }, [
+    activeOption,
+    selectedFilters.partners.join(','),
+    selectedFilters.bootcamp.join(','),
+    selectedFilters.position.join(','),
+    selectedSortBy[0],
+  ])
 
   useEffect(() => {
     // 무한 스크롤 트리거
@@ -258,21 +273,36 @@ export default function SessionList({
               <FilterBtn
                 key={period}
                 title={period}
-                onClick={() => updateFilter('partners', [])}
+                onClick={() =>
+                  updateFilter(
+                    'partners',
+                    selectedFilters.partners.filter((p) => p !== period),
+                  )
+                }
               />
             ))}
             {selectedFilters.bootcamp.map((period) => (
               <FilterBtn
                 key={period}
                 title={period}
-                onClick={() => updateFilter('bootcamp', [])}
+                onClick={() =>
+                  updateFilter(
+                    'bootcamp',
+                    selectedFilters.bootcamp.filter((b) => b !== period),
+                  )
+                }
               />
             ))}
-            {selectedFilters.position.map((period) => (
+            {selectedFilters.position.map((pos) => (
               <FilterBtn
-                key={period}
-                title={period}
-                onClick={() => updateFilter('position', [])}
+                key={pos}
+                title={pos}
+                onClick={() =>
+                  updateFilter(
+                    'position',
+                    selectedFilters.position.filter((p) => p !== pos),
+                  )
+                }
               />
             ))}
           </div>

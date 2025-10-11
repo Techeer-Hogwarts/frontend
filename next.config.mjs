@@ -1,8 +1,7 @@
 import { withSentryConfig } from '@sentry/nextjs'
 /** @type {import('next').NextConfig} */
 
-const API_BASE_URL =
-  process.env.API_BASE_URL || 'https://api.yje.kr/api'
+const API_BASE_URL = process.env.API_BASE_URL || 'https://api.yje.kr/api'
 
 const nextConfig = {
   images: {
@@ -25,25 +24,35 @@ const nextConfig = {
         port: '',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'images.velog.io',
+        port: '',
+        pathname: '/**',
+      },
+      // GitHub 이미지 리소스(엄격히 제한)
+      {
+        protocol: 'https',
+        hostname: 'raw.githubusercontent.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'user-images.githubusercontent.com',
+        port: '',
+        pathname: '/**',
+      },
     ],
-    transpilePackages: ['framer-motion'],
+    // SVG 파일 처리를 위한 설정
+    dangerouslyAllowSVG: true,
+    contentDispositionType: 'attachment',
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
+
+  transpilePackages: ['framer-motion'],
 
   reactStrictMode: true,
-
-  images: {
-    domains: [
-      'example.com',
-      'avatars.slack-edge.com',
-      'techeerzip-bucket.s3.ap-southeast-2.amazonaws.com',
-      'techeer-bucket.s3.ap-northeast-2.amazonaws.com',
-      'images.velog.io',
-      'encore.cloud',
-      'github.com',
-      'cdn.discordapp.com',
-      'bootcamp.com',
-    ], // 허용할 외부 도메인 추가
-  },
 
   async rewrites() {
     return [
@@ -58,12 +67,6 @@ const nextConfig = {
     ]
   },
   webpack: (config) => {
-    // SVG 파일을 처리하는 설정
-    config.module.rules.push({
-      test: /\.svg$/,
-      use: ['@svgr/webpack'],
-    })
-
     // PDF.js worker 파일을 처리하는 설정 추가
     config.module.rules.push({
       test: /pdf\.worker\.mjs$/,

@@ -3,7 +3,7 @@
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import SessionMenu from './SessionMenu'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useLike } from '@/app/blog/_lib/useLike'
 import BookmarkModal from '../common/BookmarkModal'
 
@@ -35,6 +35,7 @@ export default function SessionPost({
   onLikeUpdate,
 }: SessionPostProps) {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const { postLike } = useLike()
   const [isLike, setIsLike] = useState(false)
   const [showModal, setShowModal] = useState(false)
@@ -42,6 +43,15 @@ export default function SessionPost({
   const [modalOpen, setModalOpen] = useState(false)
   const [modalMessage, setModalMessage] = useState('')
   const [isError, setIsError] = useState(false)
+  
+  // 기존 쿼리 보존하며 비디오 열기
+  const openVideo = () => {
+    const currentQuery = searchParams?.toString()
+    const url = currentQuery 
+      ? `/session/video/${id}?${currentQuery}` 
+      : `/session/video/${id}`
+    router.push(url, { scroll: false })
+  }
   const clickLike = async () => {
     try {
       const newIsLike = !isLike
@@ -95,15 +105,11 @@ export default function SessionPost({
               height={199}
               className="w-full h-[155px] z-1 object-cover"
               onError={() => setIsError(true)}
-              onClick={() => {
-                router.push(`/session/video/${id}`)
-              }}
+              onClick={openVideo}
             />
           ) : (
             <button
-              onClick={() => {
-                router.push(`/session/video/${id}`)
-              }}
+              onClick={openVideo}
               className="w-full flex items-center justify-center px-5 h-[155px] truncate text-white bg-gradient-to-b from-[#FF8B20] to-[#FFC14F]"
             >
               {title}

@@ -11,6 +11,9 @@ export type Filters = {
   selectedSortBy: string[]
   selectedRecruitment: string[]
   selectedProgress: string[]
+  selectedCategory: string
+  selectedPartners: string[]
+  selectedBootcamp: string[]
 }
 
 const DEFAULTS: Filters = {
@@ -21,6 +24,9 @@ const DEFAULTS: Filters = {
   selectedSortBy: ['기수순'],
   selectedRecruitment: [],
   selectedProgress: [],
+  selectedCategory: '전체',
+  selectedPartners: [],
+  selectedBootcamp: [],
 }
 
 const MAP = {
@@ -31,6 +37,9 @@ const MAP = {
   selectedSortBy: 'sortBy',
   selectedRecruitment: 'recruitment',
   selectedProgress: 'progress',
+  selectedCategory: 'category',
+  selectedPartners: 'partners',
+  selectedBootcamp: 'bootcamp',
 } as const satisfies Record<keyof Filters, string>
 
 function parseFromParams(params: URLSearchParams): Filters {
@@ -44,6 +53,10 @@ function parseFromParams(params: URLSearchParams): Filters {
     selectedSortBy: toArr(MAP.selectedSortBy),
     selectedRecruitment: toArr(MAP.selectedRecruitment),
     selectedProgress: toArr(MAP.selectedProgress),
+    selectedCategory:
+      params.get(MAP.selectedCategory) || DEFAULTS.selectedCategory,
+    selectedPartners: toArr(MAP.selectedPartners),
+    selectedBootcamp: toArr(MAP.selectedBootcamp),
   }
 
   if (parsed.selectedSortBy.length === 0) {
@@ -56,10 +69,12 @@ function parseFromParams(params: URLSearchParams): Filters {
 function mergeParams(base: URLSearchParams, filters: Filters): URLSearchParams {
   const next = new URLSearchParams(base.toString())
 
+  // 기존 관련 키 제거
   Object.values(MAP).forEach((k) => next.delete(k))
 
-  const addAll = (key: string, values: string[]) => {
-    // 중복 제거 + 결정적 정렬(localeCompare with numeric)
+  // 공통 유틸: 중복 제거 → 결정적 정렬 → append
+  const addAll = (key: string, values: string[] | undefined) => {
+    if (!values || values.length === 0) return
     const uniq = Array.from(new Set(values.filter(Boolean)))
     const canon = uniq
       .slice()
@@ -69,28 +84,28 @@ function mergeParams(base: URLSearchParams, filters: Filters): URLSearchParams {
     canon.forEach((v) => next.append(key, v))
   }
 
-  if (filters.selectedPosition.length > 0) {
-    addAll(MAP.selectedPosition, filters.selectedPosition)
+  // 단순 배열 파라미터들을 일괄 처리
+  const arrayParams: Array<[string, string[] | undefined]> = [
+    [MAP.selectedPosition, filters.selectedPosition],
+    [MAP.selectedYear, filters.selectedYear],
+    [MAP.selectedUniversity, filters.selectedUniversity],
+    [MAP.selectedGrade, filters.selectedGrade],
+    [MAP.selectedRecruitment, filters.selectedRecruitment],
+    [MAP.selectedProgress, filters.selectedProgress],
+    [MAP.selectedPartners, filters.selectedPartners],
+    [MAP.selectedBootcamp, filters.selectedBootcamp],
+  ]
+  arrayParams.forEach(([key, values]) => addAll(key, values))
+
+  // 단일 선택 파라미터들 처리
+  const sortPick = filters.selectedSortBy?.[0]
+  if (sortPick && sortPick !== DEFAULTS.selectedSortBy[0]) {
+    next.append(MAP.selectedSortBy, sortPick)
   }
-  if (filters.selectedYear.length > 0) {
-    addAll(MAP.selectedYear, filters.selectedYear)
-  }
-  if (filters.selectedUniversity.length > 0) {
-    addAll(MAP.selectedUniversity, filters.selectedUniversity)
-  }
-  if (filters.selectedGrade.length > 0) {
-    addAll(MAP.selectedGrade, filters.selectedGrade)
-  }
-  if (filters.selectedRecruitment && filters.selectedRecruitment.length > 0) {
-    addAll(MAP.selectedRecruitment, filters.selectedRecruitment)
-  }
-  if (filters.selectedProgress && filters.selectedProgress.length > 0) {
-    addAll(MAP.selectedProgress, filters.selectedProgress)
-  }
-  if (filters.selectedSortBy.length > 0) {
-    const pick = filters.selectedSortBy[0]
-    if (pick !== DEFAULTS.selectedSortBy[0])
-      next.append(MAP.selectedSortBy, pick)
+
+  const categoryPick = filters.selectedCategory
+  if (categoryPick && categoryPick !== DEFAULTS.selectedCategory) {
+    next.set(MAP.selectedCategory, categoryPick)
   }
 
   return next
