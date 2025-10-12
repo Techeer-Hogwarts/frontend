@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from 'react'
 import { CalendarClientProps } from '@/types/calendar'
-import AddCalendarBtn from '@/components/calender/AddCalendarBtn'
-import AddCalenderModal from '@/components/calender/AddCalendarModal'
-import Calendar from '@/components/calender/Calendar'
-import FilterBtn from '@/components/calender/FilterBtn'
+import AddCalendarBtn from '@/components/calendar/AddCalendarBtn'
+import AddCalenderModal from '@/components/calendar/AddCalendarModal'
+import Calendar from '@/components/calendar/Calendar'
+import FilterBtn from '@/components/calendar/FilterBtn'
 import BookmarkModal from '@/components/common/BookmarkModal'
 import { useGetCurrentUser } from '@/api/calendar/queries'
 
@@ -15,7 +15,6 @@ export default function CalendarClient({
 }: CalendarClientProps) {
   const [showModal, setShowModal] = useState(false)
   const [selectedCategories, setSelectedCategories] = useState(['ALL'])
-  const [authModalOpen, setAuthModalOpen] = useState(false)
   const [modalOpen, setModalOpen] = useState(false)
   const [currentUserId, setCurrentUserId] = useState<number | null>(null)
 
@@ -32,7 +31,6 @@ export default function CalendarClient({
       try {
         setCurrentUserId(user.id)
       } catch {
-        setAuthModalOpen(true)
         return
       }
     }
@@ -99,7 +97,6 @@ export default function CalendarClient({
       </div>
       <Calendar
         selectedCategories={displayCategories}
-        setAuthModalOpen={() => setAuthModalOpen(true)}
         currentUserId={currentUserId}
       />
       {showModal && (

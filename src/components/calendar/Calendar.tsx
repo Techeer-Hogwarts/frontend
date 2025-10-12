@@ -10,13 +10,11 @@ import BookmarkModal from '../common/BookmarkModal'
 
 interface CalendarProps {
   selectedCategories: string[]
-  setAuthModalOpen: () => void
   currentUserId: number | null
 }
 
 export default function Calendar({
   selectedCategories,
-  setAuthModalOpen,
   currentUserId,
 }: CalendarProps) {
   const [currentDate, setCurrentDate] = useState(dayjs())

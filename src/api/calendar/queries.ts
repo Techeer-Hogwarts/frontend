@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { getCurrentUser, getEvent, getEvents } from './apis'
-import { CalendarEventCardProps } from '@/components/calender/CalendarEventCard'
+import { CalendarEventCardProps } from '@/components/calendar/CalendarEventCard'
 
 export const useGetCurrentUser = () => {
   return useQuery({
