@@ -10,6 +10,7 @@ import { useEffect, useState } from 'react'
 import { usePostEvent, usePatchEvent } from '@/api/calendar/mutations'
 import { useGetEvent } from '@/api/calendar/queries'
 import { AddCalendarModalProps } from '@/types/calendar'
+import dayjs from 'dayjs'
 
 export default function AddCalenderModal({
   handleBack,
@@ -70,8 +71,14 @@ export default function AddCalenderModal({
 
     const formattedData = {
       ...formData,
-      startDate: new Date(formData.startDate).toISOString(),
-      endDate: new Date(formData.endDate).toISOString(),
+      startDate: dayjs(formData.startDate)
+        .startOf('day')
+        .add(9, 'hour')
+        .toISOString(),
+      endDate: dayjs(formData.endDate)
+        .startOf('day')
+        .add(9, 'hour')
+        .toISOString(),
     }
 
     if (mode === 'create') {
@@ -79,7 +86,9 @@ export default function AddCalenderModal({
         onSuccess: () => {
           handleBack()
         },
-        onError: (error) => {},
+        onError: (error) => {
+          alert('이벤트 생성에 실패했습니다: ' + error.message)
+        },
       })
     } else if (mode === 'edit' && eventId) {
       editEvent(
@@ -88,7 +97,9 @@ export default function AddCalenderModal({
           onSuccess: () => {
             handleBack()
           },
-          onError: (error) => {},
+          onError: (error) => {
+            alert('이벤트 수정에 실패했습니다: ' + error.message)
+          },
         },
       )
     }
@@ -159,7 +170,7 @@ export default function AddCalenderModal({
                 }}
               >
                 {formData.startDate
-                  ? formData.startDate.toLocaleDateString()
+                  ? dayjs(formData.startDate).format('YYYY-MM-DD')
                   : '시작 날짜 선택'}
                 <MdOutlineCalendarMonth className="ml-auto mr-1 w-6 h-6 text-lightgray" />
               </button>
@@ -186,7 +197,7 @@ export default function AddCalenderModal({
                 }}
               >
                 {formData.endDate
-                  ? formData.endDate.toLocaleDateString()
+                  ? dayjs(formData.endDate).format('YYYY-MM-DD')
                   : '종료 날짜 선택'}
                 <MdOutlineCalendarMonth className="ml-auto mr-1 w-6 h-6 text-lightgray" />
               </button>
