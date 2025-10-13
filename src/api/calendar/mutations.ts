@@ -9,6 +9,8 @@ export const useDeleteEvent = () => {
     mutationFn: (eventId: number) => deleteEvent(eventId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['events'] })
+      queryClient.invalidateQueries({ queryKey: ['home', 'events'] })
+      queryClient.invalidateQueries({ queryKey: ['home'] })
     },
   })
 }
@@ -26,6 +28,8 @@ export const usePatchEvent = () => {
     }) => patchEvent(eventId, eventData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['events'] })
+      queryClient.invalidateQueries({ queryKey: ['home', 'events'] })
+      queryClient.invalidateQueries({ queryKey: ['home'] })
     },
     onError: (error) => {},
   })
@@ -38,6 +42,8 @@ export const usePostEvent = () => {
     mutationFn: postEvent,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['events'] })
+      queryClient.invalidateQueries({ queryKey: ['home', 'events'] })
+      queryClient.invalidateQueries({ queryKey: ['home'] })
     },
     onError: (error) => {},
   })
