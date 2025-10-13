@@ -54,8 +54,13 @@ export interface ProjectStudyTeam {
 
 export interface ProjectStudyTeamsResponse {
   teams: ProjectStudyTeam[]
-  hasNext: boolean
-  nextCursor: number | null
+  nextInfo: {
+    hasNext: boolean
+    id: number
+    dateCursor: string
+    countCursor: number | null
+    sortType: string
+  }
 }
 
 // 블로그 관련 타입
@@ -69,7 +74,7 @@ export interface BlogPost {
 }
 
 export interface BlogListResponse {
-  posts: BlogPost[]
+  data: BlogPost[]
   hasNext: boolean
   nextCursor: number | null
 }
@@ -85,7 +90,7 @@ export interface Resume {
 }
 
 export interface ResumeListResponse {
-  resumes: Resume[]
+  data: Resume[]
   hasNext: boolean
   nextCursor: number | null
 }

@@ -3,10 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { IoSearchOutline } from 'react-icons/io5'
-import {
-  getBasicSearchResults,
-  getFinalSearchResults,
-} from '@/api/search/getSearch'
+import { useBasicSearchQuery } from '@/api/home/queries'
 import Link from 'next/link'
 
 const useDebounce = (value: string, delay: number) => {
@@ -23,13 +20,6 @@ const useDebounce = (value: string, delay: number) => {
   return debouncedValue
 }
 
-interface BasicResult {
-  id: number
-  title: string
-  index: string
-  url?: string
-}
-
 const indexMap: Record<string, string> = {
   user: '사용자',
   blog: '블로그',
@@ -44,39 +34,18 @@ const indexMap: Record<string, string> = {
 export default function MainSearchSection() {
   const [query, setQuery] = useState('')
   const [isSearchOpen, setIsSearchOpen] = useState(false)
-  const [basicResults, setBasicResults] = useState<BasicResult[]>([])
-  const [finalResults, setFinalResults] = useState([])
   const debouncedQuery = useDebounce(query, 300)
   const router = useRouter()
   const searchRef = useRef<HTMLDivElement>(null)
 
-  const toggleSearch = () => {
-    setIsSearchOpen(!isSearchOpen)
-    if (isSearchOpen) {
-      setQuery('')
-      setBasicResults([])
-    }
-  }
-
-  useEffect(() => {
-    if (debouncedQuery) {
-      const fetchResults = async () => {
-        const data = await getBasicSearchResults(debouncedQuery)
-        setBasicResults(data.results)
-      }
-      fetchResults()
-    }
-  }, [debouncedQuery])
+  const { data: basicResults } = useBasicSearchQuery(debouncedQuery)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSearchOpen(false)
     setQuery('')
-    setBasicResults([])
 
     if (query) {
-      const data = await getFinalSearchResults(query)
-      setFinalResults(data)
       router.push(`/search/final?query=${query}`)
     }
   }
@@ -117,6 +86,7 @@ export default function MainSearchSection() {
     }
   }
 
+  // ✅ 메뉴 아이템들 (사용됨)
   const menuItems = [
     {
       label: '테커 소개',
@@ -171,37 +141,39 @@ export default function MainSearchSection() {
             </button>
           </form>
 
-          {debouncedQuery && basicResults.length > 0 && (
-            <ul className="absolute top-full left-0 mt-1 bg-white border border-gray rounded-lg w-[447px] max-h-[17rem] overflow-y-auto z-50 shadow-lg">
-              {basicResults.map((result) => {
-                const truncatedTitle =
-                  result.title.length > 16
-                    ? result.title.slice(0, 16) + '...'
-                    : result.title
-                return (
-                  <li
-                    key={result.id}
-                    className="flex items-center p-2 hover:bg-lightprimary cursor-pointer text-sm"
-                    onClick={() =>
-                      handleSelectResult(
-                        result.title.split('-').slice(-1).join(' '),
-                        result.index,
-                        result.id,
-                        result.url,
-                      )
-                    }
-                  >
-                    <IoSearchOutline className="mr-2 text-primary" />
-                    <span className="text-primary font-medium">
-                      {indexMap[result.index] || result.index}
-                    </span>
-                    <span className="mx-2 text-gray-400">|</span>
-                    <span>{truncatedTitle}</span>
-                  </li>
-                )
-              })}
-            </ul>
-          )}
+          {debouncedQuery &&
+            basicResults?.results &&
+            basicResults.results.length > 0 && (
+              <ul className="absolute top-full left-0 mt-1 bg-white border border-gray rounded-lg w-[447px] max-h-[17rem] overflow-y-auto z-50 shadow-lg">
+                {basicResults.results.map((result) => {
+                  const truncatedTitle =
+                    result.title.length > 16
+                      ? result.title.slice(0, 16) + '...'
+                      : result.title
+                  return (
+                    <li
+                      key={result.id}
+                      className="flex items-center p-2 hover:bg-lightprimary cursor-pointer text-sm"
+                      onClick={() =>
+                        handleSelectResult(
+                          result.title.split('-').slice(-1).join(' '),
+                          result.index,
+                          result.id,
+                          result.url,
+                        )
+                      }
+                    >
+                      <IoSearchOutline className="mr-2 text-primary" />
+                      <span className="text-primary font-medium">
+                        {indexMap[result.index] || result.index}
+                      </span>
+                      <span className="mx-2 text-gray-400">|</span>
+                      <span>{truncatedTitle}</span>
+                    </li>
+                  )
+                })}
+              </ul>
+            )}
         </div>
         <div className="grid grid-cols-7 gap-6">
           {menuItems.map((item) => (

@@ -12,7 +12,12 @@ export default function HallOfFameCard({ title, member }: Props) {
   return (
     <div className="relative border border-primary rounded-xl w-[24rem] h-[13rem] px-[20px] pt-7 pb-4">
       <div className="absolute -top-3 -left-3 bg-white px-2 flex items-center">
-        <img src="/images/home/Person.svg" alt="icon" width={20} height={20} />
+        <Image
+          src="/images/home/Person.svg"
+          alt="icon"
+          width={20}
+          height={20}
+        />
         <h2 className="text-xl text-black ml-2">{title}</h2>
       </div>
       <div className="flex items-center gap-7 w-full h-full px-2">

@@ -1,48 +1,29 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import HallOfFameCard from '@/components/home/HallOfFameCard'
 import { HallOfFameMember } from '@/types/home/HallOfFame'
-import { getRankings, RankingsResponse } from '@/api/home'
+import { useMonthlyRankingsQuery } from '@/api/home/queries'
 
 export default function HallOfFameSection() {
-  const [rankings, setRankings] = useState<RankingsResponse | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const now = new Date()
+  const currentYear = now.getFullYear()
+  const currentMonth = now.getMonth() + 1
 
-  useEffect(() => {
-    const fetchRankings = async () => {
-      try {
-        setLoading(true)
-        setError(null)
+  let previousYear = currentYear
+  let previousMonth = currentMonth - 1
 
-        // 현재 년도와 이전 달 가져오기
-        const now = new Date()
-        const currentYear = now.getFullYear()
-        const currentMonth = now.getMonth() + 1 // 0-based index
+  if (previousMonth === 0) {
+    previousMonth = 12
+    previousYear = currentYear - 1
+  }
 
-        // 이전 달 계산 (1월이면 작년 12월로)
-        let previousYear = currentYear
-        let previousMonth = currentMonth - 1
+  const {
+    data: rankings,
+    isLoading: loading,
+    error,
+  } = useMonthlyRankingsQuery(previousYear, previousMonth)
 
-        if (previousMonth === 0) {
-          previousMonth = 12
-          previousYear = currentYear - 1
-        }
-
-        const data = await getRankings(previousYear, previousMonth)
-        setRankings(data)
-      } catch (error) {
-        setError('랭킹 데이터를 가져오는데 실패했습니다.')
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchRankings()
-  }, [])
-
-  // 기본 멤버 정보 함수
   const getDefaultMember = (): HallOfFameMember => {
     return {
       id: 1,
@@ -56,7 +37,6 @@ export default function HallOfFameSection() {
     }
   }
 
-  // 랭킹 데이터를 HallOfFameMember 형태로 변환
   const convertToHallOfFameMember = (user: any): HallOfFameMember => {
     if (!user) {
       return getDefaultMember()
