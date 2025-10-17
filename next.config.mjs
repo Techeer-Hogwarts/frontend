@@ -30,7 +30,13 @@ const nextConfig = {
         port: '',
         pathname: '/**',
       },
-      // GitHub 이미지 리소스(엄격히 제한)
+      // GitHub 이미지 리소스
+      {
+        protocol: 'https',
+        hostname: 'github.com',
+        port: '',
+        pathname: '/user-attachments/**',
+      },
       {
         protocol: 'https',
         hostname: 'raw.githubusercontent.com',
@@ -40,6 +46,26 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'user-images.githubusercontent.com',
+        port: '',
+        pathname: '/**',
+      },
+      // Discord CDN
+      {
+        protocol: 'https',
+        hostname: 'cdn.discordapp.com',
+        port: '',
+        pathname: '/**',
+      },
+      // Medium 이미지
+      {
+        protocol: 'https',
+        hostname: 'miro.medium.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'medium.com',
         port: '',
         pathname: '/**',
       },
@@ -67,6 +93,12 @@ const nextConfig = {
     ]
   },
   webpack: (config) => {
+    // SVG 파일을 React 컴포넌트로 처리하는 설정
+    config.module.rules.push({
+      test: /\.svg$/,
+      use: ['@svgr/webpack'],
+    })
+
     // PDF.js worker 파일을 처리하는 설정 추가
     config.module.rules.push({
       test: /pdf\.worker\.mjs$/,
