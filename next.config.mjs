@@ -3,46 +3,20 @@ import { withSentryConfig } from '@sentry/nextjs'
 
 const API_BASE_URL = process.env.API_BASE_URL || 'https://api.yje.kr/api'
 
+// Helper function to create remote pattern
+const createRemotePattern = (hostname, pathname = '/**') => ({
+  protocol: 'https',
+  hostname,
+  port: '',
+  pathname,
+})
+
 const nextConfig = {
   images: {
     remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'avatars.slack-edge.com',
-        port: '',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'techeerzip-bucket.s3.ap-southeast-2.amazonaws.com',
-        port: '',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'techeer-bucket.s3.ap-northeast-2.amazonaws.com',
-        port: '',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'images.velog.io',
-        port: '',
-        pathname: '/**',
-      },
-      // GitHub 이미지 리소스(엄격히 제한)
-      {
-        protocol: 'https',
-        hostname: 'raw.githubusercontent.com',
-        port: '',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'user-images.githubusercontent.com',
-        port: '',
-        pathname: '/**',
-      },
+      // Blog platforms
+      createRemotePattern('miro.medium.com'),
+      createRemotePattern('medium.com'),
     ],
     // SVG 파일 처리를 위한 설정
     dangerouslyAllowSVG: true,
@@ -67,6 +41,12 @@ const nextConfig = {
     ]
   },
   webpack: (config) => {
+    // SVG 파일을 React 컴포넌트로 처리하는 설정
+    config.module.rules.push({
+      test: /\.svg$/,
+      use: ['@svgr/webpack'],
+    })
+
     // PDF.js worker 파일을 처리하는 설정 추가
     config.module.rules.push({
       test: /pdf\.worker\.mjs$/,
