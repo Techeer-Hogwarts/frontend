@@ -3,72 +3,34 @@ import { withSentryConfig } from '@sentry/nextjs'
 
 const API_BASE_URL = process.env.API_BASE_URL || 'https://api.yje.kr/api'
 
+// Helper function to create remote pattern
+const createRemotePattern = (hostname, pathname = '/**') => ({
+  protocol: 'https',
+  hostname,
+  port: '',
+  pathname,
+})
+
 const nextConfig = {
   images: {
     remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'avatars.slack-edge.com',
-        port: '',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'techeerzip-bucket.s3.ap-southeast-2.amazonaws.com',
-        port: '',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'techeer-bucket.s3.ap-northeast-2.amazonaws.com',
-        port: '',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'images.velog.io',
-        port: '',
-        pathname: '/**',
-      },
-      // GitHub 이미지 리소스
-      {
-        protocol: 'https',
-        hostname: 'github.com',
-        port: '',
-        pathname: '/user-attachments/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'raw.githubusercontent.com',
-        port: '',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'user-images.githubusercontent.com',
-        port: '',
-        pathname: '/**',
-      },
-      // Discord CDN
-      {
-        protocol: 'https',
-        hostname: 'cdn.discordapp.com',
-        port: '',
-        pathname: '/**',
-      },
-      // Medium 이미지
-      {
-        protocol: 'https',
-        hostname: 'miro.medium.com',
-        port: '',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'medium.com',
-        port: '',
-        pathname: '/**',
-      },
+      // Social platforms
+      createRemotePattern('avatars.slack-edge.com'),
+      createRemotePattern('cdn.discordapp.com'),
+      
+      // Storage buckets
+      createRemotePattern('techeerzip-bucket.s3.ap-southeast-2.amazonaws.com'),
+      createRemotePattern('techeer-bucket.s3.ap-northeast-2.amazonaws.com'),
+      
+      // Blog platforms
+      createRemotePattern('images.velog.io'),
+      createRemotePattern('miro.medium.com'),
+      createRemotePattern('medium.com'),
+      
+      // GitHub
+      createRemotePattern('github.com', '/user-attachments/**'),
+      createRemotePattern('raw.githubusercontent.com'),
+      createRemotePattern('user-images.githubusercontent.com'),
     ],
     // SVG 파일 처리를 위한 설정
     dangerouslyAllowSVG: true,
