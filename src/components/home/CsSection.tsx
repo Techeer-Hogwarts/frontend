@@ -2,9 +2,7 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
-import { CSProblem } from '@/types/home'
-import { getLatestCSProblem } from '@/api/home'
+import { useTodayCsQuery } from '@/api/home/queries'
 
 interface CSProps {
   question?: string
@@ -12,27 +10,7 @@ interface CSProps {
 }
 
 export default function CsSection({ question, link }: CSProps) {
-  const [csProblem, setCsProblem] = useState<CSProblem | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-
-  useEffect(() => {
-    const fetchCSProblem = async () => {
-      try {
-        setLoading(true)
-        setError(null)
-
-        const data = await getLatestCSProblem()
-        setCsProblem(data)
-      } catch (error) {
-        setError(null)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchCSProblem()
-  }, [])
+  const { data: csProblem, isLoading: loading, error } = useTodayCsQuery()
 
   const displayQuestion =
     csProblem?.content || question || 'CS 문제를 불러오는 중입니다...'
@@ -40,9 +18,8 @@ export default function CsSection({ question, link }: CSProps) {
   return (
     <section className="w-full mt-16 mb-24">
       <div className="relative border border-primary rounded-xl max-w-[1200px] w-full mx-auto px-6 py-5">
-        {/* 타이틀 */}
         <div className="absolute -top-3 left-4 bg-white px-2 flex items-center">
-          <img
+          <Image
             src="/images/home/Pencil.svg"
             alt="CS 아이콘"
             width={20}
@@ -52,9 +29,7 @@ export default function CsSection({ question, link }: CSProps) {
           <div className="flex-1 h-[1px] bg-primary ml-2" />
         </div>
 
-        {/* 문제 + 버튼 */}
         <div className="flex justify-between items-center gap-4 flex-wrap">
-          {/* 질문 */}
           <div className="text-base text-black leading-relaxed break-words flex-1 min-w-[200px]">
             {loading ? (
               <div className="animate-pulse">
@@ -68,7 +43,6 @@ export default function CsSection({ question, link }: CSProps) {
             )}
           </div>
 
-          {/* 버튼 */}
           <Link
             href={link}
             className="text-white bg-primary px-4 py-2 rounded-md text-sm hover:opacity-90 whitespace-nowrap mt-1"

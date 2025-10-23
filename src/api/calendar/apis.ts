@@ -1,4 +1,4 @@
-import { CalendarEventCardProps } from '@/components/calender/CalendarEventCard'
+import { CalendarEventCardProps } from '@/components/calendar/CalendarEventCard'
 
 // 이벤트 삭제
 export const deleteEvent = async (eventId: number) => {
