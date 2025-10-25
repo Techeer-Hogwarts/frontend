@@ -1,63 +1,28 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import TabLayout from './TabLayout'
 import BlogPost from '@/components/blog/BlogPost'
 import ResumeFolder from '@/components/resume/ResumeFolder'
-import { getLatestBlogPosts } from '@/api/home'
-import { getLatestResumes } from '@/api/home'
-import type { BlogPost as BlogPostType, Resume as ResumeType } from '@/api/home'
+import {
+  useLatestBlogPostsQuery,
+  useLatestResumesQuery,
+} from '@/api/home/queries'
 
 export default function BlogResumeSection() {
   const [selectedTab, setSelectedTab] = useState<'blog' | 'resume'>('blog')
-  const [blogs, setBlogs] = useState<any>(null)
-  const [resumes, setResumes] = useState<any>(null)
-  const [blogLoading, setBlogLoading] = useState(true)
-  const [resumeLoading, setResumeLoading] = useState(true)
-  const [blogError, setBlogError] = useState<string | null>(null)
-  const [resumeError, setResumeError] = useState<string | null>(null)
 
-  // 블로그 데이터 가져오기
-  useEffect(() => {
-    const fetchBlogs = async () => {
-      try {
-        setBlogLoading(true)
+  const {
+    data: blogs,
+    isLoading: blogLoading,
+    error: blogError,
+  } = useLatestBlogPostsQuery(4)
 
-        const apiUrl = `/api/v1/blogs?limit=4&sortBy=latest`
-
-        const response = await getLatestBlogPosts(4)
-        setBlogs(response)
-      } catch (err) {
-        setBlogError('블로그 데이터를 불러오는 중 오류가 발생했습니다.')
-        setBlogs([])
-      } finally {
-        setBlogLoading(false)
-      }
-    }
-
-    fetchBlogs()
-  }, [])
-
-  // 이력서 데이터 가져오기
-  useEffect(() => {
-    const fetchResumes = async () => {
-      try {
-        setResumeLoading(true)
-
-        const apiUrl = `/api/v1/resumes?limit=4&sortBy=CREATEDAT`
-
-        const response = await getLatestResumes(4)
-        setResumes(response)
-      } catch (err) {
-        setResumeError('이력서 데이터를 불러오는 중 오류가 발생했습니다.')
-        setResumes([])
-      } finally {
-        setResumeLoading(false)
-      }
-    }
-
-    fetchResumes()
-  }, [])
+  const {
+    data: resumes,
+    isLoading: resumeLoading,
+    error: resumeError,
+  } = useLatestResumesQuery(4)
 
   const transformedBlogs = Array.isArray(blogs?.data)
     ? blogs.data.map((blog: any) => ({
@@ -93,6 +58,11 @@ export default function BlogResumeSection() {
     : []
 
   const isLoading = blogLoading || resumeLoading
+
+  const blogErrorMessage =
+    blogError?.message || '블로그 데이터를 불러오는 중 오류가 발생했습니다.'
+  const resumeErrorMessage =
+    resumeError?.message || '이력서 데이터를 불러오는 중 오류가 발생했습니다.'
 
   if (isLoading) {
     return (
@@ -134,7 +104,7 @@ export default function BlogResumeSection() {
             <>
               {blogError ? (
                 <div className="col-span-4 flex items-center justify-center">
-                  <div className="text-lg text-red-500">{blogError}</div>
+                  <div className="text-lg text-red-500">{blogErrorMessage}</div>
                 </div>
               ) : transformedBlogs.length > 0 ? (
                 transformedBlogs.map((blog) => (
@@ -154,7 +124,9 @@ export default function BlogResumeSection() {
             <>
               {resumeError ? (
                 <div className="col-span-4 flex items-center justify-center">
-                  <div className="text-lg text-red-500">{resumeError}</div>
+                  <div className="text-lg text-red-500">
+                    {resumeErrorMessage}
+                  </div>
                 </div>
               ) : transformedResumes.length > 0 ? (
                 transformedResumes.map((resume) => (

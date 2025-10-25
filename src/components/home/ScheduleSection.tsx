@@ -1,17 +1,20 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import dayjs from 'dayjs'
 import Image from 'next/image'
 import Link from 'next/link'
-import { getRecentEvents, Event } from '@/api/home'
+import { useRecentEventsQuery } from '@/api/home/queries'
 
 export default function ScheduleSection() {
   const [currentDate, setCurrentDate] = useState(dayjs())
   const [selectedDate, setSelectedDate] = useState<Date | null>(null)
-  const [recentEvents, setRecentEvents] = useState<Event[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+
+  const {
+    data: recentEvents,
+    isLoading: loading,
+    error,
+  } = useRecentEventsQuery(2)
 
   const year = currentDate.year()
   const month = currentDate.month()
@@ -22,7 +25,6 @@ export default function ScheduleSection() {
   const calendar: Date[][] = []
   const baseDate = new Date(year, month, 1 - startDay)
 
-  // 동적으로 주 수 계산 (4~6주)
   const daysInMonth = new Date(year, month + 1, 0).getDate()
   const numWeeks = Math.ceil((startDay + daysInMonth) / 7)
 
@@ -39,41 +41,6 @@ export default function ScheduleSection() {
     a.getFullYear() === b.getFullYear() &&
     a.getMonth() === b.getMonth() &&
     a.getDate() === b.getDate()
-
-  useEffect(() => {
-    const fetchRecentEvents = async () => {
-      try {
-        setLoading(true)
-        setError(null)
-
-        const events: Event[] = await getRecentEvents(2)
-
-        setRecentEvents(events)
-      } catch (err) {
-        const fallbackEvents = [
-          {
-            eventId: 1,
-            eventUrl: '/calendar',
-            title: 'Round Robin CS 문제 풀이',
-            date: dayjs().format('YYYY-MM-DD'),
-          },
-          {
-            eventId: 2,
-            eventUrl: '/calendar',
-            title: '프로젝트 팀 빌딩 세션',
-            date: dayjs().add(1, 'day').format('YYYY-MM-DD'),
-          },
-        ]
-
-        setRecentEvents(fallbackEvents)
-        setError(null)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchRecentEvents()
-  }, [])
 
   return (
     <section className="w-full mt-12">
@@ -103,7 +70,7 @@ export default function ScheduleSection() {
                   ◀
                 </button>
                 <div className="font-semibold text-lg">
-                  {currentDate.format('MMMM')}
+                  {currentDate.format('M월')}
                 </div>
                 <button
                   onClick={() => setCurrentDate(currentDate.add(1, 'month'))}
@@ -113,7 +80,7 @@ export default function ScheduleSection() {
               </div>
 
               <div className="grid grid-cols-7 text-sm place-items-center text-gray-500 font-bold mb-1">
-                {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((d, idx) => (
+                {['일', '월', '화', '수', '목', '금', '토'].map((d, idx) => (
                   <div
                     key={`day-${d}-${idx}`}
                     className="w-8 h-8 flex items-center justify-center"
@@ -174,7 +141,9 @@ export default function ScheduleSection() {
                 ))}
               </div>
             ) : error ? (
-              <div className="text-gray-500 text-center py-8">{error}</div>
+              <div className="text-gray-500 text-center py-8">
+                {error?.message}
+              </div>
             ) : recentEvents && recentEvents.length > 0 ? (
               recentEvents.map((event) => {
                 const eventDate = dayjs(event.date)

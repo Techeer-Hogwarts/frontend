@@ -43,7 +43,7 @@ export const useAllTeamsQuery = (params: {
     queryKey: homeKeys.allTeams(params),
     queryFn: ({ pageParam }) => getAllTeams({ ...params, cursor: pageParam }),
     initialPageParam: undefined as number | undefined,
-    getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
+    getNextPageParam: (lastPage) => lastPage.nextInfo.id ?? undefined,
     staleTime: 5 * 60 * 1000, // 5분
     gcTime: 10 * 60 * 1000, // 10분
   })
