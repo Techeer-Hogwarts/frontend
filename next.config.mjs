@@ -1,8 +1,7 @@
 import { withSentryConfig } from '@sentry/nextjs'
 /** @type {import('next').NextConfig} */
 
-const API_BASE_URL =
-  process.env.API_BASE_URL || 'https://api.yje.kr/api'
+const API_BASE_URL = process.env.API_BASE_URL || 'https://api.yje.kr/api'
 
 const nextConfig = {
   images: {
@@ -55,6 +54,10 @@ const nextConfig = {
         source: '/api/:path*',
         destination: `${API_BASE_URL}/v3/:path*`,
       },
+      // {
+      //   source: '/feedback/:path*',
+      //   destination: `${API_BASE_URL}/../feedback/:path*`,
+      // },
     ]
   },
   webpack: (config) => {
