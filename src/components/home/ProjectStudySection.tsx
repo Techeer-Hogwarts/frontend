@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import TabLayout from '@/components/home/TabLayout'
 import ProjectCard from '@/components/project/ProjectCard'
 import StudyCard from '@/components/project/StudyCard'
-import { getAllTeams } from '@/api/home'
+import { getAllTeams } from '@/api/project/common'
 import { ProjectStudyTeam } from '@/api/home'
 
 const convertToProjectTeam = (team: ProjectStudyTeam) => {
@@ -76,16 +76,19 @@ export default function ProjectStudySection() {
           sortType: 'UPDATE_AT_DESC',
         })
 
-        if (projectResponse.teams && Array.isArray(projectResponse.teams)) {
-          setProjects(projectResponse.teams)
+        if (
+          projectResponse.allTeams &&
+          Array.isArray(projectResponse.allTeams)
+        ) {
+          setProjects(projectResponse.allTeams as any)
         } else {
           setProjects([])
         }
 
-        if (studyResponse.teams && Array.isArray(studyResponse.teams)) {
-          setStudies(studyResponse.teams)
+        if (studyResponse.allTeams && Array.isArray(studyResponse.allTeams)) {
+          setStudies(studyResponse.allTeams as any)
         } else {
-          setProjects([])
+          setStudies([])
         }
       } catch (error) {
         setError('팀 데이터를 가져오는데 실패했습니다.')

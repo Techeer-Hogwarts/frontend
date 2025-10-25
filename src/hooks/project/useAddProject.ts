@@ -1,11 +1,11 @@
 import { useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
-import { handleAddProject } from '@/api/project/project/project'
+import { useCreateProjectMutation } from '@/api/project/project'
 import { ProjectData } from '@/types/project/project'
 
 export const useAddProject = () => {
   const router = useRouter()
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const createProjectMutation = useCreateProjectMutation()
 
   const [projectData, setProjectData] = useState<ProjectData>({
     name: '',
@@ -51,9 +51,7 @@ export const useAddProject = () => {
   )
 
   const submitProject = useCallback(async () => {
-    if (isSubmitting) return
-
-    setIsSubmitting(true)
+    if (createProjectMutation.isPending) return
 
     try {
       const validationError = validateProjectData(projectData)
@@ -71,7 +69,7 @@ export const useAddProject = () => {
         })
       }
 
-      const response = await handleAddProject(dataToSend)
+      const response = await createProjectMutation.mutateAsync(dataToSend)
 
       if (response) {
         router.push(`/project/detail/project/${response}`)
@@ -81,14 +79,12 @@ export const useAddProject = () => {
     } catch (error) {
       console.error('프로젝트 등록 중 오류:', error)
       alert('등록에 실패하였습니다. 다시 시도해주세요.')
-    } finally {
-      setIsSubmitting(false)
     }
-  }, [projectData, isSubmitting, validateProjectData, router])
+  }, [projectData, createProjectMutation, validateProjectData, router])
 
   return {
     projectData,
-    isSubmitting,
+    isSubmitting: createProjectMutation.isPending,
     handleUpdate,
     submitProject,
   }

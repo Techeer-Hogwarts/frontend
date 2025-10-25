@@ -1,10 +1,9 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
-import { useQuery } from '@tanstack/react-query'
 import {
-  getProjectDetail,
-  handleEditProject,
-} from '@/api/project/project/project'
+  useProjectDetailQuery,
+  useUpdateProjectMutation,
+} from '@/api/project/project'
 import {
   EditProjectData,
   DeletedMember,
@@ -14,18 +13,14 @@ import {
 
 export const useEditProject = (projectId: number) => {
   const router = useRouter()
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const updateProjectMutation = useUpdateProjectMutation()
 
   // React Query: 프로젝트 상세 정보
   const {
     data: projectDetails,
     isSuccess,
     isLoading,
-  } = useQuery({
-    queryKey: ['getProjectDetails', projectId],
-    queryFn: () => getProjectDetail(projectId),
-    enabled: !!projectId,
-  })
+  } = useProjectDetailQuery(projectId)
 
   // 편집용 상태
   const [projectData, setProjectData] = useState<EditProjectData>({
@@ -208,9 +203,7 @@ export const useEditProject = (projectId: number) => {
 
   // 프로젝트 수정 제출
   const submitEditProject = useCallback(async () => {
-    if (isSubmitting) return
-
-    setIsSubmitting(true)
+    if (updateProjectMutation.isPending) return
 
     try {
       const validationError = validateProjectData(projectData)
@@ -220,7 +213,10 @@ export const useEditProject = (projectId: number) => {
       }
 
       const dataToSend = prepareFormData(projectData)
-      const result = await handleEditProject(projectId, dataToSend)
+      const result = await updateProjectMutation.mutateAsync({
+        projectId,
+        data: dataToSend,
+      })
 
       if (result) {
         alert('프로젝트가 성공적으로 수정되었습니다!')
@@ -230,11 +226,9 @@ export const useEditProject = (projectId: number) => {
       }
     } catch (error) {
       alert(error.message || '수정에 실패했습니다.')
-    } finally {
-      setIsSubmitting(false)
     }
   }, [
-    isSubmitting,
+    updateProjectMutation,
     projectData,
     projectId,
     router,
@@ -247,7 +241,7 @@ export const useEditProject = (projectId: number) => {
     projectDetails,
     projectData,
     isLoading,
-    isSubmitting,
+    isSubmitting: updateProjectMutation.isPending,
 
     // 삭제 관련 상태
     tempDeleted,

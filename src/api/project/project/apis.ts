@@ -1,5 +1,4 @@
 // 프로젝트 공고 생성 (multipart/form-data)
-// handleAddProject.ts
 export const handleAddProject = async (data: any) => {
   try {
     const formData = new FormData()
@@ -55,7 +54,7 @@ export const handleAddProject = async (data: any) => {
 }
 
 // 프로젝트 상세 조회
-export const getProjectDetail = async (projectTeamId) => {
+export const getProjectDetail = async (projectTeamId: number) => {
   try {
     const response = await fetch(`/api/projectTeams/${projectTeamId}`, {
       method: 'GET',
@@ -75,7 +74,7 @@ export const getProjectDetail = async (projectTeamId) => {
 }
 
 // 프로젝트 참여 멤버 가져오기
-export const getProjectMember = async (projectTeamId) => {
+export const getProjectMember = async (projectTeamId: number) => {
   try {
     const response = await fetch(`/api/projectTeams/${projectTeamId}/members`, {
       method: 'GET',
@@ -91,7 +90,7 @@ export const getProjectMember = async (projectTeamId) => {
 }
 
 //프로젝트 지원자 보기
-export const getProjectApplicants = async (projectTeamId) => {
+export const getProjectApplicants = async (projectTeamId: number) => {
   try {
     const response = await fetch(
       `/api/projectTeams/${projectTeamId}/applicants`,
@@ -155,7 +154,7 @@ export const handleEditProject = async (projectId: number, data: any) => {
 }
 
 //프로젝트 공고 마감
-export const handleCloseProject = async (projectTeamId) => {
+export const handleCloseProject = async (projectTeamId: number) => {
   try {
     const response = await fetch(`/api/projectTeams/close/${projectTeamId}`, {
       method: 'PATCH',
@@ -173,7 +172,7 @@ export const handleCloseProject = async (projectTeamId) => {
 }
 
 //프로젝트 공고 삭제
-export const deleteProjectTeam = async (projectId) => {
+export const deleteProjectTeam = async (projectId: number) => {
   try {
     const response = await fetch(`/api/projectTeams/delete/${projectId}`, {
       method: 'PATCH',
@@ -191,7 +190,7 @@ export const deleteProjectTeam = async (projectId) => {
 }
 
 // 프로젝트 지원하기
-export const handleApplyProject = async (data) => {
+export const handleApplyProject = async (data: any) => {
   try {
     const response = await fetch(`/api/projectTeams/apply`, {
       method: 'POST',
@@ -213,7 +212,7 @@ export const handleApplyProject = async (data) => {
 }
 
 // 프로젝트 지원 취소하기
-export const handleDenyProject = async (projectId) => {
+export const handleDenyProject = async (projectId: number) => {
   try {
     const response = await fetch(`/api/projectTeams/${projectId}/cancel`, {
       method: 'PATCH',
@@ -231,7 +230,7 @@ export const handleDenyProject = async (projectId) => {
 }
 
 // 프로젝트 지원자 수락
-export const acceptProjectApplicant = async (data) => {
+export const acceptProjectApplicant = async (data: any) => {
   try {
     const response = await fetch(`/api/projectTeams/accept`, {
       method: 'PATCH',
@@ -251,7 +250,7 @@ export const acceptProjectApplicant = async (data) => {
 }
 
 // 프로젝트 지원 거부
-export const denyProjectApplicant = async (data) => {
+export const denyProjectApplicant = async (data: any) => {
   try {
     const response = await fetch(`/api/projectTeams/reject`, {
       method: 'PATCH',
@@ -268,17 +267,4 @@ export const denyProjectApplicant = async (data) => {
   } catch (error: any) {
     throw error
   }
-}
-
-//스택 조회
-export async function getStacks() {
-  const response = await fetch('/api/stacks', {
-    method: 'GET',
-    credentials: 'include',
-  })
-  if (!response.ok) {
-    throw new Error(`스택 조회 실패: ${response.status}`)
-  }
-  const data = await response.json()
-  return data
 }

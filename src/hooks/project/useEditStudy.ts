@@ -1,7 +1,9 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
-import { useQuery } from '@tanstack/react-query'
-import { getStudyDetail, handleEditStudy } from '@/api/project/study/study'
+import {
+  useStudyDetailQuery,
+  useUpdateStudyMutation,
+} from '@/api/project/study'
 import {
   EditStudyData,
   DeletedStudyMember,
@@ -10,14 +12,10 @@ import {
 
 export const useEditStudy = (studyId: number) => {
   const router = useRouter()
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const updateStudyMutation = useUpdateStudyMutation()
 
   // React Query: 스터디 상세 정보
-  const { data: studyDetails, isLoading } = useQuery({
-    queryKey: ['getStudyDetails', studyId],
-    queryFn: () => getStudyDetail(studyId),
-    enabled: !!studyId,
-  })
+  const { data: studyDetails, isLoading } = useStudyDetailQuery(studyId)
 
   // 편집용 상태
   const [studyData, setStudyData] = useState<EditStudyData | null>(null)
@@ -172,9 +170,7 @@ export const useEditStudy = (studyId: number) => {
 
   // 스터디 수정 제출
   const submitEditStudy = useCallback(async () => {
-    if (isSubmitting || !studyData) return
-
-    setIsSubmitting(true)
+    if (updateStudyMutation.isPending || !studyData) return
 
     try {
       const validationError = validateStudyData(studyData)
@@ -184,7 +180,10 @@ export const useEditStudy = (studyId: number) => {
       }
 
       const formData = prepareFormData(studyData)
-      const response = await handleEditStudy(formData, studyId)
+      const response = await updateStudyMutation.mutateAsync({
+        studyId,
+        data: formData,
+      })
 
       // ID 찾기 및 페이지 이동
       const actualId = response?.id || response?.data?.id || studyId
@@ -197,11 +196,9 @@ export const useEditStudy = (studyId: number) => {
       }
     } catch (error) {
       alert(error.message || '수정에 실패했습니다. 다시 시도해주세요.')
-    } finally {
-      setIsSubmitting(false)
     }
   }, [
-    isSubmitting,
+    updateStudyMutation,
     studyData,
     studyId,
     router,
@@ -214,7 +211,7 @@ export const useEditStudy = (studyId: number) => {
     studyDetails,
     studyData,
     isLoading,
-    isSubmitting,
+    isSubmitting: updateStudyMutation.isPending,
 
     // 삭제 관련 상태
     tempDeleted,

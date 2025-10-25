@@ -5,7 +5,7 @@ import { useQuery } from '@tanstack/react-query'
 import StackDropdown from './StackDropdown'
 import { IoClose } from 'react-icons/io5'
 import { RxQuestionMarkCircled } from 'react-icons/rx'
-import { getStacks } from '@/api/project/project/project'
+import { getStacks } from '@/api/project/common'
 
 interface BoxProps {
   text: string
