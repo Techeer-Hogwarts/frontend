@@ -77,13 +77,8 @@ export const useUpdateStudyMutation = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: ({
-      studyId,
-      data,
-    }: {
-      studyId: number
-      data: UpdateStudyRequest
-    }) => handleEditStudy(data, studyId),
+    mutationFn: ({ studyId, data }: { studyId: number; data: any }) =>
+      handleEditStudy(data, studyId),
     onSuccess: (data, variables) => {
       // 스터디 상세 쿼리 무효화
       queryClient.invalidateQueries({
