@@ -8,14 +8,28 @@ import ProfileBox from '@/components/profile/ProfileBox'
 import ProfilepageTap from '@/components/profile/ProfilepageTap'
 import { fetchUserProfile } from '../api/getUserProfile'
 import Skeleton from '@/components/profile/Skeleton'
+import Statistics from '@/components/mypage/Statistics'
 
-export default function Page({ params }: { params: { userId: string } }) {
-  const [activeTab, setActiveTab] = useState<'home' | 'resume'>('home')
+export default function Page({
+  params,
+}: {
+  params: Promise<{ userId: string }>
+}) {
+  const [activeTab, setActiveTab] = useState<'home' | 'resume' | 'statistics'>(
+    'home',
+  )
 
   const [profileData, setProfileData] = useState<any>(null)
   const [loading, setLoading] = useState(true)
+  const [userId, setUserId] = useState<string>('')
 
-  const { userId } = params
+  useEffect(() => {
+    const getParams = async () => {
+      const resolvedParams = await params
+      setUserId(resolvedParams.userId)
+    }
+    getParams()
+  }, [params])
 
   useEffect(() => {
     if (userId) {
@@ -51,6 +65,12 @@ export default function Page({ params }: { params: { userId: string } }) {
       )}
       {/* {activeTab === 'profile' && <Profile profile={profileData} />} */}
       {activeTab === 'resume' && <Resume userId={Number(userId)} />}
+      {activeTab === 'statistics' && profileData?.id && profileData?.year && (
+        <Statistics
+          userId={Number(profileData.id)}
+          year={Number(profileData.year)}
+        />
+      )}
     </div>
   )
 }

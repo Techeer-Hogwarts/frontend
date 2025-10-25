@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import FeedbackMentor from './feedback/FeedbackMentor'
 import FeedbackUser from './feedback/FeedbackUser'
 import { useAuthStore } from '@/store/authStore'
@@ -9,10 +9,16 @@ import { useTapBarStore } from '@/store/tapBarStore'
 
 const Feedback = () => {
   const { user } = useAuthStore()
-  const { activeOption } = useTapBarStore()
+  const { activeOption, setActiveOption } = useTapBarStore()
 
   const isMentor = user?.roleId === 2
   const TABS = ['나의 피드백 요청', '받은 피드백 요청']
+
+  useEffect(() => {
+    if (isMentor) {
+      setActiveOption(TABS[0])
+    }
+  }, [])
 
   return (
     <div className="w-[890px] rounded-xl p-5 relatvie">

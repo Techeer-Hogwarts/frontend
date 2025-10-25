@@ -3,6 +3,13 @@ import { withSentryConfig } from '@sentry/nextjs'
 
 const API_BASE_URL = process.env.API_BASE_URL || 'https://api.yje.kr/api'
 
+const createRemotePattern = (hostname, pathname = '/**') => ({
+  protocol: 'https',
+  hostname,
+  port: '',
+  pathname,
+})
+
 const nextConfig = {
   images: {
     remotePatterns: [
@@ -24,8 +31,13 @@ const nextConfig = {
         port: '',
         pathname: '/**',
       },
+      createRemotePattern('miro.medium.com'),
+      createRemotePattern('medium.com'),
     ],
     transpilePackages: ['framer-motion'],
+    dangerouslyAllowSVG: true,
+    contentDispositionType: 'attachment',
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
 
   reactStrictMode: true,

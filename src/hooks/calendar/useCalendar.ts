@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react'
 import { CATEGORIES } from '@/constants/category'
-import getCurrentUser from '@/api/calendar/getCurrentUser'
+import { useGetCurrentUser } from '@/api/calendar/queries'
 
 export function useCalendar() {
+  const { data: user, isError } = useGetCurrentUser()
   const [showModal, setShowModal] = useState(false)
   const [authModalOpen, setAuthModalOpen] = useState(false)
   const [modalOpen, setModalOpen] = useState(false)
@@ -11,10 +12,9 @@ export function useCalendar() {
   )
 
   const fetchUserProfile = async () => {
-    try {
-      const user = await getCurrentUser()
+    if (user) {
       setShowModal(true)
-    } catch (err) {
+    } else if (isError) {
       setAuthModalOpen(true)
     }
   }

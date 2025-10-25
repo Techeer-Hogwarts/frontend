@@ -1,18 +1,9 @@
 'use client'
 
-import React, { useState } from 'react'
+import { useState } from 'react'
 import MyCareerToggle from './MyCareerToggle'
 import ExperienceItem from '../signup/ExperienceItem'
-
-export interface Experience {
-  id?: number
-  companyName: string
-  position: string
-  startDate: string
-  endDate: string | null
-  category?: string
-  isFinished?: boolean
-}
+import { Experience } from '@/types/mypage/mypage.types'
 
 interface MyExperienceSectionProps {
   title: string
@@ -43,6 +34,7 @@ export default function MyExperienceSection({
       position: '',
       startDate: '',
       endDate: '',
+      category: experienceType,
       isFinished: false,
     }
     setExperienceData([...experienceData, newItem])

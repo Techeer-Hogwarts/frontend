@@ -7,6 +7,7 @@ type TabType =
   | 'bookmark'
   | 'likes'
   | 'feedback'
+  | 'statistics'
   | 'settings'
 
 interface MypageTapProps {
@@ -31,6 +32,7 @@ export default function MypageTap({ activeTab, setActiveTab }: MypageTapProps) {
     'bookmark',
     'likes',
     'feedback',
+    'statistics',
     'settings',
   ]
 
@@ -54,6 +56,7 @@ export default function MypageTap({ activeTab, setActiveTab }: MypageTapProps) {
           {tab === 'likes' && '좋아요'}
           {tab === 'feedback' && '피드백'}
           {tab === 'settings' && '설정'}
+          {tab === 'statistics' && '통계'}
         </button>
       ))}
     </div>
