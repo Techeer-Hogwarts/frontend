@@ -7,11 +7,17 @@ import { LikeBookmarkRequest, ResumeUploadRequest } from './types'
 export const useResumeLikeMutation = () => {
   const queryClient = useQueryClient()
 
-  return useMutation({
-    mutationFn: (data: LikeBookmarkRequest) => postLike(data),
-    onSuccess: () => {
-      // 좋아요 성공 시 관련 쿼리 무효화
-      queryClient.invalidateQueries({ queryKey: resumeKeys.all })
+  return useMutation<void, Error, LikeBookmarkRequest>({
+    mutationKey: [...resumeKeys.all, 'like'],
+    mutationFn: postLike,
+    onSuccess: async (_data, variables) => {
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: resumeKeys.detail(variables.contentId),
+        }),
+        queryClient.invalidateQueries({ queryKey: resumeKeys.lists() }),
+        queryClient.invalidateQueries({ queryKey: resumeKeys.bestList() }),
+      ])
     },
   })
 }
@@ -20,11 +26,17 @@ export const useResumeLikeMutation = () => {
 export const useResumeBookmarkMutation = () => {
   const queryClient = useQueryClient()
 
-  return useMutation({
-    mutationFn: (data: LikeBookmarkRequest) => postBookmark(data),
-    onSuccess: () => {
-      // 북마크 성공 시 관련 쿼리 무효화
-      queryClient.invalidateQueries({ queryKey: resumeKeys.all })
+  return useMutation<void, Error, LikeBookmarkRequest>({
+    mutationKey: [...resumeKeys.all, 'bookmark'],
+    mutationFn: postBookmark,
+    onSuccess: async (_data, variables) => {
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: resumeKeys.detail(variables.contentId),
+        }),
+        queryClient.invalidateQueries({ queryKey: resumeKeys.lists() }),
+        queryClient.invalidateQueries({ queryKey: resumeKeys.bestList() }),
+      ])
     },
   })
 }
