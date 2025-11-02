@@ -5,7 +5,7 @@ import { FeedbackResponse } from '@/api/feedback/types'
 import {
   useApproveFeedbackMutation,
   useRejectFeedbackMutation,
-} from '@/api/feedback/queries'
+} from '@/api/feedback'
 
 interface FeedbackManageModalProps {
   feedback: FeedbackResponse
@@ -17,8 +17,8 @@ const FeedbackManageModal: React.FC<FeedbackManageModalProps> = ({
   setOpenModal,
 }) => {
   const modalRef = useRef<HTMLDivElement>(null)
-  const { mutate: approveFeedback } = useApproveFeedbackMutation(feedback.id)
-  const { mutate: rejectFeedback } = useRejectFeedbackMutation(feedback.id)
+  const { mutate: approveFeedback } = useApproveFeedbackMutation()
+  const { mutate: rejectFeedback } = useRejectFeedbackMutation()
 
   const [view, setView] = useState<'main' | 'rejecting'>('main')
   const [rejectionReason, setRejectionReason] = useState('')
@@ -49,7 +49,7 @@ const FeedbackManageModal: React.FC<FeedbackManageModalProps> = ({
       return
     }
     approveFeedback(
-      { timeChoice: selectedTimeChoice },
+      { feedbackId: feedback.id, data: { timeChoice: selectedTimeChoice } },
       {
         onSuccess: () => {
           alert('피드백 요청을 수락했습니다.')
@@ -65,7 +65,7 @@ const FeedbackManageModal: React.FC<FeedbackManageModalProps> = ({
       return
     }
     rejectFeedback(
-      { rejectionReason },
+      { feedbackId: feedback.id, data: { rejectionReason } },
       {
         onSuccess: () => {
           alert('피드백 요청을 거절했습니다.')

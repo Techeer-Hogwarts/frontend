@@ -34,15 +34,6 @@ const nextConfig = {
       createRemotePattern('miro.medium.com'),
       createRemotePattern('medium.com'),
     ],
-    transpilePackages: ['framer-motion'],
-    dangerouslyAllowSVG: true,
-    contentDispositionType: 'attachment',
-    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
-  },
-
-  reactStrictMode: true,
-
-  images: {
     domains: [
       'example.com',
       'avatars.slack-edge.com',
@@ -54,7 +45,13 @@ const nextConfig = {
       'cdn.discordapp.com',
       'bootcamp.com',
     ], // 허용할 외부 도메인 추가
+    dangerouslyAllowSVG: true,
+    contentDispositionType: 'attachment',
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
+
+  transpilePackages: ['framer-motion'],
+  reactStrictMode: true,
 
   async rewrites() {
     return [

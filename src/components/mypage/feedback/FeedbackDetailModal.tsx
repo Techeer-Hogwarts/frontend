@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import {
   useUpdateFeedbackMutation,
   useDeleteFeedbackMutation,
-} from '@/api/feedback/queries'
+} from '@/api/feedback'
 import { FeedbackResponse, UpdateFeedbackRequest } from '@/api/feedback/types'
 
 interface FeedbackDetailModalProps {
@@ -17,8 +17,8 @@ const FeedbackDetailModal: React.FC<FeedbackDetailModalProps> = ({
   setOpenModal,
 }) => {
   const modalRef = useRef<HTMLDivElement>(null)
-  const { mutate: updateFeedback } = useUpdateFeedbackMutation(feedback.id)
-  const { mutate: deleteFeedback } = useDeleteFeedbackMutation(feedback.id)
+  const { mutate: updateFeedback } = useUpdateFeedbackMutation()
+  const { mutate: deleteFeedback } = useDeleteFeedbackMutation()
 
   const [isEditMode, setIsEditMode] = useState(false)
   const [formData, setFormData] = useState<UpdateFeedbackRequest | null>(null)
@@ -66,7 +66,7 @@ const FeedbackDetailModal: React.FC<FeedbackDetailModalProps> = ({
 
   const handleSave = () => {
     if (formData) {
-      updateFeedback(formData, {
+      updateFeedback({ feedbackId: feedback.id, data: formData }, {
         onSuccess: () => {
           setIsEditMode(false)
         },
@@ -89,7 +89,7 @@ const FeedbackDetailModal: React.FC<FeedbackDetailModalProps> = ({
 
   const handleDelete = () => {
     if (window.confirm('정말로 이 피드백 요청을 삭제하시겠습니까?')) {
-      deleteFeedback(undefined, {
+      deleteFeedback(feedback.id, {
         onSuccess: () => {
           setOpenModal(false)
         },
