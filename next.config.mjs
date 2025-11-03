@@ -17,6 +17,8 @@ const nextConfig = {
       // Blog platforms
       createRemotePattern('miro.medium.com'),
       createRemotePattern('medium.com'),
+      createRemotePattern('avatars.slack-edge.com'),
+      createRemotePattern('techeerzip-bucket.s3.ap-southeast-2.amazonaws.com'),
     ],
     // SVG 파일 처리를 위한 설정
     dangerouslyAllowSVG: true,
