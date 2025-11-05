@@ -21,7 +21,10 @@ export const useResumeListQuery = ({
   pageLimit?: number
 }) => {
   return useInfiniteQuery({
-    queryKey: resumeKeys.list({ position, year, category, sortBy }),
+    queryKey: [
+      ...resumeKeys.list({ position, year, category, sortBy }),
+      { initialLimit, pageLimit },
+    ],
     queryFn: ({ pageParam }) => {
       // 첫 페이지는 initialLimit, 이후 페이지는 pageLimit
       const limit = !pageParam ? initialLimit : pageLimit
@@ -59,7 +62,7 @@ export const useBestResumeListQuery = (
   limit: number = 12,
 ) => {
   return useInfiniteQuery({
-    queryKey: resumeKeys.bestList(),
+    queryKey: [...resumeKeys.bestList(), limit],
     queryFn: ({ pageParam }) =>
       fetchBestResumes(pageParam, limit, setAuthModalOpen),
     initialPageParam: undefined as number | undefined,
@@ -73,7 +76,7 @@ export const useBestResumeListQuery = (
 // 사용자 이력서 목록 조회 (무한 스크롤)
 export const useUserResumeListQuery = (userId: number, limit: number = 10) => {
   return useInfiniteQuery({
-    queryKey: resumeKeys.userList(userId),
+    queryKey: [...resumeKeys.userList(userId), limit],
     queryFn: ({ pageParam }) => fetchUserResumes(userId, pageParam, limit),
     initialPageParam: undefined as number | undefined,
     getNextPageParam: (lastPage) =>
