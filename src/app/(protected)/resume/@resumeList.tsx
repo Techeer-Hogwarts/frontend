@@ -54,15 +54,15 @@ export default function ResumeList({
   })
 
   const convertToResume = (item: any): Resume => ({
-    id: item.id,
-    createdAt: item.createdAt,
+    id: String(item.id),
+    createdAt: new Date(item.createdAt).getTime(),
     title: item.title,
     category: item.category,
     position: item.position,
     likeCount: item.likeCount,
-    year: item.year,
+    year: String(item.year),
     user: {
-      id: item.user.id,
+      id: Number(item.user.id),
       name: item.user.name,
       profileImage: item.user.profileImage,
       year: item.user.year,

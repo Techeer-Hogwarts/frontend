@@ -11,7 +11,7 @@ import { useBookmark } from '@/app/blog/_lib/useBookmark'
 import SkeletonResumeFolder from '@/components/resume/SkeletonResume'
 import { usePathname } from 'next/navigation'
 
-export default function Resume({ userId }) {
+export default function Resume({ userId }: { userId: number }) {
   const [modal, setModal] = useState(false)
   const [ref, inView] = useInView({ threshold: 0.1 })
   const [likeList, setLikeList] = useState<string[]>([])
