@@ -1,3 +1,5 @@
+'use client'
+
 import Image from 'next/image'
 import CareerTag from '../common/CareerTag'
 import PositionTag from '../common/PositionTag'
