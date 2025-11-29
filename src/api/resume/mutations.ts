@@ -1,26 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { resumeKeys } from './keys'
-import { postLike, postBookmark, uploadResume } from './apis'
+import { postBookmark, uploadResume } from './apis'
 import { LikeBookmarkRequest, ResumeUploadRequest } from './types'
-
-// 좋아요 mutation
-export const useResumeLikeMutation = () => {
-  const queryClient = useQueryClient()
-
-  return useMutation<void, Error, LikeBookmarkRequest>({
-    mutationKey: [...resumeKeys.all, 'like'],
-    mutationFn: postLike,
-    onSuccess: async (_data, variables) => {
-      await Promise.all([
-        queryClient.invalidateQueries({
-          queryKey: resumeKeys.detail(variables.contentId),
-        }),
-        queryClient.invalidateQueries({ queryKey: resumeKeys.lists() }),
-        queryClient.invalidateQueries({ queryKey: resumeKeys.bestList() }),
-      ])
-    },
-  })
-}
 
 // 북마크 mutation
 export const useResumeBookmarkMutation = () => {

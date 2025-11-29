@@ -173,26 +173,6 @@ export const fetchUserResumes = async (
   }
 }
 
-// 좋아요 처리
-export const postLike = async (data: LikeBookmarkRequest): Promise<void> => {
-  const response = await fetch('/api/likes', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      contentId: data.contentId,
-      category: data.category,
-      likeStatus: data.likeStatus,
-    }),
-    credentials: 'include',
-  })
-
-  if (!response.ok) {
-    throw new Error('좋아요 처리 중 오류가 발생했습니다.')
-  }
-}
-
 // 북마크 처리
 export const postBookmark = async (
   data: LikeBookmarkRequest,

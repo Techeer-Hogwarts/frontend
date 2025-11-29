@@ -14,11 +14,11 @@ import { usePathname } from 'next/navigation'
 export default function Resume({ userId }: { userId: number }) {
   const [modal, setModal] = useState(false)
   const [ref, inView] = useInView({ threshold: 0.1 })
-  const [likeList, setLikeList] = useState<string[]>([])
   const [bookmarkList, setBookmarkList] = useState<string[]>([])
-
+  const [likeList, setLikeList] = useState<string[]>([])
   const { fetchLikes } = useLike()
   const { fetchBookmarks } = useBookmark()
+
   const pathname = usePathname()
   const isMyPage = pathname === '/mypage'
 
@@ -33,7 +33,7 @@ export default function Resume({ userId }: { userId: number }) {
     refetch,
   } = useUserResumeListQuery(userId, 10)
 
-  // 좋아요/북마크 상태 조회 함수들
+  // 좋아요 상태 조회
   const checkLike = useCallback(async () => {
     try {
       const data = await fetchLikes('RESUME', 0, 50)
@@ -43,8 +43,9 @@ export default function Resume({ userId }: { userId: number }) {
       console.error(err)
       return []
     }
-  }, []) // 의존성 배열에서 fetchLikes 제거
+  }, [fetchLikes])
 
+  // 북마크 상태 조회
   const checkBookmark = useCallback(async () => {
     try {
       const data = await fetchBookmarks('RESUME', 0, 50)
@@ -54,7 +55,7 @@ export default function Resume({ userId }: { userId: number }) {
       console.error(err)
       return []
     }
-  }, []) // 의존성 배열에서 fetchBookmarks 제거
+  }, [fetchBookmarks])
 
   const handleLikeUpdate = (resumeId: string, newLikeCount: number) => {
     setTimeout(() => {

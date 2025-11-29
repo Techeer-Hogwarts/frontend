@@ -7,10 +7,7 @@ import Image from 'next/image'
 import EmptyAnimation from '../common/EmptyAnimation'
 import { useLike } from '@/app/blog/_lib/useLike'
 import { useBookmark } from '@/app/blog/_lib/useBookmark'
-import {
-  useResumeLikeMutation,
-  useResumeBookmarkMutation,
-} from '@/api/resume/mutations'
+import { useResumeBookmarkMutation } from '@/api/resume/mutations'
 
 interface ResumeProps {
   likeCount: number
@@ -32,7 +29,6 @@ export default function ResumeFolder({
   const { postLike } = useLike()
   const { postBookmark } = useBookmark()
 
-  const likeMutation = useResumeLikeMutation()
   const bookmarkMutation = useResumeBookmarkMutation()
 
   const [resumes, setResumes] = useState<Resume[]>([])
@@ -45,11 +41,17 @@ export default function ResumeFolder({
 
   useEffect(() => {
     if (Array.isArray(likeList)) {
-      setIsLike(likeList.some((bookmark: any) => bookmark.id === resume.id))
+      setIsLike(
+        likeList.some(
+          (bookmark: any) => String(bookmark.id) === String(resume.id),
+        ),
+      )
     }
     if (Array.isArray(bookmarkList)) {
       setIsBookmark(
-        bookmarkList.some((bookmark: any) => bookmark.id === resume.id),
+        bookmarkList.some(
+          (bookmark: any) => String(bookmark.id) === String(resume.id),
+        ),
       )
     }
   }, [likeList, bookmarkList, resume.id])
@@ -64,13 +66,11 @@ export default function ResumeFolder({
       setIsLike(newIsLike)
       setLikeCount(newLikeCount)
 
-      await likeMutation.mutateAsync({
-        contentId: Number(resume.id),
-        category: 'RESUME',
-        likeStatus: newIsLike,
-      })
+      await postLike(Number(resume.id), 'RESUME', newIsLike)
 
-      onLikeUpdate(resume.id, newLikeCount)
+      if (typeof onLikeUpdate === 'function') {
+        onLikeUpdate(resume.id, newLikeCount)
+      }
     } catch (err) {
       // 에러 시 롤백
       setIsLike(!isLike)
