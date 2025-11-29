@@ -38,27 +38,26 @@ export const useEditStudy = (studyId: number) => {
     if (studyDetails.deleted) return
 
     setStudyData({
-        name: studyDetails.name || '',
-        githubLink: studyDetails.githubLink || '',
-        notionLink: studyDetails.notionLink || '',
-        studyExplain: studyDetails.studyExplain || '',
-        goal: studyDetails.goal || '',
-        rule: studyDetails.rule || '',
-        isFinished: studyDetails.finished || false,
-        isRecruited: studyDetails.recruited || false,
-        recruitNum: studyDetails.recruitNum || 0,
-        recruitExplain: studyDetails.recruitExplain || '',
-        // leader -> isLeader로 변환
-        studyMember: studyDetails.studyMember
-          ? studyDetails.studyMember.map((member) => ({
-              ...member,
-              isLeader: member.leader,
-            }))
-          : [],
-        resultImages: [],
-        deleteImages: [],
-      })
-    }
+      name: studyDetails.name || '',
+      githubLink: studyDetails.githubLink || '',
+      notionLink: studyDetails.notionLink || '',
+      studyExplain: studyDetails.studyExplain || '',
+      goal: studyDetails.goal || '',
+      rule: studyDetails.rule || '',
+      isFinished: studyDetails.finished || false,
+      isRecruited: studyDetails.recruited || false,
+      recruitNum: studyDetails.recruitNum || 0,
+      recruitExplain: studyDetails.recruitExplain || '',
+      // leader -> isLeader로 변환
+      studyMember: studyDetails.studyMember
+        ? studyDetails.studyMember.map((member) => ({
+            ...member,
+            isLeader: member.leader,
+          }))
+        : [],
+      resultImages: [],
+      deleteImages: [],
+    })
   }, [studyDetails])
 
   // 상태 업데이트 핸들러
