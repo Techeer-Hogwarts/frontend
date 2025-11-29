@@ -22,10 +22,22 @@ export const useEditStudy = (studyId: number) => {
   const [deleteImages, setDeleteImages] = useState<number[]>([])
   const [tempDeleted, setTempDeleted] = useState<DeletedStudyMember[]>([])
 
+  // 삭제된 스터디 체크 및 리다이렉트
+  useEffect(() => {
+    if (studyDetails && studyDetails.deleted) {
+      alert('삭제된 스터디입니다.')
+      router.push('/project')
+    }
+  }, [studyDetails, router])
+
   // 스터디 데이터 초기화
   useEffect(() => {
-    if (studyDetails) {
-      setStudyData({
+    if (!studyDetails) return
+
+    // 삭제된 스터디는 초기화하지 않음
+    if (studyDetails.deleted) return
+
+    setStudyData({
         name: studyDetails.name || '',
         githubLink: studyDetails.githubLink || '',
         notionLink: studyDetails.notionLink || '',

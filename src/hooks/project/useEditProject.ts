@@ -51,9 +51,20 @@ export const useEditProject = (projectId: number) => {
     null,
   )
 
+  // 삭제된 프로젝트 체크 및 리다이렉트
+  useEffect(() => {
+    if (projectDetails && projectDetails.deleted) {
+      alert('삭제된 프로젝트입니다.')
+      router.push('/project')
+    }
+  }, [projectDetails, router])
+
   // 프로젝트 데이터 초기화
   useEffect(() => {
     if (!projectDetails) return
+
+    // 삭제된 프로젝트는 초기화하지 않음
+    if (projectDetails.deleted) return
 
     // 기존 메인 이미지 ID 저장
     if (projectDetails.mainImages && projectDetails.mainImages.length > 0) {

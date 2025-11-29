@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react'
+import { useState, useCallback, useMemo, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useQueryClient } from '@tanstack/react-query'
 import { useAuthStore } from '@/store/authStore'
@@ -27,6 +27,14 @@ export const useProjectDetail = (projectId: number) => {
   // React Query: 프로젝트 상세 데이터
   const { data: projectDetails, isLoading: isProjectLoading } =
     useProjectDetailQuery(projectId)
+
+  // 삭제된 프로젝트 체크 및 리다이렉트
+  useEffect(() => {
+    if (projectDetails && projectDetails.deleted) {
+      alert('삭제된 프로젝트입니다.')
+      router.push('/project')
+    }
+  }, [projectDetails, router])
 
   // React Query: 프로젝트 지원자 목록
   const { data: projectApplicants, error: applicantsError } =

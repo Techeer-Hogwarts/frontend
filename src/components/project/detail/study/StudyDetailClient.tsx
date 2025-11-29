@@ -58,6 +58,11 @@ export default function StudyDetailClient({ studyId }: StudyDetailClientProps) {
     return <ProjectDetailSkeleton />
   }
 
+  // 삭제된 스터디인 경우 아무것도 렌더링하지 않음 (훅에서 리다이렉트 처리)
+  if (studyDetails.deleted) {
+    return null
+  }
+
   return (
     <div className="relative flex justify-between mt-[2.75rem] gap-[3.313rem]">
       {/* 모달들 */}

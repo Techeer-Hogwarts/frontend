@@ -40,6 +40,14 @@ export const useStudyDetail = (studyId: number) => {
   const closeStudyMutation = useCloseStudyMutation()
   const cancelApplicationMutation = useCancelStudyApplicationMutation()
 
+  // 삭제된 스터디 체크 및 리다이렉트
+  useEffect(() => {
+    if (studyDetails && studyDetails.deleted) {
+      alert('삭제된 스터디입니다.')
+      router.push('/project')
+    }
+  }, [studyDetails, router])
+
   // 스터디 멤버 여부 확인
   useEffect(() => {
     if (studyDetails && user) {
