@@ -3,7 +3,6 @@ import { withSentryConfig } from '@sentry/nextjs'
 
 const API_BASE_URL = process.env.API_BASE_URL || 'https://api.yje.kr/api'
 
-// Helper function to create remote pattern
 const createRemotePattern = (hostname, pathname = '/**') => ({
   protocol: 'https',
   hostname,
@@ -14,18 +13,44 @@ const createRemotePattern = (hostname, pathname = '/**') => ({
 const nextConfig = {
   images: {
     remotePatterns: [
-      // Blog platforms
+      {
+        protocol: 'https',
+        hostname: 'avatars.slack-edge.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'techeerzip-bucket.s3.ap-southeast-2.amazonaws.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'techeer-bucket.s3.ap-northeast-2.amazonaws.com',
+        port: '',
+        pathname: '/**',
+      },
       createRemotePattern('miro.medium.com'),
       createRemotePattern('medium.com'),
     ],
-    // SVG 파일 처리를 위한 설정
+    domains: [
+      'example.com',
+      'avatars.slack-edge.com',
+      'techeerzip-bucket.s3.ap-southeast-2.amazonaws.com',
+      'techeer-bucket.s3.ap-northeast-2.amazonaws.com',
+      'images.velog.io',
+      'encore.cloud',
+      'github.com',
+      'cdn.discordapp.com',
+      'bootcamp.com',
+    ], // 허용할 외부 도메인 추가
     dangerouslyAllowSVG: true,
     contentDispositionType: 'attachment',
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
 
   transpilePackages: ['framer-motion'],
-
   reactStrictMode: true,
 
   async rewrites() {
@@ -38,10 +63,14 @@ const nextConfig = {
         source: '/api/:path*',
         destination: `${API_BASE_URL}/v3/:path*`,
       },
+      // {
+      //   source: '/feedback/:path*',
+      //   destination: `${API_BASE_URL}/../feedback/:path*`,
+      // },
     ]
   },
   webpack: (config) => {
-    // SVG 파일을 React 컴포넌트로 처리하는 설정
+    // SVG 파일을 처리하는 설정
     config.module.rules.push({
       test: /\.svg$/,
       use: ['@svgr/webpack'],
