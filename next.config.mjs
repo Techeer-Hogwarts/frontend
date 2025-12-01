@@ -1,8 +1,14 @@
 import { withSentryConfig } from '@sentry/nextjs'
 /** @type {import('next').NextConfig} */
 
-const API_BASE_URL =
-  process.env.API_BASE_URL || 'https://api.yje.kr/api'
+const API_BASE_URL = process.env.API_BASE_URL || 'https://api.yje.kr/api'
+
+const createRemotePattern = (hostname, pathname = '/**') => ({
+  protocol: 'https',
+  hostname,
+  port: '',
+  pathname,
+})
 
 const nextConfig = {
   images: {
@@ -25,13 +31,9 @@ const nextConfig = {
         port: '',
         pathname: '/**',
       },
+      createRemotePattern('miro.medium.com'),
+      createRemotePattern('medium.com'),
     ],
-    transpilePackages: ['framer-motion'],
-  },
-
-  reactStrictMode: true,
-
-  images: {
     domains: [
       'example.com',
       'avatars.slack-edge.com',
@@ -43,7 +45,13 @@ const nextConfig = {
       'cdn.discordapp.com',
       'bootcamp.com',
     ], // 허용할 외부 도메인 추가
+    dangerouslyAllowSVG: true,
+    contentDispositionType: 'attachment',
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
+
+  transpilePackages: ['framer-motion'],
+  reactStrictMode: true,
 
   async rewrites() {
     return [
@@ -55,6 +63,10 @@ const nextConfig = {
         source: '/api/:path*',
         destination: `${API_BASE_URL}/v3/:path*`,
       },
+      // {
+      //   source: '/feedback/:path*',
+      //   destination: `${API_BASE_URL}/../feedback/:path*`,
+      // },
     ]
   },
   webpack: (config) => {

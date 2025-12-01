@@ -35,7 +35,12 @@ export const useLogin = () => {
       await loginUser(data)
       setIsLoggedIn(true)
       await checkAuth()
-      router.replace('/')
+
+      if (redirectPath) {
+        router.replace(redirectPath)
+      } else {
+        router.replace('/home')
+      }
     } catch (error) {
       if (error.status == 404) {
         setError('root', {

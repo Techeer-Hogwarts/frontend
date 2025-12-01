@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import Image from 'next/image'
 import Select from '../signup/Select'
 import ProfileInputField from './ProfileInputField'
@@ -8,35 +8,11 @@ import { AiOutlineSync } from 'react-icons/ai'
 import { RxQuestionMarkCircled } from 'react-icons/rx'
 import MyExperienceSection from './MyExperienceSection'
 import { useRouter } from 'next/navigation'
-
-interface Experience {
-  id?: number
-  position: string
-  companyName: string
-  startDate: string
-  endDate: string | null
-  category?: string
-  isCurrentJob?: boolean
-  description?: string
-  isFinished?: boolean
-}
-
-interface ProfileData {
-  profileImage: string
-  name: string
-  email: string
-  school: string
-  grade: string
-  year: number
-  mainPosition: string
-  subPosition: string
-  githubUrl: string
-  mediumUrl: string
-  velogUrl: string
-  tistoryUrl: string
-  isLft: boolean
-  experiences?: Experience[]
-}
+import { deleteExperience } from '@/api/mypage/deleteExperience'
+import { getProfileImg } from '@/api/mypage/getProfileImg'
+import { updateProfile } from '@/api/mypage/updateProfile'
+import { updateGithub } from '@/api/mypage/updateGithub'
+import { Experience, ProfileData } from '@/types/mypage/mypage.types'
 
 interface ProfileProps {
   profile: ProfileData | null
@@ -90,6 +66,11 @@ export default function Profile({ profile }: ProfileProps) {
   const [syncIsError, setSyncIsError] = useState(false)
   const [updateMessage, setUpdateMessage] = useState('')
 
+  const [githubSyncMessage, setGithubSyncMessage] = useState('')
+  const [githubSyncIsError, setGithubSyncIsError] = useState(false)
+  const [isGithubEditMode, setIsGithubEditMode] = useState(false)
+  const [tempGithubUrl, setTempGithubUrl] = useState('')
+
   const bottomRef = useRef<HTMLDivElement>(null)
 
   // 프로필 사진 동기화
@@ -102,48 +83,84 @@ export default function Profile({ profile }: ProfileProps) {
       setSyncMessage('이메일 정보가 없습니다.')
       return
     }
-    try {
-      const response = await fetch('/api/users/profileImage', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ email }),
-      })
 
-      if (!response.ok) {
-        const errData = await response.json().catch(() => null)
-        setSyncIsError(true)
-        setSyncMessage(`동기화 실패: ${errData?.message || '알 수 없는 오류'}`)
-        return
-      }
-      const data = await response.json()
+    try {
+      const data = await getProfileImg({ email })
       setProfileImage(data.profileImage)
       setSyncIsError(false)
       setSyncMessage('프로필 사진 동기화가 완료되었습니다.')
-    } catch (err) {
+    } catch (err: any) {
       setSyncIsError(true)
       setSyncMessage('네트워크 오류가 발생했습니다.')
     }
   }
 
-  // 삭제 요청: 인턴 / 정규직
-  //  - MyExperienceSection에서 삭제 버튼을 누르면 호출됨
+  // GitHub URL에서 사용자명 추출
+  const extractGithubUsername = (url: string) => {
+    const match = url.match(/github\.com\/([^\/]+)/)
+    return match ? match[1] : ''
+  }
+
+  // GitHub 수정 모드 토글
+  const toggleGithubEditMode = () => {
+    if (!isGithubEditMode) {
+      // 수정 모드 진입: 현재 GitHub URL을 임시 저장
+      setTempGithubUrl(githubUrl)
+    } else {
+      // 수정 모드 취소: 임시 저장된 URL로 되돌리기
+      setGithubUrl(tempGithubUrl)
+    }
+    setIsGithubEditMode(!isGithubEditMode)
+    setGithubSyncMessage('')
+    setGithubSyncIsError(false)
+  }
+
+  // GitHub 동기화
+  const handleGithubSync = async () => {
+    setGithubSyncMessage('')
+    setGithubSyncIsError(false)
+
+    if (!githubUrl.trim()) {
+      setGithubSyncIsError(true)
+      setGithubSyncMessage('GitHub 아이디를 입력해주세요.')
+      return
+    }
+
+    try {
+      // 1. GitHub URL 업데이트 (별도 API 사용)
+      await updateGithub(githubUrl)
+
+      setGithubSyncIsError(false)
+      setGithubSyncMessage('GitHub 데이터 동기화가 완료되었습니다.')
+
+      // 2. 수정 모드 종료 및 임시 URL 정리
+      setIsGithubEditMode(false)
+      setTempGithubUrl('')
+
+      // 3. 새로고침하여 최신 데이터 로드
+      window.location.reload()
+    } catch (err: any) {
+      setGithubSyncIsError(true)
+      setGithubSyncMessage(
+        err.message || 'GitHub 동기화 중 오류가 발생했습니다.',
+      )
+    }
+  }
+
   const handleDeleteInternExp = (id: number) => {
-    // 이미 DB에 있던 항목이면, DELETE API를 위해 id를 저장
-    if (id) {
+    if (id && id > 0) {
       setDeletedInternshipIds((prev) => [...prev, id])
     }
     setInternshipExperiences((prev) => prev.filter((item) => item.id !== id))
   }
 
   const handleDeleteFullTimeExp = (id: number) => {
-    if (id) {
+    if (id && id > 0) {
       setDeletedFullTimeIds((prev) => [...prev, id])
     }
     setFullTimeExperiences((prev) => prev.filter((item) => item.id !== id))
   }
 
-  // 최종 수정 로직
   const handleProfileUpdate = async () => {
     setUpdateMessage('')
 
@@ -173,64 +190,60 @@ export default function Profile({ profile }: ProfileProps) {
 
     const finalSchool = school === '해당 없음' ? customSchool.trim() : school
 
-    // 경력 삭제
     try {
-      // 인턴
       for (const delId of deletedInternshipIds) {
-        await fetch(`/users/experience/${delId}`, {
-          method: 'DELETE',
-          credentials: 'include',
-        })
+        await deleteExperience(delId)
       }
-      // 정규직
       for (const delId of deletedFullTimeIds) {
-        await fetch(`/users/experience/${delId}`, {
-          method: 'DELETE',
-          credentials: 'include',
-        })
+        await deleteExperience(delId)
       }
     } catch (err) {
       alert('경력 삭제 중 오류가 발생했습니다.')
       return
     }
 
-    const finalInternships = internshipExperiences.map((exp) => {
-      // 음수 ID => 새로 추가된 항목
-      if (exp.id && exp.id < 0) {
-        const { id, ...rest } = exp
-        return {
-          ...rest,
-          category: '인턴',
+    const finalInternships = internshipExperiences
+      .filter(
+        (exp) => exp.id !== undefined && !deletedInternshipIds.includes(exp.id),
+      )
+      .map((exp) => {
+        // 양수 ID만 기존 경력, 그 외는 신규 경력
+        if (exp.id && exp.id > 0) {
+          const { id, ...rest } = exp
+          return {
+            experienceId: id,
+            ...rest,
+            category: '인턴',
+          }
+        } else {
+          const { id, ...rest } = exp
+          return {
+            ...rest,
+            category: '인턴',
+          }
         }
-      } else {
-        // 양수 ID => 기존 항목
-        const { id, ...rest } = exp
-        return {
-          experienceId: id, // id → experienceId
-          ...rest,
-          category: '인턴',
-        }
-      }
-    })
+      })
 
-    const finalFullTimes = fullTimeExperiences.map((exp) => {
-      if (exp.id && exp.id < 0) {
-        // 새 항목
-        const { id, ...rest } = exp
-        return {
-          ...rest,
-          category: '정규직',
+    const finalFullTimes = fullTimeExperiences
+      .filter(
+        (exp) => exp.id !== undefined && !deletedFullTimeIds.includes(exp.id),
+      )
+      .map((exp) => {
+        if (exp.id && exp.id > 0) {
+          const { id, ...rest } = exp
+          return {
+            experienceId: id,
+            ...rest,
+            category: '정규직',
+          }
+        } else {
+          const { id, ...rest } = exp
+          return {
+            ...rest,
+            category: '정규직',
+          }
         }
-      } else {
-        // 기존 항목
-        const { id, ...rest } = exp
-        return {
-          experienceId: id, // id → experienceId
-          ...rest,
-          category: '정규직',
-        }
-      }
-    })
+      })
 
     // PATCH "수정/추가" 처리
     const payload = {
@@ -241,7 +254,8 @@ export default function Profile({ profile }: ProfileProps) {
         grade: classYear,
         mainPosition,
         subPosition,
-        githubUrl,
+        // 수정 모드일 때는 원래 URL 사용, 수정 모드가 아닐 때는 현재 URL 사용
+        githubUrl: isGithubEditMode ? tempGithubUrl : githubUrl,
         ...(mediumUrl.trim() ? { mediumUrl } : {}),
         ...(velogUrl.trim() ? { velogUrl } : {}),
         ...(tistoryUrl.trim() ? { tistoryUrl } : {}),
@@ -252,25 +266,15 @@ export default function Profile({ profile }: ProfileProps) {
     }
 
     try {
-      const response = await fetch('/api/users', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify(payload),
-      })
+      // 1. 프로필 업데이트
+      await updateProfile(payload)
 
-      if (!response.ok) {
-        if (response.status === 400) {
-          alert('항목을 모두 입력해주세요.')
-          return
-        }
-        return
-      }
+      // GitHub 동기화는 별도 버튼으로만 실행
 
       setUpdateMessage('프로필 업데이트가 완료되었습니다.')
       window.location.reload()
     } catch (error: any) {
-      alert('네트워크 오류가 발생했습니다.')
+      setUpdateMessage('네트워크 오류가 발생했습니다.')
     }
   }
 
@@ -451,13 +455,61 @@ export default function Profile({ profile }: ProfileProps) {
         </div>
       </div>
 
-      {/* 링크 입력 */}
-      <ProfileInputField
-        title="깃허브"
-        placeholder="깃허브 주소"
-        value={githubUrl}
-        onChange={(e) => setGithubUrl(e.target.value)}
-      />
+      {/* 깃허브 */}
+      <div className="flex items-center">
+        <h3 className="text-lg w-[130px]">깃허브</h3>
+        <div className="flex gap-3 items-center">
+          <input
+            className="w-40 h-10 px-4 border border-gray rounded-[0.25rem] focus:outline-none focus:border-primary"
+            placeholder="GitHub 아이디"
+            value={extractGithubUsername(githubUrl)}
+            onChange={(e) => {
+              const username = e.target.value
+              const fullUrl = username ? `https://github.com/${username}` : ''
+              setGithubUrl(fullUrl)
+            }}
+            readOnly={!isGithubEditMode}
+            style={{
+              color: !isGithubEditMode ? '#6b7280' : '#000000',
+            }}
+          />
+          <div className="flex gap-2 text-sm items-center">
+            {!isGithubEditMode ? (
+              <button
+                onClick={toggleGithubEditMode}
+                className="flex items-center justify-center text-primary w-[90px] h-10 border rounded-md border-primary"
+              >
+                수정
+              </button>
+            ) : (
+              <button
+                onClick={handleGithubSync}
+                className="flex items-center justify-center text-primary w-[90px] h-10 border rounded-md border-primary"
+              >
+                <AiOutlineSync />
+                동기화
+              </button>
+            )}
+            <div className="flex flex-col">
+              <div className="flex gap-1 text-sm items-center text-gray">
+                <RxQuestionMarkCircled />
+                {isGithubEditMode
+                  ? '깃허브 아이디 변경 시 동기화 됩니다.'
+                  : '수정 버튼을 눌러 GitHub 아이디를 변경하세요.'}
+              </div>
+              {githubSyncMessage && (
+                <p
+                  className={`text-sm ${
+                    githubSyncIsError ? 'text-red-500' : 'text-green'
+                  }`}
+                >
+                  {githubSyncMessage}
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
       <ProfileInputField
         title="미디엄"
         placeholder="Medium 주소"

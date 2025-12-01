@@ -38,17 +38,7 @@ interface BasicResult {
   url?: string
 }
 
-const navItems: { key: string; href: string }[] = [
-  { key: 'bootcamp', href: '/bootcamp' },
-  { key: 'project', href: '/project' },
-  { key: 'profile', href: '/profile' },
-  { key: 'resume', href: '/resume' },
-  { key: 'blog', href: '/blog' },
-  { key: 'session', href: '/session' },
-  { key: 'cs', href: '/cs' },
-]
-
-export default function NavBar() {
+export default function NavBar({ homeLink }: { homeLink?: string }) {
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const [query, setQuery] = useState('')
   const [basicResults, setBasicResults] = useState<BasicResult[]>([])
@@ -76,6 +66,17 @@ export default function NavBar() {
     bootcamp: '부트캠프',
     cs: '금주의 CS',
   }
+
+  const navItems: { key: string; href: string }[] = [
+    { key: 'bootcamp', href: '/bootcamp' },
+    { key: 'project', href: '/project' },
+    { key: 'profile', href: '/profile' },
+    { key: 'resume', href: '/resume' },
+    { key: 'blog', href: '/blog' },
+    { key: 'session', href: '/session' },
+    { key: 'cs', href: '/cs' },
+  ]
+
   const handleSelectResult = async (
     selectedTitle: string,
     section: string,
@@ -206,7 +207,7 @@ export default function NavBar() {
     >
       <div className="flex">
         <Link
-          href="/"
+          href={homeLink || (isLoggedIn ? '/home' : '/')}
           className="font-logo text-primary text-[2rem] font-extrabold mr-[2.12rem]"
         >
           TECHEER.ZIP
@@ -267,36 +268,31 @@ export default function NavBar() {
                             ? result.title.slice(0, 16) + '...'
                             : result.title
                         return (
-                          <div
-                            key={result.id}
-                            className="flex items-center pl-4 hover:bg-lightprimary"
+                          <li
+                            key={`${result.id}-${index}`}
+                            className="flex items-center pl-4 hover:bg-lightprimary p-1 font-light cursor-pointer"
+                            onClick={() =>
+                              handleSelectResult(
+                                result.title.split('-').slice(-1).join(' '),
+                                result.index,
+                                result.id,
+                                result.url,
+                              )
+                            }
                           >
                             <IoSearchOutline
-                              className="w-3"
+                              className="w-3 mr-2"
                               onClick={toggleSearch}
                             />
-                            <li
-                              key={index}
-                              className="p-1 font-light cursor-pointer"
-                              onClick={() =>
-                                handleSelectResult(
-                                  result.title.split('-').slice(-1).join(' '),
-                                  result.index,
-                                  result.id,
-                                  result.url,
-                                )
-                              }
-                            >
-                              <span className="text-sm  text-primary">
-                                {indexMap[result.index] || result.index}
-                                <span className="text-gray">
-                                  {' '}
-                                  &nbsp; | &nbsp;
-                                </span>
+                            <span className="text-sm  text-primary">
+                              {indexMap[result.index] || result.index}
+                              <span className="text-gray">
+                                {' '}
+                                &nbsp; | &nbsp;
                               </span>
-                              {truncatedTitle}
-                            </li>
-                          </div>
+                            </span>
+                            {truncatedTitle}
+                          </li>
                         )
                       })
                     ) : (

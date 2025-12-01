@@ -8,8 +8,10 @@ import { useRouter } from 'next/navigation'
 
 export default function ProtectedLayout({
   children,
+  modal,
 }: {
   children: React.ReactNode
+  modal: React.ReactNode
 }) {
   const { isLoggedIn } = useAuthStore()
   const { isOpen, onOpen, onClose } = useAuthModal()
@@ -39,5 +41,10 @@ export default function ProtectedLayout({
     return <AuthModal isOpen={isOpen} onClose={handleLoginReject} />
   }
 
-  return <>{children}</>
+  return (
+    <>
+      {children}
+      {modal}
+    </>
+  )
 }

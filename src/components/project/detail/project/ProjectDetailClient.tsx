@@ -58,6 +58,11 @@ export default function ProjectDetailClient({
     return <ProjectDetailSkeleton />
   }
 
+  // 삭제된 프로젝트인 경우 아무것도 렌더링하지 않음 (훅에서 리다이렉트 처리)
+  if (projectDetails.deleted) {
+    return null
+  }
+
   const { recruited } = projectDetails
 
   return (

@@ -9,9 +9,9 @@ import { useQueryClient } from '@tanstack/react-query'
 import { getPositionStyle } from '@/styles/positionStyles'
 
 // 프로젝트 지원 API
-import { handleApplyProject } from '@/api/project/project/project'
+import { handleApplyProject } from '@/api/project/project'
 // 스터디 지원 API
-import { handleApplyStudy } from '@/api/project/study/study'
+import { handleApplyStudy } from '@/api/project/study'
 
 interface ApplyModalProps {
   /** 'project' 또는 'study' 모드 지정 */
@@ -51,16 +51,18 @@ export default function ApplyModal({ variant }: ApplyModalProps) {
           summary,
         })
         queryClient.invalidateQueries({
-          queryKey: ['getProjectDetails', teamId],
+          queryKey: ['project', 'projects', 'detail', teamId],
         })
         queryClient.invalidateQueries({
-          queryKey: ['getProjectApplicants', teamId],
+          queryKey: ['project', 'projects', 'applicants', teamId],
         })
       } else {
         await handleApplyStudy({ studyTeamId: teamId, summary })
-        queryClient.invalidateQueries({ queryKey: ['getStudyDetails', teamId] })
         queryClient.invalidateQueries({
-          queryKey: ['getStudyApplicants', teamId],
+          queryKey: ['study', 'studies', 'detail', teamId],
+        })
+        queryClient.invalidateQueries({
+          queryKey: ['study', 'studies', 'applicants', teamId],
         })
       }
       router.back()

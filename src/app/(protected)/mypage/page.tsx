@@ -9,11 +9,20 @@ import Settings from '@/components/mypage/Settings'
 import Bookmark from '@/components/mypage/Bookmark'
 import MypageTap from '@/components/mypage/MypageTap'
 import ProfileBox from '@/components/profile/ProfileBox'
+import Statistics from '@/components/mypage/Statistics'
+import Feedback from '@/components/mypage/Feedback'
 import { useFetchProfile } from '@/hooks/mypage/useFetchProfile'
 
 export default function Mypage() {
   const [activeTab, setActiveTab] = useState<
-    'home' | 'profile' | 'resume' | 'bookmark' | 'likes' | 'settings'
+    | 'home'
+    | 'profile'
+    | 'resume'
+    | 'bookmark'
+    | 'likes'
+    | 'feedback'
+    | 'settings'
+    | 'statistics'
   >('home')
 
   const { profile, loading, error } = useFetchProfile()
@@ -43,7 +52,11 @@ export default function Mypage() {
       {activeTab === 'resume' && <Resume userId={Number(profile?.id)} />}
       {activeTab === 'bookmark' && <Bookmark />}
       {activeTab === 'likes' && <Likes />}
+      {activeTab === 'feedback' && <Feedback />}
       {activeTab === 'settings' && <Settings />}
+      {activeTab === 'statistics' && profile?.id && profile?.year && (
+        <Statistics userId={Number(profile.id)} year={Number(profile.year)} />
+      )}
     </div>
   )
 }

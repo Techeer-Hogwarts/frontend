@@ -1,14 +1,14 @@
-import { useState, useCallback, useMemo } from 'react'
+import { useState, useCallback, useMemo, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useQueryClient } from '@tanstack/react-query'
 import { useAuthStore } from '@/store/authStore'
 import {
-  getProjectDetail,
-  deleteProjectTeam,
-  getProjectApplicants,
-  handleCloseProject,
-  handleDenyProject,
-} from '@/api/project/project/project'
+  useProjectDetailQuery,
+  useProjectApplicantsQuery,
+  useDeleteProjectMutation,
+  useCloseProjectMutation,
+  useCancelProjectApplicationMutation,
+} from '@/api/project/project'
 import { ModalType, Applicant } from '@/types/project/project'
 export const useProjectDetail = (projectId: number) => {
   const router = useRouter()
@@ -25,23 +25,25 @@ export const useProjectDetail = (projectId: number) => {
   )
 
   // React Query: 프로젝트 상세 데이터
-  const { data: projectDetails, isLoading: isProjectLoading } = useQuery({
-    queryKey: ['getProjectDetails', projectId],
-    queryFn: () => getProjectDetail(projectId),
-    enabled: projectId !== null,
-  })
+  const { data: projectDetails, isLoading: isProjectLoading } =
+    useProjectDetailQuery(projectId)
+
+  // 삭제된 프로젝트 체크 및 리다이렉트
+  useEffect(() => {
+    if (projectDetails && projectDetails.deleted) {
+      alert('삭제된 프로젝트입니다.')
+      router.push('/project')
+    }
+  }, [projectDetails, router])
 
   // React Query: 프로젝트 지원자 목록
-  const { data: projectApplicants, error: applicantsError } = useQuery({
-    queryKey: ['getProjectApplicants', projectId],
-    queryFn: () => {
-      return getProjectApplicants(projectId)
-    },
-    enabled: projectId !== null,
-    staleTime: Infinity, // 새로고침 전까지 캐시 유지
-    gcTime: 1000 * 60 * 10, // 10분간 캐시 유지
-    retry: false, // 404 에러시 재시도 안함
-  })
+  const { data: projectApplicants, error: applicantsError } =
+    useProjectApplicantsQuery(projectId)
+
+  // Mutations
+  const deleteProjectMutation = useDeleteProjectMutation()
+  const closeProjectMutation = useCloseProjectMutation()
+  const cancelApplicationMutation = useCancelProjectApplicationMutation()
 
   // 계산된 값들
   const isTeamMember = useMemo(() => {
@@ -127,44 +129,19 @@ export const useProjectDetail = (projectId: number) => {
     if (!projectId || !modalType) return
 
     try {
-      let success = false
-
       switch (modalType) {
         case 'delete':
-          {
-            const response = await deleteProjectTeam(projectId)
-            success = response.ok
-            if (success) {
-              router.push('/project')
-            }
-          }
+          await deleteProjectMutation.mutateAsync(projectId)
+          router.push('/project')
           break
-        case 'close': {
-          const response = await handleCloseProject(projectId)
-          success = response.ok
-          if (success) {
-            queryClient.invalidateQueries({
-              queryKey: ['getProjectDetails', projectId],
-            })
-            router.refresh()
-          }
+        case 'close':
+          await closeProjectMutation.mutateAsync(projectId)
+          router.refresh()
           break
-        }
-        case 'cancel': {
-          const response = await handleDenyProject(projectId)
-          success = response.ok
-          if (success) {
-            queryClient.invalidateQueries({
-              queryKey: ['getProjectApplicants', projectId],
-            })
-            router.refresh()
-          }
+        case 'cancel':
+          await cancelApplicationMutation.mutateAsync(projectId)
+          router.refresh()
           break
-        }
-      }
-
-      if (!success) {
-        throw new Error('작업 실행에 실패했습니다.')
       }
     } catch (error) {
       console.error('모달 확인 처리 중 오류:', error)
@@ -172,7 +149,15 @@ export const useProjectDetail = (projectId: number) => {
     } finally {
       closeModal()
     }
-  }, [projectId, modalType, router, queryClient, closeModal])
+  }, [
+    projectId,
+    modalType,
+    router,
+    deleteProjectMutation,
+    closeProjectMutation,
+    cancelApplicationMutation,
+    closeModal,
+  ])
 
   return {
     // 데이터

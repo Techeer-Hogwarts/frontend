@@ -6,7 +6,9 @@ import { useEffect, useState } from 'react'
 import { useAuthStore } from '@/store/authStore'
 import { getSingleSession } from '@/api/session/session'
 
-export default function ShowVideo() {
+export default function ShowVideo({
+  onClose,
+}: Readonly<{ onClose?: () => void }>) {
   const params = useParams()
   const sessionId = params.id as string
   const [sessionUrl, setSessionUrl] = useState('')
@@ -57,14 +59,15 @@ export default function ShowVideo() {
             src={sessionUrl}
             allow="autoplay; fullscreen"
             allowFullScreen
-            width="640"
-            height="480"
+            width="960"
+            height="540"
             title="Session Video"
+            className="rounded-lg"
           />
 
           <button
-            onClick={() => (window.location.href = '/session')}
-            className="absolute z-40 flex items-center justify-center text-white text-gray-500 rounded-full top-6 right-6 w-7 h-7 bg-black/60 hover:text-white/70"
+            onClick={onClose}
+            className="absolute z-40 flex items-center justify-center text-white text-gray-500 rounded-full top-6 right-6 w-9 h-9 bg-black/60 hover:text-white/70 hover:bg-black/80 transition-all"
           >
             ✕
           </button>

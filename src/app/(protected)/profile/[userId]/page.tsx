@@ -8,13 +8,16 @@ import ProfileBox from '@/components/profile/ProfileBox'
 import ProfilepageTap from '@/components/profile/ProfilepageTap'
 import { fetchUserProfile } from '../api/getUserProfile'
 import Skeleton from '@/components/profile/Skeleton'
+import Statistics from '@/components/mypage/Statistics'
 
 export default function Page({
   params,
 }: {
   params: Promise<{ userId: string }>
 }) {
-  const [activeTab, setActiveTab] = useState<'home' | 'resume'>('home')
+  const [activeTab, setActiveTab] = useState<'home' | 'resume' | 'statistics'>(
+    'home',
+  )
 
   const [profileData, setProfileData] = useState<any>(null)
   const [loading, setLoading] = useState(true)
@@ -62,6 +65,12 @@ export default function Page({
       )}
       {/* {activeTab === 'profile' && <Profile profile={profileData} />} */}
       {activeTab === 'resume' && <Resume userId={Number(userId)} />}
+      {activeTab === 'statistics' && profileData?.id && profileData?.year && (
+        <Statistics
+          userId={Number(profileData.id)}
+          year={Number(profileData.year)}
+        />
+      )}
     </div>
   )
 }

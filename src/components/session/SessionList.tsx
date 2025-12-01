@@ -3,7 +3,7 @@
 import FilterBtn from './FilterBtn'
 import SessionPost from './SessionPost'
 import Dropdown from '../common/Dropdown'
-import EmptyLottie from '../common/EmptyLottie'
+import EmptyAnimation from '../common/EmptyAnimation'
 import BlogPostSkeleton from '../blog/BlogPostSkeleton'
 import { useEffect, useState } from 'react'
 import { useLike } from '@/app/blog/_lib/useLike'
@@ -11,6 +11,7 @@ import { useTapBarStore } from '@/store/tapBarStore'
 import { useInView } from 'react-intersection-observer'
 import { useAuthModal } from '@/store/useAuthModal'
 import { useSessionsQuery } from '@/hooks/session/useSessionsQuery'
+import { useUrlQueryFilters } from '@/hooks/useUrlQueryFilters'
 
 interface User {
   name: string
@@ -50,17 +51,23 @@ const BootcampPeriod = [
 ]
 const Position = ['FRONTEND', 'BACKEND', 'DEVOPS', 'OTHERS']
 
-export default function SessionList() {
+export default function SessionList({
+  searchResults,
+}: {
+  searchResults?: any
+}) {
   const { fetchLikes } = useLike()
   const { activeOption } = useTapBarStore()
   const { isOpen: authModalOpen, onOpen: openAuthModal } = useAuthModal()
+  const { filters, set } = useUrlQueryFilters()
 
-  const [selectedFilters, setSelectedFilters] = useState({
-    partners: [] as string[],
-    bootcamp: [] as string[],
-    position: [] as string[],
-  })
-  const [limit, setLimit] = useState(12)
+  // URL 쿼리에서 직접 필터 값 사용
+  const selectedFilters = {
+    partners: filters.selectedPartners || [],
+    bootcamp: filters.selectedBootcamp || [],
+    position: filters.selectedPosition || [],
+  }
+  const [limit] = useState(12)
   const [cursorId, setCursorId] = useState<number | undefined>(undefined)
   const [hasNext, setHasNext] = useState(true)
   const [likeList, setLikeList] = useState([])
@@ -72,7 +79,13 @@ export default function SessionList() {
   const sortByOptions = ['최신순', '가나다순']
 
   const updateFilter = (key: keyof typeof selectedFilters, value: string[]) => {
-    setSelectedFilters((prev) => ({ ...prev, [key]: value }))
+    if (key === 'partners') {
+      set('selectedPartners', value)
+    } else if (key === 'bootcamp') {
+      set('selectedBootcamp', value)
+    } else if (key === 'position') {
+      set('selectedPosition', value)
+    }
   }
 
   const {
@@ -146,7 +159,13 @@ export default function SessionList() {
     setCursorId(undefined)
     setHasNext(true)
     checkLike()
-  }, [activeOption, selectedFilters, selectedSortBy])
+  }, [
+    activeOption,
+    selectedFilters.partners.join(','),
+    selectedFilters.bootcamp.join(','),
+    selectedFilters.position.join(','),
+    selectedSortBy[0],
+  ])
 
   useEffect(() => {
     // 무한 스크롤 트리거
@@ -254,21 +273,36 @@ export default function SessionList() {
               <FilterBtn
                 key={period}
                 title={period}
-                onClick={() => updateFilter('partners', [])}
+                onClick={() =>
+                  updateFilter(
+                    'partners',
+                    selectedFilters.partners.filter((p) => p !== period),
+                  )
+                }
               />
             ))}
             {selectedFilters.bootcamp.map((period) => (
               <FilterBtn
                 key={period}
                 title={period}
-                onClick={() => updateFilter('bootcamp', [])}
+                onClick={() =>
+                  updateFilter(
+                    'bootcamp',
+                    selectedFilters.bootcamp.filter((b) => b !== period),
+                  )
+                }
               />
             ))}
-            {selectedFilters.position.map((period) => (
+            {selectedFilters.position.map((pos) => (
               <FilterBtn
-                key={period}
-                title={period}
-                onClick={() => updateFilter('position', [])}
+                key={pos}
+                title={pos}
+                onClick={() =>
+                  updateFilter(
+                    'position',
+                    selectedFilters.position.filter((p) => p !== pos),
+                  )
+                }
               />
             ))}
           </div>
@@ -283,7 +317,7 @@ export default function SessionList() {
       )}
       <div className="flex justify-center w-[1200px]">
         {authModalOpen && (
-          <EmptyLottie
+          <EmptyAnimation
             text="세션 데이터가 없습니다."
             text2="로그인 후 다시 시도해주세요."
           />
@@ -291,12 +325,45 @@ export default function SessionList() {
         {!authModalOpen &&
           (error ||
             (sessionsResponse && !isLoading && allSessions.length === 0)) && (
-            <EmptyLottie
+            <EmptyAnimation
               text="세션 데이터가 없습니다."
               text2="다시 조회해주세요."
             />
           )}
-        {!authModalOpen && !error && allSessions.length > 0 && (
+        {Array.isArray(searchResults) && searchResults.length > 0 ? (
+          // 검색 결과가 있을 때
+          <div className="grid grid-cols-4 gap-8 mt-[2.84rem] w-[1200px]">
+            {searchResults.map((result: any) => {
+              // 검색 결과를 SessionPost에 맞는 형태로 변환
+              const sessionData = {
+                id: result.id,
+                title: result.title,
+                date: result.date,
+                presenter: result.presenter,
+                likeCount: parseInt(result.likeCount) || 0,
+                thumbnail: result.thumbnail,
+                fileUrl: '', // 검색 결과에 없으므로 빈 문자열
+                userId: '', // 검색 결과에 없으므로 빈 문자열
+                user: {
+                  name: result.presenter,
+                  profileImage: '',
+                },
+                videoUrl: '', // 검색 결과에 없으므로 빈 문자열
+              }
+
+              return (
+                <SessionPost
+                  key={result.id}
+                  {...sessionData}
+                  showMessage={showMessage}
+                  likeList={likeList}
+                  onLikeUpdate={handleLikeUpdate}
+                />
+              )
+            })}
+          </div>
+        ) : !authModalOpen && !error && allSessions.length > 0 ? (
+          // 정상 데이터 표시
           <div className="grid grid-cols-4 gap-8 mt-[2.84rem] w-[1200px]">
             {allSessions.map((data: Session) => (
               <SessionPost
@@ -309,7 +376,7 @@ export default function SessionList() {
             ))}
             <div ref={ref} className="h-1" />
           </div>
-        )}
+        ) : null}
       </div>
       {message && (
         <div className="fixed z-50 px-4 py-2 text-center text-white transform -translate-x-1/2 rounded-md bg-red-500/80 bottom-5 left-1/2">

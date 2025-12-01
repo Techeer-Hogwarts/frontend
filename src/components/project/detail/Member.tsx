@@ -45,12 +45,17 @@ export default function Member({ variant, members }: MemberProps) {
           const { name, leader, teamRole, profileImage, userId } = member
           const displayRole = teamRole === 'DATA_ENGINEER' ? 'DATA' : teamRole
           const { bg, textColor } = getPositionStyle(teamRole)
+          
+          // 안전한 프로필 이미지 처리
+          const safeProfileImage = profileImage && profileImage.trim() !== '' 
+            ? profileImage 
+            : '/images/profile/profileLayout.png'
 
           return (
             <Link href={`/profile/${userId}`} key={name}>
               <div className="relative w-[4.75rem] h-[7.4375rem] flex flex-col items-center justify-center">
                 <Image
-                  src={profileImage}
+                  src={safeProfileImage}
                   width={76}
                   height={76}
                   alt={name}

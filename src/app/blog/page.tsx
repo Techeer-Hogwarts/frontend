@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import TapBar from '@/components/common/TapBar'
 import AddBtn from '@/components/common/AddBtn'
 import BlogList from '@/components/blog/BlogList'
@@ -7,14 +8,19 @@ import SearchBar from '@/components/common/SearchBar'
 import { useTapBarStore } from '@/store/tapBarStore'
 import { BlogChallenge } from '@/components/blog/BlogChallenge'
 import { useAuthStore } from '@/store/authStore'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 
 const baseCategory = ['전체보기', 'TECHEER', 'SHARED', '금주의 블로그']
 
 export default function Page() {
-  const { activeOption } = useTapBarStore()
+  const { activeOption, setActiveOption } = useTapBarStore()
   const { isLoggedIn, checkAuth } = useAuthStore()
   const [category, setCategory] = useState(baseCategory)
+  const [searchResults, setSearchResults] = useState<any>(null)
+
+  useEffect(() => {
+    setActiveOption('전체보기')
+  }, [setActiveOption])
 
   useEffect(() => {
     checkAuth().then(() => {
@@ -39,7 +45,7 @@ export default function Page() {
           <SearchBar
             placeholder="이름 또는 키워드로 검색해보세요"
             index="blog"
-            onSearchResult={null}
+            onSearchResult={setSearchResults}
           />
         </div>
         <div className="flex w-full h-[1px] mt-5 bg-gray mb-[1rem]" />
@@ -48,7 +54,7 @@ export default function Page() {
         {activeOption === '블로깅 챌린지' && isLoggedIn ? (
           <BlogChallenge />
         ) : (
-          <BlogList />
+          <BlogList searchResults={searchResults} />
         )}
       </div>
       <AddBtn />

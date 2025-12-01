@@ -4,6 +4,7 @@ interface ProfileInputFieldProps {
   readonly value?: string
   readonly onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
   readOnly?: boolean
+  className?: string
 }
 
 export default function ProfileInputField({

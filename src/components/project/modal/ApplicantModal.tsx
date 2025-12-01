@@ -14,12 +14,9 @@ import { Applicant } from '@/types/project/project'
 import {
   acceptProjectApplicant,
   denyProjectApplicant,
-} from '@/api/project/project/project'
+} from '@/api/project/project'
 // 스터디 API
-import {
-  acceptStudyApplicant,
-  denyStudyApplicant,
-} from '@/api/project/study/study'
+import { acceptStudyApplicant, denyStudyApplicant } from '@/api/project/study'
 
 interface ApplicantModalProps {
   /** 'project' 또는 'study' 지정 */
@@ -47,16 +44,21 @@ export default function ApplicantModal({
           applicantId: applicant.userId,
         })
         queryClient.invalidateQueries({
-          queryKey: ['getProjectDetails', teamId],
+          queryKey: ['project', 'projects', 'detail', teamId],
+        })
+        queryClient.invalidateQueries({
+          queryKey: ['project', 'projects', 'applicants', teamId],
         })
       } else {
         await acceptStudyApplicant({
           studyId: teamId,
           applicantId: applicant.userId,
         })
-        queryClient.invalidateQueries({ queryKey: ['getStudyDetails', teamId] })
         queryClient.invalidateQueries({
-          queryKey: ['getStudyApplicants', teamId],
+          queryKey: ['study', 'studies', 'detail', teamId],
+        })
+        queryClient.invalidateQueries({
+          queryKey: ['study', 'studies', 'applicants', teamId],
         })
       }
       onClose()
@@ -74,14 +76,22 @@ export default function ApplicantModal({
           applicantId: applicant.userId,
         })
         queryClient.invalidateQueries({
-          queryKey: ['getProjectDetails', teamId],
+          queryKey: ['project', 'projects', 'detail', teamId],
+        })
+        queryClient.invalidateQueries({
+          queryKey: ['project', 'projects', 'applicants', teamId],
         })
       } else {
         await denyStudyApplicant({
           studyId: teamId,
           applicantId: applicant.userId,
         })
-        queryClient.invalidateQueries({ queryKey: ['getStudyDetails', teamId] })
+        queryClient.invalidateQueries({
+          queryKey: ['study', 'studies', 'detail', teamId],
+        })
+        queryClient.invalidateQueries({
+          queryKey: ['study', 'studies', 'applicants', teamId],
+        })
       }
       onClose()
     } catch {

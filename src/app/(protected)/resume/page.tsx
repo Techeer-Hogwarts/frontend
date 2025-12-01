@@ -1,15 +1,17 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
-import Star from '../../../../public/star.svg'
+import { useState } from 'react'
+import Image from 'next/image'
 import Dropdown from '@/components/common/Dropdown'
 import TapBar from '@/components/common/TapBar'
 import BestResume from '@/components/resume/BestResume'
 import FilterBtn from '@/components/session/FilterBtn'
 import ResumeList from './@resumeList'
+import ResumeFolder from '@/components/resume/ResumeFolder'
 import SearchBar from '@/components/common/SearchBar'
 import { useTapBarStore } from '@/store/tapBarStore'
+import { useUrlQueryFilters } from '@/hooks/useUrlQueryFilters'
 
 export default function Resume() {
   const router = useRouter() // Resume 페이지에서 useRouter 사용
@@ -20,10 +22,9 @@ export default function Resume() {
   // 검색어 상태 추가
   const [searchResults, setSearchResults] = useState<any>(null)
 
-  // 드롭다운 선택된 옵션 상태 관리
-  const [selectedPosition, setSelectedPosition] = useState<string[]>([])
-  const [selectedYear, setSelectedYear] = useState<string[]>([])
-  const [selectedCategory, setSelectedCategory] = useState('전체')
+  // 드롭다운 선택된 옵션 상태 관리 (URL 동기화)
+  const { filters, set, remove } = useUrlQueryFilters()
+  const { selectedPosition, selectedYear, selectedCategory } = filters
   const [selectedSortBy, setSelectedSortBy] = useState<string>('CREATEDAT')
 
   // 드롭다운 항목 리스트
@@ -44,12 +45,15 @@ export default function Resume() {
   //필터 제거
   const handleRemoveFilter = (filter: string | number, type: string) => {
     if (type === 'position') {
-      setSelectedPosition(selectedPosition.filter((item) => item !== filter))
+      remove('selectedPosition', String(filter))
     } else if (type === 'year') {
-      setSelectedYear(selectedYear.filter((item) => item !== filter))
+      remove('selectedYear', String(filter))
     }
   }
   const { activeOption } = useTapBarStore()
+  
+  // activeOption과 URL 쿼리 동기화
+  const currentCategory = selectedCategory || activeOption || '전체'
 
   // 마이페이지로 이동
   const openMyPage = () => {
@@ -73,13 +77,22 @@ export default function Resume() {
           <span className="text-[1.1rem] font-medium cursor-pointer">
             내 이력서 수정하기
           </span>
-          <Star />
+          <Image
+            src="/star.svg"
+            alt="star"
+            width={20}
+            height={20}
+          />
         </div>
       </div>
       <div className="flex flex-col">
         <div className="flex justify-between">
           {/** 기수 탭 */}
-          <TapBar options={category} />
+          <TapBar 
+            options={category} 
+            onOptionChange={(option) => set('selectedCategory', option)}
+            initialOption={currentCategory}
+          />
           {/** 검색창 */}
           <SearchBar
             placeholder="이름 또는 키워드로 검색해보세요"
@@ -96,13 +109,13 @@ export default function Resume() {
             title="포지션"
             options={positionOptions}
             selectedOptions={selectedPosition}
-            setSelectedOptions={setSelectedPosition}
+            setSelectedOptions={(v) => set('selectedPosition', v)}
           />
           <Dropdown
             title="기수"
             options={yearOptions} // Dropdown 컴포넌트에서 문자열로 처리
-            selectedOptions={selectedYear.map(String)} // 숫자를 문자열로 변환
-            setSelectedOptions={setSelectedYear}
+            selectedOptions={selectedYear}
+            setSelectedOptions={(v) => set('selectedYear', v)}
           />
           <Dropdown
             title={
@@ -148,12 +161,45 @@ export default function Resume() {
       )}
       {/** 이력서 폴더 */}
       <div className="mt-[2.84rem]">
-        <ResumeList
-          position={selectedPosition}
-          year={selectedYear}
-          category={activeOption}
-          sortBy={selectedSortBy}
-        />
+        {Array.isArray(searchResults) && searchResults.length > 0 ? (
+          <div className="grid grid-cols-4 gap-8">
+            {searchResults.map((r: any) => (
+              <ResumeFolder
+                key={r.id}
+                likeCount={0}
+                resume={{
+                  id: r.id,
+                  createdAt: r.createdAt,
+                  title: r.title,
+                  category: r.category || '',
+                  position: r.position || '',
+                  likeCount: 0,
+                  year: r.year || '',
+                  user: {
+                    id: r.userID || 0,
+                    name: r.userName || '',
+                    profileImage: r.userProfileImage || '',
+                    year: r.year || 0,
+                    mainPosition: r.position || '',
+                  },
+                  likeList: [],
+                  bookmarkList: [],
+                }}
+                likeList={[]}
+                onLikeUpdate={() => {}}
+                bookmarkList={[]}
+                onBookmarkUpdate={() => {}}
+              />
+            ))}
+          </div>
+        ) : (
+          <ResumeList
+            position={selectedPosition}
+            year={selectedYear}
+            category={currentCategory}
+            sortBy={selectedSortBy}
+          />
+        )}
       </div>
     </div>
   )
