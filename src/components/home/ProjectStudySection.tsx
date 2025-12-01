@@ -1,10 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import TabLayout from '@/components/home/TabLayout'
 import ProjectCard from '@/components/project/ProjectCard'
 import StudyCard from '@/components/project/StudyCard'
-import { useAllTeamsQuery } from '@/api/home/queries'
+import { getAllTeams } from '@/api/project/common'
 import { ProjectStudyTeam } from '@/api/home'
 
 const convertToProjectTeam = (team: ProjectStudyTeam) => {
@@ -13,7 +13,7 @@ const convertToProjectTeam = (team: ProjectStudyTeam) => {
     isDeleted: team.deleted,
     isRecruited: team.isRecruited,
     isFinished: team.finished,
-    name: team.name,
+    name: team.name, // 실제 백엔드 데이터의 name 속성 사용
     createdAt: team.createdAt,
     type: 'PROJECT' as const,
     frontendNum: team.frontendNum,
@@ -27,6 +27,7 @@ const convertToProjectTeam = (team: ProjectStudyTeam) => {
       stack: stack.stack,
       isMain: stack.isMain,
     })),
+    // ProjectTeam 타입에 필요한 추가 속성들
     resultImages: team.mainImages,
     deleted: team.deleted,
     recruited: team.isRecruited,
@@ -37,47 +38,70 @@ const convertToProjectTeam = (team: ProjectStudyTeam) => {
 const convertToStudyTeam = (team: ProjectStudyTeam) => {
   return {
     id: team.id,
-    name: team.name,
+    name: team.name, // 실제 백엔드 데이터의 name 속성 사용
     isRecruited: team.isRecruited,
     finished: team.finished,
     type: 'STUDY' as const,
     recruitNum: team.recruitNum || 0,
-    studyExplain: team.studyExplain || '',
+    studyExplain: team.studyExplain || '', // studyExplain 속성 사용
     deleted: team.deleted,
     recruited: team.isRecruited,
-    resultImages: team.mainImages,
-    createdAt: team.createdAt,
+    resultImages: team.mainImages, // mainImages를 resultImages로 사용
+    createdAt: team.createdAt, // createdAt 속성 추가
   }
 }
 
 export default function ProjectStudySection() {
   const [selectedTab, setSelectedTab] = useState<'project' | 'study'>('project')
+  const [projects, setProjects] = useState<ProjectStudyTeam[]>([])
+  const [studies, setStudies] = useState<ProjectStudyTeam[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
-  const {
-    data: projectData,
-    isLoading: projectLoading,
-    error: projectError,
-  } = useAllTeamsQuery({
-    teamTypes: ['PROJECT'],
-    limit: 4,
-    sortType: 'UPDATE_AT_DESC',
-  })
+  useEffect(() => {
+    const fetchTeams = async () => {
+      try {
+        setLoading(true)
+        setError(null)
 
-  const {
-    data: studyData,
-    isLoading: studyLoading,
-    error: studyError,
-  } = useAllTeamsQuery({
-    teamTypes: ['STUDY'],
-    limit: 4,
-    sortType: 'UPDATE_AT_DESC',
-  })
+        const projectResponse = await getAllTeams({
+          teamTypes: ['PROJECT'],
+          limit: 4,
+          sortType: 'UPDATE_AT_DESC',
+        })
 
-  const projects = projectData?.pages?.[0]?.teams || []
-  const studies = studyData?.pages?.[0]?.teams || []
+        const studyResponse = await getAllTeams({
+          teamTypes: ['STUDY'],
+          limit: 4,
+          sortType: 'UPDATE_AT_DESC',
+        })
 
-  const loading = projectLoading || studyLoading
-  const error = projectError || studyError
+        if (
+          projectResponse.allTeams &&
+          Array.isArray(projectResponse.allTeams)
+        ) {
+          setProjects(projectResponse.allTeams as any)
+        } else {
+          setProjects([])
+        }
+
+        if (studyResponse.allTeams && Array.isArray(studyResponse.allTeams)) {
+          setStudies(studyResponse.allTeams as any)
+        } else {
+          setStudies([])
+        }
+      } catch (error) {
+        setError('팀 데이터를 가져오는데 실패했습니다.')
+
+        setProjects([])
+        setStudies([])
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchTeams()
+  }, [])
 
   return (
     <section className="w-full mt-8">
@@ -99,7 +123,7 @@ export default function ProjectStudySection() {
             </div>
           ) : error ? (
             <div className="col-span-4 flex items-center justify-center">
-              <div className="text-lg text-red-500">{error?.message}</div>
+              <div className="text-lg text-red-500">{error}</div>
             </div>
           ) : (
             <>

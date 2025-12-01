@@ -27,7 +27,7 @@ export default function StudyCard({
         </div>
       )}
 
-      <div className="flex items-center p-[1rem] gap-3 justify-center w-full h-[10.125rem] rounded-lg shadow-card">
+      <div className="flex items-center p-[1rem] gap-3 justify-center w-full h-[10.125rem] rounded-b-lg rounded-tr-lg shadow-card">
         <div className="flex w-[8.125rem] h-[8.125rem] bg-gradient-to-b from-[#FF8B20] to-[#FFC14F] rounded-lg text-white justify-center items-center text-center text-[1rem] font-medium">
           {team.name}
         </div>
@@ -71,7 +71,7 @@ export default function StudyCard({
           </div>
         )}
 
-        <div className="flex items-center p-[1rem] gap-3 justify-center w-full h-[10.125rem] rounded-lg bg-black/70">
+        <div className="flex items-center p-[1rem] gap-3 justify-center w-full h-[10.125rem] rounded-b-lg rounded-tr-lg bg-black/70">
           <div className="text-white text-sm line-clamp-4 text-center">
             {team.studyExplain || '설명이 없습니다'}
           </div>

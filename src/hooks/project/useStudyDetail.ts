@@ -1,14 +1,14 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useQueryClient } from '@tanstack/react-query'
 import { useAuthStore } from '@/store/authStore'
 import {
-  getStudyDetail,
-  handleCloseStudy,
-  deleteStudyTeam,
-  getStudyApplicants,
-  handleDenyStudy,
-} from '@/api/project/study/study'
+  useStudyDetailQuery,
+  useStudyApplicantsQuery,
+  useDeleteStudyMutation,
+  useCloseStudyMutation,
+  useCancelStudyApplicationMutation,
+} from '@/api/project/study'
 import { ModalType } from '@/types/project/project'
 import { Applicant } from '@/types/project/project'
 
@@ -28,21 +28,25 @@ export const useStudyDetail = (studyId: number) => {
   const [modalType, setModalType] = useState<ModalType>(null)
 
   // React Query: 스터디 상세 정보
-  const { data: studyDetails, isLoading: isStudyLoading } = useQuery({
-    queryKey: ['getStudyDetails', studyId],
-    queryFn: () => getStudyDetail(studyId),
-    enabled: !!studyId,
-  })
+  const { data: studyDetails, isLoading: isStudyLoading } =
+    useStudyDetailQuery(studyId)
 
   // React Query: 스터디 지원자 목록
-  const { data: studyApplicants, error: applicantsError } = useQuery({
-    queryKey: ['getStudyApplicants', studyId],
-    queryFn: () => getStudyApplicants(studyId),
-    enabled: !!studyId,
-    staleTime: Infinity, // 새로고침 전까지 캐시 유지
-    gcTime: 1000 * 60 * 10, // 10분간 캐시 유지
-    retry: false, // 404 에러시 재시도 안함
-  })
+  const { data: studyApplicants, error: applicantsError } =
+    useStudyApplicantsQuery(studyId)
+
+  // Mutations
+  const deleteStudyMutation = useDeleteStudyMutation()
+  const closeStudyMutation = useCloseStudyMutation()
+  const cancelApplicationMutation = useCancelStudyApplicationMutation()
+
+  // 삭제된 스터디 체크 및 리다이렉트
+  useEffect(() => {
+    if (studyDetails && studyDetails.deleted) {
+      alert('삭제된 스터디입니다.')
+      router.push('/project')
+    }
+  }, [studyDetails, router])
 
   // 스터디 멤버 여부 확인
   useEffect(() => {
@@ -131,36 +135,16 @@ export const useStudyDetail = (studyId: number) => {
     if (!studyId || !modalType) return
 
     try {
-      let response
-
       switch (modalType) {
         case 'delete':
-          response = await deleteStudyTeam(studyId)
-          if (response && (response.ok || response.status === 200)) {
-            router.push('/project')
-          } else {
-            throw new Error('삭제에 실패했습니다.')
-          }
+          await deleteStudyMutation.mutateAsync(studyId)
+          router.push('/project')
           break
         case 'close':
-          response = await handleCloseStudy(studyId)
-          if (response && (response.ok || response.status === 200)) {
-            queryClient.invalidateQueries({
-              queryKey: ['getStudyDetails', studyId],
-            })
-          } else {
-            throw new Error('스터디 종료에 실패했습니다.')
-          }
+          await closeStudyMutation.mutateAsync(studyId)
           break
         case 'cancel':
-          response = await handleDenyStudy(studyId)
-          if (response && (response.ok || response.status === 200)) {
-            queryClient.invalidateQueries({
-              queryKey: ['getStudyApplicants', studyId],
-            })
-          } else {
-            throw new Error('취소 처리에 실패했습니다.')
-          }
+          await cancelApplicationMutation.mutateAsync(studyId)
           break
       }
     } catch (error) {
@@ -168,7 +152,15 @@ export const useStudyDetail = (studyId: number) => {
     } finally {
       closeModal()
     }
-  }, [studyId, modalType, router, queryClient, closeModal])
+  }, [
+    studyId,
+    modalType,
+    router,
+    deleteStudyMutation,
+    closeStudyMutation,
+    cancelApplicationMutation,
+    closeModal,
+  ])
 
   return {
     // 데이터

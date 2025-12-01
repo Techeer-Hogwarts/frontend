@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
-import { handleAddStudy } from '@/api/project/study/study'
+import { handleAddStudy } from '@/api/project/study'
 import { StudyData } from '@/types/project/project'
 
 export const useAddStudy = () => {

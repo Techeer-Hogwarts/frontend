@@ -116,7 +116,7 @@ export default function ProjectCard({
       )}
 
       {/* 폴더 본체 */}
-      <div className="flex items-center p-[1rem] gap-3 justify-center w-full h-[10.125rem] rounded-lg shadow-card">
+      <div className="flex items-center p-[1rem] gap-3 justify-center w-full h-[10.125rem] rounded-b-lg rounded-tr-lg shadow-card">
         {/* 메인 이미지 */}
         <div className="w-[8.125rem] h-[8.125rem] rounded-2xl">
           <Image
@@ -170,7 +170,7 @@ export default function ProjectCard({
         )}
 
         {/* 폴더 본체 (오버레이) */}
-        <div className="flex items-center p-[1rem] gap-3 justify-center w-full h-[10.125rem] rounded-lg bg-black/70">
+        <div className="flex items-center p-[1rem] gap-3 justify-center w-full h-[10.125rem] rounded-b-lg rounded-tr-lg bg-black/70">
           {/* 오버레이 내용: 프로젝트 설명 등 */}
           <div className="text-white mx-4 text-sm line-clamp-4 text-center">
             {team.projectExplain || '설명이 없습니다'}

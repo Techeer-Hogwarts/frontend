@@ -1,24 +1,10 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 import { useInView } from 'react-intersection-observer'
-import { getAllTeams } from '@/api/project/common'
-import type {
-  TeamFilter,
-  Team,
-  GetAllTeamsFilter,
-} from '@/types/project/project'
+import { useTeamListQuery } from '@/api/project/common/queries'
+import type { TeamFilter } from '@/types/project/project'
 
 export const useTeamsList = (filters: TeamFilter) => {
-  const [teams, setTeams] = useState<Team[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [isLoadingMore, setIsLoadingMore] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [nextInfo, setNextInfo] = useState<any>(null)
-  const [hasNext, setHasNext] = useState(true)
-
-  // Intersection Observer for infinite scroll
-  const [ref, inView] = useInView({ threshold: 0.5 })
-
   // 포지션 매핑 함수
   const mapPositions = (positions: string[]) => {
     const positionMap: Record<string, string> = {
@@ -34,10 +20,8 @@ export const useTeamsList = (filters: TeamFilter) => {
       .filter(Boolean)
   }
 
-  // 필터를 API 형태로 변환 (첫 페이지용)
-  const buildApiFilters = (
-    baseFilters: GetAllTeamsFilter = {},
-  ): GetAllTeamsFilter => ({
+  // 필터를 API 형태로 변환
+  const apiFilters = {
     limit: 12,
     sortType: filters.sortType || 'UPDATE_AT_DESC',
     teamTypes: filters.teamTypes,
@@ -46,110 +30,37 @@ export const useTeamsList = (filters: TeamFilter) => {
       : undefined,
     isRecruited: filters.isRecruited,
     isFinished: filters.isFinished,
-    ...baseFilters, // 커서 정보 등 덮어쓰기
-    // 첫 페이지 요청시에는 커서 정보 제거
-    ...(Object.keys(baseFilters).length === 0 && {
-      id: undefined,
-      dateCursor: undefined,
-      countCursor: undefined,
-    }),
-  })
-
-  // 첫 페이지 로드
-  const loadInitialTeams = async () => {
-    try {
-      setIsLoading(true)
-      setError(null)
-
-      // 커서 정보 초기화 (첫 페이지이므로)
-      setNextInfo(null)
-      setHasNext(true)
-
-      const apiFilters = buildApiFilters()
-      const response = await getAllTeams(apiFilters)
-      const newTeams = response.allTeams || []
-
-      setTeams(newTeams)
-      setNextInfo(response.nextInfo)
-      setHasNext(response.nextInfo?.hasNext || false)
-    } catch (err) {
-      // 스터디 관련 에러인 경우 특별 처리
-      if (filters.teamTypes?.includes('STUDY')) {
-        setError(
-          '스터디 데이터를 불러오는 중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.',
-        )
-      } else {
-        setError(err instanceof Error ? err.message : '로드 실패')
-      }
-    } finally {
-      setIsLoading(false)
-    }
   }
 
-  // 다음 페이지 로드
-  const loadMoreTeams = async () => {
-    if (!hasNext || !nextInfo || isLoadingMore) return
+  // 새로운 TanStack Query 훅 사용
+  const {
+    data,
+    isLoading,
+    isFetchingNextPage,
+    hasNextPage,
+    fetchNextPage,
+    error,
+  } = useTeamListQuery(apiFilters)
 
-    try {
-      setIsLoadingMore(true)
-
-      const apiFilters = buildApiFilters({
-        // 커서 정보
-        id: nextInfo.id,
-        // 전체보기: 모든 정렬에서 dateCursor 사용
-        // 팀 타입 있음: UPDATE_AT_DESC에서만 dateCursor 사용
-        dateCursor:
-          !filters.teamTypes || filters.teamTypes.length === 0
-            ? nextInfo.dateCursor
-            : nextInfo.sortType === 'UPDATE_AT_DESC'
-              ? nextInfo.dateCursor
-              : undefined,
-        countCursor: ['VIEW_COUNT_DESC'].includes(nextInfo.sortType)
-          ? nextInfo.countCursor
-          : undefined,
-        sortType: nextInfo.sortType,
-      })
-
-      const response = await getAllTeams(apiFilters)
-      const newTeams = response.allTeams || []
-
-      // 중복 제거하면서 추가
-      setTeams((prev) => {
-        const existingIds = new Set(
-          prev.map((team) => `${team.type}-${team.id}`),
-        )
-        const uniqueNewTeams = newTeams.filter(
-          (team: any) => !existingIds.has(`${team.type}-${team.id}`),
-        )
-        return [...prev, ...uniqueNewTeams]
-      })
-
-      setNextInfo(response.nextInfo)
-      setHasNext(response.nextInfo?.hasNext || false)
-    } catch (err) {
-    } finally {
-      setIsLoadingMore(false)
-    }
-  }
-
-  // 필터 변경 시 첫 페이지 다시 로드
-  useEffect(() => {
-    loadInitialTeams()
-  }, [JSON.stringify(filters)])
+  // Intersection Observer for infinite scroll
+  const [ref, inView] = useInView({ threshold: 0.5 })
 
   // 무한스크롤 트리거
   useEffect(() => {
-    if (inView && hasNext && !isLoadingMore && teams.length > 0) {
-      loadMoreTeams()
+    if (inView && hasNextPage && !isFetchingNextPage) {
+      fetchNextPage()
     }
-  }, [inView, hasNext, isLoadingMore, teams.length])
+  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage])
+
+  // 모든 페이지의 팀들을 하나의 배열로 합치기
+  const teams = data?.pages.flatMap((page) => page.allTeams) || []
 
   return {
     teams,
     isLoading,
-    isLoadingMore,
-    error,
-    hasNext,
+    isLoadingMore: isFetchingNextPage,
+    error: error?.message || null,
+    hasNext: hasNextPage,
     loadMoreRef: ref,
   }
 }

@@ -1,64 +1,5 @@
-interface ResultImage {
-  id: number
-  isDeleted: boolean
-  imageUrl: string
-}
-
-interface StudyMember {
-  id: number
-  name: string
-  isDeleted: boolean
-  leader: boolean
-  studyTeamId: number
-  userId: number
-  email: string
-}
-
-interface StudyDetail {
-  id: number
-  name: string
-  notionLink: string
-  recruitExplain: string
-  recruitNum: number
-  rule: string
-  goal: string
-  studyExplain: string
-  recruited: boolean
-  finished: boolean
-  projectExplain: string
-  resultImages: ResultImage[]
-  studyMember: StudyMember[]
-  likeCount: number
-  viewCount: number
-  githubLink: string
-}
-
-type GetStudyDetailResponse = StudyDetail
-
-interface StudyApplicant {
-  name: string
-  isLeader: boolean
-}
-
-interface GetStudyApplicantsResponse {
-  code: number
-  message: string
-  data: {
-    studyName: string
-    members: StudyApplicant[]
-  }
-}
-
-interface PostResponse {
-  code: number
-  message: string
-  data: any
-}
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL
-
 // 스터디 추가하기
-export const handleAddStudy = async (data) => {
+export const handleAddStudy = async (data: any) => {
   try {
     const response = await fetch(`/api/studyTeams`, {
       method: 'POST',
@@ -76,7 +17,7 @@ export const handleAddStudy = async (data) => {
 }
 
 // 스터디 수정하기
-export const handleEditStudy = async (data, projectId) => {
+export const handleEditStudy = async (data: any, projectId: number) => {
   try {
     const response = await fetch(`/api/studyTeams/${projectId}`, {
       method: 'PATCH',
@@ -96,9 +37,7 @@ export const handleEditStudy = async (data, projectId) => {
 }
 
 // 스터디 상세 페이지 가져오기
-export const getStudyDetail = async (
-  studyTeamId: number,
-): Promise<GetStudyDetailResponse> => {
+export const getStudyDetail = async (studyTeamId: number) => {
   try {
     const response = await fetch(`/api/studyTeams/${studyTeamId}`, {
       method: 'GET',
@@ -111,7 +50,7 @@ export const getStudyDetail = async (
       throw new Error(`GET 요청 실패: ${response.status}`)
     }
 
-    const result: GetStudyDetailResponse = await response.json()
+    const result = await response.json()
     return result
   } catch (error: any) {
     throw error
@@ -119,9 +58,7 @@ export const getStudyDetail = async (
 }
 
 // 스터디 참여 멤버 가져오기
-export const getStudyMember = async (
-  studyTeamId: number,
-): Promise<GetStudyApplicantsResponse> => {
+export const getStudyMember = async (studyTeamId: number) => {
   try {
     const response = await fetch(`/api/studyTeams/${studyTeamId}/members`, {
       method: 'GET',
@@ -131,7 +68,7 @@ export const getStudyMember = async (
       throw new Error(`GET 요청 실패: ${response.status}`)
     }
 
-    const result: GetStudyApplicantsResponse = await response.json()
+    const result = await response.json()
     return result
   } catch (error: any) {
     throw error
@@ -139,7 +76,7 @@ export const getStudyMember = async (
 }
 
 // 스터디 지원하기
-export const handleApplyStudy = async (data) => {
+export const handleApplyStudy = async (data: any) => {
   try {
     const response = await fetch(`/api/studyTeams/apply`, {
       method: 'POST',
@@ -159,8 +96,9 @@ export const handleApplyStudy = async (data) => {
     throw error
   }
 }
+
 // 스터디 지원 취소하기
-export const handleDenyStudy = async (studyTeamId) => {
+export const handleDenyStudy = async (studyTeamId: number) => {
   try {
     const response = await fetch(`/api/studyTeams/${studyTeamId}/cancel`, {
       method: 'PATCH',
@@ -178,7 +116,7 @@ export const handleDenyStudy = async (studyTeamId) => {
 }
 
 //스터디 공고 마감
-export const handleCloseStudy = async (studyTeamId) => {
+export const handleCloseStudy = async (studyTeamId: number) => {
   try {
     const response = await fetch(`/api/studyTeams/close/${studyTeamId}`, {
       method: 'PATCH',
@@ -196,7 +134,7 @@ export const handleCloseStudy = async (studyTeamId) => {
 }
 
 //스터디 공고 삭제
-export const deleteStudyTeam = async (projectId) => {
+export const deleteStudyTeam = async (projectId: number) => {
   try {
     const response = await fetch(`/api/studyTeams/delete/${projectId}`, {
       method: 'PATCH',
@@ -214,7 +152,7 @@ export const deleteStudyTeam = async (projectId) => {
 }
 
 //스터디 지원자 보기
-export const getStudyApplicants = async (studyTeamId) => {
+export const getStudyApplicants = async (studyTeamId: number) => {
   try {
     const response = await fetch(`/api/studyTeams/${studyTeamId}/applicants`, {
       method: 'GET',
@@ -233,7 +171,7 @@ export const getStudyApplicants = async (studyTeamId) => {
 }
 
 // 스터디 지원자 수락
-export const acceptStudyApplicant = async (data) => {
+export const acceptStudyApplicant = async (data: any) => {
   try {
     const response = await fetch(`/api/studyTeams/applicants/accept`, {
       method: 'PATCH',
@@ -255,7 +193,7 @@ export const acceptStudyApplicant = async (data) => {
 }
 
 // 스터디 지원 거부
-export const denyStudyApplicant = async (data) => {
+export const denyStudyApplicant = async (data: any) => {
   try {
     const response = await fetch(`/api/studyTeams/applicants/reject`, {
       method: 'PATCH',
