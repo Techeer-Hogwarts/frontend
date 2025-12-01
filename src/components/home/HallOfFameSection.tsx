@@ -24,33 +24,16 @@ export default function HallOfFameSection() {
     error,
   } = useMonthlyRankingsQuery(previousYear, previousMonth)
 
-  const getDefaultMember = (): HallOfFameMember => {
-    return {
-      id: 1,
-      name: '코난',
-      email: 'brian@naver.com',
-      school: '한국공학대',
-      status: '졸업',
-      generation: '9기',
-      mainPosition: 'Frontend',
-      profileImage: '/profile.png',
-    }
-  }
-
   const convertToHallOfFameMember = (user: any): HallOfFameMember => {
-    if (!user) {
-      return getDefaultMember()
-    }
-
     return {
       id: user.id || 1,
-      name: user.name || '코난',
-      email: user.email || 'brian@naver.com',
-      school: user.school || '한국공학대',
-      status: user.grade || '졸업',
-      generation: `${user.year || 9}기`,
-      mainPosition: user.mainPosition || 'Frontend',
-      profileImage: user.profileImage || '/profile.png',
+      name: user.name || '',
+      email: user.email || '',
+      school: user.school || '',
+      status: user.grade || '',
+      generation: `${user.year || 9}기` || '',
+      mainPosition: user.mainPosition || '',
+      profileImage: user.profileImage || '',
     }
   }
 
@@ -67,23 +50,12 @@ export default function HallOfFameSection() {
   }
 
   if (error || !rankings) {
-    const mockMember: HallOfFameMember = {
-      id: 1,
-      name: '코난',
-      email: 'brian@naver.com',
-      school: '한국공학대',
-      status: '졸업',
-      generation: '9기',
-      mainPosition: 'Frontend',
-      profileImage: '/profile.png',
-    }
-
     return (
       <div className="w-full mt-8">
         <div className="flex gap-8 justify-center min-h-[300px]">
-          <HallOfFameCard title="이달의 터줌대감" member={mockMember} />
-          <HallOfFameCard title="이달의 잔디인" member={mockMember} />
-          <HallOfFameCard title="이달의 블로거" member={mockMember} />
+          <HallOfFameCard title="이달의 터줌대감" />
+          <HallOfFameCard title="이달의 잔디인" />
+          <HallOfFameCard title="이달의 블로거" />
         </div>
       </div>
     )
@@ -100,25 +72,19 @@ export default function HallOfFameSection() {
         <HallOfFameCard
           title="이달의 터줌대감"
           member={
-            zoomTopUser
-              ? convertToHallOfFameMember(zoomTopUser)
-              : getDefaultMember()
+            zoomTopUser ? convertToHallOfFameMember(zoomTopUser) : undefined
           }
         />
         <HallOfFameCard
           title="이달의 잔디인"
           member={
-            gitTopUser
-              ? convertToHallOfFameMember(gitTopUser)
-              : getDefaultMember()
+            gitTopUser ? convertToHallOfFameMember(gitTopUser) : undefined
           }
         />
         <HallOfFameCard
           title="이달의 블로거"
           member={
-            blogTopUser
-              ? convertToHallOfFameMember(blogTopUser)
-              : getDefaultMember()
+            blogTopUser ? convertToHallOfFameMember(blogTopUser) : undefined
           }
         />
       </div>
