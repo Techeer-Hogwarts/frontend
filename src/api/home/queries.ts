@@ -106,6 +106,8 @@ export const useMonthlyRankingsQuery = (year: number, month: number) => {
     queryFn: () => getRankings(year, month),
     staleTime: 10 * 60 * 1000, // 10분
     gcTime: 30 * 60 * 1000, // 30분
+    retry: false,
+    retryOnMount: false,
   })
 }
 
