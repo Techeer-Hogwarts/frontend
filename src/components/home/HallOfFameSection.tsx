@@ -26,12 +26,12 @@ export default function HallOfFameSection() {
 
   const convertToHallOfFameMember = (user: any): HallOfFameMember => {
     return {
-      id: user.id || 1,
+      id: user.id ?? 0,
       name: user.name || '',
       email: user.email || '',
       school: user.school || '',
       status: user.grade || '',
-      generation: `${user.year || 9}기` || '',
+      generation: user.year ? `${user.year}기` : '',
       mainPosition: user.mainPosition || '',
       profileImage: user.profileImage || '',
     }
