@@ -19,7 +19,7 @@ export default function BootcampBtn() {
 
   return (
     <Link
-      href="https://forms.gle/7D9WvJDJgzG6KZdR9"
+      href={process.env.NEXT_PUBLIC_BOOTCAMP_FORM_LINK || '/'}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       className="group relative overflow-hidden flex items-center justify-center w-52 h-14 rounded-3xl bg-[#F57601] text-white font-semibold transition-transform duration-200"
