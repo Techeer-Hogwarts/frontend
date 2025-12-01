@@ -54,9 +54,7 @@ export default function HallOfFameCard({ title, member }: Props) {
         </div>
       ) : (
         <div className="flex items-center justify-center w-full h-full px-2">
-          <p className="text-gray-500">
-            랭킹 데이터를 불러오는데 실패했습니다.
-          </p>
+          <p className="text-gray-500">신규 기능 업데이트 예정입니다.</p>
         </div>
       )}
     </div>
