@@ -145,14 +145,14 @@ export default function MainSearchSection() {
             basicResults?.results &&
             basicResults.results.length > 0 && (
               <ul className="absolute top-full left-0 mt-1 bg-white border border-gray rounded-lg w-[447px] max-h-[17rem] overflow-y-auto z-50 shadow-lg">
-                {basicResults.results.map((result) => {
+                {basicResults.results.map((result, index) => {
                   const truncatedTitle =
                     result.title.length > 16
                       ? result.title.slice(0, 16) + '...'
                       : result.title
                   return (
                     <li
-                      key={result.id}
+                      key={`${result.id}-${index}`}
                       className="flex items-center p-2 hover:bg-lightprimary cursor-pointer text-sm"
                       onClick={() =>
                         handleSelectResult(

@@ -268,36 +268,31 @@ export default function NavBar({ homeLink }: { homeLink?: string }) {
                             ? result.title.slice(0, 16) + '...'
                             : result.title
                         return (
-                          <div
-                            key={result.id}
-                            className="flex items-center pl-4 hover:bg-lightprimary"
+                          <li
+                            key={`${result.id}-${index}`}
+                            className="flex items-center pl-4 hover:bg-lightprimary p-1 font-light cursor-pointer"
+                            onClick={() =>
+                              handleSelectResult(
+                                result.title.split('-').slice(-1).join(' '),
+                                result.index,
+                                result.id,
+                                result.url,
+                              )
+                            }
                           >
                             <IoSearchOutline
-                              className="w-3"
+                              className="w-3 mr-2"
                               onClick={toggleSearch}
                             />
-                            <li
-                              key={index}
-                              className="p-1 font-light cursor-pointer"
-                              onClick={() =>
-                                handleSelectResult(
-                                  result.title.split('-').slice(-1).join(' '),
-                                  result.index,
-                                  result.id,
-                                  result.url,
-                                )
-                              }
-                            >
-                              <span className="text-sm  text-primary">
-                                {indexMap[result.index] || result.index}
-                                <span className="text-gray">
-                                  {' '}
-                                  &nbsp; | &nbsp;
-                                </span>
+                            <span className="text-sm  text-primary">
+                              {indexMap[result.index] || result.index}
+                              <span className="text-gray">
+                                {' '}
+                                &nbsp; | &nbsp;
                               </span>
-                              {truncatedTitle}
-                            </li>
-                          </div>
+                            </span>
+                            {truncatedTitle}
+                          </li>
                         )
                       })
                     ) : (

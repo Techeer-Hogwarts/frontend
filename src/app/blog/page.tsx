@@ -13,10 +13,14 @@ import { useEffect } from 'react'
 const baseCategory = ['전체보기', 'TECHEER', 'SHARED', '금주의 블로그']
 
 export default function Page() {
-  const { activeOption } = useTapBarStore()
+  const { activeOption, setActiveOption } = useTapBarStore()
   const { isLoggedIn, checkAuth } = useAuthStore()
   const [category, setCategory] = useState(baseCategory)
   const [searchResults, setSearchResults] = useState<any>(null)
+
+  useEffect(() => {
+    setActiveOption('전체보기')
+  }, [setActiveOption])
 
   useEffect(() => {
     checkAuth().then(() => {

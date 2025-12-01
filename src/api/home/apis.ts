@@ -184,7 +184,7 @@ export const getBasicSearchResults = async (
   query: string,
 ): Promise<SearchResponse> => {
   const response = await fetch(
-    `/api/search/basic?query=${encodeURIComponent(query)}`,
+    `/api/v2/search/basic?query=${encodeURIComponent(query)}`,
     {
       credentials: 'include',
     },
@@ -201,7 +201,7 @@ export const getFinalSearchResults = async (
   query: string,
 ): Promise<SearchResponse> => {
   const response = await fetch(
-    `/api/search/final?query=${encodeURIComponent(query)}`,
+    `/api/v2/search/final?query=${encodeURIComponent(query)}`,
     {
       credentials: 'include',
     },
