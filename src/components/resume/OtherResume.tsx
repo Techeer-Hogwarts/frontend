@@ -1,8 +1,9 @@
+'use client'
+
 import Image from 'next/image'
 import CareerTag from '../common/CareerTag'
 import PositionTag from '../common/PositionTag'
-import { useEffect, useState } from 'react'
-import { fetchUserResumes } from '@/app/(protected)/resume/api/getUserResume'
+import { useUserResumeListQuery } from '@/api/resume/queries'
 import { useRouter } from 'next/navigation'
 
 interface Resume {
@@ -20,39 +21,32 @@ interface OtherResumeProps {
 }
 
 export default function OtherResume({ id, offset, limit }: OtherResumeProps) {
-  const [otherData, setOtherData] = useState<Resume[]>([])
-  const router = useRouter() // useRouter 훅 추가
+  const router = useRouter()
 
-  useEffect(() => {
-    async function loadUserResumes() {
-      try {
-        const userResumes = await fetchUserResumes(id, undefined, limit)
+  // 사용자 이력서 목록 조회
+  const { data, isLoading, isError } = useUserResumeListQuery(id, limit)
 
-        // 새로운 API 응답 구조에 맞춰 데이터 처리
-        if (!Array.isArray(userResumes.data)) {
-          return
-        }
+  const handleResumeClick = (resumeId: number) => {
+    router.push(`/resume/${resumeId}`)
+  }
 
-        // 필요한 데이터 구조로 변환
-        const formattedData: Resume[] = userResumes.data.map((resume: any) => ({
-          id: resume.id,
-          createdAt: new Date(resume.createdAt).getTime(),
-          title: resume.title,
-          position: resume.position, // API 응답에서 position 직접 사용
-          year: 0, // API 응답에 user.year가 없으므로 기본값 사용
-        }))
+  // 모든 페이지의 데이터를 평탄화하여 첫 번째 페이지만 사용
+  const otherData = data?.pages[0]?.data ?? []
 
-        setOtherData(formattedData)
-      } catch (err: any) {
-        console.error('다른 이력서 로드 실패:', err)
-      }
-    }
+  if (isLoading) {
+    return (
+      <div className="flex flex-col w-[14.5rem] h-auto rounded-xl shadow-md mt-1">
+        <div className="p-4 text-center text-gray">로딩 중...</div>
+      </div>
+    )
+  }
 
-    loadUserResumes()
-  }, [id, limit])
-
-  const handleResumeClick = (id: number) => {
-    router.push(`/resume/${id}`)
+  if (isError || otherData.length === 0) {
+    return (
+      <div className="flex flex-col w-[14.5rem] h-auto rounded-xl shadow-md mt-1">
+        <div className="p-4 text-center text-gray">이력서가 없습니다.</div>
+      </div>
+    )
   }
 
   return (

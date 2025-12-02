@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Select from '../signup/Select'
 import InputField from '../common/InputField'
+import { useResumeUploadMutation } from '@/api/resume/mutations'
 
 interface AddResumeProps {
   readonly setModal: (value: boolean) => void
@@ -17,6 +18,8 @@ export default function AddResume({ setModal, fetchData }: AddResumeProps) {
   const [addError, setAddError] = useState<string>('')
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
+
+  const uploadMutation = useResumeUploadMutation()
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
@@ -64,12 +67,8 @@ export default function AddResume({ setModal, fetchData }: AddResumeProps) {
 
     try {
       setIsLoading(true)
-      const formDataToSend = new FormData()
-      if (formData.resumeFile) {
-        formDataToSend.append('file', formData.resumeFile)
-      }
+      setAddError('')
 
-      // 새로운 API v3 스펙에 맞춰 request 객체 구성
       const requestData = {
         category: formData.resumeCategory,
         position: formData.resumePosition,
@@ -77,38 +76,17 @@ export default function AddResume({ setModal, fetchData }: AddResumeProps) {
         isMain: formData.resumeIsMain,
       }
 
-      formDataToSend.append('request', JSON.stringify(requestData))
-
-      const response = await fetch('/api/resumes', {
-        method: 'POST',
-        body: formDataToSend,
-        credentials: 'include',
+      await uploadMutation.mutateAsync({
+        file: formData.resumeFile,
+        data: requestData,
       })
 
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => null)
-
-        if (response.status === 400) {
-          setAddError('존재하지 않는 카테고리입니다.')
-          return
-        }
-
-        if (response.status === 401) {
-          setAddError(errorData?.message || '로그인이 필요합니다.')
-          return
-        }
-
-        throw new Error(`API 오류: ${response.status}`)
-      }
-
-      const result = await response.json()
-      console.log('이력서 생성 성공:', result)
-
+      console.log('이력서 생성 성공')
       fetchData()
       setModal(false)
     } catch (err: any) {
       console.error('이력서 생성 실패:', err)
-      setAddError('네트워크 오류가 발생했습니다.')
+      setAddError(err.message || '네트워크 오류가 발생했습니다.')
     } finally {
       setIsLoading(false)
     }
