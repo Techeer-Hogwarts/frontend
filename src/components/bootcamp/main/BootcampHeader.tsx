@@ -28,20 +28,6 @@ const BootcampHeader: React.FC<BootcampHeaderProps> = ({ ModalOpen }) => {
         console.error('로컬 유저 파싱 실패', e)
       }
     }
-    const fetchBootcampInfo = async () => {
-      try {
-        const res = await fetch('/api/bootcamps?cursorId=0&limit=10', {
-          method: 'GET',
-          credentials: 'include',
-        })
-        const data = await res.json()
-        setCurrentBootcampYear(data.currentBootcampYear ?? null)
-      } catch (e) {
-        console.error('부트캠프 정보 가져오기 실패', e)
-      }
-    }
-
-    fetchBootcampInfo()
   }, [])
 
   const participating =
