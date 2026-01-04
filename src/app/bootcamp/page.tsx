@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import TapBar from '@/components/common/TapBar'
+import BootcampTapBar from '@/components/bootcamp/main/BootcampTapBar'
 import BootcampModal from '@/components/bootcamp/BootcampModal'
 import RegistModal from '@/components/bootcamp/RegistModal'
 import { BootCampTapOptions } from '@/constants/bootcamp'
@@ -41,20 +41,15 @@ const BootcampPage = () => {
   const query = useGetBootcampList({ isAward, year, limit: 10 })
 
   const allProjects =
-    (query?.data as InfiniteData<BootcampListResponse>)?.pages
-      ?.flatMap((page) =>
+    (query?.data as InfiniteData<BootcampListResponse>)?.pages?.flatMap(
+      (page) =>
         page.data.map((project) => ({
           id: project.id,
           year: project.year,
           imageUrl: project.imageUrl,
           rank: project.rank,
         })),
-      )
-      .sort((a, b) => {
-        const Arank = a.rank === 0 ? 4 : a.rank
-        const Brank = b.rank === 0 ? 4 : b.rank
-        return Arank - Brank
-      }) ?? []
+    ) ?? []
 
   // API 응답의 hasNext 값을 사용하여 무한 스크롤 제어
   const hasNextPage =
@@ -92,7 +87,7 @@ const BootcampPage = () => {
   }, [inView, hasNextPage, query.isFetchingNextPage])
 
   return (
-    <div className="flex justify-center">
+    <div className="flex justify-center w-full">
       {openModal && selectedID && (
         <BootcampModal id={selectedID} onClose={() => setOpenModal(false)} />
       )}
@@ -100,10 +95,12 @@ const BootcampPage = () => {
         <RegistModal onClose={() => setShowRegistModal(false)} />
       )}
 
-      <div className="flex flex-col w-[1200px]">
+      <div className="flex flex-col w-full max-w-[1200px] px-4 sm:px-6 lg:px-8">
         <BootcampHeader ModalOpen={() => setShowRegistModal(true)} />
-        <TapBar options={BootCampTapOptions} />
-        <div className="border-t my-5" />
+        <div className="sticky top-0 z-10 bg-white/80 backdrop-blur-md pt-4">
+          <BootcampTapBar options={BootCampTapOptions} />
+        </div>
+        <div className="my-6" />
         <ProjectList
           isLoading={query.isLoading}
           allProject={allProjects}

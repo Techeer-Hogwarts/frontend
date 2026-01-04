@@ -21,64 +21,58 @@ const ProjectItem = ({
   return (
     <div
       key={bootcamp.id}
-      className="relative w-full h-[200px] rounded-2xl overflow-hidden shadow-md border border-gray hover:shadow-2xl transition duration-300 transform hover:scale-105 p-1"
+      className="group relative w-full aspect-[4/3] rounded-2xl overflow-hidden shadow-lg bg-white transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 cursor-pointer"
+      onClick={() => {
+        setSelectedID(bootcamp.id)
+        setOpenModal(true)
+      }}
     >
-      <button
-        onClick={() => {
-          setSelectedID(bootcamp.id)
-          setOpenModal(true)
-        }}
-        className="w-full h-full relative cursor-pointer rounded-2xl focus:outline-none focus:ring-4 focus:ring-blue-400"
-      >
+      <div className="w-full h-full relative overflow-hidden rounded-2xl">
         {isWebm ? (
           <video
             src={bootcamp.imageUrl}
             muted
-            autoPlay
             loop
             playsInline
-            className="object-cover object-top rounded-2xl w-full h-full"
+            className="object-cover object-top w-full h-full transition-transform duration-500 group-hover:scale-110"
           />
         ) : (
           <Image
             src={bootcamp.imageUrl}
             alt="bootcamp project Image"
             fill
-            className="object-cover object-top rounded-2xl"
-            sizes="20vw"
+            className="object-cover object-top transition-transform duration-500 group-hover:scale-110"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
         )}
 
-        {bootcamp.rank === 1 && (
-          <Image
-            src="/images/bootcamp/1st-place-medal.svg"
-            alt="Gold Medal"
-            width={60}
-            height={60}
-            className="absolute top-0 right-4 z-10 opacity-90 drop-shadow-md"
-          />
-        )}
+        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors duration-300 flex items-center justify-center z-20">
+          <span className="opacity-0 group-hover:opacity-100 text-white font-bold text-lg px-6 py-2 border-2 border-white rounded-full transition-opacity duration-300 transform translate-y-4 group-hover:translate-y-0">
+            View Project
+          </span>
+        </div>
+      </div>
 
-        {bootcamp.rank === 2 && (
+      {bootcamp.rank > 0 && bootcamp.rank <= 3 && (
+        <div className="absolute top-0 right-4 drop-shadow-lg">
           <Image
-            src="/images/bootcamp/2nd-place-medal.svg"
-            alt="Gold Medal"
+            src={
+              bootcamp.rank === 1
+                ? '/images/bootcamp/1st-place-medal.svg'
+                : bootcamp.rank === 2
+                  ? '/images/bootcamp/2nd-place-medal.svg'
+                  : '/images/bootcamp/3rd-place-medal.svg'
+            }
+            alt={`${bootcamp.rank}st place`}
             width={60}
             height={60}
-            className="absolute top-0 right-4 z-10 opacity-90 drop-shadow-md"
           />
-        )}
+        </div>
+      )}
 
-        {bootcamp.rank === 3 && (
-          <Image
-            src="/images/bootcamp/3rd-place-medal.svg"
-            alt="Gold Medal"
-            width={60}
-            height={60}
-            className="absolute top-0 right-4 z-10 opacity-90 drop-shadow-md"
-          />
-        )}
-      </button>
+      <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full shadow-sm text-sm font-bold text-darkgray">
+        {bootcamp.year}기
+      </div>
     </div>
   )
 }

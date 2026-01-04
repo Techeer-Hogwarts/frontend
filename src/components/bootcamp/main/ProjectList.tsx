@@ -4,7 +4,7 @@ import { BootcampType } from '@/types/bootcamp/bootcamp'
 import ProjectListSkeleton from './ProjectListSkeleton'
 
 interface ProjectListProps {
-  isLoading
+  isLoading: boolean
   allProject: BootcampType[]
   setSelectedID: (id: number) => void
   setOpenModal: (open: boolean) => void
@@ -34,8 +34,8 @@ const ProjectList = ({
           ))}
         </div>
       ) : (
-        <div className="w-full text-center text-xl text-gray mt-32">
-          등록된 프로젝트가 없습니다.
+        <div className="w-full h-64 flex flex-col items-center justify-center text-gray-400 mt-10 border-2 border-dashed border-gray-200 rounded-2xl">
+          <p className="text-xl font-medium">등록된 프로젝트가 없습니다.</p>
         </div>
       )}
     </>
