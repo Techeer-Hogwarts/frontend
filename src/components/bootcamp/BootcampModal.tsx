@@ -31,40 +31,56 @@ const BootcampModal = ({ id, onClose }: BootcampModalProps) => {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex justify-center items-center backdrop-blur-sm bg-black/30">
-      <div className="bg-white fixed top-1/2 left-1/2 w-[600px] h-[730px] z-50 -translate-x-1/2 -translate-y-1/2 rounded-xl border-lightgray border-2 flex flex-col items-center p-5 realtive gap-5">
-        <ModalHeader
-          ProjectDetail={project}
-          setIsEditing={setIsEditing}
-          onClose={onClose}
-        />
-        <div className="border-b border-lightgray w-full"></div>
-        <section className="h-[270px] w-[500px] relative">
+    <div className="fixed inset-0 z-50 flex justify-center items-center bg-black/50 backdrop-blur-sm p-4">
+      <div
+        className="bg-white w-full max-w-7xl max-h-[90vh] rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row animate-fadeIn"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="w-full md:w-4/5 bg-black flex items-center justify-center p-0 relative min-h-[300px] md:min-h-full">
           {isWebm ? (
             <video
               src={typeof project.imageUrl === 'string' ? project.imageUrl : ''}
-              className="rounded-xl object-contain w-full h-full"
+              className="w-full h-full object-contain"
               controls
               autoPlay
               loop
               muted
-              style={{ objectFit: 'contain' }}
             />
           ) : (
-            <Image
-              src={typeof project.imageUrl === 'string' ? project.imageUrl : ''}
-              alt="bootcamp project image"
-              fill
-              className="rounded-xl object-contain"
-              sizes="50vw"
-            />
+            <div className="relative w-full h-full">
+              <Image
+                src={
+                  typeof project.imageUrl === 'string' ? project.imageUrl : ''
+                }
+                alt="bootcamp project image"
+                fill
+                className="object-contain"
+                priority
+                sizes="(max-width: 768px) 100vw, 60vw"
+              />
+            </div>
           )}
-        </section>
-        <section className="w-[500px] flex flex-col gap-5">
-          <ProjectIntroduce ProjectDetail={project} />
-          <ProjectTeam ProjectDetail={project} />
-          <ModalFooter ProjectDetail={project} />
-        </section>
+        </div>
+
+        <div className="w-full md:w-2/5 flex flex-col h-full bg-white relative">
+          <div className="p-6 pb-2 border-b border-gray-100 flex-shrink-0">
+            <ModalHeader
+              ProjectDetail={project}
+              setIsEditing={setIsEditing}
+              onClose={onClose}
+            />
+          </div>
+
+          <div className="flex-1 overflow-y-auto p-6 space-y-8 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
+            <ProjectIntroduce ProjectDetail={project} />
+            <div className="border-t border-zinc-300 my-2" />
+            <ProjectTeam ProjectDetail={project} />
+          </div>
+
+          <div className="p-6 pt-4 border-t border-gray-100 bg-gray-50 flex-shrink-0">
+            <ModalFooter ProjectDetail={project} />
+          </div>
+        </div>
       </div>
     </div>
   )

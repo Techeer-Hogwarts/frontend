@@ -4,6 +4,7 @@ export const BootCampTapOptions = [
   //Tap 옵션
   '전체보기',
   '역대 수상작',
+  '11기',
   '10기',
   '9기',
   '8기',

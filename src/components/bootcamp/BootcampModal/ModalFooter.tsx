@@ -10,38 +10,47 @@ interface ModalFooterProps {
 }
 
 const ModalFooter = ({ ProjectDetail }: ModalFooterProps) => {
+  const baseButtonClass =
+    'flex-1 min-w-[120px] flex items-center justify-center gap-2 px-4 py-3 rounded-xl transition-all shadow-sm hover:shadow-md active:scale-95 font-semibold text-sm text-black'
+  const disabledButtonClass =
+    'flex-1 min-w-[120px] flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-gray-50 border border-gray-100 text-gray-400 cursor-not-allowed'
+
   return (
-    <div className="flex flex-row gap-5 w-[500px] mt-5">
+    <div className="flex flex-col gap-3 w-full">
       <Link
         href={ProjectDetail.githubUrl}
         target="_blank"
         rel="noopener noreferrer"
+        className={`${baseButtonClass} bg-zinc-300 hover:bg-zinc-400`}
       >
-        <Git />
+        <Git className="w-5 h-5 text-black" />
+        <span>Github</span>
       </Link>
 
-      {ProjectDetail.mediumUrl ? (
+      {/* Medium Button - White */}
+      {ProjectDetail.mediumUrl && (
         <Link
           href={ProjectDetail.mediumUrl}
           target="_blank"
           rel="noopener noreferrer"
+          className={`${baseButtonClass} border border-zinc-200 hover:bg-gray-50`}
         >
-          <Medium />
+          <Medium className="w-5 h-5 text-black" />
+          <span>Medium</span>
         </Link>
-      ) : (
-        <Medium style={{ opacity: 0.5, cursor: 'not-allowed' }} />
       )}
 
-      {ProjectDetail.webUrl ? (
+      {/* Website Button - Primary */}
+      {ProjectDetail.webUrl && (
         <Link
           href={ProjectDetail.webUrl}
           target="_blank"
           rel="noopener noreferrer"
+          className={`${baseButtonClass} bg-primary hover:brightness-95`}
         >
-          <Links />
+          <Links className="w-5 h-5 text-black" />
+          <span>Website</span>
         </Link>
-      ) : (
-        <Links style={{ opacity: 0.5, cursor: 'not-allowed' }} />
       )}
     </div>
   )

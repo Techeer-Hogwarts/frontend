@@ -14,16 +14,22 @@ const ModalHeader = ({ ProjectDetail, setIsEditing, onClose }) => {
   const Myteam = ProjectDetail.members?.map((member) => member.userId)
 
   return (
-    <header className="relative flex justify-between items-center w-full">
-      <div className="flex flex-row gap-3"></div>
-      <div className="absolute left-1/2 -translate-x-1/2 max-w-[70%] truncate text-center font-bold text-2xl">
-        {ProjectDetail.name}
+    <header className="flex justify-between items-start w-full gap-4">
+      <div className="flex-1 min-w-0">
+        <h2 className="text-2xl font-bold text-darkgray leading-tight break-keep">
+            {ProjectDetail.name}
+        </h2>
+        <p className="text-sm text-gray-500 font-medium mt-1">
+            {ProjectDetail.year}기
+        </p>
       </div>
-      <div className="flex flex-row gap-3">
+      
+      <div className="flex flex-row items-center gap-2 flex-shrink-0">
         {Myteam?.includes(user?.id) && (
           <>
             <button
-              className="flex items-center justify-center"
+              className="p-2 hover:bg-red-50 rounded-full transition-colors text-red-500"
+              title="프로젝트 삭제"
               onClick={async () => {
                 try {
                   const confirmed = confirm('정말 삭제하시겠습니까?')
@@ -38,15 +44,24 @@ const ModalHeader = ({ ProjectDetail, setIsEditing, onClose }) => {
                 }
               }}
             >
-              <Trash />
+              <Trash className="w-5 h-5" />
             </button>
-            <button onClick={() => setIsEditing(true)}>
-              <FixIcon />
+            <button 
+                onClick={() => setIsEditing(true)}
+                className="p-2 hover:bg-blue-50 rounded-full transition-colors text-blue-500"
+                title="프로젝트 수정"
+            >
+              <FixIcon className="w-5 h-5" />
             </button>
           </>
         )}
-        <button onClick={onClose} className="text-2xl">
-          ×
+        <button 
+            onClick={onClose} 
+            className="p-2 hover:bg-gray-100 rounded-full transition-colors text-gray-500 hover:text-black"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
         </button>
       </div>
     </header>

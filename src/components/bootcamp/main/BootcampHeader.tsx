@@ -28,20 +28,6 @@ const BootcampHeader: React.FC<BootcampHeaderProps> = ({ ModalOpen }) => {
         console.error('로컬 유저 파싱 실패', e)
       }
     }
-    const fetchBootcampInfo = async () => {
-      try {
-        const res = await fetch('/api/bootcamps?cursorId=0&limit=10', {
-          method: 'GET',
-          credentials: 'include',
-        })
-        const data = await res.json()
-        setCurrentBootcampYear(data.currentBootcampYear ?? null)
-      } catch (e) {
-        console.error('부트캠프 정보 가져오기 실패', e)
-      }
-    }
-
-    fetchBootcampInfo()
   }, [])
 
   const participating =
@@ -76,30 +62,44 @@ const BootcampHeader: React.FC<BootcampHeaderProps> = ({ ModalOpen }) => {
   }
 
   return (
-    <div className="flex justify-between mt-14 mb-[2.84rem] w-[100%]">
-      <div className="text-left">
-        <p className="text-[2rem] font-bold">부트캠프 프로젝트</p>
-        <p className="text-[1.25rem]">
-          부트캠프 참여자들의 프로젝트를 확인해보세요.
+    <div className="flex flex-row justify-between items-end mt-14 mb-12 w-full gap-6">
+      <div className="text-left space-y-2">
+        <h1 className="text-4xl font-extrabold text-darkgray tracking-tight">
+          부트캠프 프로젝트
+        </h1>
+        <p className="text-lg text-gray-500 font-medium">
+          부트캠프 참여자들의 열정이 담긴 프로젝트를 확인해보세요.
         </p>
       </div>
 
-      <div className="flex flex-row gap-5">
+      <div className="flex flex-row gap-4">
         {participating ? (
           <button
             onClick={handleToggleParticipation}
-            className="flex items-center gap-2 w-[13rem] h-[3rem] rounded-xl shadow-md text-[1.1rem] font-medium justify-center hover:shadow-custom"
+            className="flex items-center gap-2 px-6 h-[3rem] rounded-full border-2 border-primary text-primary font-bold transition-all duration-300 hover:bg-primary hover:text-white shadow-sm hover:shadow-md"
           >
-            <span>부트캠프 참여 취소</span>
-            <Image src="/star.svg" alt="star" width={20} height={20} />
+            <span>참여 취소</span>
+            <Image
+              src="/star.svg"
+              alt="star"
+              width={20}
+              height={20}
+              className="w-5 h-5"
+            />
           </button>
         ) : (
           <button
             onClick={handleToggleParticipation}
-            className="flex items-center gap-2 w-[13rem] h-[3rem] rounded-xl shadow-md text-[1.1rem] font-medium justify-center hover:shadow-custom"
+            className="flex items-center gap-2 px-6 h-[3rem] rounded-full bg-primary text-white font-bold transition-all duration-300 hover:bg-darkPrimary shadow-md hover:shadow-lg hover:-translate-y-0.5"
           >
             <span>부트캠프 참여</span>
-            <Image src="/star.svg" alt="join" width={20} height={20} />
+            <Image
+              src="/whiteplus.png"
+              alt="join"
+              width={16}
+              height={16}
+              className="w-4 h-4"
+            />
           </button>
         )}
 
@@ -111,10 +111,16 @@ const BootcampHeader: React.FC<BootcampHeaderProps> = ({ ModalOpen }) => {
             }
             ModalOpen()
           }}
-          className="flex items-center gap-2 w-[13rem] h-[3rem] rounded-xl shadow-md text-[1.1rem] font-medium justify-center hover:shadow-custom"
+          className="flex items-center gap-2 px-6 h-[3rem] rounded-full bg-darkgray text-white font-bold transition-all duration-300 hover:bg-black shadow-md hover:shadow-lg hover:-translate-y-0.5"
         >
-          <span>부트캠프 등록하기</span>
-          <Image src="/star.svg" alt="star" width={20} height={20} />
+          <span>프로젝트 등록</span>
+          <Image
+            src="/whiteplus.png"
+            alt="register"
+            width={16}
+            height={16}
+            className="w-4 h-4"
+          />
         </button>
       </div>
     </div>
