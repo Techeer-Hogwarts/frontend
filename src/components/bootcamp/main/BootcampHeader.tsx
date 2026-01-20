@@ -2,6 +2,7 @@ import React from 'react'
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
 import { toogleBootcampParticipation } from '@/api/bootcamp/toogleBootcampParticipation'
+import { getBootcampYear } from '@/api/bootcamp/getBootcampYear'
 
 interface BootcampHeaderProps {
   ModalOpen: () => void
@@ -28,6 +29,12 @@ const BootcampHeader: React.FC<BootcampHeaderProps> = ({ ModalOpen }) => {
         console.error('로컬 유저 파싱 실패', e)
       }
     }
+  }, [])
+
+  useEffect(() => {
+    getBootcampYear().then((res) => {
+      setCurrentBootcampYear(res)
+    })
   }, [])
 
   const participating =
