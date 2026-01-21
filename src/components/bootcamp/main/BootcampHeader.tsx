@@ -14,6 +14,7 @@ const BootcampHeader: React.FC<BootcampHeaderProps> = ({ ModalOpen }) => {
   )
   const [userBootcampYear, setUserBootcampYear] = useState<number | null>(null)
   const [parsedUser, setParsedUser] = useState(null)
+  const [participating, setParticipating] = useState(false)
 
   useEffect(() => {
     const storedAuth =
@@ -33,12 +34,15 @@ const BootcampHeader: React.FC<BootcampHeaderProps> = ({ ModalOpen }) => {
 
   useEffect(() => {
     getBootcampYear().then((res) => {
-      setCurrentBootcampYear(res)
+      setCurrentBootcampYear(res.bootcampYear)
     })
   }, [])
 
-  const participating =
-    currentBootcampYear !== null && currentBootcampYear === userBootcampYear
+  useEffect(() => {
+    setParticipating(
+      currentBootcampYear !== null && currentBootcampYear === userBootcampYear,
+    )
+  }, [currentBootcampYear, userBootcampYear])
 
   const handleToggleParticipation = async () => {
     if (!parsedUser?.state?.isLoggedIn) {
