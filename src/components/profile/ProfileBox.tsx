@@ -32,6 +32,15 @@ export default function ProfileBox({
       ? profile.school.slice(0, 12) + '...'
       : profile.school
 
+  const ensureHttps = (url: string | null | undefined) => {
+    if (!url) return ''
+    const trimmed = url.trim()
+    if (/^https?:\/\//i.test(trimmed)) {
+      return trimmed
+    }
+    return `https://${trimmed}`
+  }
+
   return (
     <div className="flex w-[19rem] h-[23rem]">
       {/* Folder 이미지 */}
@@ -57,7 +66,7 @@ export default function ProfileBox({
             <div className="flex flex-row gap-2 items-center">
               {profile.githubUrl && (
                 <a
-                  href={profile.githubUrl}
+                  href={ensureHttps(profile.githubUrl)}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -66,7 +75,7 @@ export default function ProfileBox({
               )}
               {profile.mediumUrl && (
                 <a
-                  href={profile.mediumUrl}
+                  href={ensureHttps(profile.mediumUrl)}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -75,7 +84,7 @@ export default function ProfileBox({
               )}
               {profile.velogUrl && (
                 <a
-                  href={profile.velogUrl}
+                  href={ensureHttps(profile.velogUrl)}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -84,7 +93,7 @@ export default function ProfileBox({
               )}
               {profile.tistoryUrl && (
                 <a
-                  href={profile.tistoryUrl}
+                  href={ensureHttps(profile.tistoryUrl)}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
