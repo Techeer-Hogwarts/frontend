@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import { fetchBestResumes } from '@/app/(protected)/resume/api/getBestResume'
+import { useBestResumeListQuery } from '@/api/resume/queries'
 import { useInView } from 'react-intersection-observer'
 
 interface ResumeData {
@@ -21,56 +21,32 @@ interface ResumeData {
 interface ResumeFolderProps {
   setAuthModalOpen: (open: boolean) => void
 }
-export default function BestResume({ setAuthModalOpen }: ResumeFolderProps) {
-  const [resumes, setResumes] = useState<ResumeData[]>([]) // 빈 배열로 초기화
-  const [cursorId, setCursorId] = useState<number | undefined>(undefined)
-  const [hasNext, setHasNext] = useState(true)
-  const [isLoadingMore, setIsLoadingMore] = useState(false)
 
-  const router = useRouter() // useRouter 훅 추가
+export default function BestResume({ setAuthModalOpen }: ResumeFolderProps) {
+  const router = useRouter()
   const [isOpen, setIsOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
   const { ref, inView } = useInView({ threshold: 0.01 })
   const limit = 12
 
-  const loadMoreResumes = useCallback(async () => {
-    if (!hasNext || isLoadingMore) return
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
+    useBestResumeListQuery(setAuthModalOpen, limit)
 
-    try {
-      setIsLoadingMore(true)
-      const response = await fetchBestResumes(
-        cursorId || undefined,
-        limit,
-        setAuthModalOpen,
-      )
-      const newResumes: ResumeData[] = response.data || []
-
-      setResumes((prev) => {
-        const existingIds = new Set(prev.map((r) => r.id))
-        const filtered = newResumes.filter((r) => !existingIds.has(r.id))
-        return [...prev, ...filtered]
-      })
-
-      if (response.hasNext !== undefined) setHasNext(response.hasNext)
-      if (response.nextCursor !== undefined) setCursorId(response.nextCursor)
-    } catch (error) {
-      console.error('인기 이력서 불러오기 실패:', error)
-    } finally {
-      setIsLoadingMore(false)
-    }
-  }, [cursorId, hasNext, isLoadingMore, setAuthModalOpen])
-
+  // 무한 스크롤 처리
   useEffect(() => {
-    if (inView && hasNext && !isLoadingMore && isOpen) {
-      loadMoreResumes()
+    if (inView && hasNextPage && !isFetchingNextPage && isOpen) {
+      fetchNextPage()
     }
-  }, [inView, hasNext, isOpen, isLoadingMore, loadMoreResumes])
+  }, [inView, hasNextPage, isFetchingNextPage, isOpen, fetchNextPage])
 
   const handleResumeClick = (id: number) => {
     router.push(`/resume/${id}`)
   }
 
   const toggleDropdown = () => setIsOpen(!isOpen)
+
+  // 모든 페이지의 데이터를 평탄화
+  const resumes = data?.pages.flatMap((page) => page.data) ?? []
 
   return (
     <div ref={dropdownRef} className="relative w-[12rem]">
@@ -89,7 +65,7 @@ export default function BestResume({ setAuthModalOpen }: ResumeFolderProps) {
               const truncatedTitle =
                 resumeTitle.length > 16
                   ? resumeTitle.slice(0, 16) + '...'
-                  : resumeTitle // 길이 초과시 자르기
+                  : resumeTitle
 
               return (
                 <button
@@ -116,7 +92,7 @@ export default function BestResume({ setAuthModalOpen }: ResumeFolderProps) {
                 </button>
               )
             })}
-          {hasNext && <div ref={ref} className="h-2" />}
+          {hasNextPage && <div ref={ref} className="h-2" />}
         </div>
       )}
     </div>
