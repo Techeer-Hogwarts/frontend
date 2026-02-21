@@ -1,4 +1,8 @@
-import { useInfiniteQuery, type InfiniteData } from '@tanstack/react-query'
+import {
+  useInfiniteQuery,
+  useSuspenseInfiniteQuery,
+  type InfiniteData,
+} from '@tanstack/react-query'
 import { getBootcampList } from '@/api/bootcamp/getBootcampList'
 import { BootcampType } from '@/types/bootcamp/bootcamp'
 
@@ -45,4 +49,33 @@ export const useGetBootcampList = ({ isAward, year, limit = 10 }: Params) => {
     ...queryResult,
     isLoading: queryResult.isLoading,
   }
+}
+
+export const useSuspenseGetBootcampList = ({
+  isAward,
+  year,
+  limit = 10,
+}: Params) => {
+  return useSuspenseInfiniteQuery<
+    BootcampListResponse,
+    Error,
+    InfiniteData<BootcampListResponse, number>,
+    [string, { isAward: boolean; year?: number }],
+    number
+  >({
+    queryKey: ['bootcampList', { isAward, year }],
+    queryFn: ({ pageParam = 0 }) =>
+      getBootcampList({
+        isAward,
+        year,
+        cursorId: pageParam,
+        limit,
+      }),
+    getNextPageParam: (lastPage) => {
+      if (!lastPage.hasNext) return undefined
+      return lastPage.nextCursor
+    },
+    initialPageParam: 0,
+    staleTime: 1000 * 60 * 5,
+  })
 }

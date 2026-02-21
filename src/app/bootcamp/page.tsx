@@ -1,23 +1,26 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, Suspense } from 'react'
 import BootcampTapBar from '@/components/bootcamp/main/BootcampTapBar'
 import BootcampModal from '@/components/bootcamp/BootcampModal'
 import RegistModal from '@/components/bootcamp/RegistModal'
 import { BootCampTapOptions } from '@/constants/bootcamp'
 import BootcampHeader from '@/components/bootcamp/main/BootcampHeader'
 import ProjectList from '@/components/bootcamp/main/ProjectList'
-import { useGetBootcampList } from '@/hooks/bootcamp/useGetBootcampList'
+import { useSuspenseGetBootcampList } from '@/hooks/bootcamp/useGetBootcampList'
 import { useTapBarStore } from '@/store/tapBarStore'
 import type { InfiniteData } from '@tanstack/react-query'
 import type { BootcampListResponse } from '@/hooks/bootcamp/useGetBootcampList'
 import { useInView } from 'react-intersection-observer'
+import ProjectListSkeleton from '@/components/bootcamp/main/ProjectListSkeleton'
 
-const BootcampPage = () => {
-  const [openModal, setOpenModal] = useState(false)
-  const [selectedID, setSelectedID] = useState<number>()
-  const [showRegistModal, setShowRegistModal] = useState(false)
-
+const BootcampProjectList = ({
+  setSelectedID,
+  setOpenModal,
+}: {
+  setSelectedID: (id: number) => void
+  setOpenModal: (open: boolean) => void
+}) => {
   const { activeOption } = useTapBarStore()
   const { ref, inView } = useInView()
 
@@ -37,8 +40,7 @@ const BootcampPage = () => {
   }
 
   const { isAward, year } = getTabParams()
-
-  const query = useGetBootcampList({ isAward, year, limit: 10 })
+  const query = useSuspenseGetBootcampList({ isAward, year, limit: 10 })
 
   const allProjects =
     (query?.data as InfiniteData<BootcampListResponse>)?.pages?.flatMap(
@@ -51,9 +53,31 @@ const BootcampPage = () => {
         })),
     ) ?? []
 
-  // API 응답의 hasNext 값을 사용하여 무한 스크롤 제어
   const hasNextPage =
     query?.data?.pages?.[query.data.pages.length - 1]?.hasNext ?? false
+
+  useEffect(() => {
+    if (inView && hasNextPage && !query.isFetchingNextPage) {
+      query.fetchNextPage()
+    }
+  }, [inView, hasNextPage, query.isFetchingNextPage, query])
+
+  return (
+    <>
+      <ProjectList
+        allProject={allProjects}
+        setSelectedID={setSelectedID}
+        setOpenModal={setOpenModal}
+      />
+      <div ref={ref} className="h-10" />
+    </>
+  )
+}
+
+const BootcampPage = () => {
+  const [openModal, setOpenModal] = useState(false)
+  const [selectedID, setSelectedID] = useState<number>()
+  const [showRegistModal, setShowRegistModal] = useState(false)
 
   useEffect(() => {
     if (typeof window === 'undefined') return
@@ -80,12 +104,6 @@ const BootcampPage = () => {
     }
   }, [showRegistModal, openModal])
 
-  useEffect(() => {
-    if (inView && hasNextPage && !query.isFetchingNextPage) {
-      query.fetchNextPage()
-    }
-  }, [inView, hasNextPage, query.isFetchingNextPage])
-
   return (
     <div className="flex justify-center w-full">
       {openModal && selectedID && (
@@ -101,13 +119,12 @@ const BootcampPage = () => {
           <BootcampTapBar options={BootCampTapOptions} />
         </div>
         <div className="my-6" />
-        <ProjectList
-          isLoading={query.isLoading}
-          allProject={allProjects}
-          setSelectedID={setSelectedID}
-          setOpenModal={setOpenModal}
-        />
-        <div ref={ref} className="h-10" />
+        <Suspense fallback={<ProjectListSkeleton />}>
+          <BootcampProjectList
+            setSelectedID={setSelectedID}
+            setOpenModal={setOpenModal}
+          />
+        </Suspense>
       </div>
     </div>
   )
