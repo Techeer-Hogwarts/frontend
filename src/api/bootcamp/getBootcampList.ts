@@ -18,9 +18,15 @@ export const getBootcampList = async ({
   if (cursorId !== undefined) params.append('cursorId', String(cursorId))
   params.append('limit', String(limit))
 
-  const res = await fetch(`/api/bootcamps?${params.toString()}`, {
+  const isServer = typeof window === 'undefined'
+  const baseUrl = isServer
+    ? process.env.API_BASE_URL || 'https://api.techeerzip.cloud/api'
+    : ''
+  const apiPath = isServer ? '/v3/bootcamps' : '/api/bootcamps'
+
+  const res = await fetch(`${baseUrl}${apiPath}?${params.toString()}`, {
     method: 'GET',
-    credentials: 'include',
+    ...(isServer ? {} : { credentials: 'include' }),
   })
 
   if (!res.ok) throw new Error('부트캠프 리스트를 불러오지 못했습니다.')
