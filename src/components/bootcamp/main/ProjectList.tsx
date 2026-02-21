@@ -17,12 +17,13 @@ const ProjectList = ({
     <>
       {allProject.length > 0 ? (
         <div className="grid grid-cols-4 gap-6">
-          {allProject.map((bootcamp: BootcampType) => (
+          {allProject.map((bootcamp: BootcampType, index: number) => (
             <ProjectItem
               key={bootcamp.id}
               bootcamp={bootcamp}
               setSelectedID={setSelectedID}
               setOpenModal={setOpenModal}
+              priority={index < 4}
             />
           ))}
         </div>

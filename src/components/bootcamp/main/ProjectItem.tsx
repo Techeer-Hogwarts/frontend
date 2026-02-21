@@ -1,5 +1,6 @@
 import React from 'react'
 import Image from 'next/image'
+import cloudinaryLoader, { getCloudinaryUrl } from '@/utils/cloudinaryLoader'
 
 interface ProjectItemProps {
   bootcamp: {
@@ -10,14 +11,17 @@ interface ProjectItemProps {
   }
   setSelectedID: (id: number) => void
   setOpenModal: (open: boolean) => void
+  priority?: boolean
 }
 
 const ProjectItem = ({
   bootcamp,
   setSelectedID,
   setOpenModal,
+  priority = false,
 }: ProjectItemProps) => {
   const isWebm = bootcamp.imageUrl.includes('webm')
+
   return (
     <div
       key={bootcamp.id}
@@ -31,6 +35,7 @@ const ProjectItem = ({
         {isWebm ? (
           <video
             src={bootcamp.imageUrl}
+            autoPlay
             muted
             loop
             playsInline
@@ -38,11 +43,14 @@ const ProjectItem = ({
           />
         ) : (
           <Image
+            loader={cloudinaryLoader}
             src={bootcamp.imageUrl}
             alt="bootcamp project Image"
             fill
+            priority={priority}
             className="object-cover object-top transition-transform duration-500 group-hover:scale-110"
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            sizes="270px"
+            // sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
         )}
 

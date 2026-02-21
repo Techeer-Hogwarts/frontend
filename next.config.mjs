@@ -36,6 +36,7 @@ const nextConfig = {
       createRemotePattern('medium.com'),
     ],
     domains: [
+      'res.cloudinary.com',
       'example.com',
       'avatars.slack-edge.com',
       'techeerzip-bucket.s3.ap-southeast-2.amazonaws.com',
