@@ -23,6 +23,8 @@ export const metadata = {
   },
 }
 
+import FramerMotionProvider from '@/components/common/FramerMotionProvider'
+
 export default function RootLayout({
   children,
 }: {
@@ -34,12 +36,14 @@ export default function RootLayout({
         {process.env.NEXT_PUBLIC_GOOGLE_TAGMANAGER && (
           <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GOOGLE_TAGMANAGER} />
         )}
-        <ConditionalNavBar />
-        <Providers>
-          <main className="flex-1 w-full">{children}</main>
-        </Providers>
-        <Toaster position="top-center" reverseOrder={false} />
-        <Footer />
+        <FramerMotionProvider>
+          <ConditionalNavBar />
+          <Providers>
+            <main className="flex-1 w-full">{children}</main>
+          </Providers>
+          <Toaster position="top-center" reverseOrder={false} />
+          <Footer />
+        </FramerMotionProvider>
       </body>
     </html>
   )

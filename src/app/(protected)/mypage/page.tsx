@@ -9,9 +9,14 @@ import Settings from '@/components/mypage/Settings'
 import Bookmark from '@/components/mypage/Bookmark'
 import MypageTap from '@/components/mypage/MypageTap'
 import ProfileBox from '@/components/profile/ProfileBox'
-import Statistics from '@/components/mypage/Statistics'
 import Feedback from '@/components/mypage/Feedback'
 import { useFetchProfile } from '@/hooks/mypage/useFetchProfile'
+import dynamic from 'next/dynamic'
+
+const Statistics = dynamic(() => import('@/components/mypage/Statistics'), {
+  loading: () => <div>통계 데이터를 불러오는 중...</div>,
+  ssr: false, // 통계/차트는 클라이언트 사이드 렌더링을 요함
+})
 
 export default function Mypage() {
   const [activeTab, setActiveTab] = useState<

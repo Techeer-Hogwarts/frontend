@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import UpdateSVG from '../../../../../public/update.svg'
+import Image from 'next/image'
 
 const UpadateModal = () => {
   const router = useRouter() // useRouter 훅을 사용하여 라우터 객체 얻기
@@ -15,8 +15,7 @@ const UpadateModal = () => {
   return (
     <div className="flex justify-center items-center fixed top-0 left-0 w-full h-full z-100 bg-black bg-opacity-20">
       <div className="flex flex-col justify-center items-center w-[21rem] h-[22.5rem] gap-[1.5rem] bg-white rounded-xl">
-        {/* <Image src={update} alt="업데이트" width={336} /> */}
-        <UpdateSVG width={100} height={100} />
+        <Image src="/update.svg" alt="업데이트" width={100} height={100} />
         <div className="text-center">
           <div className="font-semibold text-[1.375rem]">
             최신 이력서 업데이트

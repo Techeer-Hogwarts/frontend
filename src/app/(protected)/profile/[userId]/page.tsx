@@ -8,7 +8,12 @@ import ProfileBox from '@/components/profile/ProfileBox'
 import ProfilepageTap from '@/components/profile/ProfilepageTap'
 import { fetchUserProfile } from '../api/getUserProfile'
 import Skeleton from '@/components/profile/Skeleton'
-import Statistics from '@/components/mypage/Statistics'
+import dynamic from 'next/dynamic'
+
+const Statistics = dynamic(() => import('@/components/mypage/Statistics'), {
+  loading: () => <div>통계 데이터를 불러오는 중...</div>,
+  ssr: false, // 통계/차트는 클라이언트 사이드 렌더링을 요함
+})
 
 export default function Page({
   params,

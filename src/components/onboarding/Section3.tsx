@@ -1,5 +1,5 @@
 'use client'
-import { motion } from 'framer-motion'
+import { m as motion } from 'framer-motion'
 import BootcampCard from './BootCampCard'
 import ActivityCard from '@/components/onboarding/ActivityCard'
 

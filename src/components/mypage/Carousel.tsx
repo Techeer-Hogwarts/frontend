@@ -1,9 +1,13 @@
 'use client'
 
 import React, { useState } from 'react'
-import Slider from 'react-slick'
+import dynamic from 'next/dynamic'
 import Image from 'next/image'
 import { HiMiniChevronLeft, HiMiniChevronRight } from 'react-icons/hi2'
+
+const Slider = dynamic(() => import('react-slick') as any, {
+  ssr: false,
+}) as any
 import { FaRegImage } from 'react-icons/fa6'
 import Link from 'next/link'
 
